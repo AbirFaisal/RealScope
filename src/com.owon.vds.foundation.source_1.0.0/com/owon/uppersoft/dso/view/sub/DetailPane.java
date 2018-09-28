@@ -204,7 +204,7 @@ public class DetailPane extends JPanel implements MouseListener,
 	}
 
 	public void changeTimeBase(int idx) {
-		/** 暂时不在这里判断是否可操作，外层基本都有判断了 */
+		/** Temporarily not here to judge whether it is operational, the outer layer basically has a judgment. */
 		boolean operatable = Platform.getControlApps().interComm
 				.isTimeOperatableNTryGetDM();
 		if (!operatable)
@@ -214,7 +214,7 @@ public class DetailPane extends JPanel implements MouseListener,
 	}
 
 	public void changeFFTTimeBase(int idx) {
-		/** 这个给fft使用,不去获取深存储 */
+		/** This is for fft use, not to get deep storage */
 		tc.c_setTimebaseIdx(idx, true);
 	}
 
