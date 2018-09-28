@@ -48,8 +48,12 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 	private Image addbtnImg, minusbtnImg;
 	private final String addPath = "/com/owon/uppersoft/dso/image/add.png";
 	private final String minusPath = "/com/owon/uppersoft/dso/image/minus.png";
-	private final int ROWGAP = 15, COLGAP = 90, HalfCOLGAP = COLGAP >> 1,
+	private final int
+			ROWGAP = 15,
+			COLGAP = 90,
+			HalfCOLGAP = COLGAP >> 1,
 			inorc = 24;
+
 	private int selCol = -1, dragTarget = -1;
 	public static final int Height = 90;
 	private JPanel gp;

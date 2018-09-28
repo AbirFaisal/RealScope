@@ -10,7 +10,7 @@ public class MeasureModel {
 
 	public static final String Refresh_MeasurePane_Selected = "refresh_MeasurePane_Selected";
 
-	private final int columnMax = 7;
+	private final int columnMax = 20; //Controls Maximum Number of Measurements
 	private int channelNumbers;
 	public LinkedList<MeasureElem> othMTlinked = new LinkedList<MeasureElem>();
 	public LinkedList<Integer> MTlinked = new LinkedList<Integer>();
