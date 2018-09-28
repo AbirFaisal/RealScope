@@ -56,7 +56,7 @@ public class AssitControl {
 		});
 
 		load(p);
-		/** deltbm为扩展下b1b2的中间到两边界距离 */
+		/** Deltbm is the middle to two boundary distance of b1b2 */
 		int deltbm = BigDecimal.valueOf(BORDER)
 				.multiply(tcp.ratio(ztbIdx, tc.getTimebaseIdx())).intValue();
 		b1 = middleb1b2 + deltbm;
@@ -79,7 +79,7 @@ public class AssitControl {
 			tc.c_setHorizontalTriggerPosition(b2);
 	}
 
-	/** 视窗设定下 b1b2到边界不能移动，引起水平触发位置反向移动 */
+	/** Under the window setting, b1b2 cannot move to the boundary, causing the horizontal trigger position to move backward. */
 	private void horizontalTriggerMove(int n, int t) {
 		int tn = t - n;
 		if (tn < b2)

@@ -47,9 +47,10 @@ import com.owon.uppersoft.vds.ui.widget.OwnedComboBox;
 public class DetailPane extends JPanel implements MouseListener,
 		MouseMotionListener, MouseWheelListener, Localizable,
 		SliderBarLocation, PropertyChangeListener {
-	public static final String horposPath = (Define.def.style.path + Style.DetailPname);
-	private static Image img = SwingResourceManager.getIcon(InfoBlock.class,
-			horposPath).getImage();
+
+	//public static final String horposPath = (Define.def.style.path + Style.DetailPname);
+	//private static Image img = SwingResourceManager.getIcon(InfoBlock.class, horposPath).getImage();
+
 	public static final int BlockHeigth = 103;
 	public static final int BlockWidth = 126;
 
@@ -329,9 +330,10 @@ public class DetailPane extends JPanel implements MouseListener,
 			Point point = getSliderBarLocation(x, y, e.getXOnScreen(),
 					e.getYOnScreen(), e.getComponent());
 
-			SymmetrySliderBar.createUnsymmetrySliderFrame(getWindow(), point.x,
-					point.y, -p.left, -p.right, false,
-					-tc.getHorizontalTriggerPosition(), new SliderAdapter() {
+			SymmetrySliderBar.createUnsymmetrySliderFrame(
+					getWindow(),
+					point.x, point.y, -p.left, -p.right,
+					false, -tc.getHorizontalTriggerPosition(), new SliderAdapter() {
 
 						@Override
 						public void valueChanged(int oldV, int newV) {
@@ -364,11 +366,11 @@ public class DetailPane extends JPanel implements MouseListener,
 	@Override
 	protected void paintComponent(Graphics g) {
 		// super.paintComponent(g);
-		g.drawImage(img, 0, 0, null);
+		//g.drawImage(img, 0, 0, null);
 		int x = 10;
 
 		if (linePos >= floor0 && linePos < floor3) {
-			g.setColor(def.style.CO_INFOBLOCK_HIGHLIGHT);
+			//g.setColor(def.style.CO_INFOBLOCK_HIGHLIGHT); //TODO
 
 			g.fillRect(3, linePos - 17, hllen, hlhigh);
 		}
@@ -379,13 +381,14 @@ public class DetailPane extends JPanel implements MouseListener,
 		if (!enable)
 			g.setColor(Color.gray);
 		else
-			g.setColor(Color.white);
+			g.setColor(Color.black); //Bottom Stuff Color
+
 		g.drawString(timebase, x, floor0);
 		g.drawString(trigPos, x, floor1);
 		g.drawString(memdepth, x, floor2);
 		g.drawString(sampling, x, floor3);
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_OFF);
+		g.setColor(Color.white);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
 	@Override

@@ -34,7 +34,7 @@ public class Style {
 		// 注释掉的那张图片，最后可以删掉
 		MWBGimgname = "titlebar.png";// "background.png";
 		// TriggerInfoPane
-		Trgvoltname = "trgvolt.png";
+		//Trgvoltname = "trgvolt.png";
 		// DetailPane
 		DetailPname = "horpos.png";
 		// TitlePane

@@ -1,9 +1,6 @@
 package com.owon.uppersoft.dso.view.sub;
 
-import java.awt.BorderLayout;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.LinkedList;
@@ -27,7 +24,7 @@ import com.owon.uppersoft.vds.ui.resource.SwingResourceManager;
 public class TriggerInfoPane extends JPanel implements Localizable,
 		PropertyChangeListener {
 
-	public static final String trgvoltPath = (Define.def.style.path + Style.Trgvoltname);
+	//public static final String trgvoltPath = (Define.def.style.path + Style.Trgvoltname);
 	public static final int floor0 = 22;
 	// public static final int floor1 = 47;
 	// public static final int floor2 = 72;
@@ -38,8 +35,7 @@ public class TriggerInfoPane extends JPanel implements Localizable,
 
 	public static final int forceBtnOrigin = 85, titleWidth = 47;
 
-	private Image img = SwingResourceManager.getIcon(InfoBlock.class,
-			trgvoltPath).getImage();
+	//private Image img = SwingResourceManager.getIcon(InfoBlock.class, trgvoltPath).getImage();
 	private DataHouse dh;
 
 	public TriggerInfoPane(final DataHouse dh) {
@@ -142,7 +138,11 @@ public class TriggerInfoPane extends JPanel implements Localizable,
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.drawImage(img, 0, 0, null);
+
+		//g2d.drawImage(img, 0, 0, null);
+		g2d.setColor(Color.BLACK);
+		g2d.drawRect(0,0,1,100);
+
 		// g2d.setColor(Color.WHITE);
 		// g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 		// RenderingHints.VALUE_ANTIALIAS_ON);

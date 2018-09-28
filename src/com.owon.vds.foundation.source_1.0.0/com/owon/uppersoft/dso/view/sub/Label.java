@@ -43,8 +43,20 @@ public class Label extends JComponent implements MouseListener,
 	public static final String imageRoot = "/com/owon/uppersoft/dso/image/";
 	public static final String ball = "/com/owon/uppersoft/dso/image/ball";
 	public static final Dimension DefaultBlockSize = new Dimension(126, 18);
+	public static final int hlstart = 55, borderwidth = 70, chstart = 5,
+			trgmodstart = 30;
+	public static final int BlockWidth = 130;
+	private TriggerControl tc;
+	private Image img;
+	private Image img2;
+	private TriggerSet triggerSet;
+	private int idx;
+	private ChannelInfo channelInfo;
+	private WaveFormManager wfm;
+	private ControlManager cm;
+	private boolean rolloverL = false, rolloverMid = false, rolloverR = false;
 
-	public Label(DataHouse dh, TriggerSet ts, int idx) {
+	public Label(DataHouse dh, TriggerSet triggerSet, int idx) {
 		cm = dh.controlManager;
 		tc = cm.getTriggerControl();
 		wfm = dh.getWaveFormManager();
@@ -52,18 +64,10 @@ public class Label extends JComponent implements MouseListener,
 		setFont(Define.def.alphafont);
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		setTriggerSet(ts, idx);
+		setTriggerSet(triggerSet, idx);
 
 		cm.pcs.addPropertyChangeListener(this);
 	}
-
-	private TriggerControl tc;
-
-	private Image img;
-	private Image img2;
-	private TriggerSet ts;
-	private int idx;
-	private ChannelInfo ci;
 
 	public int getIdx() {
 		return idx;
@@ -78,34 +82,31 @@ public class Label extends JComponent implements MouseListener,
 			img2 = null;
 	}
 
-	private WaveFormManager wfm;
-	private ControlManager cm;
-
 	public void setTriggerSet(TriggerSet ts, int idx) {
-		this.ts = ts;
+		this.triggerSet = ts;
 		this.idx = idx;
 
 		if (tc.isExtTrg(idx)) {
 			this.idx = -1;
-			ci = null;
+			channelInfo = null;
 			img = null;
 		} else {
-			ci = wfm.getWaveForm(idx).wfi.ci;
-			img = SwingResourceManager.getIcon(Label.class,
-					ball + (idx + 1) + ".png").getImage();
+			channelInfo = wfm.getWaveForm(idx).wfi.ci;
+			img = SwingResourceManager.getIcon(Label.class, ball + (idx + 1) + ".png").getImage();
+			//TODO make return string buttons instead of images
 		}
 		loadImage2(ts.getTrigger());
 	}
 
 	private String getText() {
-		if (ci == null)
+		if (channelInfo == null)
 			return " EXT ";
-		int voltbase = ci.getVoltageLabel().getValue();
-		int pos0 = ci.getPos0();
+		int voltbase = channelInfo.getVoltageLabel().getValue();
+		int pos0 = channelInfo.getPos0();
 
-		// System.err.println(ts.id() + " , " + ts.getTrigger());
-		// System.err.println(ci.number);
-		String txt = ts.getTrigger().getLabelText(ci.isInverse(), voltbase,
+		// System.err.println(triggerSet.id() + " , " + triggerSet.getTrigger());
+		// System.err.println(channelInfo.number);
+		String txt = triggerSet.getTrigger().getLabelText(channelInfo.isInverse(), voltbase,
 				pos0);
 		return txt;
 	}
@@ -118,15 +119,15 @@ public class Label extends JComponent implements MouseListener,
 			g2d.setColor(Color.GRAY);
 			g2d.drawOval(6, 2, 14, 14);
 			String name;
-			if (ci != null)
-				name = String.valueOf(ci.getNumber() + 1);
+			if (channelInfo != null)
+				name = String.valueOf(channelInfo.getNumber() + 1);
 			else {
 				name = "E";
 			}
 			g2d.drawString(name, 9, 14);
 			g2d.setColor(Color.GRAY);
 		} else {
-			if (ts.isVoltsenseSupport() && rolloverR) {
+			if (triggerSet.isVoltsenseSupport() && rolloverR) {
 				g2d.setColor(Define.def.style.CO_INFOBLOCK_HIGHLIGHT);
 				g2d.fillRect(hlstart, 1, borderwidth, 20);
 			}
@@ -151,7 +152,7 @@ public class Label extends JComponent implements MouseListener,
 
 			if (img2 != null) {
 				g2d.drawImage(img2, trgmodstart, 2, null);
-				AbsTrigger at = ts.getTrigger();
+				AbsTrigger at = triggerSet.getTrigger();
 				g2d.setColor(Color.WHITE);
 				Font tmp = g2d.getFont();
 				g2d.setFont(Define.def.insideFont);
@@ -165,8 +166,9 @@ public class Label extends JComponent implements MouseListener,
 		if (txt != null) {
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
+			g2d.setColor(Color.BLACK);
 			g2d.drawString(txt, 58, 14);
-			// if (!ci.on)
+			// if (!channelInfo.on)
 			// g2d.drawLine(58, 10, 108, 10);
 
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -179,7 +181,7 @@ public class Label extends JComponent implements MouseListener,
 		if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
 			int x = e.getX();
 			if (x >= hlstart && x < hlstart + borderwidth) {
-				if (ts.isVoltsenseSupport()) {
+				if (triggerSet.isVoltsenseSupport()) {
 					if (idx >= 0) {
 						wfm.getWaveForm(idx).doubleClickOnLevel();
 						/** 自己刷新自身的改变内容 */
@@ -203,15 +205,11 @@ public class Label extends JComponent implements MouseListener,
 		rolloverR = false;
 		rolloverMid = false;
 		rolloverL = false;
-		// if (ts.isVoltsenseSupport()) {
+		// if (triggerSet.isVoltsenseSupport()) {
 		setCursor(Cursor.getDefaultCursor());
 		// }
 		repaint();
 	}
-
-	private boolean rolloverL = false, rolloverMid = false, rolloverR = false;
-	public static final int hlstart = 55, borderwidth = 70, chstart = 5,
-			trgmodstart = 30;
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
@@ -224,7 +222,7 @@ public class Label extends JComponent implements MouseListener,
 
 			if (!rolloverR) {
 				rolloverR = true;
-				if (ts.isVoltsenseSupport()) {// &&!cm.triggerControl.isSingleTrg()
+				if (triggerSet.isVoltsenseSupport()) {// &&!cm.triggerControl.isSingleTrg()
 					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 					repaint();
 				}
@@ -284,7 +282,7 @@ public class Label extends JComponent implements MouseListener,
 		if (shouldLabelClose())
 			return;
 		if (x < hlstart && x >= trgmodstart) {
-			AbsTrigger at = ts.getTrigger();
+			AbsTrigger at = triggerSet.getTrigger();
 			at.nextStatus();
 			tc.doSubmit();
 			cm.pcs.firePropertyChange(PropertiesItem.NEXT_STATUS, null, null);
@@ -296,18 +294,18 @@ public class Label extends JComponent implements MouseListener,
 			Point p = getSliderBarLocation(x, y, e.getXOnScreen(), e
 					.getYOnScreen(), e.getComponent());
 
-			if (ts.isVoltsenseSupport() && ci != null) {
-				int hr = ts.getVoltsenseHalfRange();
-				VoltsensableTrigger vt = (VoltsensableTrigger) ts.getTrigger();
-				final Voltsensor vs = ts.getVoltsense();
+			if (triggerSet.isVoltsenseSupport() && channelInfo != null) {
+				int hr = triggerSet.getVoltsenseHalfRange();
+				VoltsensableTrigger vt = (VoltsensableTrigger) triggerSet.getTrigger();
+				final Voltsensor vs = triggerSet.getVoltsense();
 				int value = vs.c_getVoltsense();
 				// 附加反相
-				value = ci.getInverseValue(value);
+				value = channelInfo.getInverseValue(value);
 				SymmetrySliderBar.createSymmetrySliderFrame(Platform
-						.getMainWindow().getFrame(), p.x, p.y, hr, ci
-						.getPos0byRange(hr), hr - value, true,
+								.getMainWindow().getFrame(), p.x, p.y, hr, channelInfo
+								.getPos0byRange(hr), hr - value, true,
 						Color.LIGHT_GRAY, SliderDelegate.BtnStatusBoth,
-						new VoltSliderAdapter(tc, ci, ts
+						new VoltSliderAdapter(tc, channelInfo, triggerSet
 								.getVoltsenseHalfRange(), vt), I18nProvider
 								.bundle());
 
@@ -322,7 +320,7 @@ public class Label extends JComponent implements MouseListener,
 
 				/**
 				 * KNOW 单一触发时，通道改动，影响触发电平的电压数值
-				 * 
+				 *
 				 * 因为触发电平的电压数值，受到通道的电压档位和零点位置的影响，而通道改变时，这些内容会改变，所以需要随着刷新
 				 */
 				cm.pcs.firePropertyChange(PropertiesItem.NEXT_SINGLE_CHANNEL,
@@ -335,8 +333,6 @@ public class Label extends JComponent implements MouseListener,
 			return;
 		}
 	}
-
-	public static final int BlockWidth = 130;
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
@@ -361,7 +357,7 @@ public class Label extends JComponent implements MouseListener,
 	}
 
 	private boolean shouldLabelClose() {
-		return (ci != null && !ci.isOn()) || cm.getFFTControl().isFFTon()
+		return (channelInfo != null && !channelInfo.isOn()) || cm.getFFTControl().isFFTon()
 				|| !tc.isTrgEnable();
 	}
 
