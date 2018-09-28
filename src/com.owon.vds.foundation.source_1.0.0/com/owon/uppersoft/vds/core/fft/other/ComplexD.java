@@ -9,8 +9,8 @@ package com.owon.uppersoft.vds.core.fft.other;
  *
  *  The data type is "immutable" so once you create and initialize
  *  a Complex object, you cannot change it. The "final" keyword
- *  when declaring re and im enforces this rule, making it a
- *  compile-time error to change the .re or .im fields after
+ *  when declaring real and imaginary enforces this rule, making it a
+ *  compile-time error to change the .real or .imaginary fields after
  *  they've been initialized.
  *
  *  % java Complex
@@ -31,72 +31,72 @@ package com.owon.uppersoft.vds.core.fft.other;
  *************************************************************************/
 
 public class ComplexD implements IComplex{
-	public double re;   // the real part
-    public double im;   // the imaginary part
+	public double real;   // the real part
+    public double imaginary;   // the imaginary part
     
     public ComplexD() {
     }
     
     // create a new object with the given real and imaginary parts
     public ComplexD(double real, double imag) {
-        re = real;
-        im = imag;
+        this.real = real;
+        imaginary = imag;
     }
 
     // return a string representation of the invoking Complex object
     public String toString() {
-        if (im == 0) return re + "";
-        if (re == 0) return im + "i";
-        if (im <  0) return re + " - " + (-im) + "i";
-        return re + " + " + im + "i";
+        if (imaginary == 0) return real + "";
+        if (real == 0) return imaginary + "i";
+        if (imaginary <  0) return real + " - " + (-imaginary) + 'i';
+        return real + " + " + imaginary + 'i';
     }
 
     // return abs/modulus/magnitude and angle/phase/argument
-    public double abs()   { return Math.hypot(re, im); }  // Math.sqrt(re*re + im*im)
-    public double phase() { return Math.atan2(im, re); }  // between -pi and pi
+    public double abs()   { return Math.hypot(real, imaginary); }  // Math.sqrt(real*real + imaginary*imaginary)
+    public double phase() { return Math.atan2(imaginary, real); }  // between -pi and pi
 
     // return a new Complex object whose value is (this + b)
     public ComplexD plus(ComplexD b) {
         ComplexD a = this;             // invoking object
-        double real = a.re + b.re;
-        double imag = a.im + b.im;
+        double real = a.real + b.real;
+        double imag = a.imaginary + b.imaginary;
         return new ComplexD(real, imag);
     }
 
     // return a new Complex object whose value is (this - b)
     public ComplexD minus(ComplexD b) {
         ComplexD a = this;
-        double real = a.re - b.re;
-        double imag = a.im - b.im;
+        double real = a.real - b.real;
+        double imag = a.imaginary - b.imaginary;
         return new ComplexD(real, imag);
     }
 
     // return a new Complex object whose value is (this * b)
     public ComplexD times(ComplexD b) {
         ComplexD a = this;
-        double real = a.re * b.re - a.im * b.im;
-        double imag = a.re * b.im + a.im * b.re;
+        double real = a.real * b.real - a.imaginary * b.imaginary;
+        double imag = a.real * b.imaginary + a.imaginary * b.real;
         return new ComplexD(real, imag);
     }
 
     // scalar multiplication
     // return a new object whose value is (this * alpha)
     public ComplexD times(double alpha) {
-        return new ComplexD(alpha * re, alpha * im);
+        return new ComplexD(alpha * real, alpha * imaginary);
     }
 
     // return a new Complex object whose value is the conjugate of this
-    public ComplexD conjugate() {  return new ComplexD(re, -im); }
+    public ComplexD conjugate() {  return new ComplexD(real, -imaginary); }
 
     // return a new Complex object whose value is the reciprocal of this
     public ComplexD reciprocal() {
-        double scale = re*re + im*im;
-        return new ComplexD(re / scale, -im / scale);
+        double scale = real * real + imaginary * imaginary;
+        return new ComplexD(real / scale, -imaginary / scale);
     }
 
     // return the real or imaginary part
-    public double re() { return re; }
-    public double im() { return im; }
+    public double re() { return real; }
+    public double im() { return imaginary; }
 
     // return a / b
     public ComplexD divides(ComplexD b) {
@@ -106,17 +106,17 @@ public class ComplexD implements IComplex{
 
     // return a new Complex object whose value is the complex exponential of this
     public ComplexD exp() {
-        return new ComplexD(Math.exp(re) * Math.cos(im), Math.exp(re) * Math.sin(im));
+        return new ComplexD(Math.exp(real) * Math.cos(imaginary), Math.exp(real) * Math.sin(imaginary));
     }
 
     // return a new Complex object whose value is the complex sine of this
     public ComplexD sin() {
-        return new ComplexD(Math.sin(re) * Math.cosh(im), Math.cos(re) * Math.sinh(im));
+        return new ComplexD(Math.sin(real) * Math.cosh(imaginary), Math.cos(real) * Math.sinh(imaginary));
     }
 
     // return a new Complex object whose value is the complex cosine of this
     public ComplexD cos() {
-        return new ComplexD(Math.cos(re) * Math.cosh(im), -Math.sin(re) * Math.sinh(im));
+        return new ComplexD(Math.cos(real) * Math.cosh(imaginary), -Math.sin(real) * Math.sinh(imaginary));
     }
 
     // return a new Complex object whose value is the complex tangent of this
@@ -128,8 +128,8 @@ public class ComplexD implements IComplex{
 
     // a static version of plus
     public static ComplexD plus(ComplexD a, ComplexD b) {
-        double real = a.re + b.re;
-        double imag = a.im + b.im;
+        double real = a.real + b.real;
+        double imag = a.imaginary + b.imaginary;
         ComplexD sum = new ComplexD(real, imag);
         return sum;
     }

@@ -42,8 +42,8 @@ public class DocsManager {
 	}
 
 	public String getExternalDoc() {
-		String doc = StringPool.DOCFileFormatExtension + "/"
-				+ getMachineSeriesName() + "/";
+		String doc = StringPool.DOCFileFormatExtension + '/'
+				+ getMachineSeriesName() + '/';
 		return doc;
 	}
 

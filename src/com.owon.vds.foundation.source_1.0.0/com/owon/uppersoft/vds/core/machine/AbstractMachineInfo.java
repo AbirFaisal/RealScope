@@ -147,7 +147,7 @@ public abstract class AbstractMachineInfo extends MachineInfo {
 				for (int b = 0; b < deep; b++) {
 					/** 每种通道合并&存储深度情况单独创建一个sheet */
 					int n = a * deep + b;
-					ws = wwb.createSheet(ChannelsUnit[a] + "_" + DEEP[b], n);
+					ws = wwb.createSheet(ChannelsUnit[a] + '_' + DEEP[b], n);
 					int dm = DEEPValue[b];
 
 					for (int m = 0; m < tblen; m++) {// 行
@@ -280,7 +280,7 @@ public abstract class AbstractMachineInfo extends MachineInfo {
 		int tb = TIMEBASE.length;
 
 		for (int k = 0; k < tb; k++) {
-			outprint(k + "\t" + TIMEBASE[k] + "\t");
+			outprint(k + "\t" + TIMEBASE[k] + '\t');
 			for (int i = 0; i < itv; i++) {
 				for (int j = 0; j < dm; j++) {
 					SampleRate sr = SampleRates[i * dm + j][k];

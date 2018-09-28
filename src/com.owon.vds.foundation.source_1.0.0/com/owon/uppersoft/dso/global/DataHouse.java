@@ -196,7 +196,7 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 	public void localize(ResourceBundle rb) {
 		divUnit = rb.getString("Label.DivUnit");
 		if (controlManager.isEnglishLocale())
-			divUnits = divUnit + "s";
+			divUnits = divUnit + 's';
 		else
 			divUnits = divUnit;
 	}

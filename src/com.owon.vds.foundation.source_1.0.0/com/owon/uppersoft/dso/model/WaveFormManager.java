@@ -172,7 +172,7 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 			chName += wf2.toString();
 		}
 		if (chName.length() != 0)
-			chName = " " + chName + " ";
+			chName = ' ' + chName + ' ';
 		return chName;
 	}
 

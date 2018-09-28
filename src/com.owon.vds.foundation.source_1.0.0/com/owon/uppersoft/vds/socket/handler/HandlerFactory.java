@@ -207,7 +207,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			boolean b = args.equals(name + "?");
+			boolean b = args.equals(name + '?');
 			if (!b)
 				return ScpiPool.Failed;
 			return provider.getIDN();
@@ -251,7 +251,7 @@ public class HandlerFactory {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
 
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getRunStop();
 			} else {
 				return provider.setRunStop();
@@ -267,7 +267,7 @@ public class HandlerFactory {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
 
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTitleStatus();
 			}
 			return ScpiPool.ErrAnalyse;
@@ -298,7 +298,7 @@ public class HandlerFactory {
 
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				boolean ison = provider.getChl().getIsChannelDisplay(chidx);
 				return ison ? "ON" : "OFF";
 			} else {
@@ -321,7 +321,7 @@ public class HandlerFactory {
 
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getChl().getChannelCoupling(chidx);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -343,7 +343,7 @@ public class HandlerFactory {
 
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getChl().getChannelProbe(chidx);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -365,7 +365,7 @@ public class HandlerFactory {
 
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getChl().getChannelSCALe(chidx) + "";
 			} else {
 				args = args.substring(name.length()).trim();
@@ -387,7 +387,7 @@ public class HandlerFactory {
 
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getChl().getChannelOFFSet(chidx);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -409,7 +409,7 @@ public class HandlerFactory {
 
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getChl().getHardwareFrequency(chidx);
 			}
 			return Failed;
@@ -428,7 +428,7 @@ public class HandlerFactory {
 
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getChl().getINVerseState(chidx);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -457,7 +457,7 @@ public class HandlerFactory {
 			// return ErrCh;
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getMeas().getMeasureSource();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -501,7 +501,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getAcq().getACQuireState();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -517,7 +517,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getAcq().getACQuireType();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -533,7 +533,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getAcq().getACQuireAVERage();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -549,7 +549,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getAcq().getACQuireMDEPth();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -567,7 +567,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTb().getTIMebaseSCALe();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -583,7 +583,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTb().getTIMebaseHOFFset();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -600,7 +600,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().getTrgType();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -616,7 +616,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().getSweepMode();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -633,7 +633,7 @@ public class HandlerFactory {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
 			int trgTyp = TriggerDefine.TrgModeSingleIndex;
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().getTrgTypMode(trgTyp);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -650,7 +650,7 @@ public class HandlerFactory {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
 			int trgTyp = TriggerDefine.TrgModeAltIndex;
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().getTrgTypMode(trgTyp);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -667,7 +667,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().getSingle_Source();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -697,7 +697,7 @@ public class HandlerFactory {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
 			int trgTyp = TriggerDefine.TrgModeSingleIndex;
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().get_EdgeSlope(trgTyp);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -715,7 +715,7 @@ public class HandlerFactory {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
 			int trgTyp = TriggerDefine.TrgModeSingleIndex;
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().get_EdgeLevel(trgTyp);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -734,7 +734,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().getSingle_Source();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -754,7 +754,7 @@ public class HandlerFactory {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
 			int trgTyp = TriggerDefine.TrgModeSingleIndex;
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().get_VideoMod(trgTyp);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -772,7 +772,7 @@ public class HandlerFactory {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
 			int trgTyp = TriggerDefine.TrgModeSingleIndex;
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().get_VideoSync(trgTyp);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -790,7 +790,7 @@ public class HandlerFactory {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
 			int trgTyp = TriggerDefine.TrgModeSingleIndex;
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().get_VideoLnum(trgTyp);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -808,7 +808,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().getAlt_EdgeSource();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -838,7 +838,7 @@ public class HandlerFactory {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
 			int trgTyp = TriggerDefine.TrgModeAltIndex;
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().get_EdgeSlope(trgTyp);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -856,7 +856,7 @@ public class HandlerFactory {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
 			int trgTyp = TriggerDefine.TrgModeAltIndex;
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().get_EdgeLevel(trgTyp);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -875,7 +875,7 @@ public class HandlerFactory {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
 			// int trgTyp = TriggerDefine.TriggerChannelModeAlternateIndex;
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().getAlt_VideoSource();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -895,7 +895,7 @@ public class HandlerFactory {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
 			int trgTyp = TriggerDefine.TrgModeAltIndex;
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().get_VideoMod(trgTyp);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -913,7 +913,7 @@ public class HandlerFactory {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
 			int trgTyp = TriggerDefine.TrgModeAltIndex;
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().get_VideoSync(trgTyp);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -931,7 +931,7 @@ public class HandlerFactory {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
 			int trgTyp = TriggerDefine.TrgModeAltIndex;
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getTrg().get_VideoLnum(trgTyp);
 			} else {
 				args = args.substring(name.length()).trim();
@@ -949,7 +949,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getFFT().getIsDisplay();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -966,7 +966,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getFFT().getSource();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -983,7 +983,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getFFT().getWINDow();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -1000,7 +1000,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getFFT().getFORMat();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -1017,7 +1017,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getFFT().getZONE();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -1034,7 +1034,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getFFT().getFREQbase();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -1051,7 +1051,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();// .toUpperCase();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getLan().getIP();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -1067,7 +1067,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();// .toUpperCase();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getLan().getGATeway();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -1083,7 +1083,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();// .toUpperCase();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getLan().getSMASk();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -1099,7 +1099,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();// .toUpperCase();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getLan().getPort();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -1148,7 +1148,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getDsp().getCursor();
 			} else {
 				Object result = cmd.parentHandle();
@@ -1168,7 +1168,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getDsp().getDraw();
 			} else {
 				args = args.substring(name.length()).trim();
@@ -1184,7 +1184,7 @@ public class HandlerFactory {
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
 			String name = cmd.getFitPre();
-			if (args.startsWith(name + "?")) {
+			if (args.startsWith(name + '?')) {
 				return provider.getDsp().getPersistence();
 			} else {
 				args = args.substring(name.length()).trim();

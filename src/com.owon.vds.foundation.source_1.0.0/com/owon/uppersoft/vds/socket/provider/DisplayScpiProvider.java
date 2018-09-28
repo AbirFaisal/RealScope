@@ -27,11 +27,11 @@ public class DisplayScpiProvider {
 	public String getCursor() {
 		StringBuilder sb = new StringBuilder();
 		if (mcc.getOnTimebaseM())
-			sb.append(cursors[0] + " ");
+			sb.append(cursors[0] + ' ');
 		if (mcc.getOnVoltbaseM())
-			sb.append(cursors[1] + " ");
+			sb.append(cursors[1] + ' ');
 		if (fcc.getOnFrebaseMark())
-			sb.append(cursors[2] + " ");
+			sb.append(cursors[2] + ' ');
 		if (fcc.getOnVoltbaseMark())
 			sb.append(cursors[3]);
 		if (sb.length() <= 0)

@@ -81,7 +81,7 @@ public class FPGADownloader implements Logable {
 		int len = 5;
 		byte[] buf = new byte[len];
 
-		logln("should FPGA re-download?");
+		logln("should FPGA real-download?");
 		rn = Sendable.interCommmands(sm, FPGA_DOWNLOAD_QUERY_ADD, buf, this);
 		if (rn < 0)
 			return rn;

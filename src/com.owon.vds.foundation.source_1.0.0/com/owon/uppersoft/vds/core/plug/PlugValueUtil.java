@@ -66,11 +66,11 @@ public class PlugValueUtil {
 				t = ia.next() & 0xFF;
 				x += PlugArgs2[j][k] * t;
 				// System.out.print("( " + k + ", " + (k) + " )");
-				System.out.print("(" + PlugArgs2[j][k] + ", " + t + ")");
+				System.out.print("(" + PlugArgs2[j][k] + ", " + t + ')');
 			}
 			// compute(x);
 			b[i] = (byte) compute(x);// (x >>> 15);// (x >>> 20) & 0xFF;
-			System.out.print("   = " + x + " ");
+			System.out.print("   = " + x + ' ');
 			System.out.println();
 		}
 		System.out.println();
@@ -90,11 +90,11 @@ public class PlugValueUtil {
 				t = ia.next() & 0xFF;
 				x += PlugArgs2[j][k] * t;
 				// System.out.print("( " + k + ", " + (k) + " )");
-				System.out.print("(" + PlugArgs2[j][k] + ", " + t + ")");
+				System.out.print("(" + PlugArgs2[j][k] + ", " + t + ')');
 			}
 			// compute(x);
 			b[i] = (byte) compute(x);// (x >>> 15);// (x >>> 20) & 0xFF;
-			System.out.print("   = " + x + " ");
+			System.out.print("   = " + x + ' ');
 			System.out.println();
 		}
 		System.out.println();

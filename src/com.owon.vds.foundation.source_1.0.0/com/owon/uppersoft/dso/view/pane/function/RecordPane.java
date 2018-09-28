@@ -399,7 +399,7 @@ public class RecordPane extends FunctionPanel {
 						return;
 				}
 				if (pc.fileInvalid()) {
-					phcl.setText(rb.getString("M.Record.LoadInvalid") + "\n"
+					phcl.setText(rb.getString("M.Record.LoadInvalid") + '\n'
 							+ pc.getFilePath());
 					pc.promptInvalidLoad();
 					return;
@@ -588,7 +588,7 @@ public class RecordPane extends FunctionPanel {
 				// 判断进不来，回放的文件便不是刚录制的文件。)
 				boolean p = pc.setPathNCheck(new File(pc.getFilePath()), false);
 				if (!p)
-					phcl.setText(rb.getString("M.Record.LoadInvalid") + "\n"
+					phcl.setText(rb.getString("M.Record.LoadInvalid") + '\n'
 							+ pc.getFilePath());
 			}
 		} else if (n.equalsIgnoreCase(PropertiesItem.SWITCH_PLAYPANE)) {

@@ -47,7 +47,7 @@ public class AbsArg implements Logable {
 
 	@Override
 	public String toString() {
-		return getType() + "[" + chl + "][" + vb + "]=" + getValue();
+		return getType() + '[' + chl + "][" + vb + "]=" + getValue();
 	}
 
 	@Override

@@ -130,7 +130,7 @@ public class VR {
 				vrs[idx].vu = UnitConversionUtil
 						.getSimplifiedVoltLabel_mV(value);
 				if (beyond)
-					vrs[idx].vu = vrs[idx].vu + "?";
+					vrs[idx].vu = vrs[idx].vu + '?';
 			}
 			break;
 		default:
@@ -159,7 +159,7 @@ public class VR {
 				vrs[idx].vu = UnitConversionUtil
 						.getSimplifiedTimebaseLabel_mS(value * 1000);
 				if (flag == 1)
-					vrs[idx].vu = "<" + vrs[idx].vu;
+					vrs[idx].vu = '<' + vrs[idx].vu;
 			}
 
 			break;

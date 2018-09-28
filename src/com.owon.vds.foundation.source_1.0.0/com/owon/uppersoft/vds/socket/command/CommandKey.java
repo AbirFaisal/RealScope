@@ -61,7 +61,7 @@ public class CommandKey {
 		parentKey = parentCK;
 		if (line.startsWith(CmdFactory.COMMon)) {
 			setPrecmd(CmdFactory.COMMon);
-			subcmd = ":" + line.substring(1);
+			subcmd = ':' + line.substring(1);
 		} else if (line.startsWith(":")) {
 			String[] splits = line.split(":",3);//分割3-1次，分成3组
 			setPrecmd(splits[1]);
@@ -94,7 +94,7 @@ public class CommandKey {
 	private boolean compaireCMDHead() {
 		boolean p1 = getPrecmd().startsWith(getPre());
 		boolean p2 = getPrecmd().startsWith(getShortPre());
-		println("samePre:" + p1 + "," + getPre() + ",sameShort:" + p2 + "," + getShortPre(),
+		println("samePre:" + p1 + ',' + getPre() + ",sameShort:" + p2 + ',' + getShortPre(),
 				false);
 		onShortDetected = !p1 && p2;
 		return p1 || p2;
@@ -120,7 +120,7 @@ public class CommandKey {
 
 	public String nodeName() {
 		if (parentKey != null)
-			return parentKey.nodeName() + "." + getPre();
+			return parentKey.nodeName() + '.' + getPre();
 		return getPre();
 	}
 	

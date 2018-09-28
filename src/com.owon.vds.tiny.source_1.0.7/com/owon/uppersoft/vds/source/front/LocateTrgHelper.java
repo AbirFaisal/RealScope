@@ -79,13 +79,13 @@ public class LocateTrgHelper implements Logable {
 
 		int p = trgb.position();
 		int l = trgb.limit();
-		logPull2(p + ", " + l + "," + len);
+		logPull2(p + ", " + l + ',' + len);
 		if (len > l - p) {
 			return;
 		}
 
 		int beg = ((p + l) >> 1) - (len >> 1);
-		logPull2("limitTrgBuffer: " + beg + "," + len);
+		logPull2("limitTrgBuffer: " + beg + ',' + len);
 		trgb.limit(beg + len);
 		trgb.position(beg);
 	}

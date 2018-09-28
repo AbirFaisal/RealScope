@@ -27,7 +27,7 @@ public class Arrays2DUtil {
 					v = defaultValue;
 				dest[i][j] = v;
 
-				log("[" + j + "]" + dest[i][j] + ", ");
+				log("[" + j + ']' + dest[i][j] + ", ");
 			}
 
 			logln("");
@@ -70,7 +70,7 @@ public class Arrays2DUtil {
 					v = 0;
 				bb.putShort((short) v);
 
-				log("[" + j + "]" + src[i][j] + ", ");
+				log("[" + j + ']' + src[i][j] + ", ");
 			}
 
 			logln("");

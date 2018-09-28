@@ -15,7 +15,7 @@ public class LineUtil {
 			String divUnits, int pos0, int yb, Rectangle r) {
 		int rectw = 8, recthh = 9;
 		float PixsPerDiv = 25;
-		String tpos = String.valueOf(pos0 / PixsPerDiv) + " " + divUnits;
+		String tpos = String.valueOf(pos0 / PixsPerDiv) + ' ' + divUnits;
 
 		int up = r.y + (recthh >> 1), low = r.y + r.height - (recthh >> 1);
 

@@ -67,7 +67,7 @@ public class CheckUSBPortsPane extends JPanel {
 		plm = new CListModel(ids) {
 			@Override
 			public Object getElementAt(int index) {// super.getElementAt(index).toString()
-				return "device (" + (index + 1) + ")";
+				return "device (" + (index + 1) + ')';
 			}
 		};
 		jlist = new JList(plm);

@@ -410,7 +410,7 @@ public class TipsWindow implements Localizable {
 
 	private String getHtmlPath() {
 		String folder = cm.docManager.getExternalDoc();
-		String s = folder + locale + "/";
+		String s = folder + locale + '/';
 		// System.out.println("html:" + s);
 		return s;
 	}

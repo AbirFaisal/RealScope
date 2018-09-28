@@ -348,7 +348,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	public static final Object[] fillTextFrom1(Object[] ofs) {
 		int len = ofs.length + 1;
 		for (int i = 1; i < len; i++) {
-			ofs[i - 1] = new String(String.valueOf(i));
+			ofs[i - 1] = String.valueOf(i);
 		}
 		return ofs;
 	}

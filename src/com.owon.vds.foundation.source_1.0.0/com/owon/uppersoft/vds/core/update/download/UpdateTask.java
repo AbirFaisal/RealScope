@@ -147,7 +147,7 @@ public class UpdateTask implements Runnable {
 		// 设置User-Agent
 		httpUrl.setRequestProperty("User-Agent", "NetFox");
 		// 设置断点续传的开始位置
-		httpUrl.setRequestProperty("RANGE", "bytes=" + offset + "-");
+		httpUrl.setRequestProperty("RANGE", "bytes=" + offset + '-');
 	}
 
 	private void onCancel(File file) {

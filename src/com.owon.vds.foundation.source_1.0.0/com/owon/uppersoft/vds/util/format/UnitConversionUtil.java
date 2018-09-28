@@ -227,7 +227,7 @@ public class UnitConversionUtil {
 		if (isPositive)
 			return str;
 		else
-			return "-" + str;
+			return '-' + str;
 	}
 
 	/**

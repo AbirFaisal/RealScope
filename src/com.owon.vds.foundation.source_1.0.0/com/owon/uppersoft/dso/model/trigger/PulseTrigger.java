@@ -101,7 +101,7 @@ public class PulseTrigger extends VoltsensableTrigger {
 		default:
 			return null;
 		}
-		return k + " " + trgcondition;
+		return k + ' ' + trgcondition;
 	}
 
 	public int toRelateSense(int pos0) {

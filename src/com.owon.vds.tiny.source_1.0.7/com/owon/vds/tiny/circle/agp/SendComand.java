@@ -45,7 +45,7 @@ public class SendComand {
 		/* 检测串口有没有连接 */
 		// sc.init();
 		String res = sendCMD(WAVE_SAUARE);
-		if (res.equals("")) {
+		if (res.isEmpty()) {
 			config("serical do not connected");
 			return false;
 		} else
@@ -62,9 +62,9 @@ public class SendComand {
 	public void changeVmp(int i) {
 		// System.out.println(checksum("$Freq,500,Hz"));
 		String cmd = command[i];
-		config("rs232 write: " + i + ":" + cmd + "\r\n{");
+		config("rs232 write: " + i + ':' + cmd + "\r\n{");
 
-		String sa = cmd + "," + checksum(cmd) + "#";
+		String sa = cmd + ',' + checksum(cmd) + '#';
 
 		String res = sc.comm(sa.getBytes());
 		config("}\r\n rs232 read: " + res);

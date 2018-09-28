@@ -65,7 +65,7 @@ public class PrimaryTypeUtil {
 		int len = off + 4;
 		for (int i = off; i < len; i++) {
 			if (i != off)
-				t_ip.append(".");
+				t_ip.append('.');
 			t_ip.append(ip[i] & 0xff);
 		}
 		return t_ip.toString();
@@ -81,7 +81,7 @@ public class PrimaryTypeUtil {
 			// }
 			n = Integer.toHexString(mac[i] & 0xff);
 			if (n.length() < 2) {
-				t_mac.append("0");
+				t_mac.append('0');
 			}
 			t_mac.append(n);
 		}
@@ -147,7 +147,7 @@ public class PrimaryTypeUtil {
 		String lt = Integer.toBinaryString(v & 0xff);
 		lt = to8bits(lt);
 
-		String t = "[toBytesString: ]" + SFormatter.UIformat("%s", ht) + " "
+		String t = "[toBytesString: ]" + SFormatter.UIformat("%s", ht) + ' '
 				+ SFormatter.UIformat("%s", lt);
 
 		return t;
@@ -155,7 +155,7 @@ public class PrimaryTypeUtil {
 
 	public static String to8bits(String t) {
 		while (t.length() < 8) {
-			t = "0" + t;
+			t = '0' + t;
 		}
 		return t;
 	}

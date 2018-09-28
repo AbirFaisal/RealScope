@@ -530,7 +530,7 @@ public class MathPane extends FunctionPanel {
 				mathp3.setVisible(false);
 			} else {
 				String text = chName
-						+ " "
+						+ ' '
 						+ I18nProvider.bundle()
 								.getString("M.Channel.OffRemind");
 				remindLbl.setText(text);
@@ -538,7 +538,7 @@ public class MathPane extends FunctionPanel {
 				if (b) {
 					FadeIOShell fs = new FadeIOShell();
 					String s = I18nProvider.bundle().getString("M.Math.Name")
-							+ ":" + text;
+							+ ':' + text;
 					fs.prompt(s, getMainWindow().getFrame());
 				}
 			}

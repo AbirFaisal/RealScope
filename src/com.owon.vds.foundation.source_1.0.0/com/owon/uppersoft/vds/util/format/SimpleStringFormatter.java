@@ -40,7 +40,7 @@ public class SimpleStringFormatter {
 	 * @return
 	 */
 	public String valueToStringOnRight(int value) {
-		return valueToStringOnRight(SFormatter.UIformat("%0" + (dmidx + 5) + "d",
+		return valueToStringOnRight(SFormatter.UIformat("%0" + (dmidx + 5) + 'd',
 				value));
 	}
 
@@ -80,7 +80,7 @@ public class SimpleStringFormatter {
 	 * @return
 	 */
 	public String valueToStringOnLeft(int value) {
-		return valueToStringOnLeft(SFormatter.UIformat("%0" + (dmidx + 5) + "d",
+		return valueToStringOnLeft(SFormatter.UIformat("%0" + (dmidx + 5) + 'd',
 				value));
 	}
 

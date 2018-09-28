@@ -43,6 +43,6 @@ public class ReferenceFile {
 		if (name.equalsIgnoreCase("")) {
 			return getLetter() + "";
 		}
-		return getLetter() + "(" + name + ")";
+		return getLetter() + "(" + name + ')';
 	}
 }

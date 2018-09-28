@@ -274,11 +274,11 @@ public class AboutDialog implements Localizable {
 		String ver = sc.getBoardVersion(), ser = sc.getBoardSeries();
 		// ver = "V2.0.12";
 		// ser = "VDS2062131252365";
-		String titlelabel = rb.getString("About.Name") + " "
-				+ pre.getManufacturerId() + " " + pre.getProductId() + " "
+		String titlelabel = rb.getString("About.Name") + ' '
+				+ pre.getManufacturerId() + ' ' + pre.getProductId() + ' '
 				+ pre.getVersionText();
 		if (pre.isNeutral())
-			titlelabel = rb.getString("About.Name") + " "
+			titlelabel = rb.getString("About.Name") + ' '
 					+ pre.getVersionText();
 		title.setText(titlelabel);
 		version.setText(rb.getString("About.Version") + ver);

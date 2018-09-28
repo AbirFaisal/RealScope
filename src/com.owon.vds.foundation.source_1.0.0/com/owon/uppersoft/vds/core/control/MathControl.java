@@ -107,7 +107,7 @@ public class MathControl {
 				else if (i == 3)
 					MathVolts[i][j] = MathVolt[j] + "V/V";
 				else
-					MathVolts[i][j] = MathVolt[j] + "V";
+					MathVolts[i][j] = MathVolt[j] + 'V';
 			}
 		}
 	}

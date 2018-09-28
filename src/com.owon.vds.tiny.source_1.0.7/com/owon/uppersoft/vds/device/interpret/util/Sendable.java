@@ -51,7 +51,7 @@ public class Sendable {
 		for (int p = 0; p < bytes; p++, add++) {
 			v = (0xff) & (value >>> (p << 3));
 			// System.out.println(getHex(v));
-			sendCMD(add, 1, v, tca.toString() + "[" + p + "]", pc);
+			sendCMD(add, 1, v, tca.toString() + '[' + p + ']', pc);
 		}
 	}
 

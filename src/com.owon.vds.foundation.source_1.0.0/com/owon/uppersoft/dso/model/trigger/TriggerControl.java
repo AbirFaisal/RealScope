@@ -154,7 +154,7 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 
 		/** 载入的时候也限制了只有一个视频 */
 		for (int i = 0; i < channelsNumber; i++) {
-			String pre = "CH" + (i + 1) + ".";
+			String pre = "CH" + (i + 1) + '.';
 			int mode = p.loadInt(pre + "trgMode");
 			TrgTypeDefine etd = TrgTypeDefine.getExtTrgDefine(mode);
 			if (TrgTypeDefine.Video == etd) {
@@ -202,7 +202,7 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 	public void persist(Pref p) {
 		int size = getChannelsNumber();
 		for (int i = 0; i < size; i++) {
-			String pre = "CH" + (i + 1) + ".";
+			String pre = "CH" + (i + 1) + '.';
 			TriggerSet ts = trgchs[i];
 			p.persistInt(pre + "trgMode", ts.getTrigger().type.ordinal());
 			ts.slope.persist(pre, p);

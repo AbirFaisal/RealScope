@@ -30,7 +30,7 @@ public class StaticPrefTiny extends StaticPref {
 		 * 
 		 * */
 		String mfid = getManufacturerId();
-		return "/com/owon/vds/image/" + mfid + "_" + "logo.png";
+		return "/com/owon/vds/image/" + mfid + '_' + "logo.png";
 	}
 
 	public Icon getLogoIcon(StaticPref sp) {

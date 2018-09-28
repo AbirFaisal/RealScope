@@ -13,7 +13,7 @@ public class ArrayLogger {
 			if (j % 100 == 0)
 				configln();
 			if (j % 4 == 0)
-				config("," + (arr[i]) + " ");
+				config("," + (arr[i]) + ' ');
 			else
 				config((arr[i]) + " ");
 		}
@@ -29,7 +29,7 @@ public class ArrayLogger {
 				configln();
 
 			if (j % 10 == 0)
-				config("," + (arr[i]) + " ");
+				config("," + (arr[i]) + ' ');
 			else
 				config((arr[i]) + " ");
 		}
@@ -45,7 +45,7 @@ public class ArrayLogger {
 		for (int i = start, j = 0; i < end; i++, j++) {
 			v = arr[i];// & 0xff;
 			if (j % 5 == 0)
-				lg.log(", " + v + " ");
+				lg.log(", " + v + ' ');
 			else
 				lg.log(v + " ");
 
@@ -64,9 +64,9 @@ public class ArrayLogger {
 		for (int i = start, j = 0; i < end; i++, j++) {
 			v = arr[i] & 0xff;
 			if (j % 5 == 0)
-				lg.log(", 0x" + Integer.toHexString(v) + " ");
+				lg.log(", 0x" + Integer.toHexString(v) + ' ');
 			else
-				lg.log("0x" + Integer.toHexString(v) + " ");
+				lg.log("0x" + Integer.toHexString(v) + ' ');
 
 			if ((j + 1) % 30 == 0)
 				lg.logln("");
@@ -83,7 +83,7 @@ public class ArrayLogger {
 		for (int i = start, j = 0; i < end; i++, j++) {
 			v = arr[i];
 			if (j % 5 == 0)
-				lg.log(", " + v + " ");
+				lg.log(", " + v + ' ');
 			else
 				lg.log(v + " ");
 
@@ -144,7 +144,7 @@ public class ArrayLogger {
 		int end = start + len;
 		for (int i = start, j = 0; i < end; i++, j++) {
 			if (j % 4 == 0)
-				dbg("," + (arr[i]) + " ");
+				dbg("," + (arr[i]) + ' ');
 			else
 				dbg((arr[i]) + " ");
 		}

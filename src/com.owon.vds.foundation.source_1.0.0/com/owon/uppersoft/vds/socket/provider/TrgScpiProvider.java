@@ -146,7 +146,7 @@ public class TrgScpiProvider {
 		StringBuilder sb = new StringBuilder();
 		for (TriggerSet ts : tc.getAltTriggerSets()) {
 			if (ts.isCurrentTrigger_Edge())
-				sb.append(CH + (ts.getChannel() + 1) + " ");
+				sb.append(CH + (ts.getChannel() + 1) + ' ');
 		}
 		if (sb.length() == 0)
 			return "Edge Mode Not Selected";
@@ -157,7 +157,7 @@ public class TrgScpiProvider {
 		StringBuilder sb = new StringBuilder();
 		for (TriggerSet ts : tc.getAltTriggerSets()) {
 			if (ts.isCurrentTrigger_Video())
-				sb.append(CH + (ts.getChannel() + 1) + " ");
+				sb.append(CH + (ts.getChannel() + 1) + ' ');
 		}
 		if (sb.length() == 0)
 			return "Video Mode Not Selected";
@@ -263,7 +263,7 @@ public class TrgScpiProvider {
 				ci.getNumber());
 		int range = ts.getVoltsenseHalfRange();
 		if (v > range || v < -range)
-			return ScpiPool.Success + "," + vt.c_getVoltsense();
+			return ScpiPool.Success + ',' + vt.c_getVoltsense();
 		return ScpiPool.Success;
 	}
 

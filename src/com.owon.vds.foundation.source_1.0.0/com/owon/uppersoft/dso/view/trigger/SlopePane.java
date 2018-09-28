@@ -160,7 +160,7 @@ public class SlopePane extends TriggerLoaderPane implements ItemListener,
 		double secs = st.trgcondition.toInt() * 10;
 		/** srv */
 		double srv = dvolt / secs;
-		String sr = UnitConversionUtil.getSimplifiedVoltLabel_mV(srv) + "/"
+		String sr = UnitConversionUtil.getSimplifiedVoltLabel_mV(srv) + '/'
 				+ secsunit;
 		slratetxt.setText(sr);
 	}

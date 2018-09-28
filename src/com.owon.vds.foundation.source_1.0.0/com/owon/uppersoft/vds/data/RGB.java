@@ -63,7 +63,7 @@ public class RGB {
 
 	@Override
 	public String toString() {
-		return "(" + red + "," + green + "," + blue + ")";
+		return "(" + red + ',' + green + ',' + blue + ')';
 	}
 
 	public short getRGB565() {

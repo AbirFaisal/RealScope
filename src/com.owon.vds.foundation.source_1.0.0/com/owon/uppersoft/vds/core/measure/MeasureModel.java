@@ -224,7 +224,7 @@ public class MeasureModel {
 		}
 		for (Integer e : CHlinked) {
 			if (e < channelNumbers)
-				sb.append("CH" + (e + 1) + " ");
+				sb.append("CH" + (e + 1) + ' ');
 		}
 		return sb.toString();
 	}

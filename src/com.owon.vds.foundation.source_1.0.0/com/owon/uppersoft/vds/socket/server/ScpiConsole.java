@@ -230,7 +230,7 @@ public class ScpiConsole implements Localizable {
 		wcb.setText(rb.getString("ServerConsole.Writable"));
 		scroll.setText(rb.getString("ServerConsole.Scroll"));
 		cl.setText(rb.getString("ServerConsole.Clear"));
-		portlb.setText(rb.getString("M.Utility.MachineNet.Port") + ":");
+		portlb.setText(rb.getString("M.Utility.MachineNet.Port") + ':');
 		portbt.setText(rb.getString("Action.OK"));
 	}
 }

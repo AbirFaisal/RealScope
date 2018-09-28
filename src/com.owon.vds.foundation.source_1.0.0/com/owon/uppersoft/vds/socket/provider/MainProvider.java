@@ -122,15 +122,14 @@ public class MainProvider {
 	public String getIDN() {
 		IBoard sc = ctrm.getSoftwareControl();
 
-		StringBuilder sb = new StringBuilder();
-		sb.append(ctrm.getConfig().getStaticPref().getManufacturerId());
-		sb.append(",");
-		sb.append(ctrm.getCoreControl().getMachine().name());
-		sb.append(",");
-		sb.append(sc.getBoardSeries());
-		sb.append(",");
-		sb.append(sc.getBoardVersion());
-		return sb.toString();
+		String sb = ctrm.getConfig().getStaticPref().getManufacturerId() +
+				',' +
+				ctrm.getCoreControl().getMachine().name() +
+				',' +
+				sc.getBoardSeries() +
+				',' +
+				sc.getBoardVersion();
+		return sb;
 	}
 
 	public String setFactoryDefault() {

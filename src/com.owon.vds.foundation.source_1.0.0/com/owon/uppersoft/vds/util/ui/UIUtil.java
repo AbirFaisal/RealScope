@@ -17,8 +17,9 @@ import com.owon.uppersoft.vds.data.RGB;
 import com.sun.java.swing.plaf.motif.MotifLookAndFeel;
 
 /**
- * 注释：JSpinner在调用非构造函数new JSpinner(SpinnerNumberModel
- * snm)时，可能出现边框背景色的问题，怀疑是setUIProperty("opaque",true); updateUI();未被调用
+ * Note: When JSpinner calls the non-constructor new JSpinner (SpinnerNumberModel snm),
+ * the background color of the border may occur. It is suspected that setUIProperty("opaque", true);
+ * updateUI(); is not called.
  * 
  * @author Matt
  * 
@@ -122,11 +123,11 @@ public class UIUtil {
 				// conflict
 				if (!arg.contains("-agentlib")) {
 					vmArgsOneLine.append(arg);
-					vmArgsOneLine.append(" ");
+					vmArgsOneLine.append(' ');
 				}
 			}
 			// init the command to execute, add the vm args
-			final StringBuffer cmd = new StringBuffer("\"" + java + "\" "
+			final StringBuffer cmd = new StringBuffer('"' + java + "\" "
 					+ vmArgsOneLine);
 
 			// program main and program arguments
@@ -143,7 +144,7 @@ public class UIUtil {
 			}
 			// finally add program arguments
 			for (int i = 1; i < mainCommand.length; i++) {
-				cmd.append(" ");
+				cmd.append(' ');
 				cmd.append(mainCommand[i]);
 			}
 			// execute the command in a shutdown hook, to be sure that all the

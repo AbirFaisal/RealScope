@@ -182,8 +182,8 @@ public class InfoBlockAction implements ComboBoxOwner, SliderDelegate,
 		ci.c_setOn(!on);
 		MainWindow mw = Platform.getMainWindow();
 		if (on && cm.mathControl.isMathChannelUse(wf.getChannelNumber())) {
-			String text = I18nProvider.bundle().getString("M.Math.Name") + ":"
-					+ wf.toString() + " "
+			String text = I18nProvider.bundle().getString("M.Math.Name") + ':'
+					+ wf.toString() + ' '
 					+ I18nProvider.bundle().getString("M.Channel.OffRemind");
 
 			FadeIOShell fs = new FadeIOShell();

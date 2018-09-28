@@ -182,16 +182,16 @@ public class Register {
 	}
 
 	public void writetxt(BufferedWriter bw) throws IOException {
-		bw.write("@" + versionkey + "=" + version + ";");
+		bw.write('@' + versionkey + '=' + version + ';');
 		bw.write("\t//\u7248\u672C\u4FE1\u606F\uFF08\u4E2D\u6587\uFF09");
 		bw.write(newline);
-		bw.write("@" + serieskey + "=" + serialNumber + ";");
+		bw.write('@' + serieskey + '=' + serialNumber + ';');
 		bw.write("\t//\u5E8F\u5217\u53F7\uFF08\u4E2D\u6587\uFF09");
 		bw.write(newline);
-		bw.write("@" + oemkey + "=" + (oem ? 1 : 0) + ";");
+		bw.write('@' + oemkey + '=' + (oem ? 1 : 0) + ';');
 		bw.write("\t//OEM \u7684Logo\u5F00\u5173");
 		bw.write(newline);
-		bw.write("@" + phase_fine_key + "=" + pf.getWrValue() + ";");
+		bw.write('@' + phase_fine_key + '=' + pf.getWrValue() + ';');
 		bw.write(newline);
 		bw.write(newline);
 		bw.write("//");
@@ -201,7 +201,7 @@ public class Register {
 		for (int i = 0; i < len; i++) {
 			LocaleObject lo = localeLists.get(i);
 			String name = lo.getLocale().toString();
-			bw.write("@" + name + "=" + (localeSelection.get(i) ? 1 : 0) + ";");
+			bw.write('@' + name + '=' + (localeSelection.get(i) ? 1 : 0) + ';');
 
 			bw.write("\t");
 			if (name.length() <= 2)

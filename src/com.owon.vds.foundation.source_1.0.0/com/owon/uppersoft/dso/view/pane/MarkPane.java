@@ -157,7 +157,7 @@ public class MarkPane extends FunctionPanel {
 		boolean isoff = !(wfi.ci.isOn());
 		remindip.setVisible(isoff);
 		if (isoff) {
-			remindtxt.setText(wfi.toString() + " "
+			remindtxt.setText(wfi.toString() + ' '
 					+ I18nProvider.bundle().getString("M.Channel.OffRemind"));
 		} else {
 			remindtxt.setText("");

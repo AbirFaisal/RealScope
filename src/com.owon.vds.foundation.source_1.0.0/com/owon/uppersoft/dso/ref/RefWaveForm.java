@@ -99,7 +99,7 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 	/** math和ch的电压档位已经分化成两种 */
 	public String getIntVoltageLabel_mV(VoltageProvider vp, MathControl mc) {
 		if (waveType == ReferenceFile.RefFile_Math)
-			return mc.MathVolt[vbIdx] + "V";
+			return mc.MathVolt[vbIdx] + 'V';
 		return UnitConversionUtil.getIntVoltageLabel_mV(vp.getVoltage(
 				probeMultiIdx, vbIdx));
 	}

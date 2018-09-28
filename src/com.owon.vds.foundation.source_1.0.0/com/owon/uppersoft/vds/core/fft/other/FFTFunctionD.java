@@ -13,8 +13,8 @@ public class FFTFunctionD {
 	public static final ComplexD[] fft_adc(int[] wnd_adc, int start, int end,
 			ComplexD[] TD) {
 		for (int i = start, j = 0; i < end; i++, j++) {
-			TD[j].re = wnd_adc[i];
-			TD[j].im = 0;
+			TD[j].real = wnd_adc[i];
+			TD[j].imaginary = 0;
 		}
 
 		InplaceFFT.fft(TD);

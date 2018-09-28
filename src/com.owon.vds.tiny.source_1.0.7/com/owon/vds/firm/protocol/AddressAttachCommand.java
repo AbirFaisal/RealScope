@@ -22,7 +22,7 @@ public class AddressAttachCommand {
 
 	@Override
 	public String toString() {
-		return "[" + name + "]" + " @0x" + Integer.toHexString(address) + ", "
+		return '[' + name + ']' + " @0x" + Integer.toHexString(address) + ", "
 				+ bytes + " bytes";
 	}
 

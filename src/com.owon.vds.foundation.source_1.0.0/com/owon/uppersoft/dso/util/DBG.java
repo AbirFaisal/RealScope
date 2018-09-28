@@ -90,7 +90,7 @@ public class DBG {
 	public static final void flushdbg() {
 		int len = sb.length();
 		if (len > 0) {
-			fine(sb.toString() + "\r\n");// warning
+			fine(sb + "\r\n");// warning
 			sb.delete(0, len);
 		}
 	}

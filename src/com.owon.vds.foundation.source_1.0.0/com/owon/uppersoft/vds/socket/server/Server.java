@@ -166,7 +166,7 @@ public class Server extends Thread {
 	private String analyse(String line) {
 		line = line.trim();// 去除/r/n
 		String str = (String) analyseCMDs_1(line);
-		return str + "\r";
+		return str + '\r';
 	}
 
 	public Object analyseCMDs_1(String line) {

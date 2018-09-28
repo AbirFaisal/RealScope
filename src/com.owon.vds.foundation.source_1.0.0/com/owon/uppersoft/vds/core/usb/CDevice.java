@@ -318,7 +318,7 @@ public class CDevice {
 					+ Integer.toHexString(out_ep_address) + ": " + lenWritten
 					+ " Bytes sent: ");
 			for (int i = 0; i < lenWritten; i++) {
-				sb.append("0x" + SFormatter.UIformat("%1$02X", data[i]) + " ");
+				sb.append("0x" + SFormatter.UIformat("%1$02X", data[i]) + ' ');
 			}
 			logger.info(sb.toString());
 		}
@@ -382,7 +382,7 @@ public class CDevice {
 					+ Integer.toHexString(in_ep_address) + ": " + lenRead
 					+ " Bytes received: ");
 			for (int i = 0; i < lenRead; i++) {
-				sb.append("0x" + SFormatter.UIformat("%1$02X", data[i]) + " ");
+				sb.append("0x" + SFormatter.UIformat("%1$02X", data[i]) + ' ');
 			}
 			logger.info(sb.toString());
 		}
@@ -444,7 +444,7 @@ public class CDevice {
 					+ Integer.toHexString(out_ep_address) + ": " + lenWritten
 					+ " Bytes sent: ");
 			for (int i = 0; i < lenWritten; i++) {
-				sb.append("0x" + SFormatter.UIformat("%1$02X", data[i]) + " ");
+				sb.append("0x" + SFormatter.UIformat("%1$02X", data[i]) + ' ');
 			}
 			logger.info(sb.toString());
 		}
@@ -505,7 +505,7 @@ public class CDevice {
 					+ Integer.toHexString(in_ep_address) + ": " + lenRead
 					+ " Bytes received: ");
 			for (int i = 0; i < lenRead; i++) {
-				sb.append("0x" + SFormatter.UIformat("%1$02X", data[i]) + " ");
+				sb.append("0x" + SFormatter.UIformat("%1$02X", data[i]) + ' ');
 			}
 			logger.info(sb.toString());
 		}
@@ -580,7 +580,7 @@ public class CDevice {
 			StringBuffer sb = new StringBuffer("controlMsg: " + len
 					+ " Bytes received(written: ");
 			for (int i = 0; i < len; i++) {
-				sb.append("0x" + SFormatter.UIformat("%1$02X", data[i]) + " ");
+				sb.append("0x" + SFormatter.UIformat("%1$02X", data[i]) + ' ');
 			}
 			logger.info(sb.toString());
 		}

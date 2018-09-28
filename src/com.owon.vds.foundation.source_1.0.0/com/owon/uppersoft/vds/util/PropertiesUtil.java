@@ -370,7 +370,7 @@ import com.owon.uppersoft.vds.data.RGB;
 		if (ints != null && ints.length != 0) {
 			for (int i : ints) {
 				sb.append(i);
-				sb.append(",");
+				sb.append(',');
 			}
 			sb.deleteCharAt(sb.length() - 1);
 		}
@@ -404,7 +404,7 @@ import com.owon.uppersoft.vds.data.RGB;
 		if (bytes != null && bytes.length != 0) {
 			for (byte i : bytes) {
 				sb.append(i & 0xff);//
-				sb.append(".");
+				sb.append('.');
 			}
 			sb.deleteCharAt(sb.length() - 1);
 		}

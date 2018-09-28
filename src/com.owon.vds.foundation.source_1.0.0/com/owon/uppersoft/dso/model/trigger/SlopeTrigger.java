@@ -158,7 +158,7 @@ public class SlopeTrigger extends AbsTrigger {
 		default:
 			return null;
 		}
-		return k + " " + trgcondition;
+		return k + ' ' + trgcondition;
 	}
 
 	@Override

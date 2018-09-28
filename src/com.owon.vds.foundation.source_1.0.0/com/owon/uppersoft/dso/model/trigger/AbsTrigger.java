@@ -32,24 +32,24 @@ public abstract class AbsTrigger {
 
 	/** 存盘的是以100ns为单位 */
 	protected void loadETV(String prefix, Pref p, EnumNValue etv) {
-		etv.fromInt(p.loadInt(prefix + getName() + "." + etv.itemName()));
+		etv.fromInt(p.loadInt(prefix + getName() + '.' + etv.itemName()));
 	}
 
 	protected void persistETV(String prefix, Pref p, EnumNValue etv) {
-		p.persistInt(prefix + getName() + "." + etv.itemName(), etv.toInt());
+		p.persistInt(prefix + getName() + '.' + etv.itemName(), etv.toInt());
 	}
 
 	/** 于下位机通信的值是以100ns为单位 */
 	protected void addETV(ByteBuffer bbuf, EnumNValue etv) {
 		int v = etv.toInt();
 		bbuf.putInt(v);
-		dbg(etv.itemName() + ":" + v);
+		dbg(etv.itemName() + ':' + v);
 	}
 
 	public int applyETV(byte[] arr, int p, EnumNValue etv) {
 		int v = EndianUtil.nextIntB(arr, p);
 		etv.fromInt(v);
-		dbg(etv.itemName() + ":" + etv);
+		dbg(etv.itemName() + ':' + etv);
 		return p + 4;
 	}
 

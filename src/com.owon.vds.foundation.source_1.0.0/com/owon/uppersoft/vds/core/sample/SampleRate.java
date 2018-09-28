@@ -71,7 +71,7 @@ public enum SampleRate {
 		bdvalue = bdvalue.divide(BigDecimal.valueOf(1000));
 		// System.err.println(bdvalue);
 		// System.err.println();
-		label = "(" + n + "S/s)";
+		label = '(' + n + "S/s)";
 		// System.err.println(label);
 	}
 

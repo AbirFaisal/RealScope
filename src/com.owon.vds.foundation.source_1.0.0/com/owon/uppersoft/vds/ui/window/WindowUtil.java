@@ -30,7 +30,7 @@ public class WindowUtil {
 	 * @return
 	 */
 	public static boolean showCancelDialog(String msn, Window parent) {
-		// int re = JOptionPane.showOptionDialog(Platform.getMainWindow()
+		// int real = JOptionPane.showOptionDialog(Platform.getMainWindow()
 		// .getFrame(), msn, null, JOptionPane.DEFAULT_OPTION,
 		// JOptionPane.QUESTION_MESSAGE, null, MainWindow.JOptionBtnLabs,
 		// MainWindow.JOptionBtnLabs[0]);

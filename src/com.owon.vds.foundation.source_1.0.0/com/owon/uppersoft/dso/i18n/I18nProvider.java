@@ -150,7 +150,7 @@ public class I18nProvider {
 		list.add("com.owon.uppersoft.common.i18n.LAMsgLib");
 		list.add("com.owon.uppersoft.common.i18n.OSCMsgLib");
 		for (String bundle : list) {
-			String path = bundle.substring(bundle.lastIndexOf(".") + 1) + "_"
+			String path = bundle.substring(bundle.lastIndexOf(".") + 1) + '_'
 					+ locale + ".txt";
 			ascii2nativeByResourceBundle(path, bundle, locale,
 					StringPool.UTF8EncodingString);// ////////////////////////"UTF-8";

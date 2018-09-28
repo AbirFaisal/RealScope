@@ -54,10 +54,10 @@ public class FileUtil {
 		/** TODO 判断过滤器是否可用，不可用return f */
 		/** 如果文件是以选定扩展名结束的，则为真，使用原名 */
 		boolean hasSuffix = f.getName().toUpperCase()
-				.endsWith("." + format.toUpperCase());
+				.endsWith('.' + format.toUpperCase());
 		if (!hasSuffix) {
 			// 否则加上选定的扩展名
-			f = new File(f.getAbsolutePath() + "." + format);
+			f = new File(f.getAbsolutePath() + '.' + format);
 		}
 		return f;
 	}
@@ -70,7 +70,7 @@ public class FileUtil {
 //				.endsWith("." + format.toUpperCase());
 //		if (hasSuffix) {
 			// 为真去掉选定的扩展名
-			int endIndex=f.getAbsolutePath().toUpperCase().lastIndexOf("."+ format.toUpperCase());
+			int endIndex=f.getAbsolutePath().toUpperCase().lastIndexOf('.' + format.toUpperCase());
 			if(endIndex<0)
 				return f;
 			

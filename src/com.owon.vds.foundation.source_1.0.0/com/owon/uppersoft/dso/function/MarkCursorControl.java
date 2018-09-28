@@ -442,7 +442,7 @@ public class MarkCursorControl {
 				g2d.drawString("Y: " + dyval, x + width / 5 + 12, y);
 			} else
 				g2d.drawString(ci.getName()
-						+ " "
+						+ ' '
 						+ I18nProvider.bundle()
 								.getString("M.Channel.OffRemind"), 26, y);
 		}

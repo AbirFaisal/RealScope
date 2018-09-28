@@ -71,7 +71,7 @@ public class ArgTypePane extends JPanel implements CalibrationArgType,
 			FlowLayout f = new FlowLayout(FlowLayout.TRAILING);
 			chlPane.setLayout(f);
 
-			JLabel chlcbb0 = new JLabel("CH" + (ch + 1) + ":");
+			JLabel chlcbb0 = new JLabel("CH" + (ch + 1) + ':');
 			chlcbb0.setPreferredSize(new Dimension(50, 28));
 			chlPane.add(chlcbb0);
 			spinp.add(chlPane);

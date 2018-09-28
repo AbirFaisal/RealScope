@@ -52,7 +52,7 @@ public class LanScpiProvider {
 			return ScpiPool.Failed;
 		}
 		if (pt < 1025 || pt > 65534)
-			return ScpiPool.ErrNum + "," + "OUT OF 1025~65534";
+			return ScpiPool.ErrNum + ',' + "OUT OF 1025~65534";
 		cm.getSysControl().port = pt;
 		cm.getSysControl().c_network();
 		return ScpiPool.Success;

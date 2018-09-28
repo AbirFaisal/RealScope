@@ -58,7 +58,7 @@ public class MyFileFilter extends FileFilter {
 	@Override
 	// 返回这个扩展名过滤器的描述
 	public String getDescription() {
-		String tail = "(*." + ends + ")";
+		String tail = "(*." + ends + ')';
 		return I18nProvider.bundle().getString(description) + tail;
 	}
 

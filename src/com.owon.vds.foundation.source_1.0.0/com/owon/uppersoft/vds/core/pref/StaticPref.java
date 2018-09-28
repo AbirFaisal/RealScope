@@ -142,11 +142,11 @@ public class StaticPref {
 	}
 
 	public String getUpdateXML() {
-		return manufacturerId + "_" + getSerialId() + ".xml";
+		return manufacturerId + '_' + getSerialId() + ".xml";
 	}
 
 	public String getVersionText() {
-		return versionId + " (build " + internalVersionId + ")";
+		return versionId + " (build " + internalVersionId + ')';
 	}
 
 	public String getSerialId() {

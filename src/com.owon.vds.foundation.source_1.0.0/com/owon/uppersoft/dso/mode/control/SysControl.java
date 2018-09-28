@@ -149,7 +149,7 @@ public class SysControl implements IOrgan, IPatchable {
 			String byt = Integer.toString(arr[i] & 0xFF);// Integer.toHexString
 			sb.append(byt);
 			if (i < len - 1)
-				sb.append(".");
+				sb.append('.');
 		}
 		return sb.toString();
 	}
@@ -180,7 +180,7 @@ public class SysControl implements IOrgan, IPatchable {
 
 			String byt = Integer.toHexString(macaddress[i] & 0xFF);
 			if (byt.length() < 2) {
-				sb.append("0");
+				sb.append('0');
 			}
 			sb.append(byt);
 		}
