@@ -49,10 +49,10 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 	private final String addPath = "/com/owon/uppersoft/dso/image/add.png";
 	private final String minusPath = "/com/owon/uppersoft/dso/image/minus.png";
 	private final int
-			ROWGAP = 15,
-			COLGAP = 90,
-			HalfCOLGAP = COLGAP >> 1,
-			inorc = 24;
+			ROWGAP = 25,
+			COLGAP = 85,
+			HalfCOLGAP = COLGAP / 2,
+			inorc = 12;
 
 	private int selCol = -1, dragTarget = -1;
 	public static final int Height = 90;
@@ -347,7 +347,7 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 			int y = seljf.getY();
 			// 拖拽过程效果，TODO 需优化bl的获取
 			int bl = 0// Platform.getMainWindow().getFrame().getLocation().x
-			+ HalfCOLGAP;
+					+ HalfCOLGAP;
 			int br = bl + measMod.getColumnCount() * COLGAP - seljf.getWidth();
 			if (x < bl)
 				x = bl;
@@ -375,16 +375,16 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 	private void doMouseAction(char act, int x, int y) {
 		boolean enterable = x < 42 && y < 16;
 		switch (act) {
-		case 'M':
-			if (enterable)
-				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			else
-				setCursor(Cursor.getDefaultCursor());
-			break;
-		case 'C':
-			if (enterable)
-				openHideMeasurePane();
-			break;
+			case 'M':
+				if (enterable)
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				else
+					setCursor(Cursor.getDefaultCursor());
+				break;
+			case 'C':
+				if (enterable)
+					openHideMeasurePane();
+				break;
 		}
 	}
 
