@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: RXTXcomm Plug-in
+Bundle-SymbolicName: RXTXcomm
+Bundle-Version: 2.1.7
+Bundle-ClassPath: RXTXcomm.jar
+Bundle-Vendor: http://www.rxtx.org
+Export-Package: gnu.io

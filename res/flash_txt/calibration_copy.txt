@@ -1,0 +1,97 @@
+$flash_txt=1;
+
+//Gain
+$auto_self_cal coarsegain_CH1_5mV=1298;
+$auto_self_cal coarsegain_CH1_10mV=1108;
+$auto_self_cal coarsegain_CH1_20mV=980;
+$auto_self_cal coarsegain_CH1_50mV=810;
+$auto_self_cal coarsegain_CH1_100mV=681;
+$auto_self_cal coarsegain_CH1_200mV=554;
+$auto_self_cal coarsegain_CH1_500mV=987;
+$auto_self_cal coarsegain_CH1_1V=858;
+$auto_self_cal coarsegain_CH1_2V=729;
+$auto_self_cal coarsegain_CH1_5V=559;
+
+$auto_self_cal coarsegain_CH2_5mV=1289;
+$auto_self_cal coarsegain_CH2_10mV=1111;
+$auto_self_cal coarsegain_CH2_20mV=981;
+$auto_self_cal coarsegain_CH2_50mV=813;
+$auto_self_cal coarsegain_CH2_100mV=684;
+$auto_self_cal coarsegain_CH2_200mV=557;
+$auto_self_cal coarsegain_CH2_500mV=988;
+$auto_self_cal coarsegain_CH2_1V=860;
+$auto_self_cal coarsegain_CH2_2V=732;
+$auto_self_cal coarsegain_CH2_5V=562;
+
+
+//Step
+$auto_self_cal step_CH1_5mV=158;
+$auto_self_cal step_CH1_10mV=158;
+$auto_self_cal step_CH1_20mV=158;
+$auto_self_cal step_CH1_50mV=158;
+$auto_self_cal step_CH1_100mV=158;
+$auto_self_cal step_CH1_200mV=158;
+$auto_self_cal step_CH1_500mV=159;
+$auto_self_cal step_CH1_1V=159;
+$auto_self_cal step_CH1_2V=158;
+$auto_self_cal step_CH1_5V=158;
+
+$auto_self_cal step_CH2_5mV=161;
+$auto_self_cal step_CH2_10mV=161;
+$auto_self_cal step_CH2_20mV=161;
+$auto_self_cal step_CH2_50mV=161;
+$auto_self_cal step_CH2_100mV=162;
+$auto_self_cal step_CH2_200mV=161;
+$auto_self_cal step_CH2_500mV=161;
+$auto_self_cal step_CH2_1V=161;
+$auto_self_cal step_CH2_2V=161;
+$auto_self_cal step_CH2_5V=161;
+
+
+//Compensation
+$auto_self_cal zero_CH1_5mV=544;
+$auto_self_cal zero_CH1_10mV=548;
+$auto_self_cal zero_CH1_20mV=546;
+$auto_self_cal zero_CH1_50mV=546;
+$auto_self_cal zero_CH1_100mV=544;
+$auto_self_cal zero_CH1_200mV=544;
+$auto_self_cal zero_CH1_500mV=547;
+$auto_self_cal zero_CH1_1V=546;
+$auto_self_cal zero_CH1_2V=544;
+$auto_self_cal zero_CH1_5V=544;
+
+$auto_self_cal zero_CH2_5mV=548;
+$auto_self_cal zero_CH2_10mV=553;
+$auto_self_cal zero_CH2_20mV=553;
+$auto_self_cal zero_CH2_50mV=554;
+$auto_self_cal zero_CH2_100mV=554;
+$auto_self_cal zero_CH2_200mV=553;
+$auto_self_cal zero_CH2_500mV=553;
+$auto_self_cal zero_CH2_1V=553;
+$auto_self_cal zero_CH2_2V=553;
+$auto_self_cal zero_CH2_5V=554;
+
+
+
+
+@version=;	//版本信息（中文）
+@series=;	//序列号（中文）
+@oemlogo=0;	//OEM 的Logo开关
+@phase_fine_value=0;
+
+//
+@zh_CN=0;	//中文 (中国)语言开关
+@zh_TW=0;	//中文 (台湾地区)语言开关
+@en=0;		//英文语言开关
+@fr=0;		//法文语言开关
+@es=0;		//西班牙文语言开关
+@ru=0;		//俄文语言开关
+@de=0;		//德文语言开关
+@pl=0;		//波兰文语言开关
+@pt_BR=0;	//葡萄牙文 (巴西)语言开关
+@it=0;		//意大利文语言开关
+@ja=0;		//日文语言开关
+@ko_KR=0;	//朝鲜文 (韩国)语言开关
+
+
+END

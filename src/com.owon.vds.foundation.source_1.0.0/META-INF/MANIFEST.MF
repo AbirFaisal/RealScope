@@ -1,0 +1,214 @@
+Manifest-Version: 1.0
+Class-Path: ch.ntb.usb-0.5.9.jar jxl.jar RXTXcomm.jar javax.el_2.2.0.v
+ 201303151357.jar org.sat4j.pb_2.3.5.v201404071733.jar javax.servlet_3
+ .1.0.v201410161800.jar org.sat4j.core_2.3.5.v201308161310.jar org.slf
+ 4j.api_1.7.2.v20121108-1250.jar javax.el.source_2.2.0.v201303151357.j
+ ar org.tukaani.xz_1.8.0.v20180207-1613.jar org.eclipse.ecf_3.9.0.v201
+ 80402-2015.jar javax.servlet.jsp_2.2.0.v201112011158.jar org.eclipse.
+ jetty.io_9.4.10.v20180503.jar org.eclipse.osgi_3.13.0.v20180409-1500.
+ jar org.eclipse.jetty.http_9.4.10.v20180503.jar org.eclipse.jetty.uti
+ l_9.4.10.v20180503.jar javax.servlet.source_3.1.0.v201410161800.jar o
+ rg.apache.mina.core_2.0.7.v201401071602.jar org.apache.sshd.core_0.7.
+ 0.v201303101611.jar org.eclipse.jetty.server_9.4.10.v20180503.jar org
+ .slf4j.api.source_1.7.2.v20121108-1250.jar org.apache.felix.scr_2.0.1
+ 4.v20180117-1452.jar org.eclipse.ecf.ssl_1.2.100.v20180301-0132.jar o
+ rg.eclipse.jetty.servlet_9.4.10.v20180503.jar org.eclipse.osgi.util_3
+ .5.0.v20180219-1511.jar org.eclipse.core.jobs_3.10.0.v20180427-1454.j
+ ar org.eclipse.ecf.source_3.9.0.v20180402-2015.jar org.eclipse.equino
+ x.cm_1.3.0.v20180418-1839.jar org.eclipse.jetty.security_9.4.10.v2018
+ 0503.jar javax.servlet.jsp.source_2.2.0.v201112011158.jar org.eclipse
+ .jetty.io.source_9.4.10.v20180503.jar org.apache.commons.codec_1.9.0.
+ v20170208-1614.jar org.eclipse.ecf.identity_3.9.0.v20180426-1936.jar
+ org.eclipse.equinox.ds_1.5.100.v20171221-2204.jar org.eclipse.equinox
+ .io_1.1.200.v20171221-2204.jar org.eclipse.equinox.ip_1.1.500.v201712
+ 21-2204.jar org.eclipse.equinox.util_1.1.0.v20180419-0833.jar org.ecl
+ ipse.osgi.source_3.13.0.v20180409-1500.jar org.apache.commons.logging
+ _1.1.1.v201101211721.jar org.eclipse.core.runtime_3.14.0.v20180417-08
+ 25.jar org.eclipse.equinox.app_1.3.500.v20171221-2204.jar org.eclipse
+ .jetty.http.source_9.4.10.v20180503.jar org.eclipse.jetty.util.source
+ _9.4.10.v20180503.jar org.eclipse.osgi.services_3.7.0.v20180223-1712.
+ jar org.apache.jasper.glassfish_2.2.2.v201501141630.jar org.apache.mi
+ na.core.source_2.0.7.v201401071602.jar org.apache.sshd.core.source_0.
+ 7.0.v201303101611.jar org.eclipse.equinox.bidi_1.1.100.v20171221-2204
+ .jar org.eclipse.jetty.continuation_9.4.10.v20180503.jar org.apache.f
+ elix.gogo.shell_1.0.0.v20170914-1324.jar org.eclipse.equinox.common_3
+ .10.0.v20180412-1130.jar org.eclipse.equinox.console_1.3.0.v20180119-
+ 0630.jar org.eclipse.equinox.event_1.4.200.v20180426-0845.jar org.ecl
+ ipse.equinox.p2.core_2.5.0.v20180512-1128.jar org.eclipse.equinox.p2.
+ ui_2.5.100.v20180425-1343.jar org.eclipse.jetty.server.source_9.4.10.
+ v20180503.jar org.apache.felix.scr.source_2.0.14.v20180117-1452.jar o
+ rg.eclipse.core.contenttype_3.7.0.v20180426-1644.jar org.eclipse.core
+ .variables_3.4.100.v20180509-0959.jar org.eclipse.ecf.ssl.source_1.2.
+ 100.v20180301-0132.jar org.eclipse.equinox.device_1.0.600.v20171221-2
+ 204.jar org.eclipse.equinox.launcher_1.5.0.v20180512-1130.jar org.ecl
+ ipse.equinox.region_1.4.100.v20171221-2204.jar org.eclipse.equinox.re
+ gistry_3.8.0.v20180426-1327.jar org.eclipse.jetty.servlet.source_9.4.
+ 10.v20180503.jar org.eclipse.osgi.util.source_3.5.0.v20180219-1511.ja
+ r org.apache.felix.gogo.command_1.0.2.v20170914-1324.jar org.apache.f
+ elix.gogo.runtime_1.0.6.v20170914-1324.jar org.eclipse.equinox.cm.sou
+ rce_1.3.0.v20180418-1839.jar org.eclipse.equinox.p2.engine_2.6.0.v201
+ 80409-1209.jar org.eclipse.equinox.p2.ui.sdk_1.1.0.v20180103-0918.jar
+  org.eclipse.jetty.security.source_9.4.10.v20180503.jar org.eclipse.c
+ ore.expressions_3.6.100.v20180426-1644.jar org.eclipse.ecf.filetransf
+ er_5.0.100.v20180301-0132.jar org.eclipse.equinox.http.jetty_3.6.0.v2
+ 0180328-1442.jar org.eclipse.equinox.jsp.jasper_1.1.0.v20180501-1958.
+ jar org.eclipse.equinox.log.stream_1.0.0.v20180219-1443.jar org.eclip
+ se.equinox.metatype_1.4.400.v20180501-1616.jar org.eclipse.equinox.p2
+ .console_1.1.0.v20180130-1836.jar org.eclipse.equinox.security_1.2.40
+ 0.v20171221-2204.jar org.eclipse.equinox.supplement_1.8.0.v20180110-1
+ 522.jar org.apache.commons.codec.source_1.9.0.v20170208-1614.jar org.
+ eclipse.ecf.identity.source_3.9.0.v20180426-1936.jar org.eclipse.equi
+ nox.console.ssh_1.1.0.v20180119-0630.jar org.eclipse.equinox.ds.sourc
+ e_1.5.100.v20171221-2204.jar org.eclipse.equinox.io.source_1.1.200.v2
+ 0171221-2204.jar org.eclipse.equinox.ip.source_1.1.500.v20171221-2204
+ .jar org.eclipse.equinox.p2.director_2.4.0.v20180302-1057.jar org.ecl
+ ipse.equinox.p2.metadata_2.4.0.v20180320-1220.jar org.eclipse.equinox
+ .p2.ui.admin_1.1.0.v20180418-1304.jar org.eclipse.equinox.security.ui
+ _1.2.0.v20171221-2204.jar org.eclipse.equinox.useradmin_1.1.500.v2017
+ 1221-2204.jar org.eclipse.equinox.util.source_1.1.0.v20180419-0833.ja
+ r org.eclipse.equinox.wireadmin_1.0.700.v20171221-2204.jar org.apache
+ .commons.logging.source_1.1.1.v201101211721.jar org.eclipse.equinox.a
+ pp.source_1.3.500.v20171221-2204.jar org.eclipse.equinox.concurrent_1
+ .1.100.v20171221-2204.jar org.eclipse.equinox.http.servlet_1.5.0.v201
+ 80501-1936.jar org.eclipse.equinox.p2.discovery_1.1.0.v20180222-0922.
+ jar org.eclipse.equinox.p2.installer_1.1.0.v20180103-0918.jar org.ecl
+ ipse.equinox.p2.publisher_1.5.0.v20180320-1332.jar org.eclipse.osgi.s
+ ervices.source_3.7.0.v20180223-1712.jar org.apache.jasper.glassfish.s
+ ource_2.2.2.v201501141630.jar org.eclipse.equinox.bidi.source_1.1.100
+ .v20171221-2204.jar org.eclipse.equinox.coordinator_1.3.500.v20171221
+ -2204.jar org.eclipse.equinox.p2.operations_2.5.0.v20180302-1057.jar
+ org.eclipse.equinox.p2.repository_2.4.0.v20180512-1128.jar org.eclips
+ e.equinox.p2.updatesite_1.1.0.v20180302-1057.jar org.eclipse.equinox.
+ preferences_3.7.100.v20180510-1129.jar org.eclipse.equinox.servletbri
+ dge_1.4.0.v20180121-0944.jar org.eclipse.jetty.continuation.source_9.
+ 4.10.v20180503.jar org.apache.felix.gogo.shell.source_1.0.0.v20170914
+ -1324.jar org.apache.httpcomponents.httpcore_4.4.6.v20170210-0925.jar
+  org.eclipse.equinox.common.source_3.10.0.v20180412-1130.jar org.ecli
+ pse.equinox.console.source_1.3.0.v20180119-0630.jar org.eclipse.equin
+ ox.event.source_1.4.200.v20180426-0845.jar org.eclipse.equinox.framew
+ orkadmin_2.1.0.v20180131-0638.jar org.eclipse.equinox.p2.core.source_
+ 2.5.0.v20180512-1128.jar org.eclipse.equinox.p2.ui.source_2.5.100.v20
+ 180425-1343.jar org.eclipse.equinox.weaving.hook_1.2.100.v20171221-22
+ 04.jar org.eclipse.equinox.device.source_1.0.600.v20171221-2204.jar o
+ rg.eclipse.equinox.http.registry_1.1.500.v20171221-2204.jar org.eclip
+ se.equinox.launcher.source_1.5.0.v20180512-1130.jar org.eclipse.equin
+ ox.p2.director.app_1.1.0.v20180502-1549.jar org.eclipse.equinox.p2.ja
+ rprocessor_1.1.0.v20180512-1128.jar org.eclipse.equinox.p2.ui.admin.r
+ cp_1.1.0.v20180103-0918.jar org.eclipse.equinox.p2.ui.discovery_1.1.0
+ .v20180222-0922.jar org.eclipse.equinox.region.source_1.4.100.v201712
+ 21-2204.jar org.eclipse.equinox.registry.source_3.8.0.v20180426-1327.
+ jar org.apache.felix.gogo.command.source_1.0.2.v20170914-1324.jar org
+ .apache.felix.gogo.runtime.source_1.0.6.v20170914-1324.jar org.apache
+ .httpcomponents.httpclient_4.5.2.v20170210-0925.jar org.eclipse.equin
+ ox.p2.engine.source_2.6.0.v20180409-1209.jar org.eclipse.equinox.p2.t
+ ransport.ecf_1.2.0.v20180222-0922.jar org.eclipse.equinox.p2.ui.sdk.s
+ ource_1.1.0.v20180103-0918.jar org.eclipse.equinox.p2.updatechecker_1
+ .2.0.v20180302-1057.jar org.eclipse.ecf.filetransfer.source_5.0.100.v
+ 20180301-0132.jar org.eclipse.equinox.http.jetty.source_3.6.0.v201803
+ 28-1442.jar org.eclipse.equinox.jsp.jasper.source_1.1.0.v20180501-195
+ 8.jar org.eclipse.equinox.log.stream.source_1.0.0.v20180219-1443.jar
+ org.eclipse.equinox.metatype.source_1.4.400.v20180501-1616.jar org.ec
+ lipse.equinox.p2.console.source_1.1.0.v20180130-1836.jar org.eclipse.
+ equinox.security.macosx_1.101.0.v20171221-2204.jar org.eclipse.equino
+ x.security.source_1.2.400.v20171221-2204.jar org.eclipse.equinox.supp
+ lement.source_1.8.0.v20180110-1522.jar org.eclipse.equinox.transforms
+ .hook_1.2.100.v20171221-2204.jar org.eclipse.equinox.transforms.xslt_
+ 1.0.400.v20171221-2204.jar org.eclipse.equinox.weaving.caching_1.1.10
+ 0.v20171221-2204.jar org.eclipse.equinox.console.ssh.source_1.1.0.v20
+ 180119-0630.jar org.eclipse.equinox.http.servletbridge_1.1.0.v2018012
+ 0-0803.jar org.eclipse.equinox.p2.director.source_2.4.0.v20180302-105
+ 7.jar org.eclipse.equinox.p2.metadata.source_2.4.0.v20180320-1220.jar
+  org.eclipse.equinox.p2.ui.admin.source_1.1.0.v20180418-1304.jar org.
+ eclipse.equinox.p2.ui.importexport_1.2.0.v20180126-1930.jar org.eclip
+ se.equinox.security.ui.source_1.2.0.v20171221-2204.jar org.eclipse.eq
+ uinox.security.win32.x86_1.1.0.v20171221-2204.jar org.eclipse.equinox
+ .simpleconfigurator_1.3.0.v20180502-1828.jar org.eclipse.equinox.user
+ admin.source_1.1.500.v20171221-2204.jar org.eclipse.equinox.wireadmin
+ .source_1.0.700.v20171221-2204.jar org.eclipse.osgi.compatibility.sta
+ te_1.1.100.v20180331-1743.jar org.eclipse.ecf.provider.filetransfer_3
+ .2.400.v20180306-0429.jar org.eclipse.equinox.concurrent.source_1.1.1
+ 00.v20171221-2204.jar org.eclipse.equinox.http.servlet.source_1.5.0.v
+ 20180501-1936.jar org.eclipse.equinox.jsp.jasper.registry_1.1.0.v2017
+ 1221-2204.jar org.eclipse.equinox.p2.directorywatcher_1.2.0.v20180130
+ -1836.jar org.eclipse.equinox.p2.discovery.source_1.1.0.v20180222-092
+ 2.jar org.eclipse.equinox.p2.garbagecollector_1.1.0.v20180103-0918.ja
+ r org.eclipse.equinox.p2.installer.source_1.1.0.v20180103-0918.jar or
+ g.eclipse.equinox.p2.publisher.source_1.5.0.v20180320-1332.jar org.ec
+ lipse.equinox.p2.repository.tools_2.2.0.v20180416-1436.jar org.eclips
+ e.equinox.p2.ui.sdk.scheduler_1.4.0.v20180302-1057.jar org.eclipse.eq
+ uinox.coordinator.source_1.3.500.v20171221-2204.jar org.eclipse.equin
+ ox.p2.extensionlocation_1.3.0.v20180103-0918.jar org.eclipse.equinox.
+ p2.operations.source_2.5.0.v20180302-1057.jar org.eclipse.equinox.p2.
+ publisher.eclipse_1.3.0.v20180320-1332.jar org.eclipse.equinox.p2.rep
+ ository.source_2.4.0.v20180512-1128.jar org.eclipse.equinox.p2.update
+ site.source_1.1.0.v20180302-1057.jar org.eclipse.equinox.preferences.
+ source_3.7.100.v20180510-1129.jar org.eclipse.equinox.servletbridge.s
+ ource_1.4.0.v20180121-0944.jar org.eclipse.equinox.weaving.caching.j9
+ _1.1.100.v20171221-2204.jar org.apache.httpcomponents.httpcore.source
+ _4.4.6.v20170210-0925.jar org.eclipse.equinox.frameworkadmin.source_2
+ .1.0.v20180131-0638.jar org.eclipse.equinox.p2.reconciler.dropins_1.2
+ .0.v20180302-1057.jar org.eclipse.equinox.p2.touchpoint.eclipse_2.2.0
+ .v20180302-1057.jar org.eclipse.equinox.p2.touchpoint.natives_1.3.0.v
+ 20180512-1128.jar org.eclipse.equinox.security.linux.x86_64_1.1.0.v20
+ 171221-2204.jar org.eclipse.equinox.security.win32.x86_64_1.1.0.v2017
+ 1221-2204.jar org.eclipse.equinox.weaving.hook.source_1.2.100.v201712
+ 21-2204.jar org.eclipse.equinox.frameworkadmin.equinox_1.1.0.v2018051
+ 2-1128.jar org.eclipse.equinox.http.registry.source_1.1.500.v20171221
+ -2204.jar org.eclipse.equinox.p2.artifact.repository_1.2.0.v20180413-
+ 0846.jar org.eclipse.equinox.p2.director.app.source_1.1.0.v20180502-1
+ 549.jar org.eclipse.equinox.p2.jarprocessor.source_1.1.0.v20180512-11
+ 28.jar org.eclipse.equinox.p2.metadata.repository_1.3.0.v20180302-105
+ 7.jar org.eclipse.equinox.p2.ui.admin.rcp.source_1.1.0.v20180103-0918
+ .jar org.eclipse.equinox.p2.ui.discovery.source_1.1.0.v20180222-0922.
+ jar org.apache.httpcomponents.httpclient.source_4.5.2.v20170210-0925.
+ jar org.eclipse.ecf.provider.filetransfer.ssl_1.0.100.v20180301-0132.
+ jar org.eclipse.equinox.console.jaas.fragment_1.0.100.v20171221-2204.
+ jar org.eclipse.equinox.p2.updatechecker.source_1.2.0.v20180302-1057.
+ jar org.eclipse.equinox.launcher.gtk.linux.x86_1.1.700.v20180518-1200
+ .jar org.eclipse.equinox.security.macosx.source_1.101.0.v20171221-220
+ 4.jar org.eclipse.equinox.transforms.hook.source_1.2.100.v20171221-22
+ 04.jar org.eclipse.equinox.transforms.xslt.source_1.0.400.v20171221-2
+ 204.jar org.eclipse.equinox.weaving.caching.source_1.1.100.v20171221-
+ 2204.jar org.eclipse.equinox.http.servletbridge.source_1.1.0.v2018012
+ 0-0803.jar org.eclipse.equinox.p2.ui.importexport.source_1.2.0.v20180
+ 126-1930.jar org.eclipse.equinox.security.win32.x86.source_1.1.0.v201
+ 71221-2204.jar org.eclipse.equinox.simpleconfigurator.source_1.3.0.v2
+ 0180502-1828.jar org.eclipse.osgi.compatibility.state.source_1.1.100.
+ v20180331-1743.jar org.eclipse.ecf.provider.filetransfer.source_3.2.4
+ 00.v20180306-0429.jar org.eclipse.equinox.jsp.jasper.registry.source_
+ 1.1.0.v20171221-2204.jar org.eclipse.equinox.launcher.gtk.linux.ppc64
+ _1.1.700.v20180518-1200.jar org.eclipse.equinox.launcher.win32.win32.
+ x86_1.1.700.v20180518-1200.jar org.eclipse.equinox.p2.directorywatche
+ r.source_1.2.0.v20180130-1836.jar org.eclipse.equinox.p2.discovery.co
+ mpatibility_1.1.0.v20180512-1128.jar org.eclipse.equinox.p2.garbageco
+ llector.source_1.1.0.v20180103-0918.jar org.eclipse.equinox.p2.reposi
+ tory.tools.source_2.2.0.v20180416-1436.jar org.eclipse.equinox.p2.ui.
+ sdk.scheduler.source_1.4.0.v20180302-1057.jar org.eclipse.equinox.lau
+ ncher.gtk.linux.x86_64_1.1.700.v20180518-1200.jar org.eclipse.equinox
+ .p2.extensionlocation.source_1.3.0.v20180103-0918.jar org.eclipse.equ
+ inox.p2.publisher.eclipse.source_1.3.0.v20180320-1332.jar org.eclipse
+ .equinox.weaving.caching.j9.source_1.1.100.v20171221-2204.jar org.ecl
+ ipse.equinox.launcher.gtk.linux.ppc64le_1.1.700.v20180518-1200.jar or
+ g.eclipse.equinox.p2.reconciler.dropins.source_1.2.0.v20180302-1057.j
+ ar org.eclipse.equinox.p2.touchpoint.eclipse.source_2.2.0.v20180302-1
+ 057.jar org.eclipse.equinox.p2.touchpoint.natives.source_1.3.0.v20180
+ 512-1128.jar org.eclipse.equinox.security.linux.x86_64.source_1.1.0.v
+ 20171221-2204.jar org.eclipse.equinox.security.win32.x86_64.source_1.
+ 1.0.v20171221-2204.jar org.eclipse.equinox.frameworkadmin.equinox.sou
+ rce_1.1.0.v20180512-1128.jar org.eclipse.equinox.launcher.win32.win32
+ .x86_64_1.1.700.v20180518-1200.jar org.eclipse.equinox.p2.artifact.re
+ pository.source_1.2.0.v20180413-0846.jar org.eclipse.equinox.p2.metad
+ ata.repository.source_1.3.0.v20180302-1057.jar org.eclipse.ecf.provid
+ er.filetransfer.ssl.source_1.0.100.v20180301-0132.jar org.eclipse.equ
+ inox.launcher.cocoa.macosx.x86_64_1.1.700.v20180518-1200.jar org.ecli
+ pse.equinox.simpleconfigurator.manipulator_2.1.0.v20180103-0918.jar o
+ rg.eclipse.ecf.provider.filetransfer.httpclient4_1.1.300.v20180301-01
+ 32.jar org.eclipse.equinox.p2.discovery.compatibility.source_1.1.0.v2
+ 0180512-1128.jar org.eclipse.ecf.provider.filetransfer.httpclient4.ss
+ l_1.1.100.v20180301-0132.jar org.eclipse.equinox.simpleconfigurator.m
+ anipulator.source_2.1.0.v20180103-0918.jar org.eclipse.ecf.provider.f
+ iletransfer.httpclient4.source_1.1.300.v20180301-0132.jar org.eclipse
+ .ecf.provider.filetransfer.httpclient4.ssl.source_1.1.100.v20180301-0
+ 132.jar
+Main-Class: com.owon.vds.tiny.Main
+

@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: jxl Plug-in
+Bundle-SymbolicName: jxl
+Bundle-Version: 2.6.6
+Bundle-ClassPath: jxl.jar
+Bundle-Vendor: http://www.jexcelapi.org/
+Export-Package: common,
+ common.log,
+ jxl,
+ jxl.biff,
+ jxl.biff.drawing,
+ jxl.biff.formula,
+ jxl.demo,
+ jxl.format,
+ jxl.read.biff,
+ jxl.write,
+ jxl.write.biff
