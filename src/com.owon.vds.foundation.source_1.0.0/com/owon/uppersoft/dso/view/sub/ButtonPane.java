@@ -63,7 +63,7 @@ public class ButtonPane extends JPanel implements Localizable,
 		setBackground(Color.BLACK);
 		FlowLayout fl = new FlowLayout(FlowLayout.RIGHT, 0, 0);
 		setLayout(fl);
-		Icon i;
+		//Icon i;
 
 		LButton patchbtn = new LButton("Patch");
 		patchbtn.addActionListener(new ActionListener() {
@@ -84,21 +84,17 @@ public class ButtonPane extends JPanel implements Localizable,
 		});
 		patchbtn.setVisible(false);
 
-		tunebtn = new LButton("tune");
+		//Manual Calibration
+		tunebtn = new LButton("Tune");
 		tunebtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cm.getPrinciple().openTuneDialog(mw.getFrame(), cm.pcs);
 			}
 		});
-		tunebtn.setVisible(false);
+		tunebtn.setVisible(true);
 
-		i = SwingResourceManager.getIcon(TitlePane.class, exportPath);
-		pau_expbtn = new LButton();
-		pau_expbtn.setIcon(i);
-		i = SwingResourceManager.getIcon(TitlePane.class, export_pPath);
-		pau_expbtn.setRolloverIcon(i);
-		// LineUtil.getRolloverIcon((ImageIcon) i)
-		pau_expbtn.setPreferredSize(new Dimension(btnW, btnH));
+
+		pau_expbtn = new LButton("Export");
 		pau_expbtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -108,53 +104,42 @@ public class ButtonPane extends JPanel implements Localizable,
 			}
 		});
 
-		i = SwingResourceManager.getIcon(TitlePane.class, factoryPath);
-		factorybtn = new LButton();
-		factorybtn.setIcon(i);
-		i = SwingResourceManager.getIcon(TitlePane.class, factory_pPath);
-		factorybtn.setRolloverIcon(i);// LineUtil.getRolloverIcon((ImageIcon)i)
-		// factorybtn.setPressedIcon(SwingResourceManager.getIcon(TitlePane.class,
-		// factory_pPath));
-		factorybtn.setPreferredSize(new Dimension(btnW, btnH));
+
+		factorybtn = new LButton("Reset");
 		factorybtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				factorySet();
 			}
 		});
-		toolbtn = new LButton();
+
+
+
+		toolbtn = new LButton("Menu");
 		cm.getDockControl().initialize(mw.getWindow(), cm.pcs, toolbtn);
 		toolbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cm.getDockControl().dockDlgOnOff();
 			}
 		});
-		i = SwingResourceManager.getIcon(TitlePane.class, ToolPath);
-		toolbtn.setIcon(i);
-		toolbtn.setRolloverIcon(SwingResourceManager.getIcon(TitlePane.class,
-				Tool_pPath));
-		toolbtn.setPressedIcon(i);
-		toolbtn.setPreferredSize(new Dimension(btnW + 8, btnH));
 
-		i = SwingResourceManager.getIcon(TitlePane.class, _3in1Path);
-		// dh.getWaveFormManager().is3in1On()?_3in1Path : _1in1Path
-		btn_3in1 = new LButton();
+
+
+		btn_3in1 = new LButton("3 View");
 		btn_3in1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				switch_3in1();
 			}
 		});
-		btn_3in1.setIcon(i);
-		i = SwingResourceManager.getIcon(TitlePane.class, _1in1Path);
-		btn_3in1.setRolloverIcon(i);
-		btn_3in1.setPreferredSize(new Dimension(btnW, btnH));
+
 
 		frmlbl = new JLabel();
-		frmlbl.setPreferredSize(new Dimension(250, 25));
+		frmlbl.setPreferredSize(new Dimension(450, 45));
 		frmlbl.setForeground(Color.white);
 
 		empty = new JLabel();
-		empty.setPreferredSize(new Dimension(btnW, 95 - toolbtn.getHeight()));
-		add(empty);
+		//empty.setPreferredSize(new Dimension(btnW, 95 - toolbtn.getHeight()));
+		//add(empty);
+
 
 		add(patchbtn);
 		add(tunebtn);
@@ -164,7 +149,7 @@ public class ButtonPane extends JPanel implements Localizable,
 		add(toolbtn);
 		add(frmlbl);
 
-		/** 一键开关帧数打印 */
+		/** One-button switch frame number printing */
 		onekeyTurnPrint(false);
 
 		updateLabel();
@@ -245,7 +230,7 @@ public class ButtonPane extends JPanel implements Localizable,
 		updateBtn_3in1ToolTip(I18nProvider.bundle());
 	}
 
-	/** 与其他3in1切换方法不同的是，它可以在同是1in1的两种状态，重新调整显示界面 */
+	/** Different from other 3in1 switching methods, it can re-adjust the display interface in the same state of 1in1. */
 	public void switch_3in1_fft(boolean ffton) {
 		boolean xyon = dh.getWaveFormManager().getXYView().isOn();
 		ffton |= xyon;
