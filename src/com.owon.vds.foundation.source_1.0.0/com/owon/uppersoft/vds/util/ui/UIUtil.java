@@ -14,7 +14,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import com.owon.uppersoft.vds.data.RGB;
-import com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel;
+import com.sun.java.swing.plaf.motif.MotifLookAndFeel;
 
 /**
  * 注释：JSpinner在调用非构造函数new JSpinner(SpinnerNumberModel
@@ -26,7 +26,7 @@ import com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel;
 public class UIUtil {
 	public static void modifylaf() {
 		try {
-			String lafn = NimbusLookAndFeel.class.getName();
+			String lafn = MotifLookAndFeel.class.getName();
 			UIManager.setLookAndFeel(lafn);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

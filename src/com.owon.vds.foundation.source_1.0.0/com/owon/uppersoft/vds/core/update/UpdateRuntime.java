@@ -16,7 +16,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import com.owon.uppersoft.vds.util.FileUtil;
-import com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel;
+import com.sun.java.swing.plaf.motif.MotifLookAndFeel;
 
 /**
  * UpdateRuntime，更新运行时环境，在程序启动之初创建，用于清理上次更新留下的垃圾文件，并支持随时的更新服务。
@@ -27,7 +27,7 @@ public class UpdateRuntime {
 
 	public static void main(String[] args) {
 		try {
-			String lafn = NimbusLookAndFeel.class.getName();
+			String lafn = MotifLookAndFeel.class.getName();
 			UIManager.setLookAndFeel(lafn);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
