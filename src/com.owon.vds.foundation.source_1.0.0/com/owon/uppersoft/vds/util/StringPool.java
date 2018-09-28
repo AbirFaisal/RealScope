@@ -22,7 +22,7 @@ public interface StringPool {
 	/** useful Strings */
 	public static final String EmptyString = "";
 	public static final String SemicolonString = ";";
-	public static final String LINE_SEPARATOR = SystemPropertiesUtil.LINE_SEPARATOR;
+	public static final String LINE_SEPARATOR = "\n";
 	public static final String TRUE_STRING = "1";
 	public static final String FALSE_STRING = "0";
 	public static final String ONE = "1";

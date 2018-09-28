@@ -1,23 +1,68 @@
 package com.abirfaisal.Realscope;
 
 import com.oracle.tools.packager.IOUtils;
+import com.owon.uppersoft.dso.global.Platform;
+import com.owon.uppersoft.dso.global.WorkBench;
+import com.owon.uppersoft.dso.global.WorkBenchTiny;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Paint;
+import javafx.stage.Stage;
 import org.usb4java.*;
 import sun.nio.ch.IOUtil;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Scanner;
 
-public class Main { // extends Application {
+public class Main  extends Application {
 
-//    @Override
-//    public void start(Stage primaryStage) throws Exception{
-//        primaryStage.setTitle("Hello World");
-//        primaryStage.setScene(new Scene(new AnchorPane(), 300, 275));
-//        primaryStage.show();
-//    }
+
+	static int lb = -2500;
+	static int ub = 2500;
+
+	static NumberAxis xAxis = new NumberAxis(lb,ub,250);
+	static NumberAxis yAxis = new NumberAxis(-3,3,1);
+	static LineChart lineChart = new LineChart(xAxis,yAxis);
+	static XYChart.Series series = new XYChart.Series();
+	static XYChart.Series minMarker = new XYChart.Series();
+	static XYChart.Series maxMarker = new XYChart.Series();
+
+
+	@Override
+    public void start(Stage primaryStage) throws Exception{
+
+
+
+    	lineChart.getData().add(series);
+
+    	lineChart.getData().add(minMarker);
+    	lineChart.getData().add(maxMarker);
+
+    	AnchorPane.setTopAnchor(lineChart,0.0);
+	    AnchorPane.setBottomAnchor(lineChart,0.0);
+	    AnchorPane.setLeftAnchor(lineChart,0.0);
+	    AnchorPane.setRightAnchor(lineChart,0.0);
+	    lineChart.setCreateSymbols(false);
+
+
+
+	    AnchorPane anchorPane = new AnchorPane(lineChart);
+
+        primaryStage.setTitle("RealScope");
+        primaryStage.setScene(new Scene(anchorPane, 1280, 720));
+        primaryStage.show();
+    }
 
 
 	static short VENDOR_ID = 0x5345;
@@ -26,64 +71,151 @@ public class Main { // extends Application {
 	static byte USB_EP_IN = (byte) 0x81;
 	static Device usbDevice;
 
+
+	static void launchVDS(){
+		Platform.launch(new Platform.PrincipleFactory() {
+
+			@Override
+			public WorkBench createWorkBench() {
+				return new WorkBenchTiny();
+			}
+
+		});
+	}
+
     public static void main(String[] args) throws IOException, InterruptedException {
 
-    	//Initialize LibUSB
-	    Context context = new Context();
-	    int result = LibUsb.init(context);
-	    if (result != LibUsb.SUCCESS) throw new LibUsbException("Unable to initialize libusb.", result);
-
-	    //Find USBDevice
-	    usbDevice = findDevice(VENDOR_ID, PRODUCT_ID);
-	    System.out.println(usbDevice);
-
-	    //Claim USB Device
-	    DeviceHandle deviceHandle = new DeviceHandle();
-	    LibUsb.open(usbDevice, deviceHandle);
-	    result = LibUsb.claimInterface(deviceHandle, 0);
-	    if (result == 0 ) { System.out.println("Claimed Interface: " + result); }
-
-	    //
+		//launchVDS();
 
 
+		//createWorkBench();
 
-	    byte[] data = new byte[]{1, 64, 0, 0, 1, 86};
-	    sendUsbData(deviceHandle, data);
-	    recieveUsbData(deviceHandle);
+    	File file = new File("data2.csv");
+	    Scanner scanner = new Scanner(file);
+	    //scanner.useDelimiter(",");
 
-	    data = new byte[]{1, 64, 0, 0, 1, 86};
-	    sendUsbData(deviceHandle, data);
-	    recieveUsbData(deviceHandle);
+	    double dataArray[] = new double[5000];
 
+	    String s;
+	    double value;
+	    double minValue = 0.0;
+	    double maxValue = 0.0;
 
-	    data = new byte[]{35, 2, 0, 0, 1};
-	    sendUsbData(deviceHandle, data);
-	    recieveUsbData(deviceHandle);
+	    double values[] = new double[5000];
 
-	    //Get Flash Data size = 2002
-	    data = new byte[]{-80, 1, 0, 0, 1, 1};
-	    sendUsbData(deviceHandle, data);
-	    for (int i = 0; i < 32; i++) {
-		    recieveUsbData(deviceHandle);
+	    for (int i = lb; i < ub; i++) {
+	    	s = scanner.next();
+
+	    	s = s.substring(s.lastIndexOf(",") + 1); // get number after comma in CSV file
+
+		    value = Float.valueOf(s) / 1000.0; //convert mV to Volts
+
+		    values[i + Math.abs(lb)] = value;
+
+		    series.getData().add(new XYChart.Data(i, value));
+
+		    //Keep Track of min and max values
+		    if (minValue > value) minValue = value;
+		    if (maxValue < value) maxValue = value;
 	    }
 
+	    //lineChart.setStyle("-fx-stroke-width: 0;");
 
-	    //Prepare for FPGA Send
-	    data = new byte[]{35, 2, 0, 0, 1};
-	    sendUsbData(deviceHandle, data);
-	    recieveUsbData(deviceHandle);
+	    //Min Max Markers
+	    minMarker.getData().add(new XYChart.Data(lb, minValue));
+	    minMarker.getData().add(new XYChart.Data(ub, minValue));
 
-	    //Send FPGA data
-	    //10236 bytes
-	    sendFPGA(deviceHandle);
-
+	    maxMarker.getData().add(new XYChart.Data(lb, maxValue));
+	    maxMarker.getData().add(new XYChart.Data(ub, maxValue));
 
 
-	    //De initialize LibUSB
-	    LibUsb.releaseInterface(deviceHandle, 0);
-	    LibUsb.exit(context);
 
-        //launch(args);
+	    //Output Some Measurements
+
+	    double VAVG = 0.0;
+	    double VAVG_DIVISOR = 5000.0;
+	    for (int i = 0; i < VAVG_DIVISOR; i++) {
+	    	VAVG = VAVG + (double)Math.abs(values[i]);
+	    }
+	    VAVG = VAVG / (double) VAVG_DIVISOR;
+	    System.out.println("DC VAVG = " + VAVG);
+
+	    double VPP = Math.abs(minValue)+Math.abs(maxValue);
+	    System.out.println("VPP = " + BigDecimal.valueOf(VPP).setScale(4,BigDecimal.ROUND_UP));
+
+	    double VRMS = VPP / Math.sqrt(2.0); //This only works for sine waves
+	    System.out.println("VRMS = " + BigDecimal.valueOf(VRMS).setScale(4,BigDecimal.ROUND_UP));
+
+
+
+	    //1KHz unit=mV
+//	    for (int i = 0; i < 10; i++) {
+//
+//
+//	    }
+
+
+
+
+
+
+
+    	//Initialize LibUSB
+	    //Context context = new Context();
+//	    int result = LibUsb.init(context);
+//	    if (result != LibUsb.SUCCESS) throw new LibUsbException("Unable to initialize libusb.", result);
+
+//	    //Find USBDevice
+//	    usbDevice = findDevice(VENDOR_ID, PRODUCT_ID);
+//	    System.out.println(usbDevice);
+//
+//	    //Claim USB Device
+//	    DeviceHandle deviceHandle = new DeviceHandle();
+//	    LibUsb.open(usbDevice, deviceHandle);
+//	    result = LibUsb.claimInterface(deviceHandle, 0);
+//	    if (result == 0 ) { System.out.println("Claimed Interface: " + result); }
+//
+//	    //
+//
+//
+//
+//	    byte[] data = new byte[]{1, 64, 0, 0, 1, 86};
+//	    sendUsbData(deviceHandle, data);
+//	    recieveUsbData(deviceHandle);
+//
+//	    data = new byte[]{1, 64, 0, 0, 1, 86};
+//	    sendUsbData(deviceHandle, data);
+//	    recieveUsbData(deviceHandle);
+//
+//
+//	    data = new byte[]{35, 2, 0, 0, 1};
+//	    sendUsbData(deviceHandle, data);
+//	    recieveUsbData(deviceHandle);
+//
+//	    //Get Flash Data size = 2002
+//	    data = new byte[]{-80, 1, 0, 0, 1, 1};
+//	    sendUsbData(deviceHandle, data);
+//	    for (int i = 0; i < 32; i++) {
+//		    recieveUsbData(deviceHandle);
+//	    }
+//
+//
+//	    //Prepare for FPGA Send
+//	    data = new byte[]{35, 2, 0, 0, 1};
+//	    sendUsbData(deviceHandle, data);
+//	    recieveUsbData(deviceHandle);
+//
+//	    //Send FPGA data
+//	    //10236 bytes
+//	    sendFPGA(deviceHandle);
+//
+//
+//
+//	    //De initialize LibUSB
+//	    LibUsb.releaseInterface(deviceHandle, 0);
+//	    LibUsb.exit(context);
+
+        launch(args);
     }
 
     static void sendFPGA(DeviceHandle deviceHandle) throws IOException, InterruptedException {

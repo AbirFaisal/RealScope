@@ -5,7 +5,7 @@ import javax.swing.JOptionPane;
 import com.owon.uppersoft.dso.view.MainWindow;
 
 /**
- * 运行平台，上层架构尽量抽象而无须修改替换
+ * Run the platform, the upper architecture is as abstract as possible without modifying and replacing
  * 
  */
 public class Platform {
@@ -34,7 +34,7 @@ public class Platform {
 	}
 
 	/**
-	 * @return 主框架
+	 * @return Main frame
 	 */
 	public static final MainWindow getMainWindow() {
 		if (wb == null)
@@ -43,7 +43,7 @@ public class Platform {
 	}
 
 	/**
-	 * @return 核心控制
+	 * @return Core control
 	 */
 	public static final ControlApps getControlApps() {
 		if (wb == null)
@@ -52,7 +52,7 @@ public class Platform {
 	}
 
 	/**
-	 * @return 数据模型
+	 * @return Data model
 	 */
 	public static final DataHouse getDataHouse() {
 		if (wb == null)
@@ -61,7 +61,7 @@ public class Platform {
 	}
 
 	/**
-	 * @return 控制管理器
+	 * @return Control manager
 	 */
 	public static final ControlManager getControlManager() {
 		if (wb == null)
