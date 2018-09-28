@@ -31,7 +31,7 @@ import com.owon.uppersoft.vds.core.paint.ScreenContext;
 import com.owon.uppersoft.vds.ui.prompt.FadeIOShell;
 import com.owon.uppersoft.vds.ui.prompt.KeepNotice;
 import com.owon.uppersoft.vds.ui.resource.SwingResourceManager;
-import com.owon.uppersoft.vds.ui.widget.custom.LButton;
+//import com.owon.uppersoft.vds.ui.widget.custom.JButton;
 import com.owon.uppersoft.vds.util.format.SFormatter;
 
 public class ButtonPane extends JPanel implements Localizable,
@@ -65,7 +65,7 @@ public class ButtonPane extends JPanel implements Localizable,
 		setLayout(fl);
 		//Icon i;
 
-		LButton patchbtn = new LButton("Patch");
+		JButton patchbtn = new JButton("Patch");
 		patchbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (dh.getControlManager().isRuntime()) {
@@ -85,7 +85,7 @@ public class ButtonPane extends JPanel implements Localizable,
 		patchbtn.setVisible(false);
 
 		//Manual Calibration
-		tunebtn = new LButton("Tune");
+		tunebtn = new JButton("Tune");
 		tunebtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cm.getPrinciple().openTuneDialog(mw.getFrame(), cm.pcs);
@@ -94,7 +94,7 @@ public class ButtonPane extends JPanel implements Localizable,
 		tunebtn.setVisible(true);
 
 
-		pau_expbtn = new LButton("Export");
+		pau_expbtn = new JButton("Export");
 		pau_expbtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -105,7 +105,7 @@ public class ButtonPane extends JPanel implements Localizable,
 		});
 
 
-		factorybtn = new LButton("Reset");
+		factorybtn = new JButton("Reset");
 		factorybtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				factorySet();
@@ -114,7 +114,7 @@ public class ButtonPane extends JPanel implements Localizable,
 
 
 
-		toolbtn = new LButton("Menu");
+		toolbtn = new JButton("Menu");
 		cm.getDockControl().initialize(mw.getWindow(), cm.pcs, toolbtn);
 		toolbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -124,7 +124,7 @@ public class ButtonPane extends JPanel implements Localizable,
 
 
 
-		btn_3in1 = new LButton("3 View");
+		btn_3in1 = new JButton("3 View");
 		btn_3in1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				switch_3in1();
@@ -133,7 +133,7 @@ public class ButtonPane extends JPanel implements Localizable,
 
 
 		frmlbl = new JLabel();
-		frmlbl.setPreferredSize(new Dimension(450, 45));
+		frmlbl.setPreferredSize(new Dimension(500, 35));
 		frmlbl.setForeground(Color.white);
 
 		empty = new JLabel();
@@ -246,10 +246,10 @@ public class ButtonPane extends JPanel implements Localizable,
 	}
 
 	private static final int btnW = 37, btnH = 45;
-	private LButton btn_3in1;
-	private LButton toolbtn;
-	private LButton factorybtn;
-	private LButton pau_expbtn;
+	private JButton btn_3in1;
+	private JButton toolbtn;
+	private JButton factorybtn;
+	private JButton pau_expbtn;
 	private JButton tunebtn;
 
 	private void updateBtn_3in1ToolTip(ResourceBundle rb) {

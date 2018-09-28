@@ -155,7 +155,7 @@ public class DisplayPane extends FunctionPanel {
 			}
 		});
 
-		addDebugBtn();
+		//addDebugBtn();
 
 		listening = true;
 	}

@@ -6,18 +6,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import com.owon.uppersoft.dso.global.DataHouse;
 import com.owon.uppersoft.dso.page.TriggerPage;
 import com.owon.uppersoft.dso.source.comm.effect.SubmitorFactory;
 import com.owon.uppersoft.vds.core.aspect.Localizable;
 import com.owon.uppersoft.vds.ui.resource.FontCenter;
-import com.owon.uppersoft.vds.ui.widget.LightenButton;
+import com.owon.uppersoft.vds.ui.widget.custom.LButton;
 
 public class TrgToolBar extends JPanel implements Localizable {
-	private LightenButton trgbtn;
-	private LightenButton forcebtn;
+	private JButton trgbtn;
+	private JButton forcebtn;
 
 	public TrgToolBar(final DataHouse dh) {
 		setOpaque(false);
@@ -27,7 +27,7 @@ public class TrgToolBar extends JPanel implements Localizable {
 		// .get(TriggerPage.M_TRG_NAME);
 		// trgbtn = new LightenIconButton(new ImageIcon(img));
 
-		trgbtn = new LightenButton();
+		trgbtn = new JButton();
 		trgbtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -36,7 +36,7 @@ public class TrgToolBar extends JPanel implements Localizable {
 			}
 		});
 
-		forcebtn = new LightenButton();
+		forcebtn = new JButton();
 		forcebtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -62,8 +62,10 @@ public class TrgToolBar extends JPanel implements Localizable {
 	@Override
 	public void localize(ResourceBundle rb) {
 		Font fn = FontCenter.getTitleFont();
-		trgbtn.setFont_Text(fn, rb.getString("M.Trg.TrgVolt"));
-		forcebtn.setFont_Text(fn, rb.getString("M.Trg.Force"));
+		//trgbtn.setFont_Text(fn, rb.getString("M.Trg.TrgVolt"));
+		trgbtn.setText("Options");
+		//forcebtn.setFont_Text(fn, rb.getString("M.Trg.Force"));
+		forcebtn.setText("Force");
 		repaint();
 	}
 
