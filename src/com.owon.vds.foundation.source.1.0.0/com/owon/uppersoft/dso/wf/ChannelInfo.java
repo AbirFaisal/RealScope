@@ -117,8 +117,8 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	private static RGB[] rgbs = new RGB[4];
 	static {
 		int i = 0;
-		rgbs[i++] = new RGB("FF0000");
-		rgbs[i++] = new RGB("FFFF00");
+		rgbs[i++] = new RGB("51B2E8");
+		rgbs[i++] = new RGB("B2E851");
 		rgbs[i++] = new RGB("66CCFF");
 		rgbs[i] = new RGB("CC00FF");
 	}
