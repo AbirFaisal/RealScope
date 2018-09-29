@@ -36,8 +36,8 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 	public static final String ImageDirectory = "/com/owon/uppersoft/vds/ui/slider/image/";
 	
 	public static final Image thumbv = SwingResourceManager.getIcon(
-			SymmetrySliderBar.class, ImageDirectory + "thumbv.png")
-			.getImage();
+			SymmetrySliderBar.class, ImageDirectory + "thumbv.png").getImage();
+
 	public static final Image sliderbgv = SwingResourceManager.getIcon(
 			SymmetrySliderBar.class, ImageDirectory + "sliderbgv.png")
 			.getImage();

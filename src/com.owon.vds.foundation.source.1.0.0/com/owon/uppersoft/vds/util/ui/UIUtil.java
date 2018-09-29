@@ -9,26 +9,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 import com.owon.uppersoft.vds.data.RGB;
 import com.sun.java.swing.plaf.motif.MotifLookAndFeel;
+import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
+
 
 /**
  * Note: JSpinner is calling the non-constructor new JSpinner (SpinnerNumberModel
  * snm), the background color of the border may occur, it is suspected that setUIProperty("opaque", true); updateUI(); is not called
- * 
+ *
  * @author Matt
- * 
  */
 public class UIUtil {
 	public static void modifylaf() {
 		try {
 			String lafn = MotifLookAndFeel.class.getName();
-			UIManager.setLookAndFeel(lafn);
-			UIManager.setLookAndFeel(lafn);
+			//UIManager.setLookAndFeel(lafn);
+
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -38,6 +38,8 @@ public class UIUtil {
 			e.printStackTrace();
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
+		}catch (Exception e){
+			System.out.println(e);
 		}
 	}
 
@@ -47,8 +49,8 @@ public class UIUtil {
 		String sk;
 		UIDefaults ud = UIManager.getLookAndFeelDefaults();
 
-		if (true)
-			return;
+		if (true) return;
+
 		enumui();
 		sk = "nimbusFocus";
 		ud.put(sk, Color.LIGHT_GRAY);

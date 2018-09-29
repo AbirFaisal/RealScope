@@ -57,7 +57,7 @@ public class HoldoffSpinnerModel extends AbstractSpinnerModel implements
 	}
 
 	public static void main(String[] args) {
-		UIUtil.modifylaf();
+		//UIUtil.modifylaf();
 		final JFrame jf = new JFrame();
 		jf.setLayout(new FlowLayout());
 

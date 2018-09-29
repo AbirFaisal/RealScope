@@ -80,13 +80,13 @@ public class UsbCommunicator {
 
 	private UCModel um = new UCModel();
 
-	/** * 触发电平 */
+	/** * Trigger level */
 	public static void main(String[] args) {
 		launch();
 	}
 
 	public static void launch() {
-		UIUtil.modifyui();
+		//UIUtil.modifyui();
 
 		final UsbCommunicator window = new UsbCommunicator();
 		try {

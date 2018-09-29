@@ -36,7 +36,7 @@ public class SoftwareControl implements IBoard {
 				: "SPBVDSxxx2");
 	}
 
-	/** 此部分为同软件读写的文件版本相关的信息 */
+	/** This section is information related to the version of the file read and written by the software. */
 //	private int fileVer = VDS_Portable.FILEPROTOCOL_VDS_CURRENT;// 文件格式版本
 //	private int recordVer = VDS_Portable.RECORDPROTOCOL_VDS_CURRENT;// 文件格式版本
 //	private int refFileVer = VDS_Portable.REFPROTOCOL_VDS_CURRENT;// 文件格式版本

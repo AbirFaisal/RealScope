@@ -143,7 +143,9 @@ public class WorkBenchTiny implements WorkBench {
 	}
 
 	private void showMainFrm(final PrincipleTiny pt) {
-		UIUtil.modifyui();
+
+		UIUtil.modifyui(); //TODO Get rid of this
+
 		FontCenter.updateFont();
 		mw = new MainWindow(this, dh) {
 
@@ -151,10 +153,10 @@ public class WorkBenchTiny implements WorkBench {
 			protected ToolPane createToolPane(Dimension sz, ControlManager cm) {
 				return new ToolPane(this, sz, cm) {
 					@Override
-					protected ButtonPane createButtonPane(MainWindow mw,
-							ControlManager cm) {
+					protected ButtonPane createButtonPane(MainWindow mw, ControlManager cm) {
 						return new ButtonPane(mw, cm, dh) {
 							@Override
+
 							public void quickPatch() {
 								TinyTuneFunction tune = pt.getTuneFunction();
 								Register reg = tune.getTuneModel()
@@ -168,6 +170,7 @@ public class WorkBenchTiny implements WorkBench {
 										.getMainWindow().getWindow(), message,
 										title, JOptionPane.INFORMATION_MESSAGE);
 							}
+
 						};
 					}
 				};

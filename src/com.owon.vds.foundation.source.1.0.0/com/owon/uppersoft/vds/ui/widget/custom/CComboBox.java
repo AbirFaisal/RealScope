@@ -52,14 +52,14 @@ public class CComboBox extends JComboBox implements Localizable {
 
 	@Override
 	public void localize(ResourceBundle rb) {
-		/** 在单独切换的界面中修改语言，不会影响到这里 */
+		/** Modifying the language in a separate interface will not affect this. */
 		// setSelectedItem(getSelectedItem());
 		setFont(FontCenter.getComboFont());
 	}
 
 	public static void main_(String args[]) {
 		try {
-			UIUtil.modifyui();
+			//UIUtil.modifyui();
 			JFrame frame = new JFrame();
 			frame.setLayout(new FlowLayout());
 			frame.setBounds(100, 100, 500, 375);
