@@ -4,5 +4,5 @@ Class-Path: RXTXcomm.jar ch.ntb.usb-0.5.9.jar jxl.jar usb4java-1.2.0.j
  1.2.0-linux-arm.jar libusb4java-1.2.0-linux-x86.jar libusb4java-1.2.0
  -osx-x86_64.jar libusb4java-1.2.0-windows-x86.jar libusb4java-1.2.0-l
  inux-x86_64.jar libusb4java-1.2.0-windows-x86_64.jar
-Main-Class: com.abirfaisal.Realscope.Main
+Main-Class: com.owon.vds.tiny.Main
 
