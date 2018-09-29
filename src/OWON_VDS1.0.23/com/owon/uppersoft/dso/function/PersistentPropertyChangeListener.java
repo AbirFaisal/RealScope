@@ -23,7 +23,7 @@ public class PersistentPropertyChangeListener implements PropertyChangeListener 
 			boolean keepget = (Boolean) evt.getNewValue();
 			if (keepget) {
 				/** KNOW 在恢复到运行时，刷新状态以配合总览区画图 */
-				// dh.setStatus(RT_Normal);
+				// dataHouse.setStatus(RT_Normal);
 				// 因为其它原因必须注释：正常或单次触发时没有新波形进来还画dm必须保持为RT_DM
 				int idx = cm.displayControl.getPersistenceIndex();
 				pd.fadeThdOn_Off_UI(idx);

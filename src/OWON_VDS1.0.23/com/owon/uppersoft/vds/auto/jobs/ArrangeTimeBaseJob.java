@@ -94,7 +94,7 @@ public class ArrangeTimeBaseJob implements Runnable {
 
 	private int timebase(double msperiod, int chl) {
 		double sp = msperiod / 1000000 * 3 / 20;
-		logln("sp: " + sp);
+		logln("defaultSystemPrefrences: " + sp);
 		BigDecimal[] bdTIMEBASE = cc.getMachineInfo().bdTIMEBASE;
 		int tbnum = bdTIMEBASE.length;
 		int lasttb = tbnum - 1;

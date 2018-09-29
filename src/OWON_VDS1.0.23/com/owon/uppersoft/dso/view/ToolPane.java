@@ -85,7 +85,7 @@ public class ToolPane extends JPanel implements Localizable,
 			// @Override
 			// protected void paintComponent(Graphics g) {
 			// Graphics2D g2d = (Graphics2D) g;
-			// dh.getWaveFormManager().paintWFLog(g2d);
+			// dataHouse.getWaveFormManager().paintWFLog(g2d);
 			// }
 		};
 		logP.setBackground(Color.red);

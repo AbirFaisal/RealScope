@@ -90,7 +90,7 @@ public class AutosetRunner2 implements Logable, JobRunner {
 	 */
 	protected void beforeAutoset() {
 		dh.getWaveFormManager().hideDraw();
-		// dh.getWaveFormManager().forceFreshFreq();
+		// dataHouse.getWaveFormManager().forceFreshFreq();
 		// if (true)
 		// return;
 		// css = cc.getWaveFormInfoControl().getAllChannelSets();
@@ -133,7 +133,7 @@ public class AutosetRunner2 implements Logable, JobRunner {
 	}
 
 	protected void afterAutoset() {
-		// dh.getWaveFormManager().resumeForceFreshFreq();
+		// dataHouse.getWaveFormManager().resumeForceFreshFreq();
 
 		ict.getValueFeeder().resumeFeedMiddle();
 

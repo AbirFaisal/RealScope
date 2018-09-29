@@ -58,7 +58,7 @@ public class CKeyAdapter extends KeyAdapter {
 
 		case KeyEvent.VK_ENTER:
 			// autoset
-			// mw.getTitlePane().doAutoset();
+			// mainWindow.getTitlePane().doAutoset();
 			break;
 
 		case KeyEvent.VK_Q:

@@ -211,7 +211,7 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 	}
 
 	public void adjustLocale_LocalizeWindow(Config conf, int idx) {
-		// Config conf = dh.getControlManager().getConfig();
+		// Config conf = dataHouse.getControlManager().getConfig();
 		conf.setLocaleIndex(idx);
 		// Locale lold = Locale.getDefault();
 		Locale lnew = conf.getLocales().get(idx).getLocale();

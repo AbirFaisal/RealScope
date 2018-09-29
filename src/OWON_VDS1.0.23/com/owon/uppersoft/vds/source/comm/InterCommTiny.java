@@ -106,7 +106,7 @@ public class InterCommTiny extends AbsInterCommunicator {
 			return true;
 
 		boolean availableDM = ca.isDMAvailable();
-		// System.err.println("whenOperation:" + dh.isDMDataGotAlready());
+		// System.err.println("whenOperation:" + dataHouse.isDMDataGotAlready());
 		if (!availableDM)
 			return true;
 
@@ -169,7 +169,7 @@ public class InterCommTiny extends AbsInterCommunicator {
 	 * 主动要求
 	 */
 	private boolean getDMDataBackgroundWhenAsk() {
-		// System.err.println("whenask:" + dh.isDMDataGotAlready());
+		// System.err.println("whenask:" + dataHouse.isDMDataGotAlready());
 		if (sm.isConnected()) {
 
 			if (!ca.isDMDataGotAlready()) {
@@ -505,7 +505,7 @@ public class InterCommTiny extends AbsInterCommunicator {
 			// sbm.sendCMD(table.volt_gain[0], 1);
 			// sbm.sendCMD(table.volt_gain[1], 1);
 
-			// ca.getJobQueueDispatcher().dealQueue();
+			// controlApps.getJobQueueDispatcher().dealQueue();
 		}
 
 	}

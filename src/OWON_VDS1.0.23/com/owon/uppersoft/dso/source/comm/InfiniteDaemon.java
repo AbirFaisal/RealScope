@@ -95,7 +95,7 @@ public class InfiniteDaemon extends Flow {
 
 		midWait = 50;
 		longWait = 1000;
-		// DBG.errprintln("sp: " + getPeriod());
+		// DBG.errprintln("defaultSystemPrefrences: " + getPeriod());
 		m_initlink = new InitLinkRunner(mw, cm);
 	}
 
@@ -179,12 +179,12 @@ public class InfiniteDaemon extends Flow {
 					e.printStackTrace();
 				}
 				// 如果开启afterKeep，并在内部开启要深存储文件的流程，便会在此处使用传输线程获取文件，相当于阻塞
-				// ca.setDMDataGotAlready(false);//开启会造成多次拿深存储数据
+				// controlApps.setDMDataGotAlready(false);//开启会造成多次拿深存储数据
 				ic.afterkeepload();
 				its.confirmStopStatus();
 			}
 			/** 改为分别在要不要dm的最后进行按钮恢复 */
-			// mw.getTitlePane().confirmStopStatus();
+			// mainWindow.getTitlePane().confirmStopStatus();
 		}
 	};
 

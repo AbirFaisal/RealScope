@@ -203,7 +203,7 @@ public class ButtonPane extends JPanel implements Localizable,
 
 	private void factory_1in1() {
 		switch_3in1_fft(false);
-		// ChartScreen cs = mw.getChartScreen();
+		// ChartScreen cs = mainWindow.getChartScreen();
 		// boolean b = cs.is3in1();
 		// if (b)
 		// switch_3in1();

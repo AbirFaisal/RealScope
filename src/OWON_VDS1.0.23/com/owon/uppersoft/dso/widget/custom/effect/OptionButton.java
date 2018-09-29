@@ -92,7 +92,7 @@ public class OptionButton extends LButton implements MouseListener {
 			});
 		} else {
 			label = "";
-//			if (dh.isDMDataGotAlready())
+//			if (dataHouse.isDMDataGotAlready())
 //				label = I18nProvider.bundle().getString("Action.ResetDM");
 //			else
 //				label = I18nProvider.bundle().getString("Action.GetDMdata");
@@ -101,8 +101,8 @@ public class OptionButton extends LButton implements MouseListener {
 			getdm.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-//					if (dh.isDMDataGotAlready()) {
-//						new DataImporter().openfile(dh, InterCommunicator.dmf);
+//					if (dataHouse.isDMDataGotAlready()) {
+//						new DataImporter().openfile(dataHouse, InterCommunicator.dmf);
 //					} else {
 //						InterCommunicator ic = (InterCommunicator) Platform
 //								.getControlApps().interComm;

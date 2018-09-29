@@ -47,7 +47,7 @@ public class DataImporterTiny implements IDataImporter {
 			if (ci.DMem == 'M') {
 				dh.receiveOfflineDMData(cif);
 			} else {
-				// dh.receiveOfflineData(ci);
+				// dataHouse.receiveOfflineData(ci);
 			}
 			return true;
 		} else {

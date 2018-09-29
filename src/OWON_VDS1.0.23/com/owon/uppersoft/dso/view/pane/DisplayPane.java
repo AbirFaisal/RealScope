@@ -291,7 +291,7 @@ public class DisplayPane extends FunctionPanel {
 		final JToggleButton test2Button = new JToggleButton("t2");
 		test2Button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// ChartScreen cs = mw.getChartScreen();
+				// ChartScreen cs = mainWindow.getChartScreen();
 				if (test2Button.isSelected()) {
 					// cs.removeMouseGesture();
 					// testPrompt();

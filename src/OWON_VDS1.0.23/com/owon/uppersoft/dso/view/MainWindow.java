@@ -243,7 +243,7 @@ public class MainWindow implements Localizable, Promptable {
 		// frame.addMouseWheelListener(new MouseWheelListener() {
 		// @Override
 		// public void mouseWheelMoved(MouseWheelEvent e) {
-		// if (dh.isDMLoad() && !dh.isRuntime()) {
+		// if (dataHouse.isDMLoad() && !dataHouse.isRuntime()) {
 		// int i = e.getWheelRotation();
 		// toolPane.getDetailPane().nextTimeBase(i);}}});
 		cm.fireFFTonoff2EnableMainWindow();

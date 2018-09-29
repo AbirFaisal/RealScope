@@ -104,7 +104,7 @@ public class DockDialog implements PropertyChangeListener {
 
 	// public boolean isInMath() {
 	// String id = cp.getCurrentPage().getContentID();
-	// String mathid = mw.getDataHouse().getControlManager().getHomepage()
+	// String mathid = mainWindow.getDataHouse().getControlManager().getHomepage()
 	// .getMathPage().getContentID();
 	// return id.equals(mathid);
 	// }

@@ -68,7 +68,7 @@ public class RTLocInfoManager {
 		boolean ScreenMode_3 = pc.isScreenMode_3();
 		// int yb = pc.getHcenter();
 
-		// System.out.println(wf.dh.controlManager.sampleControl.avgon);
+		// System.out.println(wf.dataHouse.controlManager.sampleControl.avgon);
 		/**
 		 * KNOW 在暂不去保证混屏和平均值同步的情况下，判断平均值采样时就不再混屏
 		 * 

@@ -40,7 +40,7 @@ public class TrgToolBar extends JPanel implements Localizable {
 		forcebtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// if (dh.controlManager.isRuntimeStop()) {
+				// if (dataHouse.controlManager.isRuntimeStop()) {
 				// Platform.getMainWindow().getTitlePane()
 				// .askRun(false, false);
 				// }

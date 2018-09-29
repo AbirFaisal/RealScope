@@ -83,7 +83,7 @@ public abstract class AbsInterCommunicator {
 	// protected abstract void doSelfCorrect(ProgressObserver sd);
 
 	public void afterkeepload() {
-		// if (!ca.isDMDataGotAlready())
+		// if (!controlApps.isDMDataGotAlready())
 		// persistDMData();
 	}
 

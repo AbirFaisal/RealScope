@@ -247,8 +247,8 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 		long delta = t1 - measureTimes;
 		/** 改变后需要等到下一次赋值才能生效 */
 		if (delta > 800) {
-			// MainWindow mw = getMainWindow();
-			// ToolPane tp = mw.getToolPane();
+			// MainWindow mainWindow = getMainWindow();
+			// ToolPane tp = mainWindow.getToolPane();
 
 			// long t2, del;
 			measure(wfm);
@@ -755,7 +755,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 		fire_RefreshMeasureResult();// updateValuePane
 		// updateInfoBlocks
 		// int chl = ci.getNumber();
-		// mw.getToolPane().getInfoPane().updateVolt(chl);
+		// mainWindow.getToolPane().getInfoPane().updateVolt(chl);
 		pcs.firePropertyChange(PropertiesItem.UPDATE_CHLVOLT, null, chl);
 		// chartScreen.re_paint
 		// updateTriggerInofPane

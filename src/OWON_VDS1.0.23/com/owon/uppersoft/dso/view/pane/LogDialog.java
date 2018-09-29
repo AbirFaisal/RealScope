@@ -93,7 +93,7 @@ public class LogDialog extends JDialog {
 //				ControlManager.dbgbtns = jcb3.isSelected();
 //			}
 //		});
-//		sp.add(jcb3);
+//		defaultSystemPrefrences.add(jcb3);
 
 		JButton jbtn = new JButton("clear");
 		jbtn.addActionListener(new ActionListener() {

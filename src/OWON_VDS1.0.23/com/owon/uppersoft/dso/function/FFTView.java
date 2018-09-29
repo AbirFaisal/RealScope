@@ -142,7 +142,7 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 			return;
 		// ArrayLogger.configArray(adc, p, len);
 		/** 在运行时使用adc数据中的指定个数点作fft */
-		// if (dh.isRuntime()) {
+		// if (dataHouse.isRuntime()) {
 		// int length = cm.mathControl.fftAvailablePoints();
 		// if (length <= 0 || length > len)
 		// return;

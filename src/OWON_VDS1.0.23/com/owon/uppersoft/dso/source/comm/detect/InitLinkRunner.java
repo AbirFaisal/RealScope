@@ -71,7 +71,7 @@ public class InitLinkRunner implements Runnable {
 		// } catch (InterruptedException e) {
 		// e.printStackTrace();
 		// }
-		// mw.promptClose();
+		// mainWindow.promptClose();
 	}
 
 	

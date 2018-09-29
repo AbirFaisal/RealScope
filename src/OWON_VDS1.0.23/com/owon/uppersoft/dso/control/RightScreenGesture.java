@@ -134,7 +134,7 @@ public class RightScreenGesture implements TrgLevelCheckHandler {
 		if (rollOverChannel >= 0) {
 			tld.changeTrgLabel(rollOverChannel, othredshodType, del, wfm,
 					commit);
-			// mw.getToolPane().updateTrgVolt();
+			// mainWindow.getToolPane().updateTrgVolt();
 		}
 		vc.re_paint();
 	}

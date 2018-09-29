@@ -122,7 +122,7 @@ public class TestPane extends FunctionPanel implements Runnable {
 				new Thread() {
 					@Override
 					public void run() {
-						//ca.load();
+						//controlApps.load();
 					}
 				}.start();
 			}
@@ -131,7 +131,7 @@ public class TestPane extends FunctionPanel implements Runnable {
 		autoGenButton = nbtnt("auto get");
 		autoGenButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// ca.cm.sendRun();
+				// controlApps.cm.sendRun();
 				ca.keepload();
 			}
 		});
@@ -139,7 +139,7 @@ public class TestPane extends FunctionPanel implements Runnable {
 		stopButton = nbtnt("stop");
 		stopButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// ca.cm.sendStop();
+				// controlApps.cm.sendStop();
 				ca.stopkeep();
 			}
 		});
@@ -149,9 +149,9 @@ public class TestPane extends FunctionPanel implements Runnable {
 		linkBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// 过时的协议，可能不再适用
-				// GetDataRunner gdr = ca.getDaemon().getGetDataRunner();
+				// GetDataRunner gdr = controlApps.getDaemon().getGetDataRunner();
 				// gdr.sendCommand(sm, GetDataRunner.sgad, t);
-				// ca.interComm.receiveALL(cm, sm);
+				// controlApps.interComm.receiveALL(cm, sm);
 				// gdr.ci.DMem = 'M';
 				// sm.acceptDMData(gdr.ci);
 				// Platform.getDataHouse().receiveRTData(gdr.ci,
@@ -183,9 +183,9 @@ public class TestPane extends FunctionPanel implements Runnable {
 				new Thread() {
 					public void run() {
 						// InterCommunicator ic = (InterCommunicator)
-						// ca.interComm;
+						// controlApps.interComm;
 						// // Platform.getDataHouse().Run = false;
-						// DMInfo ci = DataSaver.saveFileM(ca.getDaemon()
+						// DMInfo ci = DataSaver.saveFileM(controlApps.getDaemon()
 						// .getGetDataRunner(), cm, f, new PropertyCL(),
 						// ic.getSaverHandler(), cm.sourceManager);
 						// if (ci.status == DMInfo.Status_RT_NoDM) {

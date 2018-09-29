@@ -148,7 +148,7 @@ public class ChartDecorater implements Decorate, AreaImageHelper {
 
 			/** 非慢扫情况下，画水平触发位置 */
 			int pos;
-			// if (dh.isDMLoad()) {
+			// if (dataHouse.isDMLoad()) {
 			// pos = -wfm.getHorTrgPos(tc);
 			// } else {
 			TimeControl tc = cm.getTimeControl();
@@ -200,8 +200,8 @@ public class ChartDecorater implements Decorate, AreaImageHelper {
 		g2d.fillRect(0, 0, w, h);
 		// g2d.clearRect(0, 0, bw, bh);
 
-		// MainWindow mw = Platform.getMainWindow();
-		// PaintContext pc = mw.getChartScreen().getPaintContext();
+		// MainWindow mainWindow = Platform.getMainWindow();
+		// PaintContext pc = mainWindow.getChartScreen().getPaintContext();
 		// bg.paintView(g2d, pc);
 		g2d.dispose();
 	}
