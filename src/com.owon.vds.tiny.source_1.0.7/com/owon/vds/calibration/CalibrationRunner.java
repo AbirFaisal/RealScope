@@ -24,31 +24,31 @@ public abstract class CalibrationRunner implements Logable {
 	public static final int ZEROSTEPCAL_LIMIT = 5;
 	public static final int ZEROSTEPCAL_BASE = 100;
 
-	private WaveFormManager wfm;
-	private ControlManager cm;
-	private ProgressObserver po;
-	private VoltageProvider vp;
+	private WaveFormManager waveFormManager;
+	private ControlManager controlManager;
+	private ProgressObserver progressObserver;
+	private VoltageProvider voltageProvider;
 
 	private Runnable finishedJob;
-	private CoreControl cc;
+	private CoreControl coreControl;
 	private int maximum;
 	private int progress;
 	private PropertyChangeSupport ict;
 
 	private ArgCreator ac;
 
-	public CalibrationRunner(ArgCreator ac, ProgressObserver po,
+	public CalibrationRunner(ArgCreator ac, ProgressObserver progressObserver,
 			Runnable finishedJob, PropertyChangeSupport ict) {
 		this.ac = ac;
-		this.po = po;
+		this.progressObserver = progressObserver;
 		this.ict = ict;
 		this.finishedJob = finishedJob;
 
 		DataHouse dh = Platform.getDataHouse();
-		cm = dh.controlManager;
-		cc = dh.controlManager.getCoreControl();
-		wfm = dh.getWaveFormManager();
-		vp = cc.getVoltageProvider();
+		controlManager = dh.controlManager;
+		coreControl = dh.controlManager.getCoreControl();
+		waveFormManager = dh.getWaveFormManager();
+		voltageProvider = coreControl.getVoltageProvider();
 	}
 
 	protected abstract int computeMaximum(int chlnum, int vbnum);
@@ -59,17 +59,17 @@ public abstract class CalibrationRunner implements Logable {
 	public void getReady() {
 		logln("parallel");
 
-		int vbnum = vp.getVoltageNumber();
-		int wfnum = cc.getWaveFormInfoControl().getLowMachineChannels();//
+		int vbnum = voltageProvider.getVoltageNumber();
+		int wfnum = coreControl.getWaveFormInfoControl().getLowMachineChannels();//
 		maximum = computeMaximum(wfnum, vbnum);
 
-		po.setMaximum(maximum);
+		progressObserver.setMaximum(maximum);
 
-		cc.getTimeControl().c_setTimebase_HorTrgPos(
-				cc.getMachineInfo().getTimebaseIndex("1ms"), 0);
+		coreControl.getTimeControl().c_setTimebase_HorTrgPos(
+				coreControl.getMachineInfo().getTimebaseIndex("1ms"), 0);
 
 		wfrlist = new ArrayList<IWFCalRoutine>(wfnum);
-		ON_WF_Iterator owi = wfm.on_wf_Iterator();
+		ON_WF_Iterator owi = waveFormManager.on_wf_Iterator();
 		while (owi.hasNext()) {
 			WaveForm wf = owi.next();
 			// if(wf.getChannelNumber() == 1)continue;
@@ -98,7 +98,7 @@ public abstract class CalibrationRunner implements Logable {
 	private List<IWFCalRoutine> wfrlist;
 
 	private boolean isExit() {
-		return cm.isExit();
+		return controlManager.isExit();
 	}
 
 	private boolean isCancel;
@@ -139,7 +139,7 @@ public abstract class CalibrationRunner implements Logable {
 				int v = wfr.routOut();
 				if (v > 0) {
 					progress += v;
-					po.increaseValue(v);
+					progressObserver.increaseValue(v);
 				}
 			}
 			logln("...roll...");

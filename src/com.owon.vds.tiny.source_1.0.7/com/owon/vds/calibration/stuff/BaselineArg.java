@@ -4,7 +4,8 @@ import com.owon.uppersoft.vds.core.tune.Cending;
 import com.owon.uppersoft.vds.core.tune.ICal;
 
 /**
- * 保存需要进行调试的参数的内容，以及调试的细节方式设置
+ * Save the contents of the parameters that need to be debugged,
+ * as well as the details of the debugging settings
  * 
  */
 public class BaselineArg extends AbsArg {
@@ -25,7 +26,7 @@ public class BaselineArg extends AbsArg {
 		} else {
 			sign = (cdn == Cending.ascending ? -1 : 1);
 		}
-		/** 特殊器件在参数和数值上的比例是1:1 */
+		/** The ratio of special devices to parameters and values is 1:1. */
 		int step = (int) Math.abs(del2Standard);
 		computeNapply(sign, step, vbidx);
 		tries++;
@@ -33,7 +34,8 @@ public class BaselineArg extends AbsArg {
 	}
 
 	/**
-	 * 假设已知调试参数改变的增量，进行如此设置；子类可继承实现如何计算得到增量
+	 * Assume that the increment of the debugging parameter change is known,
+	 * and the setting is made; the subclass inherits how the implementation calculates the increment.
 	 * 
 	 * @param sign
 	 * @param step
@@ -50,7 +52,7 @@ public class BaselineArg extends AbsArg {
 		else
 			v -= step;
 
-		/** 当数值short溢出时进行重限位，并补充可尝试次数 */
+		/** When the value short overflows, the limit is imposed and the number of attempts is replenished. */
 		if (v < 0) {
 			v = Unsign_Max_ADC + v;
 			tries -= 10;
@@ -62,7 +64,7 @@ public class BaselineArg extends AbsArg {
 	}
 
 	/**
-	 * 专用于调基线
+	 * Dedicated to adjusting the baseline
 	 * 
 	 * @param standard
 	 * @param result

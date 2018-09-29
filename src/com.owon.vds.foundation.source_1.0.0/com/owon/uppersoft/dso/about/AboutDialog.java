@@ -46,7 +46,8 @@ import com.sun.awt.AWTUtilities;
 
 public class AboutDialog implements Localizable {
 	private static final int outorc = 25, inorc = 24, orcw = 15, orch = 15;
-	private static final int fw = 550, fh = 150 + 40 + 40;
+	private static final int frameWidth = 550, frameHeight = 250 + 40 + 40;
+	private static AboutDialog instance;
 	private JDialog frame;
 	private StaticPref pre;
 	private CLabel title;
@@ -54,22 +55,6 @@ public class AboutDialog implements Localizable {
 	private JLabel version, machine, copyright, weblb;
 	private IBoard sc;
 	private JLabel vslbl;
-
-	private static AboutDialog instance;
-
-	public static void handleAboutInstance(Config conf, ControlManager cm) {
-		if (instance == null || !instance.getAboutDlg().isDisplayable()) {
-			instance = new AboutDialog(Platform.getMainWindow(), conf, cm);
-			cm.getLocalizeCenter().addLocalizable(instance);
-		} else {
-			instance.getAboutDlg().toFront();
-		}
-	}
-
-	public JDialog getAboutDlg() {
-		return frame;
-	}
-
 	private IUpdateAction updateAct;
 
 	public AboutDialog(MainWindow mw, Config cf, ControlManager cm) {
@@ -85,6 +70,19 @@ public class AboutDialog implements Localizable {
 		// WindowUtil.ShapeWindow(frame, Define.def.WND_SHAPE_ARC_2);//
 		// 边框圆角化,第2参圆角画化程度
 		AWTUtilities.setWindowOpaque(frame, false);
+	}
+
+	public static void handleAboutInstance(Config conf, ControlManager cm) {
+		if (instance == null || !instance.getAboutDlg().isDisplayable()) {
+			instance = new AboutDialog(Platform.getMainWindow(), conf, cm);
+			cm.getLocalizeCenter().addLocalizable(instance);
+		} else {
+			instance.getAboutDlg().toFront();
+		}
+	}
+
+	public JDialog getAboutDlg() {
+		return frame;
 	}
 
 	private void initialize(Window owner, final ControlManager cm) {
@@ -136,7 +134,7 @@ public class AboutDialog implements Localizable {
 		tp.setLayout(new OneRowLayout(new Insets(5, 5, 5, 5), 0));
 		new ComponentMover(frame, tp);
 		title = new CLabel();
-		title.setPreferredSize(new Dimension(fw - 50, 30));
+		title.setPreferredSize(new Dimension(frameWidth - 50, 30));
 
 		LButton closecb = new LButton();
 		ImageIcon close = SwingResourceManager.getIcon(TitlePane.class,
@@ -176,15 +174,15 @@ public class AboutDialog implements Localizable {
 		JPanel leftPane = new JPanel();
 		leftPane.setOpaque(false);
 		leftPane.setLayout(new OneColumnLayout());
-		leftPane.setPreferredSize(new Dimension(fw, 90));// / 2
+		leftPane.setPreferredSize(new Dimension(frameWidth, 90));// / 2
 		// JPanel rightPane = new JPanel();
 		// rightPane.setOpaque(false);
 		// rightPane.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-		// rightPane.setPreferredSize(new Dimension(fw / 2 - 60, 90));
+		// rightPane.setPreferredSize(new Dimension(frameWidth / 2 - 60, 90));
 
 		sc = cm.getSoftwareControl();
-		Dimension lbsz = new Dimension(fw / 2, 25);
-		/** 软件版本信息 */
+		Dimension lbsz = new Dimension(frameWidth / 2, 25);
+		/** Software version information */
 		version = new JLabel();
 		version.setFont(ft);
 		version.setPreferredSize(lbsz);
@@ -197,33 +195,33 @@ public class AboutDialog implements Localizable {
 		vslbl.setForeground(Color.WHITE);
 		leftPane.add(vslbl);
 
-		/** 机器信息 */
-		// machine = new JLabel();
-		// machine.setFont(ft);
-		// machine.setPreferredSize(lbsz);
-		// machine.setForeground(Color.WHITE);
-		// rightPane.add(machine);
+		/** Machine information */
+		 machine = new JLabel();
+		 machine.setFont(ft);
+		 machine.setPreferredSize(lbsz);
+		 machine.setForeground(Color.WHITE);
+		 leftPane.add(machine);
 
-		// boolean isMachCon = cm.sourceManager.isConnected();// true;//
-		//
-		// String ver_bios, ver_os, ver_fpga;
-		// if (isMachCon) {
-		// ver_bios = "    " + sc.ver_bios;
-		// ver_os = "    " + sc.ver_os;
-		// ver_fpga = "    " + sc.ver_fpga;
-		// } else {
-		// ver_bios = "    ";// + "None";
-		// ver_os = null;
-		// ver_fpga = null;
-		// }
-		// String[] machInfos = { ver_bios, ver_os, ver_fpga };
-		// for (int i = 0; i < machInfos.length; i++) {
-		// JLabel lb = new JLabel(machInfos[i]);
-		// lb.setFont(ft);
-		// lb.setPreferredSize(lbsz);
-		// lb.setForeground(Color.WHITE);
-		// rightPane.add(lb);
-		// }
+		 boolean isMachCon = cm.sourceManager.isConnected();// true;//
+
+		 String ver_bios, ver_os, ver_fpga;
+		 if (isMachCon) {
+		 ver_bios = "    " + sc.getBoardVersion();
+		 ver_os = "    " + sc.getBoardSeries();
+		 ver_fpga = "    " + sc.getBoardVersion();
+		 } else {
+		 ver_bios = "    ";// + "None";
+		 ver_os = null;
+		 ver_fpga = null;
+		 }
+		 String[] machInfos = { ver_bios, ver_os, ver_fpga };
+		 for (int i = 0; i < machInfos.length; i++) {
+		 JLabel lb = new JLabel(machInfos[i]);
+		 lb.setFont(ft);
+		 lb.setPreferredSize(lbsz);
+		 lb.setForeground(Color.WHITE);
+		 leftPane.add(lb);
+		 }
 
 		// copyright = new JLabel();
 		// copyright.setFont(ft);
@@ -232,7 +230,7 @@ public class AboutDialog implements Localizable {
 		weblb = new JLabel(getWebsite());
 		weblb.setFont(ft);
 		weblb.setForeground(Color.WHITE);
-		weblb.setPreferredSize(new Dimension(fw, 20));
+		weblb.setPreferredSize(new Dimension(frameWidth, 20));
 
 		updatebtn = new CButton();
 		updatebtn.addActionListener(new ActionListener() {
@@ -251,7 +249,7 @@ public class AboutDialog implements Localizable {
 		cp.add(tp, BorderLayout.NORTH);
 		cp.add(gp, BorderLayout.CENTER);
 
-		frame.setSize(fw, fh);
+		frame.setSize(frameWidth, frameHeight);
 		frame.setLocationRelativeTo(owner);
 
 		localize(rb);
