@@ -8,7 +8,11 @@ import com.owon.uppersoft.vds.core.wf.WaveFormInfo;
 import com.owon.uppersoft.vds.ui.widget.custom.LContainer;
 
 /**
- * 通道设置 通道选择 ch1,ch2,ch3,ch4 开关 通道耦合 交流直流 反相 开启，关闭 探头 X1,X10,X100,X1000
+ * Channel settings
+ * Channel selection ch1, ch2, ch3, ch4 switch
+ * Channel coupling AC DC
+ * Inverting On, off
+ * Probe X1, X10, X100, X1000
  * 
  * @author Matt
  * 

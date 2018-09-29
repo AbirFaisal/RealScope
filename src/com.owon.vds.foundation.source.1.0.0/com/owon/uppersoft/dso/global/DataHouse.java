@@ -50,7 +50,7 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 		return isRuntime() || status == Offline_Unload;
 	}
 
-	private boolean isRuntime() {
+	public boolean isRuntime() {
 		return controlManager.isRuntime();
 	}
 

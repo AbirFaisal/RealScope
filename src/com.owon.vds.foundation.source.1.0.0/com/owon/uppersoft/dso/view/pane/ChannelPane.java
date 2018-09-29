@@ -26,8 +26,8 @@ import com.owon.uppersoft.vds.ui.widget.help.RadioButtonGroup;
 
 public class ChannelPane extends FunctionPanel implements ItemListener,
 		ActionListener {
-	/** 隐藏带宽限制 */
-	private boolean bandLimit = true;
+	/** Hidden bandwidth limit */
+	private boolean bandLimit = false;
 
 	private CCheckBox channelOption, channelOpposite;
 

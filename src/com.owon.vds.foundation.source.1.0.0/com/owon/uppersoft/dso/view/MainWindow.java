@@ -16,11 +16,7 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ResourceBundle;
@@ -237,13 +233,16 @@ public class MainWindow implements Localizable, Promptable {
 		lc.addLocalizable(toolPane);
 		lc.addLocalizable(this);
 
-		/** 暂时关闭，因为存储深度的combobox的滚轮事件也会被接收 */
-		// frame.addMouseWheelListener(new MouseWheelListener() {
-		// @Override
-		// public void mouseWheelMoved(MouseWheelEvent e) {
-		// if (dh.isDMLoad() && !dh.isRuntime()) {
-		// int i = e.getWheelRotation();
-		// toolPane.getDetailPane().nextTimeBase(i);}}});
+		/** Temporarily turned off because the depth of the combobox's scroll event will also be received */
+		frame.addMouseWheelListener(new MouseWheelListener() {
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				if (dh.isDMLoad() && !dh.isRuntime()) {
+					int i = e.getWheelRotation();
+					toolPane.getDetailPane().nextTimeBase(i);
+				}
+			}
+		});
 		cm.fireFFTonoff2EnableMainWindow();
 
 		cm.pcs.addPropertyChangeListener(new PropertyChangeListener() {

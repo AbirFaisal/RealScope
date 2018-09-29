@@ -82,7 +82,7 @@ public class SoftwareControl implements IBoard {
 	}
 
 	public boolean isVDS2062Bandlimit() {
-		// BoardVersion < 3.0关闭Bandlimit
+		// BoardVersion < 3.0 Turn off Bandlimit
 		final String threshold = "3.0";
 		try {
 			String boardver = m_version.substring(1).trim();// 去除V
@@ -95,7 +95,7 @@ public class SoftwareControl implements IBoard {
 	}
 
 	public boolean isVDS2064Bandlimit() {
-		// BoardVersion <= 1.0.3 关闭Bandlimit
+		// BoardVersion <= 1.0.3 Turn off Bandlimit
 		final String threshold = "1.0.3";
 		try {
 			String boardver = m_version.substring(1).trim();// 去除V
