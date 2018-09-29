@@ -61,6 +61,6 @@ public class ChannelPage extends AbstractContentPage {
 	}
 
 	public boolean isBandLimit() {
-		return cm.isBandLimit();
+		return false;
 	}
 }

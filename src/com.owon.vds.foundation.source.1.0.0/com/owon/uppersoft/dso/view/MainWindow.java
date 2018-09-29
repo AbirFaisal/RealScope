@@ -42,7 +42,7 @@ import com.owon.uppersoft.dso.model.trigger.TrgCheckType;
 import com.owon.uppersoft.dso.pref.Define;
 import com.owon.uppersoft.dso.pref.Style;
 import com.owon.uppersoft.dso.source.comm.TrgStatus;
-import com.owon.uppersoft.dso.update.action.UpdateAction;
+//import com.owon.uppersoft.dso.update.action.UpdateAction;
 import com.owon.uppersoft.dso.util.PropertiesItem;
 import com.owon.uppersoft.dso.view.pane.dock.MarkValueBulletin;
 import com.owon.uppersoft.dso.wf.ChartScreenSelectModel;
@@ -110,7 +110,7 @@ public class MainWindow implements Localizable, Promptable {
 
 		// updateAct = new UpdateAction(cm, frame);
 		// cm.getLocalizeCenter().addLocalizable(updateAct);
-		UpdateAction.handleUpdateAction(cm, frame);
+		//UpdateAction.handleUpdateAction(cm, frame);
 	}
 
 	public DataHouse getDataHouse() {

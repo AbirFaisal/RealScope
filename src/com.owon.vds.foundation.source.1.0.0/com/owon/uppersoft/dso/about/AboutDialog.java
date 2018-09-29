@@ -34,7 +34,7 @@ import com.owon.uppersoft.vds.core.aspect.IBoard;
 import com.owon.uppersoft.vds.core.aspect.Localizable;
 import com.owon.uppersoft.vds.core.pref.Config;
 import com.owon.uppersoft.vds.core.pref.StaticPref;
-import com.owon.uppersoft.vds.core.update.IUpdateAction;
+//import com.owon.uppersoft.vds.core.update.IUpdateAction;
 import com.owon.uppersoft.vds.ui.layout.OneColumnLayout;
 import com.owon.uppersoft.vds.ui.layout.OneRowLayout;
 import com.owon.uppersoft.vds.ui.resource.SwingResourceManager;
@@ -50,7 +50,7 @@ public class AboutDialog implements Localizable {
 	private JDialog frame;
 	private StaticPref pre;
 	private CLabel title;
-	private CButton updatebtn;
+	//private CButton updatebtn;
 	private JLabel version, machine, copyright, weblb;
 	private IBoard sc;
 	private JLabel vslbl;
@@ -70,7 +70,7 @@ public class AboutDialog implements Localizable {
 		return frame;
 	}
 
-	private IUpdateAction updateAct;
+	//private IUpdateAction updateAct;
 
 	public AboutDialog(MainWindow mw, Config cf, ControlManager cm) {
 		//this.updateAct = UpdateAction.getUpdateAction();
@@ -234,20 +234,19 @@ public class AboutDialog implements Localizable {
 		weblb.setForeground(Color.WHITE);
 		weblb.setPreferredSize(new Dimension(fw, 20));
 
-		updatebtn = new CButton();
-		updatebtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				updateAct.updateAction();
-				// cm.restartWhenMismatching(101);
-			}
-		});
+//		updatebtn = new CButton();
+//		updatebtn.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				//updateAct.updateAction();
+//				// cm.restartWhenMismatching(101);
+//			}
+//		});
 
 		gp.add(leftPane);
 		// gp.add(rightPane);
 		// gp.add(copyright);
 		gp.add(weblb);
-		if (pre.isOwon())
-			gp.add(updatebtn);
+		//if (pre.isOwon()) gp.add(updatebtn);
 		cp.add(tp, BorderLayout.NORTH);
 		cp.add(gp, BorderLayout.CENTER);
 
@@ -287,7 +286,7 @@ public class AboutDialog implements Localizable {
 
 		// copyright.setText(rb.getString("About.Copyright"));
 		weblb.setText(getWebsite());
-		updatebtn.setText(rb.getString("Action.Update"));
+		//updatebtn.setText(rb.getString("Action.Update"));
 
 	}
 }

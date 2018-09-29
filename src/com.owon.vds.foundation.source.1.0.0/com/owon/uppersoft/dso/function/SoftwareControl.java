@@ -5,10 +5,10 @@ import java.awt.event.KeyEvent;
 import com.owon.uppersoft.dso.global.ControlManager;
 import com.owon.uppersoft.dso.util.PropertiesItem;
 import com.owon.uppersoft.vds.core.aspect.IBoard;
-import com.owon.uppersoft.vds.core.update.UpdateDetection;
+//import com.owon.uppersoft.vds.core.update.UpdateDetection;
 
 /**
- * SoftwareControl，存放软件的配置信息
+ * SoftwareControl，Store software configuration information
  * 
  */
 public class SoftwareControl implements IBoard {
@@ -109,7 +109,7 @@ public class SoftwareControl implements IBoard {
 
 	// 结果为正前者大，为负前者小，为零相等
 	private static int compareVersion(String boardver, String ver) {
-		return UpdateDetection.compareVersion(boardver, ver);
+		return 1;
 	}
 
 	public void setBoardSeries(String m_series) {
