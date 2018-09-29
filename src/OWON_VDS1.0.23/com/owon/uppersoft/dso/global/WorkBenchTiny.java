@@ -39,7 +39,7 @@ import com.owon.vds.tiny.tune.TinyTuneFunction;
  */
 public class WorkBenchTiny implements WorkBench {
 
-	public static final String SCOPEINFOR = "/com/owon/uppersoft/dso/pref/scopeInfo.ini";
+	public static final String SCOPE_INFO_R = "/com/owon/uppersoft/dso/pref/scopeInfo.ini";
 	public static final String PRODUCT_URL_NAME = "com.owon.uppersoft.dso";
 	public static final String CONFIGURATION_DIR = "configuration";
 	public static final String PREFERENCE_FILENAME = "prefrences.properties";
@@ -60,7 +60,7 @@ public class WorkBenchTiny implements WorkBench {
 		Properties p = conf.getSessionProperties();
 		// channelsNumber = conf.getChannelsNumber();
 
-		/** 装入机型类别 */
+		/** Load model category */
 		String productParam = p.getProperty("productParam", "VDS3102ONE")
 				.toUpperCase();
 
@@ -69,7 +69,7 @@ public class WorkBenchTiny implements WorkBench {
 		coreControl = new CoreControlTiny(conf, pt);
 		controlManager = new ControlManagerTiny(conf, pt, coreControl);
 
-		/** dm先于mf，但可以把初始化工作延后 */
+		/** Dm precedes mf, but can delay initialization */
 		dataHouse = new DataHouse(controlManager, this) {
 			@Override
 			public IMultiReceiver createMultiReceiver(ControlManager cm, WaveFormManager wfm) {
@@ -98,6 +98,7 @@ public class WorkBenchTiny implements WorkBench {
 				};
 			}
 		};
+
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() {
@@ -110,6 +111,7 @@ public class WorkBenchTiny implements WorkBench {
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
+
 		// System.out.println(mainWindow);
 		controlApps = new ControlAppsTiny(dataHouse, mainWindow);
 		conf.releaseSession();
@@ -181,7 +183,7 @@ public class WorkBenchTiny implements WorkBench {
 	}
 
 	public InputStream getDefaultInIStream() {
-		return WorkBenchTiny.class.getResourceAsStream(SCOPEINFOR);
+		return WorkBenchTiny.class.getResourceAsStream(SCOPE_INFO_R);
 	}
 
 	public InputStream getStaticPrefStream() {

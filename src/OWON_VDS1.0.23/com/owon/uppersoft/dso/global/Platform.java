@@ -17,7 +17,6 @@ public class Platform {
 			workBench.join();
 		} catch (Throwable e) {
 			e.printStackTrace();
-			// 方便测试中捕获异常，确定处理
 			System.out.println(e.getMessage());
 		}
 	}
@@ -57,8 +56,9 @@ public class Platform {
 	 * @return Control manager
 	 */
 	public static final ControlManager getControlManager() {
-		if (workBench == null)
-			return null;
+
+		if (workBench == null) return null;
+
 		return workBench.getControlManager();
 	}
 
@@ -66,8 +66,9 @@ public class Platform {
 	 * @return 核心控制器
 	 */
 	public static final CoreControl getCoreControl() {
-		if (workBench == null)
-			return null;
+
+		if (workBench == null) return null;
+
 		return getControlManager().getCoreControl();
 	}
 

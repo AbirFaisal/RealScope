@@ -25,7 +25,7 @@ import com.owon.uppersoft.vds.core.wf.rt.ChannelsTransportInfo;
 import com.owon.uppersoft.vds.ui.resource.FontCenter;
 
 /**
- * DataHouse，数据仓库
+ * DataHouse，database
  * 
  */
 public abstract class DataHouse implements Localizable, ILazy, Paintable {
@@ -55,13 +55,16 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 	}
 
 	/**
-	 * 该值指示了内部载入数据的状态，如果因为数据无法载入，则仍保持着上一次的状态
+	 * This value indicates the state of the internal load data,
+	 * if the data is not loaded, it remains in the previous state.
 	 */
 	private int status = Offline_Unload;
 	private boolean DataComplete = false;
 
 	/**
-	 * 屏幕内波形的垂直变换，在停止后支持，不需要拿深存储，并记录变换信息用于载入深存储使用
+	 * The vertical transformation of the waveform inside the screen,
+	 * supported after stopping, does not need to take deep storage,
+	 * and record the transformation information for loading deep storage.
 	 * 
 	 * @return
 	 */
@@ -107,7 +110,8 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 	}
 
 	/**
-	 * 考虑在某些情况下调用以保证在刚开始运行但未获取数据时该值不会保留DM的状态而导致逻辑错误
+	 * Consider a call in some cases to ensure that the value does not retain the
+	 * state of the DM and causes a logic error when it starts running but does not acquire data.
 	 */
 	public void admiteRT() {
 		status = RT_Normal;
