@@ -19,7 +19,8 @@ import com.owon.uppersoft.vds.util.FileUtil;
 import com.sun.java.swing.plaf.motif.MotifLookAndFeel;
 
 /**
- * UpdateRuntime，更新运行时环境，在程序启动之初创建，用于清理上次更新留下的垃圾文件，并支持随时的更新服务。
+ * UpdateRuntime, which updates the runtime environment and is created at the beginning of the
+ * program to clean up the junk files left by the last update and to support the update service at any time.
  * 
  */
 public class UpdateRuntime {

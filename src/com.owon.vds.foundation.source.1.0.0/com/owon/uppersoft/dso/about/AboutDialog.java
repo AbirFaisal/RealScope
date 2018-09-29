@@ -26,7 +26,7 @@ import com.owon.uppersoft.dso.global.ControlManager;
 import com.owon.uppersoft.dso.global.Platform;
 import com.owon.uppersoft.dso.i18n.I18nProvider;
 import com.owon.uppersoft.dso.pref.Define;
-import com.owon.uppersoft.dso.update.action.UpdateAction;
+//import com.owon.uppersoft.dso.update.action.UpdateAction;
 import com.owon.uppersoft.dso.view.MainWindow;
 import com.owon.uppersoft.dso.view.TitlePane;
 import com.owon.uppersoft.dso.view.pane.dock.widget.TitleBar;
@@ -73,7 +73,7 @@ public class AboutDialog implements Localizable {
 	private IUpdateAction updateAct;
 
 	public AboutDialog(MainWindow mw, Config cf, ControlManager cm) {
-		this.updateAct = UpdateAction.getUpdateAction();
+		//this.updateAct = UpdateAction.getUpdateAction();
 		Window owner = mw.getFrame();
 		pre = cf.getStaticPref();
 		initialize(owner, cm);

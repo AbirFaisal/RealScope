@@ -1,4 +1,0 @@
-native2ascii -reverse -encoding utf-8 CommonMsgLib_zh_CN.properties CommonMsgLib_zh_CN.txt 
-native2ascii -reverse -encoding utf-8 OSCMsgLib_zh_CN.properties OSCMsgLib_zh_CN.txt 
-native2ascii -reverse -encoding utf-8 LAMsgLib_zh_CN.properties LAMsgLib_zh_CN.txt 
-

@@ -17,8 +17,8 @@ import com.owon.uppersoft.vds.data.RGB;
 import com.sun.java.swing.plaf.motif.MotifLookAndFeel;
 
 /**
- * 注释：JSpinner在调用非构造函数new JSpinner(SpinnerNumberModel
- * snm)时，可能出现边框背景色的问题，怀疑是setUIProperty("opaque",true); updateUI();未被调用
+ * Note: JSpinner is calling the non-constructor new JSpinner (SpinnerNumberModel
+ * snm), the background color of the border may occur, it is suspected that setUIProperty("opaque", true); updateUI(); is not called
  * 
  * @author Matt
  * 
@@ -28,6 +28,8 @@ public class UIUtil {
 		try {
 			String lafn = MotifLookAndFeel.class.getName();
 			UIManager.setLookAndFeel(lafn);
+			UIManager.setLookAndFeel(lafn);
+
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {

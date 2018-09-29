@@ -43,9 +43,10 @@ public class UpdateAction implements Runnable, IUpdateAction, Localizable {
 
 		ur = new UpdateRuntime(uc);
 		/**
-		 * 清理任务不再在启动程序时进行，因自动更新之后使用新的进程打开程序，
-		 * 
-		 * 无法确保和旧程序进程的关闭同步，可能导致旧版本的jar包无法被删除
+		 * The cleanup task is no longer performed when the program is started.
+		 * Because the program is opened with a new process after the automatic
+		 * update, the shutdown of the old program process cannot be ensured,
+		 * and the old version of the jar package cannot be deleted.
 		 */
 		ur.clearUp();
 		ur.checkUpdate();

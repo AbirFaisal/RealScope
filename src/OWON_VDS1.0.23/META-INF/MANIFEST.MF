@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Class-Path: jxl.jar ch.ntb.usb-0.5.9.jar usb4java-1.2.0.jar commons-la
- ng3-3.2.1.jar libusb4java-1.2.0-osx-x86.jar libusb4java-1.2.0-linux-a
- rm.jar libusb4java-1.2.0-linux-x86.jar libusb4java-1.2.0-osx-x86_64.j
- ar libusb4java-1.2.0-windows-x86.jar libusb4java-1.2.0-linux-x86_64.j
- ar libusb4java-1.2.0-windows-x86_64.jar RXTXcomm.jar
-Main-Class: com.owon.vds.tiny.Main
-
