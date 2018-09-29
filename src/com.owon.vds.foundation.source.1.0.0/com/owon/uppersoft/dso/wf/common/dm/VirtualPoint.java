@@ -110,13 +110,13 @@ public abstract class VirtualPoint {
 	@Override
 	public String toString() {
 		return SFormatter.UIformat("sample: %d, pixel: %d, point: %d", sample,
-				pixel, getPoint());
+				pixel, point);
 	}
 
 	private BigDecimal rate;
 
 	public double getRFGap() {
-		return pixel / (double) getPoint();
+		return pixel / (double) point;
 	}
 
 	/**
@@ -226,7 +226,7 @@ public abstract class VirtualPoint {
 	 * @param array
 	 */
 	public void back2NormalXOrder(Range ap, byte[] array) {
-		int n = getPoint();
+		int n = point;
 		int x1 = ap.left / n;
 
 		// 改回正序
@@ -255,7 +255,7 @@ public abstract class VirtualPoint {
 	 * @return
 	 */
 	public int xyrangeoffset2xoffset(int xyrangeoffset, Range ap) {
-		int v = xyrangeoffset + 1 - (ap.left / getPoint() * pixel);
+		int v = xyrangeoffset + 1 - (ap.left / point * pixel);
 		return v;
 	}
 

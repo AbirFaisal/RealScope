@@ -297,9 +297,9 @@ public class CompressInfoUnit implements InfoUnit {
 		boolean b = PrimaryTypeUtil.canHoldAsInt(vbmulti);
 
 		if (b) {
-			vph.transcriptionInt(b_adcbuf, pixbuf, vbmulti, yb, screenMode_3);
+			VirtualPointHandler.transcriptionInt(b_adcbuf, pixbuf, vbmulti, yb, screenMode_3);
 		} else {
-			vph
+			VirtualPointHandler
 					.transcriptionDouble(b_adcbuf, pixbuf, vbmulti, yb,
 							screenMode_3);
 		}

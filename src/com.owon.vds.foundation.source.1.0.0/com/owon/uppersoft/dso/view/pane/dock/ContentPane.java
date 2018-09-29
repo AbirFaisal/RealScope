@@ -225,7 +225,7 @@ public class ContentPane extends JPanel implements Localizable {
 			currentPage.beforeLeave();
 		}
 
-		setIconButtonId(afterPage.getContentID());
+		iconButtonId = afterPage.getContentID();
 
 		currentLC = afterPage.createPage(beforePage, this, toward);
 		switchPane.doSwitch(currentLC, toward, isSwitch);

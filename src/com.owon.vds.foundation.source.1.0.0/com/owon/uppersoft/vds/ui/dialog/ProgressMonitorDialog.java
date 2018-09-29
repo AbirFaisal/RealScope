@@ -226,7 +226,7 @@ public class ProgressMonitorDialog extends JDialog {
 			if (i == 90)
 				p.setNote("Download list has built,Contrast is closing...");
 
-			if (p.getProgressBar() != null)
+			if (p.pBar != null)
 				p.setValue(i);
 			if (p.isCanceled()) {
 				System.out.println("iscanceled " + i);

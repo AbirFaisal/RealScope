@@ -159,7 +159,7 @@ public class DataSaverTiny extends AbsDataSaver {
 				raf.writeInt(0); // (2)块长度：暂时存0
 
 				// 目前只保存深存储文件，其处理方式是INVERSE_TYPE_RAW_REVERSE
-				raf.writeInt(cit.getInverseType_DM(chi.isInverse()));
+				raf.writeInt(ChannelInverseTranslator.getInverseType_DM(chi.isInverse()));
 
 				cd.writeRandomAccessFile(raf);
 				ci.initPos = cd.initPos;

@@ -105,7 +105,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 	}
 
 	public int getXoffset() {
-		return getXBloc();
+		return xbloc;
 	}
 
 	protected int getXBloc() {
@@ -145,8 +145,8 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 	 * @return
 	 */
 	private int getHorTrgPos(int hortrgidx) {
-		int del = hortrgidx - getCenterPointIndex();
-		int v = diluteR.multiplyByInt(del) + getCenterPointOffset();
+		int del = hortrgidx - cpidx;
+		int v = diluteR.multiplyByInt(del) + cpoff;
 
 		// 2.5 MISS 这里可能出现浮点数丢失
 		switch (del % diluteR.getDivisor()) {
@@ -244,7 +244,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 
 			/** 这里使用满屏点数，假定插值对Dilute不可见 */
 			diluteR.set(pixs, screendatalen);
-			computeCenterPointStuff(getCenterPointOffset());
+			computeCenterPointStuff(cpoff);
 			// spi_offs[tbidx] = getCenterPointOffset();
 			setXBloc(0);
 
@@ -277,7 +277,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 		int re = diluteR.modeByIntOffset(nxo);
 
 		int cpoff;
-		int cpidx = getCenterPointIndex();
+		int cpidx = this.cpidx;
 		if (right) {
 			cpidx -= num;
 			cpoff = re;
@@ -300,7 +300,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 		/**
 		 * 参照点距离中心点的新位置
 		 */
-		int nxo = getCenterPointOffset() + m;
+		int nxo = cpoff + m;
 		computeCenterPointStuff(nxo);
 		reDilute();
 	}
@@ -442,12 +442,12 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 
 		/** 数据的起始索引 */
 		/** i0，i1为无边界的点索引，不受具体0值和存储深度限制，x1为不可画的右边界 */
-		final int cpidx = getCenterPointIndex();
+		final int cpidx = this.cpidx;
 		// System.err.println("cpidx: " + cpidx);
 		i1 = i0 = cpidx;
 		loadcp();
 		/** cpidx的x坐标，起始于最左边，-...+ */
-		final int cpx = wc + getCenterPointOffset();
+		final int cpx = wc + cpoff;
 		// ...
 
 		if (cpx < pw) {
@@ -559,7 +559,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 		BeyondMax = BeyondMin = false;
 		byte[] barr = b_adcbuf.array();
 		int j = 0, v;
-		final byte max = (byte) getMax(), min = (byte) getMin();
+		final byte max = (byte) Max_8bit, min = (byte) Min_8bit;
 		for (int i = pos; i < limit; i++, j++) {
 			v = array[i];
 			if (v > max) {
@@ -590,7 +590,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 		screendatalen = md.multiplyByInt(screendatalen);
 		int cpoff;
 
-		cpoff = getCenterPointOffset();
+		cpoff = this.cpoff;
 
 		/** 保存当前档位的cpoff */
 		spi_offs[tbidx] = cpoff;
@@ -635,7 +635,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 		release();
 
 		// cpoff无须传递出去
-		ciu.fakeIn(getCenterPointIndex(), 1, li, 0);
+		ciu.fakeIn(cpidx, 1, li, 0);
 		ciu.tbTranslate(nex1_1, nex, tbidx);
 	}
 
@@ -662,7 +662,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 		/** 横线拉到满，括弧相应缩小 */
 		/** ?? (i0 / (double) li.datalen) - xbloc / (li.datalen * r) */
 		x0 = (int) (wlen
-				* ((i0 / (double) li.datalen) - getXBloc() / (li.datalen * r)) + xoff);
+				* ((i0 / (double) li.datalen) - xbloc / (li.datalen * r)) + xoff);
 		x1 = x0 + (int) (wlen * li.pixs / (li.datalen * r));
 
 		g2d.setColor(Color.LIGHT_GRAY);
@@ -706,7 +706,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 		DBG.outprintln(",wlen: " + wlen);
 		DBG.outprintln(",i0: " + i0);
 		DBG.outprintln(",li.datalen: " + li.datalen);
-		DBG.outprintln(",xbloc: " + getXBloc());
+		DBG.outprintln(",xbloc: " + xbloc);
 		DBG.outprintln(",xoff: " + xoff);
 	}
 
@@ -721,7 +721,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 
 	@Override
 	public int getDrawMode() {
-		int screendatalen = getScreendatalen();
+		int screendatalen = this.screendatalen;
 		// System.err.println(screendatalen);
 
 		// if (pg.canPaintSinePlug(screendatalen)) {
@@ -741,7 +741,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 	}
 
 	public double getGap() {
-		int screendatalen = getScreendatalen();
+		int screendatalen = this.screendatalen;
 
 		if (pg.canPaintSinePlug(screendatalen)) {
 			return pg.getGap();

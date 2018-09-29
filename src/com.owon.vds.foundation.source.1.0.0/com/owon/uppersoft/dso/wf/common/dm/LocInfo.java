@@ -146,7 +146,7 @@ public abstract class LocInfo {
 	protected abstract IDiluteInfoUnit createDiluteInfoUnit(LocInfo li);
 
 	protected InfoUnit getInfoUnit() {
-		if (isCompress()) {
+		if (compress) {
 			return ciu;
 		} else {
 			return diu;
@@ -180,7 +180,7 @@ public abstract class LocInfo {
 		BigDecimal nexfsl = bdfsl.multiply(bi);
 		double dblnexfsl = nexfsl.doubleValue();
 		boolean bC = becomeCompress(dblnexfsl);
-		if (isCompress()) {
+		if (compress) {
 			if (bC) {
 				ciu.tbTranslate(bdtb, nexbdtb, idx);
 			} else {
@@ -250,7 +250,7 @@ public abstract class LocInfo {
 		if (datalen <= 0)
 			return null;
 
-		if (isCompress()) {
+		if (compress) {
 			return ciu.getb_adcbuf();
 		} else {
 			return diu.getb_adcbuf();
@@ -258,7 +258,7 @@ public abstract class LocInfo {
 	}
 
 	public double getGap() {
-		if (isCompress()) {
+		if (compress) {
 			return ciu.getGap();
 		} else {
 			return (double) diu.getGap();
@@ -266,7 +266,7 @@ public abstract class LocInfo {
 	}
 
 	public int getDrawMode() {
-		if (isCompress()) {
+		if (compress) {
 			return ciu.getDrawMode();
 		} else {
 			return diu.getDrawMode();

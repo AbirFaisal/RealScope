@@ -130,14 +130,14 @@ public class MarkValueBulletin extends JDialog implements MouseListener,
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		setDiaphaneity((float) 0.7);
+		this.diaphaneity = (float) 0.7;
 		mouseOver = true;
 		repaint();
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		setDiaphaneity((float) 0.5);
+		this.diaphaneity = (float) 0.5;
 		mouseOver = false;
 		repaint();
 	}

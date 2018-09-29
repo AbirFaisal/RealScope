@@ -17,7 +17,7 @@ public class SharedFocusAdapter extends FocusAdapter {
 	public SharedFocusAdapter(SliderDisposeDelegate delegate, JDialog dlg) {
 		this.delegate = delegate;
 		this.dlg = dlg;
-		setOn(true);
+		this.on = true;
 	}
 
 	@Override

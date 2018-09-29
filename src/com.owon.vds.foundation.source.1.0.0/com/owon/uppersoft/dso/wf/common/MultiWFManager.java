@@ -98,7 +98,7 @@ public class MultiWFManager implements IMultiWFManager {
 			ci.setProbeMultiIdx(oi.probeMultiIdx);
 
 			/** 录制波形无需进行反相 */
-			ci.c_setInverse(cit.setOfflineInverseType_Normal(cdi
+			ci.c_setInverse(ChannelInverseTranslator.setOfflineInverseType_Normal(cdi
 					.getInverseType()));
 
 			ci.updateFreqLabel(cdi.getFrequencyFloat());
@@ -124,7 +124,7 @@ public class MultiWFManager implements IMultiWFManager {
 			/** 预先保存初始零点 */
 			wf.saveFirstLoadPos0();
 
-			boolean inverse = cit.setOfflineInverseType_DM(cdi.inverseType);
+			boolean inverse = ChannelInverseTranslator.setOfflineInverseType_DM(cdi.inverseType);
 			cdi.shouldInverse = inverse;
 			ci.c_setInverse(inverse);
 
@@ -145,7 +145,7 @@ public class MultiWFManager implements IMultiWFManager {
 		for (DMDataInfo cdi : list) {
 			int chl = cdi.chl;
 			WaveForm wf = wfm.getWaveForm(chl);
-			cdi.shouldInverse = cit.setRTInverseType_DM(wf.wfi.ci.isInverse());
+			cdi.shouldInverse = ChannelInverseTranslator.setRTInverseType_DM(wf.wfi.ci.isInverse());
 
 			ChannelInfo chi = wf.wfi.ci;
 			chi.updateFreqLabel(cdi.getFrequencyFloat());

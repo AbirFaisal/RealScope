@@ -94,7 +94,7 @@ private	static ChannelInverseTranslator cit = new ChannelInverseTranslator();
 				long bsizePos = raf.getFilePointer();
 				raf.writeInt(0);
 
-				raf.writeInt(cit.getInverseType_Record(ci.isInverse()));
+				raf.writeInt(ChannelInverseTranslator.getInverseType_Record(ci.isInverse()));
 
 				int initPos = cdi.initPos;
 				int fsl = cdi.screendatalen;

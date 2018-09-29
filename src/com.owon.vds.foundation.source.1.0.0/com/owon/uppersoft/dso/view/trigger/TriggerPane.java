@@ -44,9 +44,9 @@ public abstract class TriggerPane extends FunctionPanel {
 	private boolean listening = false;
 
 	public void simpleSelectCBBMode(TrgTypeDefine idx) {
-		setListening(false);
+		this.listening = false;
 		selectTrgTypeComboBox(idx);
-		setListening(true);
+		this.listening = true;
 	}
 
 	private void selectTrgTypeComboBox(TrgTypeDefine idx) {
@@ -112,7 +112,7 @@ public abstract class TriggerPane extends FunctionPanel {
 
 		tlps = new TriggerLoaderPane[TrgTypeDefine.VALUES.length];
 
-		setListening(false);
+		this.listening = false;
 
 		snaPart = ncgp();
 
@@ -184,7 +184,7 @@ public abstract class TriggerPane extends FunctionPanel {
 		localizeSelf();
 
 		cbbmode.addItemListener(createTrgModeItemLisnter(this, tc, chlp));
-		setListening(true);
+		this.listening = true;
 
 		updateChlPane();
 		setTrgPaneVisible(tc.isTrgEnable());
@@ -207,7 +207,7 @@ public abstract class TriggerPane extends FunctionPanel {
 	 * 根据单触还是交替的装载触发信息
 	 */
 	private void loadTriggerControl() {
-		setListening(false);
+		this.listening = false;
 
 		TriggerUIInfo tui = tc.getTriggerUIInfo();
 		int curChl = tui.getCurrentChannel();
@@ -219,7 +219,7 @@ public abstract class TriggerPane extends FunctionPanel {
 		selectTrgTypeComboBox(idx);
 
 		switch2Pane(idx);
-		setListening(true);
+		this.listening = true;
 	}
 
 	private TriggerLoaderPane[] tlps;
@@ -309,12 +309,12 @@ public abstract class TriggerPane extends FunctionPanel {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		TriggerLoaderPane tlp = getSelectPane();
+		TriggerLoaderPane tlp = selectPane;
 		if (tlp == null)
 			return;
 		String pn = evt.getPropertyName();
 		if (pn.equals(PropertiesItem.APPLY_TRIGGER)) {
-			setListening(false);
+			this.listening = false;
 			// cbbsna.setSelectedIndex(tc.channelMode);
 			single_alt_btns.setSelected(tc.getChannelMode());
 			// updateChlPane();

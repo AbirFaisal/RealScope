@@ -258,10 +258,10 @@ public class WaveForm implements IView, WF, IRefSource {
 		int yb;
 		// if(getChannelNumber() == 0)System.err.println(pos0+", "+ loadPos0);
 		if (screenMode_3) {
-			yb = hcenter - pos0 + (int) (loadPos0 * getVbmulti().doubleValue());
+			yb = hcenter - pos0 + (int) (loadPos0 * vbmulti.doubleValue());
 		} else {
 			yb = hcenter - (pos0 << 1)
-					+ (int) ((loadPos0 << 1) * getVbmulti().doubleValue());
+					+ (int) ((loadPos0 << 1) * vbmulti.doubleValue());
 		}
 		return yb;
 	}
@@ -269,7 +269,7 @@ public class WaveForm implements IView, WF, IRefSource {
 	private void resetNormalIntBuf(ScreenContext pc) {
 		// System.out.println(getFirstLoadPos0() + ", " + getVbmulti());
 		/** 使用载入时的零点位置和变化后的零点位置之差以告知波形被移动了 */
-		rtlim.resetIntBuf(getVbmulti(), getYb(pc), pc.isScreenMode_3());
+		rtlim.resetIntBuf(vbmulti, getYb(pc), pc.isScreenMode_3());
 	}
 
 	@Override

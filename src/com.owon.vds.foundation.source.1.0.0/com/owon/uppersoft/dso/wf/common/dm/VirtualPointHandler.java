@@ -347,7 +347,7 @@ public class VirtualPointHandler implements IDataMaxMin {
 			boolean shouldReverse, int loadPos0, byte[] array) {
 		/** 交给画图屏幕，处理反相问题 */
 		shouldReverse = false;
-		final byte max = (byte) getMax(), min = (byte) getMin();
+		final byte max = (byte) Max_8bit, min = (byte) Min_8bit;
 		/** 在adc数据取出绘图前进行必要的反相处理 */
 		if (shouldReverse) {
 			int elm;
@@ -493,18 +493,18 @@ public class VirtualPointHandler implements IDataMaxMin {
 		pixbuf.limit(j);
 	}
 
-	public void transcriptionInt(ByteBuffer adcbuf, IntBuffer pixbuf,
-			BigDecimal vbmulti, int yb, boolean screenMode_3) {
+	public static void transcriptionInt(ByteBuffer adcbuf, IntBuffer pixbuf,
+	                                    BigDecimal vbmulti, int yb, boolean screenMode_3) {
 		doTranscriptionInt(adcbuf, pixbuf, vbmulti, yb, screenMode_3);
 	}
 
-	public void transcriptionDouble(ByteBuffer adcbuf, IntBuffer pixbuf,
-			BigDecimal vbmulti, int yb, boolean screenMode_3) {
+	public static void transcriptionDouble(ByteBuffer adcbuf, IntBuffer pixbuf,
+	                                       BigDecimal vbmulti, int yb, boolean screenMode_3) {
 		doTranscriptionDouble(adcbuf, pixbuf, vbmulti, yb, screenMode_3);
 	}
 
-	protected void reverseX_transcriptionInt(byte[] dma, int[] ina,
-			BigDecimal vbmulti, int yb, boolean screenMode_3, Range ap) {
+	protected static void reverseX_transcriptionInt(byte[] dma, int[] ina,
+	                                                BigDecimal vbmulti, int yb, boolean screenMode_3, Range ap) {
 		int m = vbmulti.intValue();
 		int i = 0;
 		int p = ap.left - 1, y = ap.left + ap.right;
@@ -563,8 +563,8 @@ public class VirtualPointHandler implements IDataMaxMin {
 		}
 	}
 
-	protected void reverseX_transcriptionDouble(byte[] dma, int[] ina,
-			BigDecimal vbmulti, int yb, boolean screenMode_3, Range ap) {
+	protected static void reverseX_transcriptionDouble(byte[] dma, int[] ina,
+	                                                   BigDecimal vbmulti, int yb, boolean screenMode_3, Range ap) {
 		double m = vbmulti.doubleValue();
 		int i = 0;
 		int p = ap.left - 1, y = ap.left + ap.right;

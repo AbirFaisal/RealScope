@@ -129,37 +129,37 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 
 	public void load(Pref p) {
 		// 判断通道无法找到对应配置时
-		int vb = p.loadInt(getName() + ".vbIdx");
+		int vb = p.loadInt(name + ".vbIdx");
 		if (vb < 0 || vb >= vp.getVoltageNumber()) {
 			vb = 0;
 		}
-		setPos0(p.loadInt(getName() + ".pos0"));
+		setPos0(p.loadInt(name + ".pos0"));
 		// KNOW 先设置pos0,在设置电压档位时getPos0()才有正确值拿
 		setVoltbaseIndex(vb, true, true);
-		setOn(p.loadBoolean(getName() + ".on"));
+		setOn(p.loadBoolean(name + ".on"));
 
-		int idx = p.loadInt(getName() + ".probeMultiIdx");
+		int idx = p.loadInt(name + ".probeMultiIdx");
 		setProbeMultiIdx(idx);
 
-		setCouplingIdx(p.loadInt(getName() + ".couplingIdx"));
-		setBandlimit(p.loadBoolean(getName() + ".bandlimit"));
-		inverse = p.loadBoolean(getName() + ".inverse");
+		setCouplingIdx(p.loadInt(name + ".couplingIdx"));
+		setBandlimit(p.loadBoolean(name + ".bandlimit"));
+		inverse = p.loadBoolean(name + ".inverse");
 	}
 
 	public void persist(Pref p) {
-		p.persistInt(getName() + ".vbIdx", getVoltbaseIndex());
-		p.persistInt(getName() + ".pos0", getPos0());
-		p.persistBoolean(getName() + ".on", isOn());
-		p.persistInt(getName() + ".probeMultiIdx", probeMultiIdx);
-		p.persistInt(getName() + ".couplingIdx", getCouplingIdx());
-		p.persistRGB(getName() + ".rgb", rgb);
+		p.persistInt(name + ".vbIdx", vbIdx);
+		p.persistInt(name + ".pos0", pos0);
+		p.persistBoolean(name + ".on", on);
+		p.persistInt(name + ".probeMultiIdx", probeMultiIdx);
+		p.persistInt(name + ".couplingIdx", couplingIdx);
+		p.persistRGB(name + ".rgb", rgb);
 
-		p.persistBoolean(getName() + ".bandlimit", isBandlimit());
-		p.persistBoolean(getName() + ".inverse", inverse);
+		p.persistBoolean(name + ".bandlimit", isBandlimit());
+		p.persistBoolean(name + ".inverse", inverse);
 	}
 
 	public boolean isGround() {
-		return getCouplingIdx() == CouplingGroundIndex;
+		return couplingIdx == CouplingGroundIndex;
 	}
 
 	public Volt[] getVoltageLabels() {
@@ -181,7 +181,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	 * @return
 	 */
 	public int getPos0byRange(int hr) {
-		return hr - getPos0();
+		return hr - pos0;
 	}
 
 	/**
@@ -191,8 +191,9 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	 * @return
 	 */
 	public int getInverseValue(int v) {
-		if (inverse)
-			return getLevelFromPos0(v, getPos0());
+		if (inverse) {
+			return getLevelFromPos0(v, pos0);
+		}
 		else {
 			return v;
 		}
@@ -228,7 +229,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	}
 
 	public Volt getVoltageLabel() {
-		return getVoltageLabels()[getVoltbaseIndex()];
+		return getVoltageLabels()[vbIdx];
 	}
 
 	public int getVoltValue() {
@@ -256,7 +257,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 
 	public void c_forceBandLimit(boolean bw) {
 		Submitable sbm = SubmitorFactory.reInit();
-		sbm.c_chl(P_Channel.BANDLIMIT, getNumber(), bw ? 1 : 0);
+		sbm.c_chl(P_Channel.BANDLIMIT, number, bw ? 1 : 0);
 		sbm.apply();
 	}
 
@@ -311,17 +312,17 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	}
 
 	public void c_SyncChannel(Submitable sbm) {
-		int chl = getNumber();
+		int chl = number;
 
 		sbm.recommendOptimize();
 		/**
 		 * KNOW 尝试使用单例对象 尝试使用同步发送
 		 */
-		if (isOn()) {
+		if (on) {
 			sbm.c_chl(P_Channel.ONOFF, chl, 1);
-			sbm.c_chl(P_Channel.COUPLING, chl, getCouplingIdx());
-			sbm.c_chl(P_Channel.VB, chl, getVoltbaseIndex());
-			sbm.c_chl(P_Channel.POS0, chl, getPos0());
+			sbm.c_chl(P_Channel.COUPLING, chl, couplingIdx);
+			sbm.c_chl(P_Channel.VB, chl, vbIdx);
+			sbm.c_chl(P_Channel.POS0, chl, pos0);
 			sbm.c_chl(P_Channel.BANDLIMIT, chl, isBandlimit() ? 1 : 0);
 		} else {
 			sbm.c_chl(P_Channel.ONOFF, chl, 0);
@@ -336,12 +337,12 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 		setCouplingIdx(coupling);
 
 		Submitable sbm = SubmitorFactory.reInit();
-		sbm.c_chl(P_Channel.COUPLING, getNumber(), getCouplingIdx());
+		sbm.c_chl(P_Channel.COUPLING, number, couplingIdx);
 		sbm.apply();
 	}
 
 	public void c_setNextCoupling() {
-		int idx = (getCouplingIdx() + 1) % COUPLING.length;
+		int idx = (couplingIdx + 1) % COUPLING.length;
 		c_setCoupling(idx);
 	}
 
@@ -377,7 +378,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 		// if (!validVoltageIndex(idx))
 		// return;
 		//
-		final int vb0 = getVoltbaseIndex();
+		final int vb0 = vbIdx;
 		final int vbidx = change;
 		// if (vb0 == vbidx)
 		// return;
@@ -396,9 +397,9 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 		Submitable sbm = SubmitorFactory.reInit();
 		// sbm.recommendOptimize();
 
-		final int num = getNumber();
-		final int pos0 = getPos0();
-		sbm.d_chl_vb(getNumber(), getVoltbaseIndex(), new Runnable() {
+		final int num = number;
+		final int pos0 = this.pos0;
+		sbm.d_chl_vb(number, vbIdx, new Runnable() {
 			@Override
 			public void run() {
 				// System.err.println("a t then");
@@ -419,11 +420,11 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	 * @param sjus
 	 */
 	public void c_setZero(int zero, final boolean commit) {
-		final int p0 = getPos0();
+		final int p0 = pos0;
 
 		// System.err.println(zero+", "+pos0);
 		/** 后续版本中halfPosRange可能改变为和vbIdx相关的量 */
-		int hpr = getHalfPosRange();
+		int hpr = pos0HalfRange;
 		if (zero < -hpr) {
 			zero = -hpr;
 		} else if (zero > hpr) {
@@ -437,7 +438,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 		setPos0(zero);
 
 		// 引起触发电平的改变
-		final int chlidx = getNumber();
+		final int chlidx = number;
 		final Runnable r = pvi.thredshold_voltsense_ByPos0(chlidx, dp, commit);
 
 		if (commit) {
@@ -448,7 +449,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 			 * 该状态值被重置，重置是在另一线程，所以未必被再次进入的处理检测到
 			 */
 			Submitable sbm = SubmitorFactory.reInit();
-			sbm.d_chl_pos0(getNumber(), getPos0(), new Runnable() {
+			sbm.d_chl_pos0(number, pos0, new Runnable() {
 				@Override
 				public void run() {
 					if (r != null)
@@ -465,7 +466,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	}
 
 	public int getLevelOnScreen(int v) {
-		if (isInverse()) {
+		if (inverse) {
 			return getLevelFromPos0(v, pos0);
 		} else {
 			return v;
@@ -484,10 +485,10 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	public void snapShot2ChannelDataInfo(DMDataInfo cd, WaveForm wf) {
 		/** 存盘的零点为运行最后一次的，这样才能和停止拿到的dm对应，之后的零点移动产生的波形偏移不保存 */
 		cd.pos0 = wf.getFirstLoadPos0();
-		cd.vbIdx = getVoltbaseIndex();
-		cd.probeMultiIdx = getProbeMultiIdx();
+		cd.vbIdx = vbIdx;
+		cd.probeMultiIdx = probeMultiIdx;
 
-		cd.setFreq(getFreq());
+		cd.setFreq(freq);
 	}
 
 	public int getHalfPosRange() {
@@ -522,11 +523,11 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 		// else
 		// System.out.println("datahouse exist");
 		WaveFormManager wfm = dh.getWaveFormManager();
-		WaveForm wf = wfm.getWaveForm(getNumber());
+		WaveForm wf = wfm.getWaveForm(number);
 		MainWindow mw = dh.getWorkBench().getMainWindow();
 		// System.err.println("ci.pos0:" + getPos0());
-		wfm.setZeroYLoc(wf, getPos0(), true);
-		mw.getToolPane().getInfoPane().updatePos0(getNumber());
+		wfm.setZeroYLoc(wf, pos0, true);
+		mw.getToolPane().getInfoPane().updatePos0(number);
 	}
 
 	public void setOn(boolean on) {

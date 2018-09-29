@@ -55,7 +55,7 @@ public abstract class TriggerLoaderPane extends GroupPane implements
 
 	@Override
 	public void submitHoldOff() {
-		getTriggerPane().submitHoldOff(getChannel(), this);
+		tp.submitHoldOff(chl, this);
 	}
 
 	public TriggerPane getTriggerPane() {

@@ -184,12 +184,12 @@ public class ChartScreenSelectModel implements RightTrgLevelInfoProvider {
 	@Override
 	public boolean shouldLine() {
 		// System.out.println("right:"+right+",  isactive:"+isTrgInfoControlActive());
-		return (right || isTrgInfoControlActive())
-				&& getScreenSelectWFidx() >= 0;
+		return (right || trgInfoControlActive)
+				&& screenSelectWFidx >= 0;
 	}
 
 	protected boolean shouldLevelShow() {
-		return (right) && getScreenSelectWFidx() >= 0;
+		return (right) && screenSelectWFidx >= 0;
 	}
 
 	public boolean isOnShowHtpDetail() {

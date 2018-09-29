@@ -7,7 +7,7 @@ public class ChannelInverseTranslator {
 	}
 
 	/** RT & DM 是否进行各自的反相处理 */
-	public boolean setOfflineInverseType_Normal(int inverseType) {
+	public static boolean setOfflineInverseType_Normal(int inverseType) {
 		switch (inverseType) {
 		default:
 		case VDS_Portable.INVERSE_TYPE_RAW_FINE:
@@ -18,7 +18,7 @@ public class ChannelInverseTranslator {
 		/** 录制波形无需进行反相 */
 	}
 
-	public boolean setOfflineInverseType_DM(int inverseType) {
+	public static boolean setOfflineInverseType_DM(int inverseType) {
 		switch (inverseType) {
 		default:
 		case VDS_Portable.INVERSE_TYPE_RAW_FINE:
@@ -29,7 +29,7 @@ public class ChannelInverseTranslator {
 		}
 	}
 
-	public boolean setRTInverseType_DM(boolean inverse) {
+	public static boolean setRTInverseType_DM(boolean inverse) {
 		if (inverse) {
 			/** 载入DM，需要反相 */
 			return true;
@@ -43,7 +43,7 @@ public class ChannelInverseTranslator {
 	 * 
 	 * @return
 	 */
-	public int getInverseType_DM(boolean inverse) {
+	public static int getInverseType_DM(boolean inverse) {
 		return inverse ? VDS_Portable.INVERSE_TYPE_RAW_REVERSE
 				: VDS_Portable.INVERSE_TYPE_RAW_FINE;
 	}
@@ -53,7 +53,7 @@ public class ChannelInverseTranslator {
 	 * 
 	 * @return
 	 */
-	public int getInverseType_Record(boolean inverse) {
+	public static int getInverseType_Record(boolean inverse) {
 		return inverse ? VDS_Portable.INVERSE_TYPE_REVERSED
 				: VDS_Portable.INVERSE_TYPE_RAW_FINE;
 	}
