@@ -5,6 +5,8 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/lib/ch.ntb.usb_0.5.9" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/com.owon.vds.tiny.source_1.0.7" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/com.owon.vds.foundation.source.1.0.0" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

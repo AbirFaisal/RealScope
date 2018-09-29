@@ -1,0 +1,41 @@
+﻿//[xxx] then \r\n to contents
+//add "2ns"
+//不可用的采样率数值
+//[Grids]
+//20
+
+[ADCSampleRate]
+SAMPLE_100M
+
+[ChannelConfig]// channel numbers, sampling configuration count
+1, 1
+
+//[TriggerLevelDivRange]
+//5
+//[Pos0Range_RelayThredshold_IntVoltage]
+//200
+//[Pos0Range_RelayThredshold_ExtraDivdior]
+//50
+//[Pos0Range_RelayThredshold_Dividor]
+//1000
+
+[DeepMemory]//auto to values "1k", 
+"5k"
+
+[SlowMoveTimebase]
+"100ms"
+
+[ProbeRate]
+1, 10
+
+[Voltbase]//auto to labels(mV)
+5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000
+
+[Timebase]////auto to values(S)
+"5ns", "10ns", "20ns", "50ns", "100ns", "200ns", "500ns", "1us", "2us", "5us", "10us", "20us", "50us", "100us", "200us", "500us", "1ms", "2ms", "5ms", "10ms", "20ms", "50ms", "100ms", "200ms", "500ms", "1s", "2s", "5s", "10s", "20s", "50s", "100s"
+
+[FFTTimebase]
+"5M Hz (9)", "5M Hz (8)", "5M Hz (7)", "5M Hz (6)", "5M Hz (5)", "5M Hz (4)", "5M Hz (3)", "5M Hz (2)", "5M Hz (1)", "2.5M Hz", "1.25M Hz", "625k Hz", "250k Hz", "125k Hz", "62.5k Hz", "25k Hz", "12.5k Hz", "6.25k Hz", "2.5k Hz", "1.25k Hz", "625 Hz", "250 Hz", "125 Hz", "62.5 Hz", "25 Hz", "12.5 Hz", "6.25 Hz", "2.5 Hz", "1.25 Hz", "0.625 Hz", "0.25 Hz", "0.125 Hz" 
+
+[Tiny_SeperateFreq]
+1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 4, 8, 20, 40, 80, 200, 400, 800, 2000, 4000, 8000, 20000, 40000, 80000, 200000, 400000, 800000, 2000000, 4000000, 8000000, 20000000, 40000000, 
