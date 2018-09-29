@@ -6,6 +6,7 @@ import com.owon.uppersoft.dso.global.WorkBench;
 import com.owon.uppersoft.dso.global.WorkBenchTiny;
 import javafx.application.Application;
 import javafx.embed.swing.SwingNode;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -18,6 +19,7 @@ import javafx.stage.Stage;
 import org.usb4java.*;
 import sun.nio.ch.IOUtil;
 
+import javax.swing.*;
 import java.io.*;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
@@ -44,12 +46,13 @@ public class Main  extends Application {
 	static XYChart.Series series = new XYChart.Series();
 	static XYChart.Series minMarker = new XYChart.Series();
 	static XYChart.Series maxMarker = new XYChart.Series();
-	SwingNode swingNode = new SwingNode();
+	static SwingNode swingNode = new SwingNode();
 
 	@Override
     public void start(Stage primaryStage) throws Exception{
 
 
+		createSwingContent(swingNode);
 
     	lineChart.getData().add(series);
 
@@ -62,26 +65,45 @@ public class Main  extends Application {
 	    AnchorPane.setRightAnchor(lineChart,0.0);
 	    lineChart.setCreateSymbols(false);
 
+	    zeroAnchor(swingNode);
 
-
-	    AnchorPane anchorPane = new AnchorPane(lineChart);
+	    AnchorPane anchorPane = new AnchorPane(swingNode);
 
         primaryStage.setTitle("RealScope");
         primaryStage.setScene(new Scene(anchorPane, 1280, 720));
         primaryStage.show();
     }
 
+    void zeroAnchor(Node node){
+	    AnchorPane.setTopAnchor(node,0.0);
+	    AnchorPane.setBottomAnchor(node,0.0);
+	    AnchorPane.setLeftAnchor(node,0.0);
+	    AnchorPane.setRightAnchor(node,0.0);
+    }
+
 
 
 	static void createSwingContent(final SwingNode swingNode){
 
-		Platform.launch(new Platform.PrincipleFactory() {
-
+		SwingUtilities.invokeLater(new Runnable() {
 			@Override
-			public WorkBench createWorkBench() {
-				return new WorkBenchTiny();
-			}
+			public void run() {
 
+				Platform.launch(new Platform.PrincipleFactory() {
+
+					@Override
+					public WorkBench createWorkBench() {
+
+						WorkBench workBench = new WorkBenchTiny();
+
+						JComponent jComponent = workBench.getMainWindow().getGlassPane();
+
+						swingNode.setContent(jComponent);;
+
+						return workBench;
+					}
+				});
+			}
 		});
 	}
 
@@ -215,6 +237,7 @@ public class Main  extends Application {
 //	    //De initialize LibUSB
 //	    LibUsb.releaseInterface(deviceHandle, 0);
 //	    LibUsb.exit(context);
+
 
         launch(args);
     }

@@ -29,6 +29,11 @@ public class USBDaemonHelper {
 	public void onNotConnecting() {
 		if (!ctxMenu.isOnContextMenu()) {
 			uc.checkUSBDevice();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

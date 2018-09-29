@@ -32,49 +32,29 @@ import com.owon.vds.tiny.firm.pref.model.Register;
 import com.owon.vds.tiny.tune.TinyTuneFunction;
 
 /**
- * 工作台，连接各个主要功能模块
- * 
- * 在通往android的vds_tiny的重构移植过程中，涉及如何架构和迭代，终端的手机调试存在的问题，让我们选择了基于一个基础进行更改，方便调试和移植，
- * 但这需要对原有项目的改动在可控的，不影响原有发布周期的情况下；需要不断找到更全面的理解和清晰的构架，再去重构对应的子模块
- * 
- * 模型一如已经想过的更改，然后从最末端开始，从ui控制和扩展插件开始
+ * Workbench, connecting all major functional modules
+ * <p>
+ * In the refactoring migration process of vds_tiny to android, how to structure and iterate,
+ * the problem of mobile phone debugging of the terminal, let us choose to make changes based on a basis,
+ * convenient for debugging and porting. However, this requires changes to the original project to be
+ * controllable, without affecting the original release cycle; it is necessary to constantly find a more
+ * comprehensive understanding and clear framework, and then reconstruct the corresponding sub-module
+ * <p>
+ * The model is as expected, and then from the very beginning, starting with the ui control and extensions
  */
 public class WorkBenchTiny implements WorkBench {
 
+	public static final String SCOPEINFOR = "/com/owon/uppersoft/dso/pref/scopeInfo.ini";
+	public static final String PRODUCT_URL_NAME = "com.owon.uppersoft.dso";
+	public static final String CONFIGURATION_DIR = "configuration"
+			+ File.separator + PRODUCT_URL_NAME;
+	public static final String PREFERENCE_FILENAME = "pref.properties";
+	public static final String sp = "/com/owon/uppersoft/dso/pref/default.ini";
 	protected MainWindow mw;
 	protected DataHouse dh;
 	protected ControlApps ca;
-
-	private Thread ui;
-
-	public void join() {
-		try {
-			ui.join();
-			System.out.println("out_ui.join");
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public ControlApps getControlApps() {
-		return ca;
-	}
-
-	public MainWindow getMainWindow() {
-		return mw;
-	}
-
-	@Override
-	public DataHouse getDataHouse() {
-		return dh;
-	}
-
-	public ControlManager getControlManager() {
-		return ctrlMgr;
-	}
-
 	protected ControlManager ctrlMgr;
-
+	private Thread ui;
 	private File confIni;
 	private CoreControl cc;
 
@@ -99,7 +79,7 @@ public class WorkBenchTiny implements WorkBench {
 		dh = new DataHouse(ctrlMgr, this) {
 			@Override
 			public IMultiReceiver createMultiReceiver(ControlManager cm,
-					WaveFormManager wfm) {
+			                                          WaveFormManager wfm) {
 				return new MultiReceiver(cm, wfm);
 			}
 
@@ -142,6 +122,32 @@ public class WorkBenchTiny implements WorkBench {
 		conf.releaseSession();
 	}
 
+	public void join() {
+		try {
+			ui.join();
+			System.out.println("out_ui.join");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public ControlApps getControlApps() {
+		return ca;
+	}
+
+	public MainWindow getMainWindow() {
+		return mw;
+	}
+
+	@Override
+	public DataHouse getDataHouse() {
+		return dh;
+	}
+
+	public ControlManager getControlManager() {
+		return ctrlMgr;
+	}
+
 	private void showMainFrm(final PrincipleTiny pt) {
 		UIUtil.modifyui();
 		FontCenter.updateFont();
@@ -152,7 +158,7 @@ public class WorkBenchTiny implements WorkBench {
 				return new ToolPane(this, sz, cm) {
 					@Override
 					protected ButtonPane createButtonPane(MainWindow mw,
-							ControlManager cm) {
+					                                      ControlManager cm) {
 						return new ButtonPane(mw, cm, dh) {
 							@Override
 							public void quickPatch() {
@@ -165,7 +171,7 @@ public class WorkBenchTiny implements WorkBench {
 								String message = "Patch Done! Notice: this software is only for PATCH VDS1022 but not an application of software for VDS";
 								String title = "";
 								JOptionPane.showMessageDialog(Platform
-										.getMainWindow().getWindow(), message,
+												.getMainWindow().getWindow(), message,
 										title, JOptionPane.INFORMATION_MESSAGE);
 							}
 						};
@@ -180,15 +186,6 @@ public class WorkBenchTiny implements WorkBench {
 		ctrlMgr.onRelease(confIni);
 		ca.onExit();
 	}
-
-	public static final String SCOPEINFOR = "/com/owon/uppersoft/dso/pref/scopeInfo.ini";
-	public static final String PRODUCT_URL_NAME = "com.owon.uppersoft.dso";
-
-	public static final String CONFIGURATION_DIR = "configuration"
-			+ File.separator + PRODUCT_URL_NAME;
-
-	public static final String PREFERENCE_FILENAME = "pref.properties";
-	public static final String sp = "/com/owon/uppersoft/dso/pref/default.ini";
 
 	public InputStream getDefaultInIStream() {
 		return WorkBenchTiny.class.getResourceAsStream(SCOPEINFOR);

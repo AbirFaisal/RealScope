@@ -61,7 +61,7 @@ import com.owon.uppersoft.vds.ui.window.ExtendedStataJFrame;
 import com.owon.uppersoft.vds.util.LocalizeCenter;
 
 /**
- * MainWindow，界面主框架
+ * MainWindow，Interface main frame
  * 
  */
 public class MainWindow implements Localizable, Promptable {
@@ -88,18 +88,10 @@ public class MainWindow implements Localizable, Promptable {
 	private DataHouse dh;
 	private ChartScreen chartScreen;
 	private TitlePane titlePane;
-
-	@Override
-	public Window getWindow() {
-		return frame;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return frame.isVisible();
-	}
-
 	private ControlManager cm;
+	private GlassPane glassPane;
+	private MarkValueBulletin mvb;
+	private CKeyAdapter keyAdapter;
 
 	public MainWindow(WorkBench wb, DataHouse dh) {
 		this.wb = wb;
@@ -111,6 +103,16 @@ public class MainWindow implements Localizable, Promptable {
 		// updateAct = new UpdateAction(cm, frame);
 		// cm.getLocalizeCenter().addLocalizable(updateAct);
 		UpdateAction.handleUpdateAction(cm, frame);
+	}
+
+	@Override
+	public Window getWindow() {
+		return frame;
+	}
+
+	@Override
+	public boolean isVisible() {
+		return frame.isVisible();
 	}
 
 	public DataHouse getDataHouse() {
@@ -279,8 +281,6 @@ public class MainWindow implements Localizable, Promptable {
 		return glassPane;
 	}
 
-	private GlassPane glassPane;
-
 	public void prompt(JComponent jp, Runnable r) {
 		glassPane.prompt(jp, r);
 	}
@@ -291,33 +291,6 @@ public class MainWindow implements Localizable, Promptable {
 
 	public void promptClose() {
 		glassPane.promptClose();
-	}
-
-	private final class GlassPane extends JPanel {
-		public GlassPane() {
-			setOpaque(false);
-			setLayout(null);
-
-			pp = new PromptDialog(Define.def.TITLE_HEIGHT);
-			add(pp);
-		}
-
-		PromptDialog pp;
-
-		public void prompt(JComponent jp, Runnable r) {
-			setVisible(true);
-			pp.prompt(jp, r);
-		}
-
-		public void promptUp() {
-			if (isVisible())
-				pp.promptUp();
-		}
-
-		public void promptClose() {
-			pp.promptClose();
-			setVisible(false);
-		}
 	}
 
 	public ChartScreenSelectModel getChartChannelSelectModel() {
@@ -400,7 +373,7 @@ public class MainWindow implements Localizable, Promptable {
 
 	/**
 	 * 重新缓冲画图
-	 * 
+	 *
 	 * 新的数据内容引起的更新，数据来得慢也能及时刷新
 	 */
 	public void updateShow() {
@@ -414,8 +387,6 @@ public class MainWindow implements Localizable, Promptable {
 	public void updateGridColor() {
 		chartScreen.updateGridColor();
 	}
-
-	private MarkValueBulletin mvb;
 
 	/**
 	 * 显示
@@ -496,10 +467,35 @@ public class MainWindow implements Localizable, Promptable {
 		// updateUI();
 	}
 
-	private CKeyAdapter keyAdapter;
-
 	public CKeyAdapter getKeyAdapter() {
 		return keyAdapter;
+	}
+
+	private final class GlassPane extends JPanel {
+		PromptDialog pp;
+
+		public GlassPane() {
+			setOpaque(false);
+			setLayout(null);
+
+			pp = new PromptDialog(Define.def.TITLE_HEIGHT);
+			add(pp);
+		}
+
+		public void prompt(JComponent jp, Runnable r) {
+			setVisible(true);
+			pp.prompt(jp, r);
+		}
+
+		public void promptUp() {
+			if (isVisible())
+				pp.promptUp();
+		}
+
+		public void promptClose() {
+			pp.promptClose();
+			setVisible(false);
+		}
 	}
 
 }
