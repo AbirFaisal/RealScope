@@ -1,16 +1,13 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: libusbjava Plug-in
 Bundle-SymbolicName: ch.ntb.usb
+Export-Package: ch.ntb.usb,ch.ntb.usb.logger,ch.ntb.usb.testApp;uses:=
+ "javax.swing",ch.ntb.usb.usbView; uses:="javax.swing.event,  ch.ntb.u
+ sb,  javax.swing.tree,  javax.swing"
+Bundle-Name: libusbjava Plug-in
 Bundle-Version: 0.5.9
 Bundle-ClassPath: ch.ntb.usb-0.5.9.jar
-Bundle-Vendor: http://libusbjava.sourceforge.net
-Export-Package: ch.ntb.usb,
- ch.ntb.usb.logger,
- ch.ntb.usb.testApp;uses:="javax.swing",
- ch.ntb.usb.usbView;
-  uses:="javax.swing.event,
-   ch.ntb.usb,
-   javax.swing.tree,
-   javax.swing"
+Bundle-ManifestVersion: 2
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Vendor: http://libusbjava.sourceforge.net
+Main-Class: com.owon.vds.tiny.Main
+
