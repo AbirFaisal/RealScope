@@ -5,6 +5,7 @@ import com.owon.uppersoft.dso.global.Platform;
 import com.owon.uppersoft.dso.global.WorkBench;
 import com.owon.uppersoft.dso.global.WorkBenchTiny;
 import javafx.application.Application;
+import javafx.embed.swing.SwingNode;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -27,6 +28,12 @@ import java.util.Scanner;
 
 public class Main  extends Application {
 
+	static short VENDOR_ID = 0x5345;
+	static short PRODUCT_ID = 0x1234;
+	static byte USB_EP_OUT = 0x03;
+	static byte USB_EP_IN = (byte) 0x81;
+	static Device usbDevice;
+
 
 	static int lb = -2500;
 	static int ub = 2500;
@@ -37,7 +44,7 @@ public class Main  extends Application {
 	static XYChart.Series series = new XYChart.Series();
 	static XYChart.Series minMarker = new XYChart.Series();
 	static XYChart.Series maxMarker = new XYChart.Series();
-
+	SwingNode swingNode = new SwingNode();
 
 	@Override
     public void start(Stage primaryStage) throws Exception{
@@ -65,14 +72,9 @@ public class Main  extends Application {
     }
 
 
-	static short VENDOR_ID = 0x5345;
-	static short PRODUCT_ID = 0x1234;
-	static byte USB_EP_OUT = 0x03;
-	static byte USB_EP_IN = (byte) 0x81;
-	static Device usbDevice;
 
+	static void createSwingContent(final SwingNode swingNode){
 
-	static void launchVDS(){
 		Platform.launch(new Platform.PrincipleFactory() {
 
 			@Override
@@ -85,12 +87,11 @@ public class Main  extends Application {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-		launchVDS();
 
 
 		//createWorkBench();
 
-    	File file = new File("data2.csv");
+    	File file = new File("data.csv");
 	    Scanner scanner = new Scanner(file);
 	    //scanner.useDelimiter(",");
 

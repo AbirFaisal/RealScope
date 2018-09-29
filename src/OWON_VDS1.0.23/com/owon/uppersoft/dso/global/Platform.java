@@ -1,7 +1,5 @@
 package com.owon.uppersoft.dso.global;
 
-import javax.swing.JOptionPane;
-
 import com.owon.uppersoft.dso.view.MainWindow;
 
 /**
@@ -13,13 +11,13 @@ public class Platform {
 		WorkBench createWorkBench();
 	}
 
-	static PrincipleFactory fff;
+	static PrincipleFactory principleFactory;
 
-	public static final void launch(PrincipleFactory ff) {
-		fff = ff;
+	public static final void launch(PrincipleFactory pf) {
+		principleFactory = pf;
 		wb = null;
 		try {
-			wb = ff.createWorkBench();
+			wb = pf.createWorkBench();
 			wb.join();
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -30,7 +28,7 @@ public class Platform {
 	}
 
 	public static final void relaunch() {
-		launch(fff);
+		launch(principleFactory);
 	}
 
 	/**

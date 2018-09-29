@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/lib/ch.ntb.usb_0.5.9" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/OWON_VDS1.0.23" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RealScope" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
