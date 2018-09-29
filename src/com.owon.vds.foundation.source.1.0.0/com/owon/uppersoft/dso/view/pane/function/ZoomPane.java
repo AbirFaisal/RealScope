@@ -40,7 +40,7 @@ public class ZoomPane extends FunctionPanel {
 //	private ResourceBundle rb;
 	private CardLayout card = new CardLayout();
 
-	/** 视窗设定下 滚动条监听器 ,控件黄线移动 */
+	/** Under the window settings, the scroll bar listener, the control yellow line moves */
 	final public ZBordersSliderView aspcl = new ZBordersSliderView() {
 		@Override
 		public void adjustAdd(int delta) {
@@ -60,7 +60,7 @@ public class ZoomPane extends FunctionPanel {
 		Platform.getMainWindow().getChartScreen().re_paint();
 	}
 
-	/** 视窗扩展下 滚动条监听器 ,控制扩展下平触 */
+	/** Under the window extension, the scroll bar listener controls the flat touch under the extension */
 	final public ZBordersSliderView zoompcl = new ZBordersSliderView() {
 		@Override
 		public void setDefault() {

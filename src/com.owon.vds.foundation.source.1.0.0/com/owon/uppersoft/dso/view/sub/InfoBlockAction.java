@@ -28,11 +28,9 @@ import com.owon.uppersoft.vds.ui.widget.ComboBoxOwner;
 import com.owon.uppersoft.vds.ui.widget.OwnedComboBox;
 
 /**
- * InfoBlockAction，代理InfoBlock中不同floor的操作，包括ComboBox，SliderDelegate等
- * 
+ * InfoBlockAction，Acting different floor operations in InfoBlock, including ComboBox, SlideDelegate, etc.
  */
-public class InfoBlockAction implements ComboBoxOwner, SliderDelegate,
-		SliderBarLocation {
+public class InfoBlockAction implements ComboBoxOwner, SliderDelegate, SliderBarLocation {
 	private InfoBlock ib;
 	private OwnedComboBox vbcbb = null;
 	private MarkCursorControl mcctr;
@@ -90,14 +88,16 @@ public class InfoBlockAction implements ComboBoxOwner, SliderDelegate,
 
 	public void onBlockPressed2Select(ChannelInfo ci) {
 		/**
-		 * 通道改变引起测量值及触发电平位置改变,改变完ChartScreen刷新
-		 * 
-		 * 但是在点击关闭通道的情况下，设置当前通道为光标通道不是用户想要的操作结果
+		 * The channel change causes the measured value and the trigger
+		 * level position to change, and the ChartScreen refresh is changed.
+		 *
+		 * But when you click to close the channel, setting the current channel
+		 * to the cursor channel is not the result of the user's desired operation.
 		 */
 		mcctr.chNum = ci.getNumber();
 		mcctr.computeYValues(ci.getPos0(), ci.getVoltValue());
 
-		/** 点选通道，ChartScreen该通道标尺置顶,改变完ChartScreen刷新 */
+		/** Click on the channel, ChartScreen, the channel ruler is topped, and the ChartScreen refresh is changed. */
 		ChartScreen cs = Platform.getMainWindow().getChartScreen();
 		cs.setScreenSelectWFidx(ci.getNumber());
 		cs.re_paint();
@@ -117,8 +117,8 @@ public class InfoBlockAction implements ComboBoxOwner, SliderDelegate,
 		int hpr = ci.getHalfPosRange();
 		int defV = ci.getPos0byRange(hpr);
 		if (e.getClickCount() == 2) {
-			Dimension sz = new Dimension(SymmetrySliderBar.sliderwidth,
-					SymmetrySliderBar.sliderheight);
+			Dimension sz = new Dimension(SymmetrySliderBar.sliderwidth, SymmetrySliderBar.sliderheight);
+
 			SymmetrySliderView sv = new SymmetrySliderView(sz, (hpr << 1) + 1,
 					hpr, defV, true, ci.getColor(), this);
 			sv.setDefault();

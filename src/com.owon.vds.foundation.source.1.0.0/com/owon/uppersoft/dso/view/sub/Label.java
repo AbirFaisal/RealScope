@@ -304,8 +304,8 @@ public class Label extends JComponent implements MouseListener,
 				// 附加反相
 				value = ci.getInverseValue(value);
 				SymmetrySliderBar.createSymmetrySliderFrame(Platform
-						.getMainWindow().getFrame(), p.x, p.y, hr, ci
-						.getPos0byRange(hr), hr - value, true,
+								.getMainWindow().getFrame(), p.x, p.y, hr, ci
+								.getPos0byRange(hr), hr - value, true,
 						Color.LIGHT_GRAY, SliderDelegate.BtnStatusBoth,
 						new VoltSliderAdapter(tc, ci, ts
 								.getVoltsenseHalfRange(), vt), I18nProvider
@@ -322,7 +322,7 @@ public class Label extends JComponent implements MouseListener,
 
 				/**
 				 * KNOW 单一触发时，通道改动，影响触发电平的电压数值
-				 * 
+				 *
 				 * 因为触发电平的电压数值，受到通道的电压档位和零点位置的影响，而通道改变时，这些内容会改变，所以需要随着刷新
 				 */
 				cm.pcs.firePropertyChange(PropertiesItem.NEXT_SINGLE_CHANNEL,

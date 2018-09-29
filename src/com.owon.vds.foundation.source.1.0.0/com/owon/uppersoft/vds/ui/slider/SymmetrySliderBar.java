@@ -7,10 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Window;
-import java.awt.event.FocusListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.util.ResourceBundle;
 
 import javax.swing.JDialog;
@@ -23,31 +20,31 @@ import com.sun.awt.AWTUtilities;
 /**
  * SymmetryCSliderBar，The special scroll bar at the center of the slider,
  * the speed at which the positive and negative offset control values change
- * 
+ *
  * @author Matt
- * 
  */
-public class SymmetrySliderBar extends JPanel implements MouseListener,
-		MouseMotionListener, Runnable {
-	public static final AlphaComposite composite80 = LineDrawTool
-			.getAlphaComposite(0.8f);
-	public static final AlphaComposite composite100 = LineDrawTool
-			.getAlphaComposite(1f);
+public class SymmetrySliderBar extends JPanel implements MouseListener, MouseMotionListener, Runnable {
+
+	public static final AlphaComposite composite80 = LineDrawTool.getAlphaComposite(0.8f);
+	public static final AlphaComposite composite100 = LineDrawTool.getAlphaComposite(1f);
 
 	public static final String ImageDirectory = "/com/owon/uppersoft/vds/ui/slider/image/";
-	
-	public static final Image thumbv = SwingResourceManager.getIcon(
-			SymmetrySliderBar.class, ImageDirectory + "thumbv.png").getImage();
 
-	public static final Image sliderbgv = SwingResourceManager.getIcon(
-			SymmetrySliderBar.class, ImageDirectory + "sliderbgv.png")
-			.getImage();
-	public static final Image sliderbgh = SwingResourceManager.getIcon(
-			SymmetrySliderBar.class, ImageDirectory + "sliderbgh.png")
-			.getImage();
-	public static final Image thumbh = SwingResourceManager.getIcon(
-			SymmetrySliderBar.class, ImageDirectory + "thumbh.png")
-			.getImage();
+	public static final Image thumbv =
+			SwingResourceManager.getIcon(
+					SymmetrySliderBar.class, ImageDirectory + "thumbv.png").getImage();
+
+	public static final Image sliderbgv =
+			SwingResourceManager.getIcon(
+					SymmetrySliderBar.class, ImageDirectory + "sliderbgv.png").getImage();
+
+	public static final Image sliderbgh =
+			SwingResourceManager.getIcon(
+					SymmetrySliderBar.class, ImageDirectory + "sliderbgh.png").getImage();
+
+	public static final Image thumbh =
+			SwingResourceManager.getIcon(
+					SymmetrySliderBar.class, ImageDirectory + "thumbh.png").getImage();
 
 	public static final int sliderheight = 178, sliderwidth = 19,
 			thumbwidth = 16, thumbheight = 24;
@@ -65,15 +62,15 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 	private int middlePos;
 	private int middle0;
 
-	private ISliderView sv;
+	private ISliderView sliderView;
 	private boolean vertical;
 
-	public SymmetrySliderBar(ISliderView sv, Dimension sz, boolean vertical) {
+	public SymmetrySliderBar(ISliderView sliderView, Dimension sz, boolean vertical) {
 		this.sz = new Dimension(sz);
 		setPreferredSize(sz);
 		this.vertical = vertical;
 		setOpaque(false);
-		this.sv = sv;
+		this.sliderView = sliderView;
 
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -94,51 +91,81 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 		return vertical ? e.getY() : e.getX();
 	}
 
+
+
+
+
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if (!sliderSelected)
-			return;
+		if (!sliderSelected) return;
+
 		int v = getMousePos(e);
 
 		int pos = tPos + v - lastv;
 
-		if (pos < 0)
-			pos = 0;
-		else if (pos > thumbRange)
-			pos = thumbRange;
+		if (pos < 0) pos = 0;
+
+		else if (pos > thumbRange) pos = thumbRange;
 
 		lastv = lastv + pos - tPos;
 		tPos = pos;
 
 		repaint();
 
-		if (t == null) {
-			t = new Thread(this);
-			t.start();
+		if (thread == null) {
+			thread = new Thread(this);
+			thread.start();
 		}
 	}
 
+
+	public void mouseWheelMoved(MouseWheelEvent e) {
+
+
+		if (thread == null) {
+			final int inc = e.getWheelRotation();
+			thread = new Thread() {
+				@Override
+				public void run() {
+					try {
+						if (inc != 0) {
+							sliderView.adjustAdd(inc);
+							repaint();
+							Thread.sleep(500);
+						}
+						while (increment != 0) {
+							Thread.sleep(100);
+							// System.out.println("inc:"+inc);
+							sliderView.adjustAdd(inc);
+							repaint();
+						}
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			thread.start();
+		}
+
+
+	}
+
 	/**
-	 *
 	 * Use the sliderSelected variable to distinguish whether the slider is clicked or not, and if it is selected,
 	 * it will monitor the drag event and accumulate the displacement of the drag.
 	 * Unchecked automatically accumulates the mouse's offset from the center until increment is set to zero.
 	 * Both operations have their own threads running mutually exclusive, using the same variable.
 	 * When the mouse is released, the thread referenced by this variable is joined.
-	 *
 	 */
-
 	private int increment = 0;
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		int v = getMousePos(e);
 		sliderSelected = false;
-		if (v < middlePos) {
-			increment = -1;
-		} else if (v >= (middlePos + thumbLength)) {
-			increment = 1;
-		} else {
+		if (v < middlePos)  increment = -1;
+		else if (v >= (middlePos + thumbLength)) increment = 1;
+		else {
 			increment = 0;
 			sliderSelected = true;
 		}
@@ -146,21 +173,21 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 		if (sliderSelected) {
 			lastv = v;
 		} else {
-			if (t == null) {
+			if (thread == null) {
 				final int inc = increment;
-				t = new Thread() {
+				thread = new Thread() {
 					@Override
 					public void run() {
 						try {
 							if (inc != 0) {
-								sv.adjustAdd(inc);
+								sliderView.adjustAdd(inc);
 								repaint();
 								Thread.sleep(500);
 							}
 							while (increment != 0) {
 								Thread.sleep(100);
 								// System.out.println("inc:"+inc);
-								sv.adjustAdd(inc);
+								sliderView.adjustAdd(inc);
 								repaint();
 							}
 						} catch (InterruptedException e) {
@@ -168,7 +195,7 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 						}
 					}
 				};
-				t.start();
+				thread.start();
 			}
 		}
 	}
@@ -177,17 +204,17 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 	public void mouseReleased(MouseEvent e) {
 		increment = 0;
 		sliderSelected = false;
-		if (t != null) {
+		if (thread != null) {
 			try {
-				t.join();
+				thread.join();
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-			t = null;
+			thread = null;
 		}
 		resetSpos();
 
-		sv.actionOff();
+		sliderView.actionOff();
 
 		repaint();
 	}
@@ -202,7 +229,7 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 			g.drawImage(sliderbgh, 0, 0, null);
 		}
 
-		sv.paintSelf(g2d);
+		sliderView.paintSelf(g2d);
 
 		g2d.setComposite(composite80);
 		g.setColor(sco);
@@ -220,7 +247,7 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 
 				int del = tPos - middlePos;
 				// System.out.println("del"+del);
-				sv.adjustAdd(del);
+				sliderView.adjustAdd(del);
 				repaint();
 			}
 		} catch (InterruptedException e) {
@@ -228,7 +255,7 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 		}
 	}
 
-	private Thread t = null;
+	private Thread thread = null;
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -244,7 +271,7 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 		}
 		if (v >= middlePos && v <= middlePos + thumbLength) {
 			resetSpos();
-			sv.setDefault();
+			sliderView.setDefault();
 			repaint();
 		}
 	}
@@ -262,8 +289,8 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * 给视窗设定或视窗扩展使用的View，由外部提供
-	 * 
+	 * View for window settings or window extensions, provided externally
+	 *
 	 * @param wd
 	 * @param x
 	 * @param y
@@ -273,13 +300,13 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 	 * @return
 	 */
 	public static final JDialog createAssistZoomViewSliderFrame(Window wd,
-			int x, int y, boolean vertical, ISliderView isv, ResourceBundle rb) {
+	                                                            int x, int y, boolean vertical, ISliderView isv, ResourceBundle rb) {
 		return createCViewSliderFrame(wd, x, y, vertical, isv, rb);
 	}
 
 	/**
-	 * 由外部指派VIew的控件
-	 * 
+	 * Externally assigned VIew controls
+	 *
 	 * @param wd
 	 * @param x
 	 * @param y
@@ -289,7 +316,7 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 	 * @return
 	 */
 	public static final JDialog createCViewSliderFrame(Window wd, int x, int y,
-			boolean vertical, ISliderView isv, ResourceBundle rb) {
+	                                                   boolean vertical, ISliderView isv, ResourceBundle rb) {
 		int w, h;
 		if (vertical) {
 			w = sliderwidth;
@@ -320,8 +347,8 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * 非对称控件，快捷按钮只有归零
-	 * 
+	 * Asymmetric controls, shortcut buttons only zero
+	 *
 	 * @param wd
 	 * @param x
 	 * @param y
@@ -333,8 +360,8 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 	 * @return
 	 */
 	public static final JDialog createUnsymmetrySliderFrame(Window wd, int x,
-			int y, int min, int max, boolean vertical, int v,
-			final SliderDelegate pcl, ResourceBundle rb) {
+	                                                        int y, int min, int max, boolean vertical, int v,
+	                                                        final SliderDelegate pcl, ResourceBundle rb) {
 		int w, h;
 		if (vertical) {
 			w = sliderwidth;
@@ -364,14 +391,12 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 
 	/**
 	 * 对称控件
-	 * 
+	 *
 	 * @param wd
 	 * @param x
 	 * @param y
-	 * @param halfRange
-	 *            对称View中的半长
-	 * @param defaultValue
-	 *            默认值
+	 * @param halfRange    对称View中的半长
+	 * @param defaultValue 默认值
 	 * @param value
 	 * @param vertical
 	 * @param co
@@ -380,9 +405,9 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 	 * @return
 	 */
 	public static final JDialog createSymmetrySliderFrame(Window wd, int x,
-			int y, int halfRange, int defaultValue, int value,
-			boolean vertical, Color co, int BtnStatus,
-			final SliderDelegate pcl, ResourceBundle rb) {
+	                                                      int y, int halfRange, int defaultValue, int value,
+	                                                      boolean vertical, Color co, int BtnStatus,
+	                                                      final SliderDelegate pcl, ResourceBundle rb) {
 		int w, h;
 		if (vertical) {
 			w = sliderwidth;
@@ -411,8 +436,13 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 		return dlg;
 	}
 
-	private static final int INFOBLOCK = 1, LABEL = 2, EDGEPANE = 3,
-			PULSEPANE = 4, SLOPEPANE = 5, DETAILPANE = 7;
+	private static final int
+			INFOBLOCK = 1,
+			LABEL = 2,
+			EDGEPANE = 3,
+			PULSEPANE = 4,
+			SLOPEPANE = 5,
+			DETAILPANE = 7;
 
 	// private static Point getSliderBarLocation(MouseEvent e, int type) {
 	// // int x, int y, int xOnScreen, int yOnScreen, int width
@@ -458,7 +488,7 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 	/**
 	 * Values from one coordinate (in vertical center, up and down negative)
 	 * to values in another coordinate (from top to 0, increasing downward)
-	 * 
+	 *
 	 * @param halfRange
 	 * @param v
 	 * @return
@@ -482,9 +512,9 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 
 	/**
 	 * Values from one coordinate (in vertical center, up and down negative) to values in another coordinate (from top to 0, increasing downward)
-	 * 
+	 * <p>
 	 * For channel trigger level or threshold upper and lower limit conversion
-	 * 
+	 *
 	 * @param ts
 	 * @param ci
 	 * @return

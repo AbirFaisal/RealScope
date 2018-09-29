@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 
 import com.owon.uppersoft.dso.global.Platform;
 import com.owon.uppersoft.dso.i18n.I18nProvider;
@@ -36,24 +37,30 @@ public class VoltLevelMouseAdapter extends MouseAdapter implements
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
 			TriggerSet ts = trgc.getTriggerSetOrNull(ep.getChannel());
-			if (ts == null || !ts.isVoltsenseSupport())
-				return;
+
+			if (ts == null || !ts.isVoltsenseSupport()) return;
+
 			WaveFormManager wfm = Platform.getDataHouse().getWaveFormManager();
+
 			wfm.getWaveForm(ep.getChannel()).doubleClickOnLevel();
+
 			// updateTrVtValueLbl(chl);
 		}
+	}
+
+
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		//doStuff
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		AbsTrigger at = ep.getTrigger();
-		if (!(at instanceof VoltsensableTrigger))
-			return;
+		if (!(at instanceof VoltsensableTrigger)) return;
 
 		final int x = e.getX();
 		final int y = e.getY();
-		Point p = getSliderBarLocation(x, y, e.getXOnScreen(),
-				e.getYOnScreen(), e.getComponent());
+		Point p = getSliderBarLocation(x, y, e.getXOnScreen(), e.getYOnScreen(), e.getComponent());
 		
 		int hr = halfRange;
 		final int chl = ep.getChannel();
@@ -71,6 +78,9 @@ public class VoltLevelMouseAdapter extends MouseAdapter implements
 				new VoltSliderAdapter(trgc, ci, halfRange, vt), I18nProvider.bundle());
 		Platform.getMainWindow().update_ChangeVoltsense(chl);
 	}
+
+
+
 
 	@Override
 	public Point getSliderBarLocation(int x, int y, int xs, int ys, Component cp) {
