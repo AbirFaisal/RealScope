@@ -24,7 +24,7 @@ public abstract class WFTimeScopeControl implements WFTimeScopeContext {
 	}
 
 	public void setTimebaseIndex(int idx, int lastidx) {
-		setHasZoom(true);
+		hasZoom = true;
 
 		BigDecimal[] bdtbs = cm.getMachineInfo().bdTIMEBASE;
 
@@ -37,9 +37,9 @@ public abstract class WFTimeScopeControl implements WFTimeScopeContext {
 
 		// 将中心点到数据起始点的距离，作为时基切换改变的值，然后转换为起始点的位置
 		int hp = GDefine.AREA_WIDTH >> 1;
-		int oxbeg = hp - getXboff();
+		int oxbeg = hp - xboff;
 		BigDecimal nxbeg = BigDecimal.valueOf(oxbeg).divide(nvb.divide(lvb));
-		setXboff(hp - (int) nxbeg.doubleValue());
+		this.xboff = hp - (int) nxbeg.doubleValue();
 
 		// 注意慢扫
 	}
@@ -55,7 +55,7 @@ public abstract class WFTimeScopeControl implements WFTimeScopeContext {
 	 * @param del
 	 */
 	public void addWaveFormsXloc(int del) {
-		setXboff(getXboff() - del);
+		this.xboff = getXboff() - del;
 	}
 
 	/**
@@ -66,12 +66,12 @@ public abstract class WFTimeScopeControl implements WFTimeScopeContext {
 	 * @return
 	 */
 	public int computeXoffset(int xb, int dm) {
-		if (isZoom()) {
-			xb += getXboff() + (int) (skipPoints * nowgap);
+		if (hasZoom) {
+			xb += xboff + (int) (skipPoints * nowgap);
 			return xb;
 		}
 
-		xb += getXboff();
+		xb += xboff;
 
 		xb += getSlowMoveOffset(dm);
 		return xb;
@@ -106,8 +106,8 @@ public abstract class WFTimeScopeControl implements WFTimeScopeContext {
 		orgtbidx = cm.getTimeControl().getTimebaseIdx();
 		orgfsl = screendatalen;
 
-		setXboff(0);
-		setHasZoom(false);
+		this.xboff = 0;
+		hasZoom = false;
 		orggap = GDefine.AREA_WIDTH / (double) orgfsl;
 	}
 
@@ -209,7 +209,7 @@ public abstract class WFTimeScopeControl implements WFTimeScopeContext {
 		}
 		saveOrginalTimebaseStatus(screendatalen);
 		computeSkipPoints(screendatalen, slowMove, slow);
-		setPKDetect(pkdetect);
+		PK_Detect = pkdetect;
 		setPK_detect_typeByDrawMode(false);
 
 		commonXboff = true;
@@ -217,10 +217,10 @@ public abstract class WFTimeScopeControl implements WFTimeScopeContext {
 
 	public void loadDM(ChannelsTransportInfo cpi, boolean pkdetect,
 			int drawMode, double gap) {
-		setSkipPoints(0);
-		setPKDetect(pkdetect);
+		this.skipPoints = 0;
+		PK_Detect = pkdetect;
 		// setPK_detect_type(cpi.pk_detect_type);
-		setDrawMode(drawMode);
+		this.drawMode = drawMode;
 		setPK_detect_typeByDrawMode(true);
 		this.gap = gap;
 

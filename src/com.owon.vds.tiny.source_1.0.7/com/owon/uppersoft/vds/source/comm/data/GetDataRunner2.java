@@ -182,7 +182,7 @@ public class GetDataRunner2 extends AbsGetDataRunner {
 			ci.status = ChannelsTransportInfo.Status_RT_WriteContentErr;
 		}
 
-		Source src = getSource();
+		Source src = this.src;
 
 		int ons = wfic.getOnWaveFormNumber();
 		// vl.logln("ons: " + ons);

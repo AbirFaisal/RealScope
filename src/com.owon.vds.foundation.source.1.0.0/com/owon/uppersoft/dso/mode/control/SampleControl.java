@@ -47,7 +47,7 @@ public class SampleControl implements IPatchable, IOrgan, ISampleControl {
 	}
 
 	public boolean isPeakDetect() {
-		return getModelIdx() == 1;
+		return modelIdx == 1;
 	}
 
 	public int getModelIdx() {

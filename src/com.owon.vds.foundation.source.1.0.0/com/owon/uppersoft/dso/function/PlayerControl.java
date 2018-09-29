@@ -234,7 +234,7 @@ public class PlayerControl implements Runnable, PropertyChangeListener {
 
 	public void startPlaying() {
 		if (!isPlaying()) {// 从当前帧开始播放文件中的波形
-			setPlay(VIDEO_PLAY);
+			playing = VIDEO_PLAY;
 
 			if (isCurrentReset())
 				ba.reset(frame0Pos);
@@ -248,7 +248,7 @@ public class PlayerControl implements Runnable, PropertyChangeListener {
 	}
 
 	public void pausePlaying() {
-		setPlay(VIDEO_PAUSE);
+		playing = VIDEO_PAUSE;
 		// 暂停播放和拖拽的时候一定要join，防止争抢ba.
 		// 暂停时线程还没OUT,又new start，有概率会争抢ba;拖拽同理。
 		try {
@@ -270,7 +270,7 @@ public class PlayerControl implements Runnable, PropertyChangeListener {
 	public boolean switchPlaying() {
 
 		if (!isPlaying()) {// 从当前帧开始播放文件中的波形
-			setPlay(VIDEO_PLAY);
+			playing = VIDEO_PLAY;
 
 			if (isCurrentReset())
 				ba.reset(frame0Pos);
@@ -358,7 +358,7 @@ public class PlayerControl implements Runnable, PropertyChangeListener {
 				if (cyc) {
 					setCurrentNStreamPointer(sta);
 				} else {
-					setPlay(NO_USE);
+					playing = NO_USE;
 					oevt.newInt = -1;
 					pcl.propertyChange(oevt);
 

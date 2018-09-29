@@ -72,7 +72,7 @@ public class TriggerSet {
 	 */
 	public void paintTriggerSet(WaveFormManager wfm,
 			PaintChannelTrgLabelContext pctlc) {
-		int channel = getChannel();
+		int channel = this.channel;
 		WaveForm wf = wfm.getWaveForm(channel);
 		if (wf == null || !wf.isOn())
 			return;
@@ -144,35 +144,35 @@ public class TriggerSet {
 	 * 尝试设置为单次触发
 	 */
 	void trySweepOnce(TriggerControl tc) {
-		getTrigger().c_setSweep(TriggerDefine.TrigOnceIndex, tc);
+		trigger.c_setSweep(TriggerDefine.TrigOnceIndex, tc);
 	}
 
 	/**
 	 * @return 是否单次触发
 	 */
 	boolean isSweepOnce() {
-		return getTrigger().getSweep() == TriggerDefine.TrigOnceIndex;
+		return trigger.getSweep() == TriggerDefine.TrigOnceIndex;
 	}
 
 	/**
 	 * @return 是否正常触发
 	 */
 	boolean isSweepNormal() {
-		return getTrigger().getSweep() == TriggerDefine.TrigNormalIndex;
+		return trigger.getSweep() == TriggerDefine.TrigNormalIndex;
 	}
 
 	/**
 	 * @return 是否自动触发
 	 */
 	boolean isSweepAuto() {
-		return getTrigger().getSweep() == TriggerDefine.TrigSweepAutoIndex;
+		return trigger.getSweep() == TriggerDefine.TrigSweepAutoIndex;
 	}
 
 	/**
 	 * 重置为自动触发
 	 */
 	void resumeAuto(TriggerControl tc) {
-		getTrigger().c_setSweep(TriggerDefine.TrigSweepAutoIndex, tc);
+		trigger.c_setSweep(TriggerDefine.TrigSweepAutoIndex, tc);
 	}
 
 	/**

@@ -82,7 +82,7 @@ public class USBLoopChecker {
 	 * 
 	 */
 	public void checkUSBDevice() {
-		if (isNoCheck())
+		if (noCheck)
 			return;
 		try {
 			Thread.sleep(TimeBetweenTwiceCheckUSB);
@@ -160,7 +160,7 @@ public class USBLoopChecker {
 	 * 不显示检测结果
 	 */
 	public void ignoreCheckResult() {
-		setNoDisturb(true);
+		noDisturb = true;
 		mw.getITitleStatus().exposeTrgStatus();
 		mw.promptUp();
 	}

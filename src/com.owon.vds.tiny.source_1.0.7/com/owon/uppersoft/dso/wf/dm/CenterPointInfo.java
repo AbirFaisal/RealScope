@@ -121,7 +121,8 @@ public class CenterPointInfo {
 			// x -= mul; 这里修复了从慢扫未半屏停止下来展开到dilute情况下存在的bug
 			x += mul;
 		}
-		setXBloc((int) (x - -wc));
+		int v = (int) (x - -wc);
+		xbloc = v;
 
 		Point p = new Point(i0, i1);
 		// 再限制回数据边界

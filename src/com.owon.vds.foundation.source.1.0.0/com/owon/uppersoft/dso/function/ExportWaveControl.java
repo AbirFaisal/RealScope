@@ -63,7 +63,7 @@ public class ExportWaveControl implements PropertyChangeListener {
 
 	public void exportDMfile(Component parent) {
 		if (Platform.getDataHouse().isPlayRecord()
-				&& getExpTypidx() == TYPE_BIN) {
+				&& expTypidx == TYPE_BIN) {
 			FadeIOShell fs = new FadeIOShell();
 			fs.prompt(
 					I18nProvider.bundle().getString(
@@ -72,14 +72,14 @@ public class ExportWaveControl implements PropertyChangeListener {
 			return;
 		}
 
-		setAuthorizeExport(true);
+		this.authorizeExport = true;
 
 		if (exprotThread != null && exprotThread.isAlive()) {
 			if (exportPMD != null && exportPMD.isVisible())
 				exportPMD.toFront();
 			return;
 		}
-		if (getExpTypidx() == TYPE_XLS) {
+		if (expTypidx == TYPE_XLS) {
 			JFileChooser jfc = new JFileChooser();
 			jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			jfc.setCurrentDirectory(new File(cm.exportPath));
@@ -93,7 +93,7 @@ public class ExportWaveControl implements PropertyChangeListener {
 			} else if (rsl == JFileChooser.CANCEL_OPTION) {
 				// pcs.firePropertyChange(ExportWaveControl.AFTER_EXPORT, null,
 				// true);
-				setAuthorizeExport(false);
+				this.authorizeExport = false;
 			}
 			cm.exportPath = FileUtil.getFileCanonicalPath(jfc
 					.getCurrentDirectory());
@@ -101,7 +101,7 @@ public class ExportWaveControl implements PropertyChangeListener {
 		}
 
 		JFileChooser jfc = new JFileChooser();
-		MyFileFilter filter = exportFilters[getExpTypidx()];
+		MyFileFilter filter = exportFilters[expTypidx];
 		jfc.setCurrentDirectory(new File(cm.exportPath));
 		jfc.addChoosableFileFilter(filter);
 		int rsl = jfc.showSaveDialog(parent);
@@ -114,7 +114,7 @@ public class ExportWaveControl implements PropertyChangeListener {
 		} else if (rsl == JFileChooser.CANCEL_OPTION) {
 			// pcs.firePropertyChange(ExportWaveControl.AFTER_EXPORT, null,
 			// true);
-			setAuthorizeExport(false);
+			this.authorizeExport = false;
 		}
 		cm.exportPath = FileUtil
 				.getFileCanonicalPath(jfc.getCurrentDirectory());
@@ -164,10 +164,10 @@ public class ExportWaveControl implements PropertyChangeListener {
 	}
 
 	public void lastExportWave(final File out, final WaveFormManager wfm) {
-		if (!isAuthorizeExport())
+		if (!authorizeExport)
 			return;
 		final File tempsave = AbsInterCommunicator.dmf;
-		final int selIdx = getExpTypidx();
+		final int selIdx = expTypidx;
 		exportPMD = new ProgressMonitorDialog(wfm.getDataHouse()
 				.getMainWindow().getFrame(), I18nProvider.bundle().getString(
 				"Action.ExportWave"), "", "", 0, 100);

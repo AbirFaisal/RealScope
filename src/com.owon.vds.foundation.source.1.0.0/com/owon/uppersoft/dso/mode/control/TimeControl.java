@@ -80,7 +80,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 		int thtp = restrictHorTrgPos(horTrgPos);
 		int del = thtp - horTrgPos;
 		if (del != 0) {
-			setHorTrgPos(thtp);
+			this.horTrgPos = (double) thtp;
 			resetPersistence();
 			dosubmit();
 		}
@@ -121,19 +121,19 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 			tbidx = 0;
 		}
 
-		setTimebaseIndexValue(tbidx);
+		timebaseIdx = tbidx;
 		tcd.notifyInitSlowMove(tcp.isOnSlowMoveTimebase(tbidx));
 
 		updatePixel_mS_Sample_mS();
 
 		int horTrgPos = p.loadInt(HOR_TRG_POS);
 
-		setHorTrgPos(horTrgPos);
+		this.horTrgPos = (double) horTrgPos;
 	}
 
 	public void persist(Pref p) {
 		/** 注意：这里写入的信息在视窗扩展开始时，会在后面被视窗扩展模块覆盖 */
-		p.persistInt(TIMEBASE_INDEX, getTimebaseIdx());
+		p.persistInt(TIMEBASE_INDEX, timebaseIdx);
 		int v = getHorizontalTriggerPosition();
 		p.persistInt(HOR_TRG_POS, v);
 	}
@@ -143,8 +143,8 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 	}
 
 	public void internalTimebaseIndex(int newidx, boolean effect) {
-		int oldidx = getTimebaseIdx();
-		setTimebaseIndexValue(newidx);
+		int oldidx = timebaseIdx;
+		timebaseIdx = newidx;
 
 		updateTimebase();
 		tcd.onTimebaseChange(oldidx, newidx, effect);
@@ -180,15 +180,15 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 	}
 
 	public boolean isOnSlowMoveTimebase() {
-		return tcp.isOnSlowMoveTimebase(getTimebaseIdx());
+		return tcp.isOnSlowMoveTimebase(timebaseIdx);
 	}
 
 	public String getTimebaseLabel() {
-		return tcp.getTimebaseLabel(getTimebaseIdx());
+		return tcp.getTimebaseLabel(timebaseIdx);
 	}
 
 	public BigDecimal getBDTimebase() {
-		return tcp.getBDTimebase(getTimebaseIdx());
+		return tcp.getBDTimebase(timebaseIdx);
 	}
 
 	public int getValidTimebaseIndex(int idx) {
@@ -197,7 +197,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 			change = 0;
 		if (idx >= tcp.getTimebaseNumber())
 			change = tcp.getTimebaseNumber() - 1;
-		return (change == getTimebaseIdx() ? -1 : change);
+		return (change == timebaseIdx ? -1 : change);
 	}
 
 	public void c_setTimebaseIdx(int tbidx, boolean effect) {
@@ -215,17 +215,17 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 
 		tbidx = change;
 		// System.out.println("c_setTimebaseIdx");
-		int tmp = getTimebaseIdx();
+		int tmp = timebaseIdx;
 		internalTimebaseIndex(tbidx, effect);
 
 		/** 这里还需要根据时基计算，以及从RT->DM, DM->RT时的转换，如何在时基切换之后重新锁定触发位置 */
 		tcd.notifyUpdateHorTrgPosRange();
 
 		/** 总是发指令改变当前 */
-		double ohtp = getDBHorizontalTriggerPosition();
+		double ohtp = horTrgPos;
 		double v = BigDecimal.valueOf(ohtp)
-				.divide(tcp.ratio(getTimebaseIdx(), tmp)).doubleValue();
-		setHorTrgPos(v);
+				.divide(tcp.ratio(timebaseIdx, tmp)).doubleValue();
+		horTrgPos = v;
 		restrictHorTrgPos();
 		dosubmit();
 
@@ -243,13 +243,13 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 	}
 
 	public void c_setTimebase_HorTrgPos(int tbidx, int htp) {
-		if (getTimebaseIdx() != tbidx)
+		if (timebaseIdx != tbidx)
 			internalTimebaseIndex(tbidx);
 		tcd.notifyUpdateHorTrgPosRange();
 
 		/** 变化范围随存储深度和时基(采样率)不同 */
 		htp = restrictHorTrgPos(htp);
-		setHorTrgPos(htp);
+		horTrgPos = (double) htp;
 		resetPersistence();
 		dosubmit();
 		Platform.getMainWindow().update_HorTrg();
@@ -277,7 +277,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 		int htp;
 		htp = getHorizontalTriggerPosition();
 
-		return getHTPLabel(getTimebaseIdx(), htp);// 像素差转化为时间差
+		return getHTPLabel(timebaseIdx, htp);// 像素差转化为时间差
 	}
 
 	public String getHTPLabel(int tbidx, int htpPixsFromCenter) {
@@ -329,7 +329,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 
 		int hti = (int) Math.round(num);
 
-		setHorTrgIdx(hti);
+		horTrgIdx = hti;
 	}
 
 	public void computeDMHorTrgIdx(int init, int screendatalen) {
@@ -337,7 +337,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 		double rate = (double) screendatalen / GDefine.AREA_WIDTH;
 		int hti = init + (int) (((GDefine.AREA_WIDTH >> 1) - htp) * rate);
 
-		setHorTrgIdx(hti);
+		horTrgIdx = hti;
 	}
 
 	/**
@@ -384,9 +384,9 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 		if (cnf < 0) {
 			i = 0;
 		} else {
-			i = fsq.getFullScreen(cnf, dmidx, getTimebaseIdx());
+			i = fsq.getFullScreen(cnf, dmidx, timebaseIdx);
 		}
-		setRTfullScreenNumber(i);
+		this.rtfls = i;
 		return i;
 	}
 
@@ -426,7 +426,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 		/** 变化范围随存储深度和时基(采样率)不同 */
 		nhtp = restrictHorTrgPos(nhtp);
 		del = nhtp - horTrgPos;
-		setHorTrgPos(nhtp);
+		this.horTrgPos = (double) nhtp;
 		resetPersistence();
 
 		if (commit) {
@@ -447,7 +447,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 	}
 
 	public void selfSubmit(Submitable sbm) {
-		sbm.c_tb_htp(getTimebaseIdx(), getHorizontalTriggerPosition());
+		sbm.c_tb_htp(timebaseIdx, getHorizontalTriggerPosition());
 	}
 
 	public void applyTB_DM(int dmidx, int cnf) {
@@ -458,11 +458,11 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 	public void dosubmit() {
 		Submitable sbm = SubmitorFactory.reInit();
 		sbm.recommendOptimize();
-		sbm.c_tb_htp(getTimebaseIdx(), getHorizontalTriggerPosition());
+		sbm.c_tb_htp(timebaseIdx, getHorizontalTriggerPosition());
 		sbm.applyThen(tcd.getResetPersistenceRunnable());
 	}
 
 	public void setShouldEnableTrgByJudgeIsSlowMove() {
-		tcd.notifyInitSlowMove(tcp.isOnSlowMoveTimebase(getTimebaseIdx()));
+		tcd.notifyInitSlowMove(tcp.isOnSlowMoveTimebase(timebaseIdx));
 	}
 }

@@ -29,12 +29,12 @@ public class ChannelDataInfo extends FreqInfo {
 	private int inverseType = VDS_Portable.INVERSE_TYPE_RAW_FINE;
 
 	private void resetInverseType() {
-		setInverseType(VDS_Portable.INVERSE_TYPE_RAW_FINE);
+		this.inverseType = VDS_Portable.INVERSE_TYPE_RAW_FINE;
 	}
 
 	public void setInverseType_Record(CByteArrayInputStream ba, int intEdition) {
 		if (intEdition >= OfflineChannelsInfo.RECORDPROTOCOL_VDS_INVERSE) {
-			setInverseType(ba.nextInt());
+			this.inverseType = ba.nextInt();
 		} else {
 			resetInverseType();
 		}

@@ -58,11 +58,11 @@ public class AboutDialog implements Localizable {
 	private static AboutDialog instance;
 
 	public static void handleAboutInstance(Config conf, ControlManager cm) {
-		if (instance == null || !instance.getAboutDlg().isDisplayable()) {
+		if (instance == null || !instance.frame.isDisplayable()) {
 			instance = new AboutDialog(Platform.getMainWindow(), conf, cm);
 			cm.getLocalizeCenter().addLocalizable(instance);
 		} else {
-			instance.getAboutDlg().toFront();
+			instance.frame.toFront();
 		}
 	}
 

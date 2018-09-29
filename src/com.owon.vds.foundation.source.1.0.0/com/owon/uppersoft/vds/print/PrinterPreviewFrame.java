@@ -45,8 +45,9 @@ public class PrinterPreviewFrame implements Localizable {
 	}
 
 	public static void selfRepaint() {
-		if (instance != null)
-			instance.getPFrame().repaint();
+		if (instance != null) {
+			instance.frame.repaint();
+		}
 	}
 
 	private static final String PRINT_MESSAGE = "Print.Message";

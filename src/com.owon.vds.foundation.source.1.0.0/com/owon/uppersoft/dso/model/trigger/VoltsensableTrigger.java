@@ -55,7 +55,7 @@ public abstract class VoltsensableTrigger extends AbsTrigger {
 	public void persistProperties(String prefix, Pref p) {
 		String txt = getName();
 		p.persistInt(prefix + txt + ".coupling", coupling);
-		p.persistInt(prefix + txt + ".sweep", getSweep());
+		p.persistInt(prefix + txt + ".sweep", sweep);
 		p.persistInt(prefix + txt + ".voltsense", vs.c_getVoltsense());
 	}
 

@@ -353,7 +353,7 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 			offset = wftsc.getSlowMoveOffset(wftsc.getDrawMode());
 		}
 		/** 对DM的情况也需要知道画图模型，才能在pk的情况下画图 */
-		setDrawMode2(wftsc.getDrawMode());
+		drawMode = wftsc.getDrawMode();
 
 		DMlen = cm.getDeepMemoryControl().getDeepDataLen();
 

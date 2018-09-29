@@ -256,12 +256,12 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 	 */
 	public void receiveOfflineNormalData(OfflineChannelsInfo ci) {
 		mr.receiveOfflineData(ci, this, Offline_Normal);
-		getWaveFormManager().retainClosedWaveForms();
+		wfm.retainClosedWaveForms();
 	}
 
 	public void receiveOfflineVideoData(OfflineChannelsInfo ci) {
 		mr.receiveOfflineData(ci, this, RC_Play);
-		getWaveFormManager().retainClosedWaveForms();
+		wfm.retainClosedWaveForms();
 	}
 
 	/**
@@ -271,7 +271,7 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 	 */
 	public void receiveOfflineDMData(DMInfo ci) {
 		mr.receiveOfflineDMData(ci, this);
-		getWaveFormManager().retainClosedWaveForms();
+		wfm.retainClosedWaveForms();
 	}
 
 	/**

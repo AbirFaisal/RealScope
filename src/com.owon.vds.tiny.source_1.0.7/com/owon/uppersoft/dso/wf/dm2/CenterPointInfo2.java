@@ -120,7 +120,8 @@ public class CenterPointInfo2 {
 			i0 += div;
 			x -= mul;
 		}
-		setXBloc((int) (x - -wc));
+		int v = (int) (x - -wc);
+		xbloc = v;
 
 		Point p = new Point(i0, i1);
 		// 再限制回数据边界

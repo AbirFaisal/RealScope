@@ -393,7 +393,7 @@ public class Submitor2 extends AbsSubmitor implements
 					pref_tran.getLevelArg(arr[0], arr[1]));
 			break;
 		case trg_edge_holdoff:
-			getClockTimeAdjuster().c_trg_holdoffArg(chl, arr[1], arr[2]);
+			cta.c_trg_holdoffArg(chl, arr[1], arr[2]);
 			break;
 		default:
 		}
@@ -401,7 +401,7 @@ public class Submitor2 extends AbsSubmitor implements
 
 	@Override
 	public void c_trg_pulse(int mode, int chl, byte item, int... arr) {
-		IClockTimeAdjuster cta = getClockTimeAdjuster();
+		IClockTimeAdjuster cta = this.cta;
 		int pcc = chl;
 		switch (item) {
 		case trg_pulse_condition:
@@ -420,7 +420,7 @@ public class Submitor2 extends AbsSubmitor implements
 
 	@Override
 	public void c_trg_slope(int mode, int chl, byte item, int... arr) {
-		IClockTimeAdjuster cta = getClockTimeAdjuster();
+		IClockTimeAdjuster cta = this.cta;
 		int pcc = chl;
 		switch (item) {
 		case trg_slope_condition:
@@ -439,7 +439,7 @@ public class Submitor2 extends AbsSubmitor implements
 
 	@Override
 	public void c_trg_video(int mode, int chl, byte item, int... arr) {
-		IClockTimeAdjuster cta = getClockTimeAdjuster();
+		IClockTimeAdjuster cta = this.cta;
 		switch (item) {
 		case trg_video_holdoff:
 			cta.c_trg_holdoffArg(chl, arr[1], arr[2]);

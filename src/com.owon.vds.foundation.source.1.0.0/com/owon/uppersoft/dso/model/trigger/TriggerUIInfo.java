@@ -12,7 +12,7 @@ public class TriggerUIInfo {
 		int channel = p.loadInt("triggerChannelIndex");
 		if (channel >= channelsNumber)
 			channel = 0;
-		setCurrentAltChannel(channel);
+		this.channel = channel;
 
 		auto_trglevel_middle = p.loadBoolean("auto_trglevel_middle");
 	}
@@ -57,7 +57,7 @@ public class TriggerUIInfo {
 		if (tc.isSingleTrg())
 			return tc.singleTriggerSet.getChannel();
 		else {
-			return getChannel();
+			return channel;
 		}
 	}
 

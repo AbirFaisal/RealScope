@@ -235,7 +235,7 @@ public class Pluger {
 	}
 
 	public boolean canPaintSinePlug(int screendatalen) {
-		return isPlug();
+		return plug;
 	}
 
 	public int getScreendatalen() {

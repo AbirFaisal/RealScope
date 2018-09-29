@@ -361,25 +361,25 @@ public abstract class CoreControl implements TimePerPointProvider,
 	}
 
 	public boolean isTrgLevelDisable() {
-		boolean disable = !getTriggerControl().isTrgEnable()
-				|| getTriggerControl().isOnExtTrgMode()
-				|| getFFTControl().isFFTon()
-				|| getTimeControl().isOnSlowMoveTimebase();
+		boolean disable = !triggerControl.isTrgEnable()
+				|| triggerControl.isOnExtTrgMode()
+				|| fftControl.isFFTon()
+				|| timeControl.isOnSlowMoveTimebase();
 		return disable;
 	}
 
 	public boolean mayDelayInvalid() {
-		return !getTriggerControl().isSingleTrg()
-				|| getTriggerControl().getSingleTriggerSet()
+		return !triggerControl.isSingleTrg()
+				|| triggerControl.getSingleTriggerSet()
 						.isCurrentTrigger_Video();
 	}
 
 	public boolean shouldSkipBeforeFrames() {
-		return getTriggerControl().isSweepNormal()
-				|| getTriggerControl().isSweepOnce()
-				|| getFFTControl().isFFTon() || isPeakDetectWork()
-				|| getSampleControl().avgon
-				|| getTimeControl().isOnSlowMoveTimebase();
+		return triggerControl.isSweepNormal()
+				|| triggerControl.isSweepOnce()
+				|| fftControl.isFFTon() || isPeakDetectWork()
+				|| sampleControl.avgon
+				|| timeControl.isOnSlowMoveTimebase();
 	}
 
 	/**
@@ -495,7 +495,7 @@ public abstract class CoreControl implements TimePerPointProvider,
 		if (ffton) {
 			wfic.storeChannelsDisplaybeforeFFT();
 			wfic.preSetChannelsForFFT(fftchl);
-			getSampleControl().c_setModelIdx(0);
+			sampleControl.c_setModelIdx(0);
 			// 改变界面状态；发fft指令，接收数据
 			n = PropertiesItem.FFT_ON;
 			// System.err.println("syncFFTStatus "+ ffton);
@@ -504,7 +504,7 @@ public abstract class CoreControl implements TimePerPointProvider,
 			// 改变界面状态；发匹配指令
 			n = PropertiesItem.FFT_OFF;
 		}
-		getTimeControl().updateTimebase();
+		timeControl.updateTimebase();
 
 		Platform.getControlApps().interComm.syncDetail(new Runnable() {
 			@Override

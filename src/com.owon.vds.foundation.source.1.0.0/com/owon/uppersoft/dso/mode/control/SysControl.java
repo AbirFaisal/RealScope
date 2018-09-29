@@ -63,11 +63,11 @@ public class SysControl implements IOrgan, IPatchable {
 			macaddress = p.loadBytes("NetWork.setMac", macaddress.length);
 
 		}
-		setSyncOutput(p.loadInt("NetWork.Sync_out"));
+		this.sync_output = p.loadInt("NetWork.Sync_out");
 
 		/** 开机时不要保持TrigIn的状态 */
-		if (getSyncOutput() == 0) {
-			setSyncOutput(1);
+		if (sync_output == 0) {
+			this.sync_output = 1;
 		}
 	}
 
@@ -80,13 +80,13 @@ public class SysControl implements IOrgan, IPatchable {
 		p.persistBytes("NetWork.setGateway", gwaddress);
 		p.persistInt("NetWork.setPort", port);
 		p.persistBytes("NetWork.setMac", macaddress);
-		p.persistInt("NetWork.Sync_out", getSyncOutput());
+		p.persistInt("NetWork.Sync_out", sync_output);
 
 	}
 
 	public void selfSubmit(Submitable sbm) {
 		/** 在网络设置时，会将设置的值保存，所以再批量设置的时候再设置一下也是可以的 */
-		sbm.c_sync_output(getSyncOutput());
+		sbm.c_sync_output(sync_output);
 	}
 
 	public final boolean netOn = true;
@@ -103,7 +103,7 @@ public class SysControl implements IOrgan, IPatchable {
 	}
 
 	public void c_setSyncOut(int syncOut) {
-		setSyncOutput(syncOut);
+		this.sync_output = syncOut;
 
 		Submitable sbm = SubmitorFactory.reInit();
 		sbm.c_sync_output(syncOut);

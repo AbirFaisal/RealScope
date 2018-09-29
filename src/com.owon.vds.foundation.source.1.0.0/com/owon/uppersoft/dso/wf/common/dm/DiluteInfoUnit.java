@@ -86,8 +86,8 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 	protected abstract IPluger createPluger(DiluteInfoUnit di);
 
 	public void setCenterPoint(int cpidx, int cpoff) {
-		setCenterPointIndex(cpidx);
-		setCenterPointOffset(cpoff);
+		this.cpidx = cpidx;
+		this.cpoff = cpoff;
 	}
 
 	public void setPlug(boolean b) {
@@ -246,7 +246,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 			diluteR.set(pixs, screendatalen);
 			computeCenterPointStuff(cpoff);
 			// spi_offs[tbidx] = getCenterPointOffset();
-			setXBloc(0);
+			xbloc = 0;
 
 			loadcp();
 
@@ -285,8 +285,8 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 			cpidx += num;
 			cpoff = -re;
 		}
-		setCenterPointIndex(cpidx);
-		setCenterPointOffset(cpoff);
+		this.cpidx = cpidx;
+		this.cpoff = cpoff;
 		// System.err.println("cpidx: " + cpidx);
 	}
 
@@ -470,7 +470,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 			i0 -= diluteR.getDivisor();
 			xb += rem - diluteR.getMultiplyor();
 			// }
-			setXBloc(xb);
+			xbloc = xb;
 		}
 
 		loadcp();
@@ -610,7 +610,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 			// System.err.println("valid: " + cpoff);
 		}
 		tbidx = tb;
-		setCenterPointOffset(cpoff);
+		this.cpoff = cpoff;
 
 		diluteR = nextRate;
 	}
@@ -644,13 +644,15 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 		prepare();
 
 		screendatalen = li.pixs;
-		setCenterPointIndex(cpidx);
+		this.cpidx = cpidx;
 		diluteR = new MultiplyorAndDivisor(1, 1);
 
 		/** 若要切换的那个档位未设置，则赋值0 */
-		if (spi_offs[tbidx] == invalidOff)
-			setCenterPointOffset(0);// setCenterPointOffset(spi_offs[tbidx]);
-		setXBloc(0);
+		if (spi_offs[tbidx] == invalidOff) {
+// setCenterPointOffset(spi_offs[tbidx]);
+			cpoff = 0;
+		}
+		xbloc = 0;
 	}
 
 	public void drawView(Graphics g, int xoff, int hh, int wlen, int hortrgidx) {

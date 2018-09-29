@@ -327,7 +327,7 @@ public class DiluteInfoUnitTiny2 implements InfoUnit, IDataMaxMin,
 		BeyondMax = BeyondMin = false;
 		byte[] barr = b_adcbuf.array();
 		int j = 0, v;
-		final byte max = (byte) getMax(), min = (byte) getMin();
+		final byte max = (byte) Max_8bit, min = (byte) Min_8bit;
 		for (int i = pos; i < limit; i++, j++) {
 			v = array[i];
 			if (v > max) {

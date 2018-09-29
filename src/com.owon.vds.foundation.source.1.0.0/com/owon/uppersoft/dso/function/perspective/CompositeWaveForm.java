@@ -99,7 +99,7 @@ public class CompositeWaveForm implements IView, IRefSource {
 
 	@Override
 	public int getPos0() {
-		return getYloc();
+		return yloc;
 	}
 
 	@Override
@@ -137,9 +137,10 @@ public class CompositeWaveForm implements IView, IRefSource {
 		/** 画左边的标尺 ,依次画顶 底 中 */
 		LineUtil.paintChannelLabel(yb, y, bottom, g2d, "M", 1, onFront);
 
-		if (onShowPos0)
+		if (onShowPos0) {
 			LineUtil.paintOnShowPos0(g2d, pc, Platform.getDataHouse().divUnits,
-					getYloc(), yb, r);
+					yloc, yb, r);
+		}
 	}
 
 	public void receiveNewData(ScreenContext pc) {

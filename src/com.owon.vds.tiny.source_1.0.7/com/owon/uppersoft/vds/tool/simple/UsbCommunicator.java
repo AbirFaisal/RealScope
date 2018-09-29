@@ -106,7 +106,7 @@ public class UsbCommunicator {
 	public UsbCommunicator() {
 		this.ucc = new UsbComControl(this);
 		m_startGet = new InfiniteGetData(this);
-		m_fpgaSend = new InteractiveBranch(this, getUsbComControl()
+		m_fpgaSend = new InteractiveBranch(this, ucc
 				.getUSBSourceManager());
 		prepare();
 		initialize();

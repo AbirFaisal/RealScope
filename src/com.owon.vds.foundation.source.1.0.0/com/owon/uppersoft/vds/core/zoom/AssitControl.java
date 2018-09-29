@@ -204,12 +204,13 @@ public class AssitControl {
 	}
 
 	public boolean isonAssistSet() {
-		return getSelected() == ASSIT_STATUS;
+		return selected == ASSIT_STATUS;
 	}
 
 	private void onHorTrgPosChangedByTimebase(int tbidx, int htp) {
 		if (isonZoom()) {
-			setZTBidx(tbidx);// 保存ztb,A与Z互切时要用
+			// 保存ztb,A与Z互切时要用
+			this.ztbIdx = tbidx;
 			keepZtbNotbiggerthanMtb(tbidx);
 		} else if (isonAssistSet()) {
 			mtbIdx = tbidx;
@@ -219,11 +220,11 @@ public class AssitControl {
 	}
 
 	public boolean isonZoom() {
-		return getSelected() == ZOOM_STATUS;
+		return selected == ZOOM_STATUS;
 	}
 
 	public boolean isonMain() {
-		return getSelected() == MAIN_STATUS;
+		return selected == MAIN_STATUS;
 	}
 
 	/** 重新定位平触。 M到Z 、A到Z时调用 */
@@ -450,7 +451,7 @@ public class AssitControl {
 	}
 
 	public void changeZoomstatus(ControlManager cm, int idx) {
-		if (getSelected() != idx) {
+		if (selected != idx) {
 			setSelected(idx);
 			switch (idx) {
 			case AssitControl.MAIN_STATUS:

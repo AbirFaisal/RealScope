@@ -43,7 +43,7 @@ public class MathControl {
 	}
 
 	public void updateMathVbIdx(int vb1, int vb2) {
-		if (getMathvbidx() < 0 || getMathvbidx() >= dbMathVoltage.length)
+		if (mathvbidx < 0 || mathvbidx >= dbMathVoltage.length)
 			setMathvbidx(judgeVBidx(vb1, vb2));
 	}
 

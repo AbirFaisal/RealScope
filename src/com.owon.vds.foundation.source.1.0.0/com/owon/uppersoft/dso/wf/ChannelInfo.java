@@ -86,10 +86,10 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 
 	public ChannelInfo(int number, VoltageProvider vp,
 			Pos0_VBChangeInfluence pvi) {
-		this.setNumber(number);
+		this.number = number;
 		this.vp = vp;
 		this.pvi = pvi;
-		setName("CH" + (number + 1));
+		this.name = "CH" + (number + 1);
 
 		int len = vp.getVoltageNumber();
 		VOLTAGEs = new Volt[len];
@@ -133,16 +133,16 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 		if (vb < 0 || vb >= vp.getVoltageNumber()) {
 			vb = 0;
 		}
-		setPos0(p.loadInt(name + ".pos0"));
+		this.pos0 = p.loadInt(name + ".pos0");
 		// KNOW 先设置pos0,在设置电压档位时getPos0()才有正确值拿
 		setVoltbaseIndex(vb, true, true);
-		setOn(p.loadBoolean(name + ".on"));
+		this.on = p.loadBoolean(name + ".on");
 
 		int idx = p.loadInt(name + ".probeMultiIdx");
 		setProbeMultiIdx(idx);
 
-		setCouplingIdx(p.loadInt(name + ".couplingIdx"));
-		setBandlimit(p.loadBoolean(name + ".bandlimit"));
+		this.couplingIdx = p.loadInt(name + ".couplingIdx");
+		this.bandlimit = p.loadBoolean(name + ".bandlimit");
 		inverse = p.loadBoolean(name + ".inverse");
 	}
 
@@ -245,13 +245,13 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 		// System.err.println(number+": "+freq);
 		this.setFreq(freq);
 		if (freq < 0) {
-			setFreqtxt("?");
+			this.freqtxt = "?";
 		} else if (freq >= 0 && freq < 2) {
-			setFreqtxt("<2Hz");
+			this.freqtxt = "<2Hz";
 		} else {
 			MachineType mt = Platform.getControlManager().getMachine();
-			setFreqtxt(UnitConversionUtil.getFrequencyLabel_Hz_withRestrict(
-					freq, mt.getMaxFreqWhenChannelsOn()));
+			this.freqtxt = UnitConversionUtil.getFrequencyLabel_Hz_withRestrict(
+						freq, mt.getMaxFreqWhenChannelsOn());
 		}// System.err.println(freqtxt);
 	}
 
@@ -262,7 +262,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	}
 
 	public void c_setBandLimit(boolean bl) {
-		setBandlimit(bl);
+		this.bandlimit = bl;
 		c_forceBandLimit(isBandlimit());
 	}
 
@@ -330,11 +330,11 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	}
 
 	public void setOnWithoutSync(boolean on) {
-		setOn(on);
+		this.on = on;
 	}
 
 	public void c_setCoupling(int coupling) {
-		setCouplingIdx(coupling);
+		this.couplingIdx = coupling;
 
 		Submitable sbm = SubmitorFactory.reInit();
 		sbm.c_chl(P_Channel.COUPLING, number, couplingIdx);
@@ -435,7 +435,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 		// return;
 		int p1 = zero;
 		final int dp = p1 - p0;
-		setPos0(zero);
+		this.pos0 = zero;
 
 		// 引起触发电平的改变
 		final int chlidx = number;

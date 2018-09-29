@@ -28,7 +28,7 @@ public class ChartScreenSelectModel implements RightTrgLevelInfoProvider {
 	}
 
 	public void resetNoneSelect() {
-		setScreenSelectWFidx(-1);
+		screenSelectWFidx = -1;
 	}
 
 	/**
@@ -124,20 +124,21 @@ public class ChartScreenSelectModel implements RightTrgLevelInfoProvider {
 	 * ------------------------------
 	 */
 	public void update_ChangeLevel(int chl, TrgCheckType type) {
-		setArrowDraw(true);
-		setTrgInfoControlActive(true);
+		arrowDraw = true;
+		trgInfoControlActive = true;
 		setTrgOverInfo(chl, type);
 	}
 
 	public void update_DoneLevelChange() {
-		if (!onRightArea)
-			setArrowDraw(false);
-		setTrgInfoControlActive(false);
+		if (!onRightArea) {
+			arrowDraw = false;
+		}
+		trgInfoControlActive = false;
 		resetEmptyTrgOverInfo();
 	}
 
 	public void setTrgOverInfo(int channel, TrgCheckType type) {
-		setScreenSelectWFidx(channel);
+		screenSelectWFidx = channel;
 		setOperateChannelAndThredshodType(channel, type);
 	}
 

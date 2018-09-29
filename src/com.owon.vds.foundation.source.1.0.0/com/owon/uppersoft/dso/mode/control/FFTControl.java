@@ -65,7 +65,7 @@ public class FFTControl implements IOrgan, IPatchable {
 		if (fftchl >= channelsNumber)
 			fftchl = channelsNumber - 1;
 		fftvaluetype = p.loadInt("Math.fftvaluetype");
-		setFFTwnd(p.loadInt("Math.fftwnd"));
+		this.fftwnd = p.loadInt("Math.fftwnd");
 		fftscale = p.loadInt("Math.fftscale");
 
 		// 实现对缩放档位的保存不太容易载入，而且意义也不大
@@ -82,7 +82,7 @@ public class FFTControl implements IOrgan, IPatchable {
 	public void persist(Pref p) {
 		p.persistInt("Math.fftchl", fftchl);
 		p.persistInt("Math.fftvaluetype", fftvaluetype);
-		p.persistInt("Math.fftwnd", getFFTwnd());
+		p.persistInt("Math.fftwnd", fftwnd);
 		p.persistInt("Math.fftscale", fftscale);
 
 		p.persistBoolean("Math.ffton", ffton);

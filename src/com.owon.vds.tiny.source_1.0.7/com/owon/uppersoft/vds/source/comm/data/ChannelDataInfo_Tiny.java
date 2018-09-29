@@ -95,7 +95,7 @@ public class ChannelDataInfo_Tiny extends ChannelDataInfo {
 	}
 
 	public ByteBuffer trimNgetADCByteBuffer() {
-		ByteBuffer dmbuf = getALLDMBuffer();
+		ByteBuffer dmbuf = alldmbuf;
 		if (dmbuf == null)
 			return dmbuf;
 

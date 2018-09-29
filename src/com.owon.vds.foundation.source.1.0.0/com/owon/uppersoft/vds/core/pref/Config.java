@@ -61,7 +61,7 @@ public class Config implements PropertiesItem {
 	}
 
 	private void initLocales() {
-		String[] lns = getStaticPref().getAvailableLocaleNames();
+		String[] lns = staticPref.getAvailableLocaleNames();
 		int len = lns.length;
 		locales = new LinkedList<LocaleObject>();
 		locales_support_native = new LinkedList<LocaleObject>();
@@ -78,9 +78,10 @@ public class Config implements PropertiesItem {
 	 * @param p
 	 */
 	private void loadConfigurationFromProperties(Pref p) {
-		setLocaleIndex(getDefaultLocaleIndex(p.loadLocale()));
-		if (localeIndex < 0)
-			setLocaleIndex(0);
+		this.localeIndex = getDefaultLocaleIndex(p.loadLocale());
+		if (localeIndex < 0) {
+			this.localeIndex = 0;
+		}
 	}
 
 	/**
@@ -145,7 +146,7 @@ public class Config implements PropertiesItem {
 			txtlocales.add(lo);
 		locales = txtlocales;
 
-		setLocaleIndex(getDefaultLocaleIndex(def));
+		this.localeIndex = getDefaultLocaleIndex(def);
 		if (localeIndex < 0)
 			Platform.getDataHouse().adjustLocale_LocalizeWindow(this, 0);
 	}

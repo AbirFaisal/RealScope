@@ -71,7 +71,7 @@ public abstract class WaveFormInfoControl implements IPatchable, IOrgan,
 
 	@Override
 	public int getSupportChannelsNumber() {
-		return getLowMachineChannels();
+		return lowMachineChannels;
 	}
 
 	public int getLowMachineChannels() {
@@ -323,7 +323,7 @@ public abstract class WaveFormInfoControl implements IPatchable, IOrgan,
 	}
 
 	public WaveForm getSelectedWF() {
-		return getWaveForm(getSelectedwfIdx());
+		return getWaveForm(selectedwfIdx);
 	}
 
 	public void setSelectedwfIdx(int selectedwfIdx) {

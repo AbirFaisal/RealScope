@@ -47,7 +47,7 @@ public abstract class AbsSubmitor implements Submitable {
 	}
 
 	private Runnable consumeRegisterRunnable() {
-		Runnable run = getRegisterRunnable();
+		Runnable run = rb;
 		registerRunnable(null);
 		return run;
 	}

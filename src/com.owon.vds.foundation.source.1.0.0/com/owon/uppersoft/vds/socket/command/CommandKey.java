@@ -15,7 +15,7 @@ public class CommandKey {
 	public String getFitPre() {
 		if (onShortDetected)
 			return shortPre;
-		return getPre();
+		return pre;
 	}
 
 	public String getPre() {
@@ -65,7 +65,7 @@ public class CommandKey {
 		} else if (line.startsWith(":")) {
 			String[] splits = line.split(":",3);//分割3-1次，分成3组
 			setPrecmd(splits[1]);
-			subcmd = line.substring(getPrecmd().length() + 1);
+			subcmd = line.substring(precmd.length() + 1);
 		} else
 			return null;
 		println("hasKey? Pre:" + getFitPre() + ",precmd:" + precmd + ",subcmd:"
@@ -78,7 +78,7 @@ public class CommandKey {
 			for (int i = 0; i < childrenKeys.length; i++) {
 				CommandKey ck = childrenKeys[i].hasKey(subcmd, this);
 				if (ck != null) {
-					println(ck.getPre(), false);
+					println(ck.pre, false);
 					return ck;
 				}
 			}
@@ -87,14 +87,14 @@ public class CommandKey {
 	}
 
 	public Object handle() {
-		println("handle?pre:" + getPre() + ",precmd: " + precmd, false);
+		println("handle?pre:" + pre + ",precmd: " + precmd, false);
 		return fac.handle(this);
 	}
 
 	private boolean compaireCMDHead() {
-		boolean p1 = getPrecmd().startsWith(getPre());
-		boolean p2 = getPrecmd().startsWith(getShortPre());
-		println("samePre:" + p1 + "," + getPre() + ",sameShort:" + p2 + "," + getShortPre(),
+		boolean p1 = precmd.startsWith(pre);
+		boolean p2 = precmd.startsWith(shortPre);
+		println("samePre:" + p1 + "," + pre + ",sameShort:" + p2 + "," + shortPre,
 				false);
 		onShortDetected = !p1 && p2;
 		return p1 || p2;
@@ -119,9 +119,10 @@ public class CommandKey {
 	}
 
 	public String nodeName() {
-		if (parentKey != null)
-			return parentKey.nodeName() + "." + getPre();
-		return getPre();
+		if (parentKey != null) {
+			return parentKey.nodeName() + "." + pre;
+		}
+		return pre;
 	}
 	
 	private void println(String s, boolean isErr) {

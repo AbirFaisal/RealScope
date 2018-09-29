@@ -461,7 +461,7 @@ public abstract class MachineInfo {
 	public abstract int fftAvailablePoints(int timebaseIndex);
 
 	public int getPos0HalfRange(int currentVolt) {
-		if (getChannelNumbers() > 2)
+		if (channel_numbers > 2)
 			return getPos0HalfRange_for4(currentVolt);
 		else
 			return getPos0HalfRange_for2(currentVolt);

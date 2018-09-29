@@ -77,7 +77,7 @@ public abstract class ControlApps implements IStopable {
 		if (!ir.isKeepGet())
 			return;
 		// 先停下，再断开
-		InfiniteDaemon id = getDaemon();
+		InfiniteDaemon id = daemon;
 		id.addMission(id.m_dislink);
 	}
 
@@ -134,7 +134,7 @@ public abstract class ControlApps implements IStopable {
 			return;
 
 		// 先运行，再计数
-		InfiniteDaemon id = getDaemon();
+		InfiniteDaemon id = daemon;
 		id.addMission(id.m_startGet);
 	}
 

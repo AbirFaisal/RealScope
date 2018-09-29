@@ -32,8 +32,9 @@ public class SoftwareControl implements IBoard {
 
 	public SoftwareControl(ControlManager cm) {
 		this.cm = cm;
-		setMachineHeader(cm.getAllChannelsNumber() > 2 ? "SPBVDSxxx4"
-				: "SPBVDSxxx2");
+		String machine_header1 = cm.getAllChannelsNumber() > 2 ? "SPBVDSxxx4"
+				: "SPBVDSxxx2";
+		this.machine_header = machine_header1;
 	}
 
 	/** This section is information related to the version of the file read and written by the software. */

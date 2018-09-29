@@ -39,7 +39,7 @@ public abstract class AbsMacType implements MachineType {
 
 	@Override
 	public int getMaxFreqWhenChannelsOn() {
-		return getMaxSampleRateWhenChannelsOn() / FreqResultMaxDivider;
+		return maxSampleRateWhenChannelsOn / FreqResultMaxDivider;
 	}
 
 	@Override

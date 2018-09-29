@@ -28,7 +28,7 @@ public class DefaultRuntime implements IRuntime {
 
 	/** 先实现运行状态下的 */
 	public boolean isRuntime() {
-		return isKeepGet() && !isExit();
+		return isKeepGet() && !exit;
 	}
 
 	public boolean isKeepGet() {
@@ -48,7 +48,8 @@ public class DefaultRuntime implements IRuntime {
 		}
 
 		/** 判断真正停下，否则不允许操作时基combobox或滚轮快捷 */
-		setRecentStop(!b);
+		boolean recentStop = !b;
+		this.recentRunThenStop = recentStop;
 		cm.changeKeepget(b);
 	}
 

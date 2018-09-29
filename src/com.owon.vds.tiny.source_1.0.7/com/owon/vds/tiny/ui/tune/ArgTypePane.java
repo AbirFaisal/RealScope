@@ -154,7 +154,7 @@ public class ArgTypePane extends JPanel implements CalibrationArgType,
 
 	protected void vbchangeForChannel(JComboBox vbcbb, int chl) {
 		int vb = vbcbb.getSelectedIndex();
-		setListening(false);
+		this.listening = false;
 		// System.out.println(vbcbb.getSelectedItem().toString()+","+
 		// chlcbb.getSelectedItem().toString());
 		refreshContentWhileSuspend();
@@ -162,7 +162,7 @@ public class ArgTypePane extends JPanel implements CalibrationArgType,
 		if (vb >= 0) {
 			ttd.vbChangeForChannel(chl, vb);
 		}
-		setListening(true);
+		this.listening = true;
 	}
 
 	@Override

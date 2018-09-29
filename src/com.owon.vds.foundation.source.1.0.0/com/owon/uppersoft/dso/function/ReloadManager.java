@@ -41,14 +41,14 @@ public class ReloadManager {
 	public int prepareReloadPlayFile(int machID) {
 		// if (!cm.isSameSeries(machID))
 		// return -1;
-		setReloadStatus(Record_Reload);
+		ReloadStatus = Record_Reload;
 		restartWhenMismatching(machID);
 		return 1;
 	}
 
 	public void prepareReloadDM(int machID, String path) {
 		// if (cm.isSameSeries(machID)) {
-		setReloadStatus(DM_Reload);
+		ReloadStatus = DM_Reload;
 		reloadPath = path;
 		restartWhenMismatching(machID);
 		// }

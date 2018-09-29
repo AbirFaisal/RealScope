@@ -15,7 +15,7 @@ public class LObject {
 
 	@Override
 	public String toString() {
-		return I18nProvider.bundle().getString(getKey());
+		return I18nProvider.bundle().getString(key);
 	}
 
 	public static final LObject[] getLObjects(String[] keys) {

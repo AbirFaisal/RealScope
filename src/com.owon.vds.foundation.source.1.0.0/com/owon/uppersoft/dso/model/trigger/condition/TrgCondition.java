@@ -86,21 +86,21 @@ public enum TrgCondition implements EnumLabelProvider {
 	/***/
 
 	public static void resumeDefaultSet() {
-		stg_xx0ns.setMinistep(stg_xx0ns_ministep);
-		stg_xx0ns.setMin(stg_xx0ns_min);
-		stg_xx0ns.setMax(stg_xx0ns_max);
+		stg_xx0ns.ministep = stg_xx0ns_ministep;
+		stg_xx0ns.min = stg_xx0ns_min;
+		stg_xx0ns.max = stg_xx0ns_max;
 	}
 
 	private static void resumeSet1() {
-		stg_xx0ns.setMinistep(2);
-		stg_xx0ns.setMin(6);
-		stg_xx0ns.setMax(98);
+		stg_xx0ns.ministep = 2;
+		stg_xx0ns.min = 6;
+		stg_xx0ns.max = 98;
 	}
 
 	public static void resumeSet2() {
-		stg_x_xxus.setMinistep(1);
-		stg_x_xxus.setMin(1);
-		stg_x_xxus.setMax(999);
+		stg_x_xxus.ministep = 1;
+		stg_x_xxus.min = 1;
+		stg_x_xxus.max = 999;
 	}
 
 	public static final TrgCondition[] VALUES = values();

@@ -442,15 +442,15 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 		ppc.persist(p);
 		measMod.persist(p);
 		rc.persist(p);
-		getZoomAssctr().persist(p);
+		zoomAssctr.persist(p);
 		rwc.persist(p);
 		playCtrl.persist(p);
 		reloadManager.persist(p);
 		scpiServer.persist(p);
 
-		if (getZoomAssctr().isonZoom()) {
-			p.persistInt(ITimeControl.TIMEBASE_INDEX, getZoomAssctr().mtbIdx);
-			p.persistInt(ITimeControl.HOR_TRG_POS, getZoomAssctr().mhtp);
+		if (zoomAssctr.isonZoom()) {
+			p.persistInt(ITimeControl.TIMEBASE_INDEX, zoomAssctr.mtbIdx);
+			p.persistInt(ITimeControl.HOR_TRG_POS, zoomAssctr.mhtp);
 		}
 
 		// p.setProperty("reloadPath", reloadManager.reloadPath);
@@ -541,7 +541,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 		int channelsNumber = getSupportChannelsNumber();
 		ruleManager.load(p, channelsNumber);
 
-		getZoomAssctr().factoryload(p);
+		zoomAssctr.factoryload(p);
 
 		// updateHorTrgRange();
 		cc.updateHorTrgIdx4View();
@@ -693,7 +693,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	}
 
 	public boolean isTimeOperatable() {
-		if (getFFTControl().isFFTon() || getZoomAssctr().isonAssistSet())
+		if (getFFTControl().isFFTon() || zoomAssctr.isonAssistSet())
 			return false;
 		return isRuntime() || isRuntimeStop() || !sourceManager.isConnected();
 	}
@@ -766,7 +766,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 
 	public boolean shouldAdjustHorTrgPos() {
 		Window parent = Platform.getMainWindow().getWindow();
-		if (getZoomAssctr().isonAssistSet()) {
+		if (zoomAssctr.isonAssistSet()) {
 			FadeIOShell pv = new FadeIOShell();
 			pv.prompt(I18nProvider.bundle().getString("M.Zoom.Warn"), parent);
 			return false;

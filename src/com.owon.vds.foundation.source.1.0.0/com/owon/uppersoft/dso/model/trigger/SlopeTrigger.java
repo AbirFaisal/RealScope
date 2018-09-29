@@ -115,7 +115,7 @@ public class SlopeTrigger extends AbsTrigger {
 		p.persistInt(prefix + txt + ".uppest", ts.c_getUppest());
 
 		p.persistInt(prefix + txt + ".lowest", ts.c_getLowest());
-		p.persistInt(prefix + txt + ".sweep", getSweep());
+		p.persistInt(prefix + txt + ".sweep", sweep);
 	}
 
 	@Override

@@ -36,8 +36,9 @@ public class AdditionComboBoxModel extends AbstractListModel implements
 
 	@Override
 	public Object getElementAt(int index) {
-		if (index == list.size())
-			return getLastItem();
+		if (index == list.size()) {
+			return li;
+		}
 		return list.get(index);
 	}
 
@@ -63,7 +64,7 @@ public class AdditionComboBoxModel extends AbstractListModel implements
 	public void removeElement(Object obj) {
 		list.remove(obj);
 
-		if (obj.equals(getLastItem())) {
+		if (obj.equals(li)) {
 			int idx = getSize() - 1;
 			fireIntervalRemoved(this, idx, idx);
 			return;

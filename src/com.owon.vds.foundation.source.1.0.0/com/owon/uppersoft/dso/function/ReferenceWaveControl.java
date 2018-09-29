@@ -192,9 +192,10 @@ public class ReferenceWaveControl {
 	}
 
 	public void load(Pref p) {
-		setSourceIdx(p.loadInt("ReferenceSourceIdx"));
-		if (getSourceIdx() >= cm.getSupportChannelsNumber())
-			setSourceIdx(cm.getSupportChannelsNumber() - 1);
+		this.sourceId = p.loadInt("ReferenceSourceIdx");
+		if (sourceId >= cm.getSupportChannelsNumber()) {
+			this.sourceId = cm.getSupportChannelsNumber() - 1;
+		}
 		useableList = p.loadIntegerList("ReferenceObjsUseable", ",");
 		rfObjNames = p.loadStringList("ReferenceObjsNames", ",");
 	}
@@ -219,7 +220,7 @@ public class ReferenceWaveControl {
 		}
 		p.persistIntegerList("ReferenceObjsUseable", useable, ",");
 		p.persistStringList("ReferenceObjsNames", names, ",");
-		p.persistInt("ReferenceSourceIdx", getSourceIdx());
+		p.persistInt("ReferenceSourceIdx", sourceId);
 	}
 
 }

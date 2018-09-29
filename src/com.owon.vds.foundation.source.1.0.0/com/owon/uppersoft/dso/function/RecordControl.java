@@ -150,8 +150,8 @@ public class RecordControl {
 	 */
 	public int writeOnce(RandomAccessFile raf, ControlManager cm,
 			WaveFormManager wfm, LoadMedia cti, RecordControl rc) {
-		int ct = rc.getCounter();
-		int maxframe = rc.getMaxframe();
+		int ct = rc.counter;
+		int maxframe = rc.maxframe;
 		int c = cti.getFrameCount();
 		int i = 0;
 		while (i < c) {

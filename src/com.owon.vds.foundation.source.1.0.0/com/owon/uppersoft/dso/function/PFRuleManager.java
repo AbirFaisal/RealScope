@@ -55,9 +55,9 @@ public class PFRuleManager {
 				rule_list.add(rd);
 		}
 
-		setShowMsg(p.loadBoolean("Rule.msg"));
-		setRing(p.loadBoolean("Rule.ring"));
-		setStopOnOutput(p.loadBoolean("Rule.stopOnOutput"));
+		show_msg = p.loadBoolean("Rule.msg");
+		ring = p.loadBoolean("Rule.ring");
+		stop_on_output = p.loadBoolean("Rule.stopOnOutput");
 		setOutputRule(p.loadInt("Rule.outputRule"));
 
 		rd = RuleDetail.getInstanceWithAdjust(p.getProperty("Rule.current"),
