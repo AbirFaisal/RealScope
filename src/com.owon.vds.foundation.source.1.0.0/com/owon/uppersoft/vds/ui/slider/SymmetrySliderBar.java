@@ -21,7 +21,8 @@ import com.owon.uppersoft.vds.ui.resource.SwingResourceManager;
 import com.sun.awt.AWTUtilities;
 
 /**
- * SymmetryCSliderBar，slider在中心的特殊滚动条，正负偏移控制值改变的速度
+ * SymmetryCSliderBar，The special scroll bar at the center of the slider,
+ * the speed at which the positive and negative offset control values change
  * 
  * @author Matt
  * 
@@ -118,9 +119,13 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * 使用sliderSelected变量区分滑块被点击选中与否，被选中则监听拖拽事件累加拖拽的位移，
-	 * 未选中则自动累加鼠标距离中心的偏移直至increment被置零。
-	 * 两个操作有各自的线程互斥运行，可使用同一变量，当鼠标释放后，对这一变量所引用的线程join
+	 *
+	 * Use the sliderSelected variable to distinguish whether the slider is clicked or not, and if it is selected,
+	 * it will monitor the drag event and accumulate the displacement of the drag.
+	 * Unchecked automatically accumulates the mouse's offset from the center until increment is set to zero.
+	 * Both operations have their own threads running mutually exclusive, using the same variable.
+	 * When the mouse is released, the thread referenced by this variable is joined.
+	 *
 	 */
 
 	private int increment = 0;
@@ -451,7 +456,8 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 	// }
 
 	/**
-	 * 从一种坐标上的数值(以垂直中心，上正下负)到另一种坐标上的数值(从顶端为0，向下递增)
+	 * Values from one coordinate (in vertical center, up and down negative)
+	 * to values in another coordinate (from top to 0, increasing downward)
 	 * 
 	 * @param halfRange
 	 * @param v
@@ -475,9 +481,9 @@ public class SymmetrySliderBar extends JPanel implements MouseListener,
 	// }
 
 	/**
-	 * 从一种坐标上的数值(以垂直中心，上正下负)到另一种坐标上的数值(从顶端为0，向下递增)
+	 * Values from one coordinate (in vertical center, up and down negative) to values in another coordinate (from top to 0, increasing downward)
 	 * 
-	 * 供通道触发电平或阈值上下限转换使用
+	 * For channel trigger level or threshold upper and lower limit conversion
 	 * 
 	 * @param ts
 	 * @param ci
