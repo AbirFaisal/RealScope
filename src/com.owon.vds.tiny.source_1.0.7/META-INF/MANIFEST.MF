@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Eclipse-SourceBundle: com.owon.vds.tiny;version="1.0.7";roots:="."
+Bundle-Version: 1.0.7
+Bundle-Localization: plugin
+Bundle-Name: %pluginName
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.owon.vds.tiny.source
+
