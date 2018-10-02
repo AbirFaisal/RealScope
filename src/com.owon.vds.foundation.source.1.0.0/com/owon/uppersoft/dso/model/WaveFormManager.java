@@ -46,7 +46,7 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 
 	private DataHouse dh;
 
-	private XYView xyv1;
+	private XYView xyView;
 	private FFTView fftv;
 	private CompositeWaveForm cwf;
 	private ReferenceWaveControl rwc;
@@ -70,7 +70,7 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 
 	@Override
 	public void localize(ResourceBundle rb) {
-		xyv1.localize(rb);
+		xyView.localize(rb);
 		fftv.localize(rb);
 	}
 
@@ -81,7 +81,7 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 		wfic = cm.getWaveFormInfoControl();
 		wfic.setDataHouse(dh);
 		retainClosedWaveForms();
-		xyv1 = new XYView(this, cm.displayControl);
+		xyView = new XYView(this, cm.displayControl);
 		fftv = new FFTView(this, cm);
 
 		LocalizeCenter lc = cm.getLocalizeCenter();
@@ -116,7 +116,7 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 	protected abstract WFTimeScopeControl createWFTimeScopeControl();
 
 	public boolean is3in1On() {
-		return xyv1.isOn() || cm.getFFTControl().isFFTon();
+		return xyView.isOn() || cm.getFFTControl().isFFTon();
 	}
 
 	public void setZeroYLoc(WaveForm wf, int yl, boolean commit) {
@@ -661,7 +661,7 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 	}
 
 	public XYView getXYView() {
-		return xyv1;
+		return xyView;
 	}
 
 	public ReferenceWaveControl getReferenceWaveControl() {

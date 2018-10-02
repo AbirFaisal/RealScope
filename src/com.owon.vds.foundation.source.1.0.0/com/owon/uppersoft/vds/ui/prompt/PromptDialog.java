@@ -265,7 +265,7 @@ public class PromptDialog extends JPanel implements IPopDown {
 
 	private void fireLastComponent() {
 		int cc = getComponentCount();
-		// System.err.println("cc: " + cc);
+		// System.err.println("coreControl: " + coreControl);
 		if (cc > 0) {
 			JComponent curr = (JComponent) getComponent(0);
 			// 将控件移除出容器的信息传递出去

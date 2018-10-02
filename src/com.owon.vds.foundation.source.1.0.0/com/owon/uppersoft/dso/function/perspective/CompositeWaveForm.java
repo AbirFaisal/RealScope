@@ -22,9 +22,11 @@ import com.owon.uppersoft.vds.core.paint.ScreenContext;
 import com.owon.uppersoft.vds.core.rt.IDataMaxMin;
 
 /**
- * CompositeWaveForm，复合波形，独立开辟数组空间来进行计算，可以达到更快的速度和刷新效果，以及更好的绘图算法
+ * CompositeWaveForm，Composite waveforms,
+ * independently open up array space for calculations,
+ * for faster speeds and refreshes, and better plotting algorithms
  * 
- * TODO 增加标签供拖拽改变零点
+ * TODO Increase the label for dragging and changing the zero point
  */
 public class CompositeWaveForm implements IView, IRefSource {
 
@@ -57,9 +59,8 @@ public class CompositeWaveForm implements IView, IRefSource {
 
 		public double getScaledValue(int adc) {
 			// pix/pix_m=Vb_m/Vb
-			double adc_m = adc * scale;
 			// System.out.println(adc+"x"+scale+"="+adc_m);
-			return adc_m;
+			return adc * scale;
 		}
 	}
 
@@ -134,7 +135,7 @@ public class CompositeWaveForm implements IView, IRefSource {
 
 		int y = r.y;
 		int bottom = r.y + r.height;
-		/** 画左边的标尺 ,依次画顶 底 中 */
+		/** Draw the ruler on the left, and then draw the top */
 		LineUtil.paintChannelLabel(yb, y, bottom, g2d, "M", 1, onFront);
 
 		if (onShowPos0) {
@@ -154,7 +155,8 @@ public class CompositeWaveForm implements IView, IRefSource {
 	}
 
 	/**
-	 * 给adc点进行乘法的时候应该乘a，除b，已经计入了衰减倍率
+	 * When multiplying the adc point, it should be multiplied by a,
+	 * except b, which has already included the attenuation ratio.
 	 * 
 	 * @param vb1
 	 * @param vb
@@ -194,11 +196,10 @@ public class CompositeWaveForm implements IView, IRefSource {
 		double[] ivt_Math = mc.dbMathVoltage;
 		int a = ivt[vb1];
 		double m = ivt_Math[vb];
-		Fraction p = new Fraction(a, m);
 		// System.out.println(ch1.toString() + " ,a:" + a + "/m:" + m + ","
 		// + p.scale);
 
-		return p;// 通道/math记录
+		return new Fraction(a, m);// Channel/math record
 	}
 
 	private int yloc;
@@ -257,15 +258,14 @@ public class CompositeWaveForm implements IView, IRefSource {
 			pos2 = ch2.getFirstLoadPos0();
 		}
 
-		boolean b = ScreenMode_3;
 		int l = l1 - p1;
-		/** 拿全部的获取点，计算一次即可 */
+		/** Take all the acquisition points and calculate them once. */
 		int i = 0;
 		// int m1a = m1.a, m1b = m1.b, m2a = m2.a, m2b = m2.b;
 		double adc;
 		switch (wfm.getMathOperation()) {
 		case 0: {// '+' yb-((a1-p1)+(a2-p2))
-			if (b) {
+			if (ScreenMode_3) {
 				while (p1 < l1) {
 					adc = m1.getScaledValue(array1[p1++] - pos1)
 							+ m2.getScaledValue(array2[p2++] - pos2);
@@ -287,7 +287,7 @@ public class CompositeWaveForm implements IView, IRefSource {
 		}
 			break;
 		case 1: {// '-' yb-((a1-p1)-(a2-p2))
-			if (b) {
+			if (ScreenMode_3) {
 				while (p1 < l1) {
 					adc = m1.getScaledValue(array1[p1++] - pos1)
 							- m2.getScaledValue(array2[p2++] - pos2);
@@ -310,7 +310,7 @@ public class CompositeWaveForm implements IView, IRefSource {
 		}
 			break;
 		case 2: {// '*' yb-(a1-p1)*(a2-p2)
-			if (b) {
+			if (ScreenMode_3) {
 				while (p1 < l1) {
 					adc = m1.getScaledValue(array1[p1++] - pos1)
 							* m2.getScaledValue(array2[p2++] - pos2);
@@ -333,8 +333,8 @@ public class CompositeWaveForm implements IView, IRefSource {
 		}
 			break;
 		case 3: {// '/' yb-(a1-p1)/(a2-p2)
-			/** 约去b可能带来的乘2 */
-			if (b) {
+			/** About 2 times that may be brought by b */
+			if (ScreenMode_3) {
 				while (p1 < l1) {
 					double tmp = m2.getScaledValue(array2[p2++] - pos2);
 					if (tmp == 0) {
@@ -380,7 +380,8 @@ public class CompositeWaveForm implements IView, IRefSource {
 	final int Min = IDataMaxMin.Min_8bit;
 
 	private double restrict_max_min_yb(double adc) {
-		/** yloc是基于屏幕中心，adc基于yloc，padc基于屏幕中心 */
+		/** Yloc is based on the center of the screen,
+		 * adc is based on yloc, and padc is based on the center of the screen. */
 		double padc = yloc + adc;
 		padc = restrict_max_min(padc);
 
@@ -443,7 +444,8 @@ public class CompositeWaveForm implements IView, IRefSource {
 		if (!mc.mathon)
 			return;
 
-		/** RT时直接等下一幅，后续可以再作加锁方式的各种支持 */
+		/** Wait for the next one when RT,
+		 *  and you can follow the various ways of locking. */
 		if (!pc.allowLazyRepaint()) {
 			resetIntBuf(pc);
 		}
@@ -468,7 +470,7 @@ public class CompositeWaveForm implements IView, IRefSource {
 		WFTimeScopeControl wftsc = wfm.getWFTimeScopeControl();
 		boolean pk_detect = wftsc.isPK_Detect();
 
-		// 运行时后续再处理
+		// Subsequent reprocessing at runtime
 		// RTLocInfoManager rtlim = wf.getRTLocInfoManager();
 		int dm = wftsc.getDrawMode();
 		xb = wftsc.computeXoffset(xb, dm);

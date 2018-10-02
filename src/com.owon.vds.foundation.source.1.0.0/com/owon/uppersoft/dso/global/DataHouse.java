@@ -25,7 +25,7 @@ import com.owon.uppersoft.vds.core.wf.rt.ChannelsTransportInfo;
 import com.owon.uppersoft.vds.ui.resource.FontCenter;
 
 /**
- * DataHouse，数据仓库
+ * DataHouse，database
  * 
  */
 public abstract class DataHouse implements Localizable, ILazy, Paintable {
@@ -39,11 +39,11 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 	public static double xRate=1,yRate=1;
 
 	public MainWindow getMainWindow() {
-		return wb.getMainWindow();
+		return workBench.getMainWindow();
 	}
 
 	public ControlApps getControlApps() {
-		return wb.getControlApps();
+		return workBench.getControlApps();
 	}
 
 	public boolean allowLazyRepaint() {
@@ -55,13 +55,16 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 	}
 
 	/**
-	 * 该值指示了内部载入数据的状态，如果因为数据无法载入，则仍保持着上一次的状态
+	 * This value indicates the state of the internal load data,
+	 * if the data is not loaded, it remains in the previous state.
 	 */
 	private int status = Offline_Unload;
 	private boolean DataComplete = false;
 
 	/**
-	 * 屏幕内波形的垂直变换，在停止后支持，不需要拿深存储，并记录变换信息用于载入深存储使用
+	 * The vertical transformation of the waveform inside the screen,
+	 * supported after stopping, does not need to take deep storage,
+	 * and record the transformation information for loading deep storage.
 	 * 
 	 * @return
 	 */
@@ -107,14 +110,16 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 	}
 
 	/**
-	 * 考虑在某些情况下调用以保证在刚开始运行但未获取数据时该值不会保留DM的状态而导致逻辑错误
+	 * Consider a call in some cases to ensure that the value does not
+	 * retain the state of the DM and causes a logic error when it
+	 * starts running but does not acquire data.
 	 */
 	public void admiteRT() {
 		status = RT_Normal;
 	}
 
 	/**
-	 * 坐标：yb - adc
+	 * coordinate：yb - adc
 	 * 
 	 * @return
 	 */
@@ -130,7 +135,7 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 	}
 
 	/**
-	 * 一般为离线载入时释放前一次载入文件的占用
+	 * Usually the release of the previous load file is released when offline loading
 	 * 
 	 */
 	public void releaseDeepMemoryStorage() {
@@ -143,28 +148,28 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 		return cba;
 	}
 
-	private WorkBench wb;
-	/** 波形管理 */
-	private WaveFormManager wfm;
+	private WorkBench workBench;
+	/** Waveform management */
+	private WaveFormManager waveFormManager;
 
 	public final ControlManager controlManager;
-	protected CoreControl cc;
-	private IMultiReceiver mr;
+	protected CoreControl coreControl;
+	private IMultiReceiver iMultiReceiver;
 
 	public boolean isOptimizeDragCommandSend() {
 		return controlManager.sourceManager.isNETConnect();
 	}
 
-	public DataHouse(ControlManager cm, WorkBench wb) {
-		this.wb = wb;
+	public DataHouse(ControlManager cm, WorkBench workBench) {
+		this.workBench = workBench;
 		controlManager = cm;
-		cc = cm.getCoreControl();
+		coreControl = cm.getCoreControl();
 		cm.paintContext.setLazy(this);
 
-		wfm = createWaveFormManager();
-		gd = new ChartDecorater(cm, wb, this);
-		cc.getFFTControl().setWaveFormManager(wfm);
-		mr = createMultiReceiver(cm, wfm);
+		waveFormManager = createWaveFormManager();
+		chartDecorater = new ChartDecorater(cm, workBench, this);
+		coreControl.getFFTControl().setWaveFormManager(waveFormManager);
+		iMultiReceiver = createMultiReceiver(cm, waveFormManager);
 
 		cm.pcs.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
@@ -177,7 +182,7 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 					// int newidx = (Integer) evt.getNewValue();
 
 					if (old == SysControl.SYNOUT_TrgIn) {
-						/** 提示拔掉外部触发信源 */
+						/** Prompt to unplug the external trigger source */
 						// FadeIOShell fio = new FadeIOShell();
 						// fio.prompt("", getMainWindow().getWindow());
 					}
@@ -217,89 +222,91 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 		Locale lnew = conf.getLocales().get(idx).getLocale();
 		// String lan = Locale.CHINA.getLanguage();
 		ResourceBundle rb = I18nProvider.updateLocale(lnew);
-		/** 会刷新各个节目，包括侧边栏 */
+		/** Will refresh each show, including the sidebar */
 
 		FontCenter.updateFont();
 		controlManager.getLocalizeCenter().reLocalize(rb);
 	}
 
 	/**
-	 * @return 工作台
+	 * @return Workbench
 	 */
 	public WorkBench getWorkBench() {
-		return wb;
+		return workBench;
 	}
 
 	/**
-	 * @return 波形管理
+	 * @return Waveform management
 	 */
 	public WaveFormManager getWaveFormManager() {
-		return wfm;
+		return waveFormManager;
 	}
 
 	/**
-	 * 这和其它进入慢扫后禁用的触发内容不同，需要运行在离线载入深存储的时候可用
+	 * This is different from other triggers that are disabled
+	 * after entering the slow sweep and needs to be run when
+	 * offline deep storage is available.
 	 * 
 	 * @return
 	 */
 	public boolean isHorTrgPosFrozen() {
-		return (cc.isRunMode_slowMove() && isRuntime())
-				|| cc.getFFTControl().isFFTon();
+		return (coreControl.isRunMode_slowMove() && isRuntime())
+				|| coreControl.getFFTControl().isFFTon();
 	}
 
 	public String divUnit, divUnits;
 
 	/**
-	 * 离线载入数据，目前仅录制文件用offline_Normal状态
+	 * Loading data offline, currently only recording files with offline_Normal status
 	 * 
 	 * @param ci
 	 */
 	public void receiveOfflineNormalData(OfflineChannelsInfo ci) {
-		mr.receiveOfflineData(ci, this, Offline_Normal);
-		wfm.retainClosedWaveForms();
+		iMultiReceiver.receiveOfflineData(ci, this, Offline_Normal);
+		waveFormManager.retainClosedWaveForms();
 	}
 
 	public void receiveOfflineVideoData(OfflineChannelsInfo ci) {
-		mr.receiveOfflineData(ci, this, RC_Play);
-		wfm.retainClosedWaveForms();
+		iMultiReceiver.receiveOfflineData(ci, this, RC_Play);
+		waveFormManager.retainClosedWaveForms();
 	}
 
 	/**
-	 * 离线载入深存储文件数据
+	 * Load deep storage file data offline
 	 * 
 	 * @param ci
 	 */
 	public void receiveOfflineDMData(DMInfo ci) {
-		mr.receiveOfflineDMData(ci, this);
-		wfm.retainClosedWaveForms();
+		iMultiReceiver.receiveOfflineDMData(ci, this);
+		waveFormManager.retainClosedWaveForms();
 	}
 
 	/**
-	 * 运行时载入数据
+	 * Loading data at runtime
 	 * 
 	 * @param ci
 	 */
 	public void receiveRTData(ChannelsTransportInfo ci) {
-		mr.receiveRTData(ci, this);
+		iMultiReceiver.receiveRTData(ci, this);
 	}
 
 	/**
-	 * 运行时载入深存储数据
-	 * 
+	 * Loading deep storage data at runtime
+	 *
 	 * @param ci
 	 */
 	public void receiveRTDMData(DMInfo ci) {
-		mr.receiveRTDMData(ci, this);
+		iMultiReceiver.receiveRTDMData(ci, this);
 	}
 
 	public ControlManager getControlManager() {
 		return controlManager;
 	}
 
-	private ChartDecorater gd;
+	private ChartDecorater chartDecorater;
 
 	public ChartDecorater getGlobalDecorater() {
-		return gd;
+		return chartDecorater;
 	}
 
 	public void resetPersistence() {
@@ -307,7 +314,7 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 	}
 
 	public void set3in1(boolean b) {
-		gd.getPersistentDisplay().resetPersistBufferImage();
+		chartDecorater.getPersistentDisplay().resetPersistBufferImage();
 	}
 
 	public void closePersistence() {
@@ -315,7 +322,7 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 	}
 
 	public PersistentDisplay getPersistentDisplay() {
-		return gd.getPersistentDisplay();
+		return chartDecorater.getPersistentDisplay();
 	}
 
 }

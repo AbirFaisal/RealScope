@@ -625,7 +625,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	}
 
 	// public boolean shouldSkipBeforeFrames() {
-	// return ruleManager.isChecking() || cc.shouldSkipBeforeFrames();
+	// return ruleManager.isChecking() || coreControl.shouldSkipBeforeFrames();
 	// }
 
 	/**

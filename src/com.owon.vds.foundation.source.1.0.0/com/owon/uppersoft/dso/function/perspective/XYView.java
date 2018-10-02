@@ -18,20 +18,20 @@ import com.owon.uppersoft.vds.core.paint.ScreenContext;
 import com.owon.uppersoft.vds.util.format.SFormatter;
 
 /**
- * 只有三合一，即打开xy模式，x和y可设置，自动刷新
+ * Only three in one, open xy mode, x and y can be set, auto refresh
  */
 public class XYView implements IView, Localizable {
 	private WaveFormManager wfm;
-	private Color co = Color.CYAN;
+	private Color cyan = Color.CYAN;
 
-	private Background bg;
-	private DisplayControl dc;
+	private Background background;
+	private DisplayControl displayControl;
 
-	public XYView(WaveFormManager wfm, DisplayControl dc) {
+	public XYView(WaveFormManager wfm, DisplayControl displayControl) {
 		this.wfm = wfm;
-		this.dc = dc;
-		bg = new Background();
-		bg.setXunitlen(5);
+		this.displayControl = displayControl;
+		background = new Background();
+		background.setXunitlen(5);
 	}
 
 	private String xychlLack;
@@ -41,34 +41,34 @@ public class XYView implements IView, Localizable {
 		xychlLack = rb.getString("Label.XYModeChannelLack");
 	}
 
-	/** 临时变量区 */
+	/** Temporary variable area */
 	private byte[] array1, array2;
 	private int p1, l1, p2, l2;
 	private int wc, hc;
 
 	@Override
 	public void adjustView(ScreenContext pc, Rectangle bound) {
-		bg.adjustView(bound, pc.isScreenMode_3());
+		background.adjustView(bound, pc.isScreenMode_3());
 		wc = bound.x + (bound.width >> 1);
 		hc = bound.y + (bound.height >> 1);
 	}
 
 	public boolean isOn() {
-		return dc.isXYModeOn();
+		return displayControl.isXYModeOn();
 	}
 
 	@Override
 	public void paintView(Graphics2D g2d, ScreenContext sc, Rectangle r) {
 		g2d.scale(DataHouse.xRate, DataHouse.yRate);
-		bg.paintView(g2d, sc);
-		if (!dc.isXYModeOn()) {
+		background.paintView(g2d, sc);
+		if (!displayControl.isXYModeOn()) {
 			return;
 		}
 
-		String n = wfm.getClosedChannelName(dc.wfx, dc.wfy);
+		String n = wfm.getClosedChannelName(displayControl.wfx, displayControl.wfy);
 		if (n.length() != 0) {
 			n = SFormatter.UIformat(xychlLack, n);
-			LineUtil.paintPrompt(g2d, wc, hc, co, n);
+			LineUtil.paintPrompt(g2d, wc, hc, cyan, n);
 			return;
 		}
 
@@ -93,7 +93,7 @@ public class XYView implements IView, Localizable {
 			return;
 
 		g2d.setClip(r);
-		g2d.setColor(co);
+		g2d.setColor(cyan);
 		int x, y;
 		while (p1 < l1) {
 			x = wc + array1[p1];

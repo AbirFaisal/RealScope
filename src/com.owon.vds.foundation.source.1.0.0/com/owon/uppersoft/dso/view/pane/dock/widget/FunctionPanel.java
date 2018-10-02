@@ -56,7 +56,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 
 	public static void set_all_visible(Container ctn, boolean b) {
 		int cc = ctn.getComponentCount();
-		// System.out.println(cc);
+		// System.out.println(coreControl);
 		for (int i = 0; i < cc; i++) {
 			Component c = ctn.getComponent(i);
 			// System.out.println(c);

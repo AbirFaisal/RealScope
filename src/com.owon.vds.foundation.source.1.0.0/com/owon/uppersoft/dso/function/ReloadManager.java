@@ -114,7 +114,7 @@ public class ReloadManager {
 				}
 			}.start();
 		}
-		// cc.machineChange(machine_name + "ONE");
+		// coreControl.machineChange(machine_name + "ONE");
 	}
 
 	public void load(Pref p) {

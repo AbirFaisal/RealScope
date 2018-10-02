@@ -32,7 +32,7 @@ public class ArrangeTimeBaseJob implements Runnable {
 		// return;
 		// }
 		/** 从设置触发电平到硬件频率计计算出正确的数值，需要的时间接近信号的周期 */
-		// TriggerControl tc = cc.getTriggerControl();
+		// TriggerControl tc = coreControl.getTriggerControl();
 		switch (num) {
 		case 1: {
 			WaveForm wf = next_wfrlist.get(0).getWaveForm();

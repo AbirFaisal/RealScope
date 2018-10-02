@@ -93,7 +93,7 @@ public class AutosetRunner2 implements Logable, JobRunner {
 		// dh.getWaveFormManager().forceFreshFreq();
 		// if (true)
 		// return;
-		// css = cc.getWaveFormInfoControl().getAllChannelSets();
+		// css = coreControl.getWaveFormInfoControl().getAllChannelSets();
 
 		// for (int i = 0; i < css.length; i++) {
 		// ChannelSets cs = css[i];
@@ -137,7 +137,7 @@ public class AutosetRunner2 implements Logable, JobRunner {
 
 		ict.getValueFeeder().resumeFeedMiddle();
 
-		// cc.getWaveFormInfoControl().turnChannelsDC(css);
+		// coreControl.getWaveFormInfoControl().turnChannelsDC(css);
 		mw.getToolPane().getTrgInfoPane().updateInfos(tc);
 
 		cc.getSampleControl().c_setModelIdx(SampleControl.Sample_Sampling);
@@ -211,7 +211,7 @@ public class AutosetRunner2 implements Logable, JobRunner {
 	}
 
 	public void resumeCustomize() {
-		// cc.getWaveFormInfoControl().turnChannelsDC(css);
+		// coreControl.getWaveFormInfoControl().turnChannelsDC(css);
 	}
 
 	// public static final AddValueAttachCommand VIDEOTRGD_ADD = new
