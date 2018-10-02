@@ -4,29 +4,29 @@ import java.nio.ByteBuffer;
 
 import com.owon.uppersoft.dso.wf.WaveForm;
 import com.owon.uppersoft.vds.core.aspect.base.Logable;
-import com.owon.vds.calibration.CalibrationRunner;
 import com.owon.vds.calibration.stuff.ArgCreator;
 import com.owon.vds.calibration.stuff.CalculatUtil;
 
 public class GainCal implements Logable, IWFCalRoutine2 {
 
-	private WaveForm wf;
-	private int chl;
-	private int vbnum;
+	private WaveForm waveForm;
+	private int channel;
+	private int voltageBaseValue;
 
 	private ArgCreator ac;
 	private AGPControl agp;
 
 	/**
-	 * @param wf
-	 * @param vbnum
+	 * @param waveForm
+	 * @param voltageBaseValue
 	 * @param ac
-	 *            使用ArgCreator来创建每个不同校正条目下的具体上下文，涉及算法细节量
+	 *            Use ArgCreator to create a specific context under each different
+	 *            correction entry, involving the amount of algorithmic detail.
 	 */
-	public GainCal(WaveForm wf, int vbnum, ArgCreator ac, AGPControl agp) {
-		this.wf = wf;
-		this.chl = wf.getChannelNumber();
-		this.vbnum = vbnum;
+	public GainCal(WaveForm waveForm, int voltageBaseValue, ArgCreator ac, AGPControl agp) {
+		this.waveForm = waveForm;
+		this.channel = waveForm.getChannelNumber();
+		this.voltageBaseValue = voltageBaseValue;
 		this.agp = agp;
 
 		this.ac = ac;
@@ -45,11 +45,11 @@ public class GainCal implements Logable, IWFCalRoutine2 {
 
 	@Override
 	public int routOut() {
-		ByteBuffer bb = wf.getADC_Buffer();
+		ByteBuffer bb = waveForm.getADC_Buffer();
 		TopBaseCalResult tb = CalculatUtil.computeTopBase(bb);
 
 		int result = rout(tb);
-		logln("result[" + chl + "] = " + result);
+		logln("result[" + channel + "] = " + result);
 		return result;
 	}
 
@@ -64,10 +64,10 @@ public class GainCal implements Logable, IWFCalRoutine2 {
 	private void initNextGain(int vb) {
 		logln("initNextGain " + vb);
 		if (vb == 0)
-			wf.setZeroYLoc(0, true, false);
+			waveForm.setZeroYLoc(0, true, false);
 
-		arg = ac.createGainArg(chl, vb);
-		wf.setVoltBaseIndex(vb, false);
+		arg = ac.createGainArg(channel, vb);
+		waveForm.setVoltBaseIndex(vb, false);
 
 		try {
 			Thread.sleep(500);
@@ -85,34 +85,36 @@ public class GainCal implements Logable, IWFCalRoutine2 {
 			if (tb.top > 105) {
 				TopCt++;
 				zeroPosition = TopCt * -20;
-				wf.setZeroYLoc(zeroPosition, true, false);
+				waveForm.setZeroYLoc(zeroPosition, true, false);
 				baseCt = 0;
 			} else if (tb.base < -105) {
 				baseCt++;
 				zeroPosition = baseCt * 20;
-				wf.setZeroYLoc(zeroPosition, true, false);
+				waveForm.setZeroYLoc(zeroPosition, true, false);
 				TopCt = 0;
 			}
 		} else {
 			TopCt = 0;
 			baseCt = 0;
 			zeroPosition = 0;
-			wf.setZeroYLoc(0, true, false);
+			waveForm.setZeroYLoc(0, true, false);
 		}
 		tempVb = arg.vb;
 	}
 
 	/**
 	 * <code>
-	 * 1. 先验证一个电压档位下算法实现
-	 * 2. 验证agp初始化工作是否就绪，并获取第一次的tb结果(TopBaseCalResult)
-	 * 3. 计算幅度偏差与参数偏差直接的增量关系，研究算法实现
-	 * 4. 使用方法组合在该电压档位下校正至正确
-	 * 5. 根据其它电压档位下的增量关系不同适配算法的其它情况，并逐一验证
+	 * 1. First verify the algorithm implementation under a voltage gear
+	 * 2. Verify that the agp initialization is ready and get the first tb result (TopBaseCalResult)
+	 * 3. Calculate the direct incremental relationship between the amplitude deviation and the parameter
+	 * deviation, and study the algorithm implementation.
+	 * 4. Use method combination to correct to correct under this voltage position
+	 * 5. According to the incremental relationship under other voltage positions, the other conditions
+	 * of the algorithm are adapted and verified one by one.
 	 * </code>
 	 */
 	private int rout(TopBaseCalResult tb) {
-		logln("rout[" + chl + "] tb = " + tb);
+		logln("rout[" + channel + "] tb = " + tb);
 		if (arg != null) {
 			logln(arg);
 		}
@@ -141,7 +143,7 @@ public class GainCal implements Logable, IWFCalRoutine2 {
 
 			arg.resetFitTimes();
 
-			/** 本次更新adc计算结果无进展，需要尝试新的值 */
+			/** There is no progress in updating the adc calculation results, you need to try new values. */
 			argTuneAgain(amp);
 			return ROUT_ZERO;
 		}
@@ -151,7 +153,7 @@ public class GainCal implements Logable, IWFCalRoutine2 {
 	protected void nextGain() {
 		/** 本次更新adc计算结果有进展 */
 		int vb = arg.vb + 1;
-		if (vb >= vbnum) {
+		if (vb >= voltageBaseValue) {
 			/** 校正任务终结 */
 			arg = null;
 		} else {
@@ -166,7 +168,7 @@ public class GainCal implements Logable, IWFCalRoutine2 {
 		// else if (average >= 125)
 		// del = 101;
 		arg.stepCrease(amp, arg.vb);
-		wf.setVoltBaseIndex(arg.vb, false);
+		waveForm.setVoltBaseIndex(arg.vb, false);
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {

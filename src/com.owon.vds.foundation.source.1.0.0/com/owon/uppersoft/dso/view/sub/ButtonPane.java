@@ -45,25 +45,29 @@ public class ButtonPane extends JPanel implements Localizable,
 	public static final String factory_pPath = (Define.def.style.path + "factoryset_p.png");
 	public static final String exportPath = (Define.def.style.path + "export.png");
 	public static final String export_pPath = (Define.def.style.path + "export_p.png");
-
+	public static final int Height = 70;
+	private static final int btnW = 37, btnH = 45;
+	static int v;
 	private MainWindow mw;
 	private DataHouse dh;
 	private JLabel empty, frmlbl;
 	private float fps;
 	private int cmdCount, wfs, points;
 	private String pkn = "";
+	private LButton btn_3in1;
+	private LButton toolbtn;
+	private LButton factorybtn;
+	private LButton pau_expbtn;
+	private JButton tunebtn;
 
-	static int v;
-	public static final int Height = 70;
-	
 	public ButtonPane(final MainWindow mw, final ControlManager cm,
-			final DataHouse dh) {
+	                  final DataHouse dh) {
 		this.mw = mw;
 		this.dh = dh;
 		setBackground(Color.BLACK);
 		FlowLayout fl = new FlowLayout(FlowLayout.RIGHT, 0, 0);
 		setLayout(fl);
-		Icon i;
+		//Icon i;
 
 		LButton patchbtn = new LButton("Patch");
 		patchbtn.addActionListener(new ActionListener() {
@@ -84,7 +88,7 @@ public class ButtonPane extends JPanel implements Localizable,
 		});
 		patchbtn.setVisible(false);
 
-		tunebtn = new LButton("tune");
+		tunebtn = new LButton("Tune");
 		tunebtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cm.getPrinciple().openTuneDialog(mw.getFrame(), cm.pcs);
@@ -92,13 +96,13 @@ public class ButtonPane extends JPanel implements Localizable,
 		});
 		tunebtn.setVisible(false);
 
-		i = SwingResourceManager.getIcon(TitlePane.class, exportPath);
-		pau_expbtn = new LButton();
-		pau_expbtn.setIcon(i);
-		i = SwingResourceManager.getIcon(TitlePane.class, export_pPath);
-		pau_expbtn.setRolloverIcon(i);
+		//i = SwingResourceManager.getIcon(TitlePane.class, exportPath);
+		pau_expbtn = new LButton("Export");
+		//pau_expbtn.setIcon(i);
+		//i = SwingResourceManager.getIcon(TitlePane.class, export_pPath);
+		//pau_expbtn.setRolloverIcon(i);
 		// LineUtil.getRolloverIcon((ImageIcon) i)
-		pau_expbtn.setPreferredSize(new Dimension(btnW, btnH));
+		//pau_expbtn.setPreferredSize(new Dimension(btnW, btnH));
 		pau_expbtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -108,53 +112,57 @@ public class ButtonPane extends JPanel implements Localizable,
 			}
 		});
 
-		i = SwingResourceManager.getIcon(TitlePane.class, factoryPath);
-		factorybtn = new LButton();
-		factorybtn.setIcon(i);
-		i = SwingResourceManager.getIcon(TitlePane.class, factory_pPath);
-		factorybtn.setRolloverIcon(i);// LineUtil.getRolloverIcon((ImageIcon)i)
+		//i = SwingResourceManager.getIcon(TitlePane.class, factoryPath);
+		factorybtn = new LButton("Reset");
+		//factorybtn.setIcon(i);
+		//i = SwingResourceManager.getIcon(TitlePane.class, factory_pPath);
+		//factorybtn.setRolloverIcon(i);// LineUtil.getRolloverIcon((ImageIcon)i)
 		// factorybtn.setPressedIcon(SwingResourceManager.getIcon(TitlePane.class,
 		// factory_pPath));
-		factorybtn.setPreferredSize(new Dimension(btnW, btnH));
+		//factorybtn.setPreferredSize(new Dimension(btnW, btnH));
 		factorybtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				factorySet();
 			}
 		});
-		toolbtn = new LButton();
+
+		toolbtn = new LButton("Menu");
 		cm.getDockControl().initialize(mw.getWindow(), cm.pcs, toolbtn);
 		toolbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cm.getDockControl().dockDlgOnOff();
 			}
 		});
-		i = SwingResourceManager.getIcon(TitlePane.class, ToolPath);
-		toolbtn.setIcon(i);
+		//i = SwingResourceManager.getIcon(TitlePane.class, ToolPath);
+		//toolbtn.setIcon(i);
 		toolbtn.setRolloverIcon(SwingResourceManager.getIcon(TitlePane.class,
 				Tool_pPath));
-		toolbtn.setPressedIcon(i);
-		toolbtn.setPreferredSize(new Dimension(btnW + 8, btnH));
+		//toolbtn.setPressedIcon(i);
+		//toolbtn.setPreferredSize(new Dimension(btnW + 8, btnH));
 
-		i = SwingResourceManager.getIcon(TitlePane.class, _3in1Path);
+		//i = SwingResourceManager.getIcon(TitlePane.class, _3in1Path);
 		// dh.getWaveFormManager().is3in1On()?_3in1Path : _1in1Path
-		btn_3in1 = new LButton();
+
+
+		btn_3in1 = new LButton("3View");
 		btn_3in1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				switch_3in1();
 			}
 		});
-		btn_3in1.setIcon(i);
-		i = SwingResourceManager.getIcon(TitlePane.class, _1in1Path);
-		btn_3in1.setRolloverIcon(i);
-		btn_3in1.setPreferredSize(new Dimension(btnW, btnH));
+
+		//btn_3in1.setIcon(i);
+		//i = SwingResourceManager.getIcon(TitlePane.class, _1in1Path);
+		//btn_3in1.setRolloverIcon(i);
+		//btn_3in1.setPreferredSize(new Dimension(btnW, btnH));
 
 		frmlbl = new JLabel();
-		frmlbl.setPreferredSize(new Dimension(250, 25));
+		frmlbl.setPreferredSize(new Dimension(350, 25));
 		frmlbl.setForeground(Color.white);
 
 		empty = new JLabel();
 		empty.setPreferredSize(new Dimension(btnW, 95 - toolbtn.getHeight()));
-		add(empty);
+		//add(empty);
 
 		add(patchbtn);
 		add(tunebtn);
@@ -164,7 +172,7 @@ public class ButtonPane extends JPanel implements Localizable,
 		add(toolbtn);
 		add(frmlbl);
 
-		/** 一键开关帧数打印 */
+		/** One-button switch frame number printing */
 		onekeyTurnPrint(false);
 
 		updateLabel();
@@ -198,7 +206,7 @@ public class ButtonPane extends JPanel implements Localizable,
 
 	public void factorySet() {
 		int i = JOptionPane.showConfirmDialog(mw.getFrame(), I18nProvider
-				.bundle().getString("M.Utility.FactorySet.ConfirmTxt"), "",
+						.bundle().getString("M.Utility.FactorySet.ConfirmTxt"), "",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if (i == JOptionPane.YES_OPTION) {
 			dh.controlManager.factorySet();
@@ -245,7 +253,10 @@ public class ButtonPane extends JPanel implements Localizable,
 		updateBtn_3in1ToolTip(I18nProvider.bundle());
 	}
 
-	/** 与其他3in1切换方法不同的是，它可以在同是1in1的两种状态，重新调整显示界面 */
+	/**
+	 * Different from other 3in1 switching methods, it can
+	 * re-adjust the display interface in the same state of 1in1.
+	 */
 	public void switch_3in1_fft(boolean ffton) {
 		boolean xyon = dh.getWaveFormManager().getXYView().isOn();
 		ffton |= xyon;
@@ -259,13 +270,6 @@ public class ButtonPane extends JPanel implements Localizable,
 		xyon |= ffton;
 		apply_3in1(xyon);
 	}
-
-	private static final int btnW = 37, btnH = 45;
-	private LButton btn_3in1;
-	private LButton toolbtn;
-	private LButton factorybtn;
-	private LButton pau_expbtn;
-	private JButton tunebtn;
 
 	private void updateBtn_3in1ToolTip(ResourceBundle rb) {
 		ScreenContext pc = mw.getChartScreen().getPaintContext();

@@ -1,6 +1,10 @@
 package com.owon.uppersoft.dso.page.function;
 
-import java.awt.Image;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.RectangularShape;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,17 +26,13 @@ import com.owon.uppersoft.vds.core.aspect.help.ILoadPersist;
 import com.owon.uppersoft.vds.ui.resource.SwingResourceManager;
 import com.owon.uppersoft.vds.util.Pref;
 import com.owon.uppersoft.vds.util.ui.CListModel;
+import sun.font.DelegatingShape;
 
 public abstract class PageManager implements ILoadPersist {
+	public LinkedList<Integer> linked;
 	private List<IContentPage> pages;
-
 	private List<IContentPage> s1, s2, s3, s4;
-
 	private HomePage hp = new HomePage();
-
-	public HomePage getHomePage() {
-		return hp;
-	}
 
 	public PageManager() {
 		pages = new ArrayList<IContentPage>(12);
@@ -66,6 +66,10 @@ public abstract class PageManager implements ILoadPersist {
 		s4 = pages.subList(0, size);
 	}
 
+	public HomePage getHomePage() {
+		return hp;
+	}
+
 	protected abstract TriggerPage createTriggerPage();
 
 	protected abstract DisplayPage createDisplayPane();
@@ -78,13 +82,17 @@ public abstract class PageManager implements ILoadPersist {
 		Iterator<IContentPage> it = pageIterator();
 		while (it.hasNext()) {
 			IContentPage icp = it.next();
+
 			String n = icp.getContentID();
+
 			int i1 = n.indexOf('.') + 1;
+
 			int i2 = n.lastIndexOf('.');
+
 			String p = n.substring(i1, i2);
-			Image img = SwingResourceManager.getIcon(
-					HomePageListCellRenderer.class,
-					"/com/owon/uppersoft/dso/image/" + p + ".png").getImage();
+
+			Image img = SwingResourceManager.getIcon(HomePageListCellRenderer.class, "/com/owon/uppersoft/dso/image/" + p + ".png").getImage();
+
 			cimap.put(n, img);
 		}
 	}
@@ -115,8 +123,6 @@ public abstract class PageManager implements ILoadPersist {
 		// System.err.println("getContentPage null");
 		return null;
 	}
-
-	public LinkedList<Integer> linked;
 
 	public void load(Pref p) {
 		linked = p.loadIntegerList("CustomizePages", ",");

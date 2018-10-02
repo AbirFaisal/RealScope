@@ -14,7 +14,8 @@ import com.owon.uppersoft.vds.core.paint.PaintContext;
 import com.owon.uppersoft.vds.core.paint.ScreenContext;
 
 /**
- * ViewChart这个组件是独立于位置、大小的图形绘制区，可以承载波形、FFT或其他与数据模型相关的绘图，可多对一
+ * ViewChart is a graphics rendering area that is independent of location and size.
+ * It can carry waveforms, FFTs or other data model related drawings.
  * 
  */
 public class ViewChart extends JPanel implements Decorate, Localizable {
@@ -39,7 +40,7 @@ public class ViewChart extends JPanel implements Decorate, Localizable {
 		superDraw = sd;
 		setBackground(Color.BLACK);
 		setDoubleBuffered(false);
-		/** 可关闭双缓冲 */
+		/** Double buffering can be turned off */
 	}
 
 	public ViewChart(Decorate dc, PaintContext pc) {

@@ -5,7 +5,7 @@ import com.owon.uppersoft.dso.view.pane.dock.ContentPane;
 import com.owon.uppersoft.vds.ui.widget.custom.LContainer;
 
 /**
- * 光标 类型 电压，时间，关闭 信源 ch1,ch2,ch3,ch4(如果有fft，则转为fft信源)
+ * Cursor Type Voltage, time, off Source ch1, ch2, ch3, ch4 (if there is fft, it will be converted to fft source)
  * 
  * @author Matt
  * 

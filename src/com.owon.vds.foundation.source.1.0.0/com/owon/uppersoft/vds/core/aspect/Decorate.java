@@ -6,13 +6,13 @@ import java.awt.Rectangle;
 import com.owon.uppersoft.vds.core.paint.ScreenContext;
 
 /**
- * 装饰器
+ * Decorator
  * 
  */
 public interface Decorate {
 
 	/**
-	 * 大小变化时需进行的调整
+	 * Adjustments required when the size changes
 	 * 
 	 * @param pc
 	 */

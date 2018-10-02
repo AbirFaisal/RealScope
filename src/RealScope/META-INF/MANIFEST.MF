@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Class-Path: RXTXcomm.jar ch.ntb.usb-0.5.9.jar jxl.jar usb4java-1.2.0.j
+ ar commons-lang3-3.2.1.jar libusb4java-1.2.0-osx-x86.jar libusb4java-
+ 1.2.0-linux-arm.jar libusb4java-1.2.0-linux-x86.jar libusb4java-1.2.0
+ -osx-x86_64.jar libusb4java-1.2.0-windows-x86.jar libusb4java-1.2.0-l
+ inux-x86_64.jar libusb4java-1.2.0-windows-x86_64.jar
+Main-Class: com.abirfaisal.Realscope.Main
+

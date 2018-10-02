@@ -4,7 +4,7 @@ import com.owon.uppersoft.dso.view.pane.dock.ContentPane;
 import com.owon.uppersoft.vds.ui.widget.custom.LContainer;
 
 /**
- * IContentPage，注意，不要在内部持有对应的子容器页面的引用
+ * IContentPage, note that don't hold a reference to the corresponding subcontainer page internally
  * 
  * @author Matt
  * 
@@ -17,14 +17,14 @@ public interface IContentPage {
 	public String getContentID();
 
 	/**
-	 * 创建分页的内容
-	 * 
+	 * Create paginated content
 	 */
 	public LContainer createPage(IContentPage beforeApply, ContentPane cp,
 			int toward);
 
 	/**
-	 * 这里不会默认调用对应Pane的beforeLeave()方法，需要子类继承手动添加
+	 * The beforeLeave() method of the corresponding Pane is not called by
+	 * default, and the subclass inheritance needs to be manually added.
 	 */
 	public void beforeLeave();
 

@@ -94,7 +94,7 @@ public class ControlManagerTiny extends ControlManager {
 
 	@Override
 	public DockControl getDockControl() {
-		// 使用这种方法在父类构造函数中创建子类对象
+		// Use this method to create a subclass object in the parent class constructor
 		if (dc == null)
 			dc = new DefaultDockControl() {
 				@Override

@@ -36,26 +36,25 @@ import com.owon.uppersoft.vds.ui.widget.custom.CComboBox;
 import com.owon.uppersoft.vds.ui.widget.custom.ExcludeButtons;
 
 /**
- * TriggerPane，触发模式为单触或是并行，单触是定位一个通道的触发事件同时快照所有通道；并行是通道各自触发在一个对齐的时间点
- * 
+ * TriggerPane, trigger mode is one-touch or parallel. One-touch is to locate
+ * a channel's trigger event and simultaneously snapshot all channels; parallel
+ * is the channel triggers at an aligned time point
  */
 public abstract class TriggerPane extends FunctionPanel {
 
 	private boolean listening = false;
-
-	public void simpleSelectCBBMode(TrgTypeDefine idx) {
-		this.listening = false;
-		selectTrgTypeComboBox(idx);
-		this.listening = true;
-	}
-
-	private void selectTrgTypeComboBox(TrgTypeDefine idx) {
-		int i = trgTypeModel.getIndexOf(new TrgTypeText(idx));
-		if (i < 0)
-			return;
-		cbbmode.setSelectedIndex(i);
-	}
-
+	private GroupPane snaPart, channelPart, modePart;
+	private ExcludeButtons single_alt_btns;
+	private CComboBox cbbmode;
+	private ChannelSelectionPane chlp;
+	private JPanel promptPart;
+	private MainWindow mw;
+	private TriggerControl tc;
+	private JPanel trgPane;
+	private TriggerLoaderPane[] tlps;
+	private TriggerLoaderPane selectPane;
+	private JCheckBox cbtn;
+	private DefaultComboBoxModel trgTypeModel;
 	private PropertyChangeListener single_alt_PCL = new PropertyChangeListener() {
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -75,35 +74,6 @@ public abstract class TriggerPane extends FunctionPanel {
 		}
 	};
 
-	private void updateChl_loadTrgCtrl() {
-		updateChlPane();
-		loadTriggerControl();
-		chlp.onSingleTrgForEdgeChannelSelectJudge();
-	}
-
-	public final void updateTrgVoltPane() {
-		mw.re_paint();
-		mw.getToolPane().getTrgInfoPane().updateInfos(tc);
-	}
-
-	private GroupPane snaPart, channelPart, modePart;
-	private ExcludeButtons single_alt_btns;
-
-	private CComboBox cbbmode;
-	private ChannelSelectionPane chlp;
-	private JPanel promptPart;
-
-	private MainWindow mw;
-	private TriggerControl tc;
-
-	public MainWindow getMainWindow() {
-		return mw;
-	}
-
-	public TriggerControl getTriggerControl() {
-		return tc;
-	}
-
 	public TriggerPane(ControlManager cm) {
 		super(cm);
 		this.mw = Platform.getMainWindow();
@@ -119,7 +89,7 @@ public abstract class TriggerPane extends FunctionPanel {
 		String[] sna_txts = TriggerDefine.SINGLE_ALT;
 		int chlmode = tc.getChannelMode();
 		if (!tc.isAlternativeSupport()) {
-			sna_txts = new String[] { sna_txts[0] };
+			sna_txts = new String[]{sna_txts[0]};
 		}
 		single_alt_btns = new ExcludeButtons(LObject.getLObjects(sna_txts),
 				single_alt_PCL, chlmode, 130, 60, FontCenter.getLabelFont());
@@ -179,7 +149,7 @@ public abstract class TriggerPane extends FunctionPanel {
 			add(cbtn);
 		}
 
-		/** 先设置模型，更新语言，然后添加事件监听器 */
+		/** Set the model first, update the language, then add the event listener */
 		loadTriggerControl();
 		localizeSelf();
 
@@ -190,14 +160,44 @@ public abstract class TriggerPane extends FunctionPanel {
 		setTrgPaneVisible(tc.isTrgEnable());
 	}
 
+	public void simpleSelectCBBMode(TrgTypeDefine idx) {
+		this.listening = false;
+		selectTrgTypeComboBox(idx);
+		this.listening = true;
+	}
+
+	private void selectTrgTypeComboBox(TrgTypeDefine idx) {
+		int i = trgTypeModel.getIndexOf(new TrgTypeText(idx));
+		if (i < 0)
+			return;
+		cbbmode.setSelectedIndex(i);
+	}
+
+	private void updateChl_loadTrgCtrl() {
+		updateChlPane();
+		loadTriggerControl();
+		chlp.onSingleTrgForEdgeChannelSelectJudge();
+	}
+
+	public final void updateTrgVoltPane() {
+		mw.re_paint();
+		mw.getToolPane().getTrgInfoPane().updateInfos(tc);
+	}
+
+	public MainWindow getMainWindow() {
+		return mw;
+	}
+
+	public TriggerControl getTriggerControl() {
+		return tc;
+	}
+
 	protected abstract ItemListener createTrgModeItemLisnter(
 			TriggerPane triggerPane, TriggerControl tc2,
 			ChannelSelectionPane chlp2);
 
 	protected abstract ChannelSelectItemListner createChannelSelectItemListner(
 			TriggerPane triggerPane, TriggerControl tc2);
-
-	private JPanel trgPane;
 
 	private void updateChlPane() {
 		chlp.updateChlPane();
@@ -222,25 +222,23 @@ public abstract class TriggerPane extends FunctionPanel {
 		this.listening = true;
 	}
 
-	private TriggerLoaderPane[] tlps;
-
 	private TriggerLoaderPane getTriggerLoaderPane(TrgTypeDefine ttd) {
 		int idx = ttd.ordinal();
 		TriggerLoaderPane tlp = tlps[idx];//
 		if (tlp == null) {
 			switch (ttd) {
-			case Slope:
-				tlp = new SlopePane(this);
-				break;
-			case Edge:
-				tlp = new EdgePane(this);
-				break;
-			case Video:
-				tlp = new VideoPane(this);
-				break;
-			case Pulse:
-				tlp = new PulsePane(this);
-				break;
+				case Slope:
+					tlp = new SlopePane(this);
+					break;
+				case Edge:
+					tlp = new EdgePane(this);
+					break;
+				case Video:
+					tlp = new VideoPane(this);
+					break;
+				case Pulse:
+					tlp = new PulsePane(this);
+					break;
 			}
 			tlps[idx] = tlp;
 		}
@@ -283,10 +281,6 @@ public abstract class TriggerPane extends FunctionPanel {
 		if (cbtn != null)
 			cbtn.setText(rb.getString("M.Trg.auto_trglevel_middle"));
 	}
-
-	private TriggerLoaderPane selectPane;
-	private JCheckBox cbtn;
-	private DefaultComboBoxModel trgTypeModel;
 
 	public void bodySend() {
 		tc.doSubmit();
@@ -336,12 +330,12 @@ public abstract class TriggerPane extends FunctionPanel {
 		tlp.fireProperty(evt);
 	}
 
-	public void setListening(boolean listening) {
-		this.listening = listening;
-	}
-
 	public boolean isListening() {
 		return listening;
+	}
+
+	public void setListening(boolean listening) {
+		this.listening = listening;
 	}
 
 }

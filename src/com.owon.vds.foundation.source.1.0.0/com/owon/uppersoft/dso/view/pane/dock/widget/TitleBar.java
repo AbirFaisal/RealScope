@@ -33,8 +33,13 @@ import com.owon.uppersoft.vds.ui.window.ComponentMover;
 
 public class TitleBar extends JPanel implements Localizable {
 
-	public static final int H = 40, BackW = 42, XAlign = 3, RoundOffset = 10,
+	public static final int
+			H = 40,
+			BackW = 42,
+			XAlign = 3,
+			RoundOffset = 10,
 			W = Define.Dock_Width + Define.ICON_BAR_WIDTH - 4 - XAlign - BackW;
+
 	public static final Color CO_MainContainer = Color.DARK_GRAY;
 	public static final int rw = 10, rh = 10;
 	public static final TexturePaint GradientTexturePaint;
@@ -45,14 +50,14 @@ public class TitleBar extends JPanel implements Localizable {
 		GradientTexturePaint = ImagePaintUtil.getTexturePaint(p, 1, H);
 	}
 
-	public static final String BackPath = "/com/owon/uppersoft/dso/image/back.png";
-	public static final String MinimizePath = "/com/owon/uppersoft/dso/image/minimize.png";
+	//public static final String BackPath = "/com/owon/uppersoft/dso/image/back.png";
+	//public static final String MinimizePath = "/com/owon/uppersoft/dso/image/minimize.png";
 
 	public TitleBar(final ContentPane cp) {
 		setPreferredSize(new Dimension(W, H - 5));
 		setLayout(null);
-		backBtn = new JButton();
 
+		backBtn = new JButton("< Menu");
 		backBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -60,14 +65,10 @@ public class TitleBar extends JPanel implements Localizable {
 			}
 		});
 		add(backBtn);
+		backBtn.setBounds(XAlign, 3, 75, H - 10);
 
-		ImageIcon i = SwingResourceManager.getIcon(TitleBar.class, BackPath);
-		backBtn.setIcon(i);
-		// backBtn.setPressedIcon(LineUtil.getRolloverIcon(i));
-		backBtn.setBounds(XAlign, 3, BackW, H - 10);
 
-		miniBtn = new LButton();
-
+		miniBtn = new LButton("X");
 		miniBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -75,9 +76,6 @@ public class TitleBar extends JPanel implements Localizable {
 			}
 		});
 		add(miniBtn);
-		i = SwingResourceManager.getIcon(TitleBar.class, MinimizePath);
-		miniBtn.setIcon(i);
-		miniBtn.setPressedIcon(LineDrawTool.getRolloverIcon(i));
 		miniBtn.setBounds(W, 3, BackW, H - 10);
 
 		setFont(FontCenter.getBigtitlefont());
@@ -103,7 +101,7 @@ public class TitleBar extends JPanel implements Localizable {
 	private LButton miniBtn;
 
 	/**
-	 * 通过装载方法载入和界面无关的内容
+	 *Load interface-independent content with load methods
 	 * 
 	 * @param current
 	 * @param back

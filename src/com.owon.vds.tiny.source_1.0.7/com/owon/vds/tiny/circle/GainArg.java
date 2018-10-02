@@ -19,7 +19,7 @@ public class GainArg extends AbsArg {
 	}
 
 	/**
-	 * @return 是否符合相等次数
+	 * @return Whether it is equal to
 	 */
 	public boolean isFitTimesPass() {
 		return fitTimes >= 20;
@@ -38,7 +38,7 @@ public class GainArg extends AbsArg {
 		} else {
 			sign = (cdn == Cending.ascending ? -1 : 1);
 		}
-		/** 特殊器件在参数和数值上的比例是1:1 */
+		/** The ratio of special devices to parameters and values is 1:1. */
 		int step = (int) Math.abs(del);
 		computeNapply(sign, step, vbidx);
 		tries++;
@@ -46,7 +46,9 @@ public class GainArg extends AbsArg {
 	}
 
 	/**
-	 * 假设已知调试参数改变的增量，进行如此设置；子类可继承实现如何计算得到增量
+	 * Assume that the increment of the debugging parameter change is known,
+	 * and the setting is made; the subclass inherits how the implementation
+	 * calculates the increment.
 	 * 
 	 * @param sign
 	 * @param step
@@ -63,7 +65,9 @@ public class GainArg extends AbsArg {
 		else
 			v -= step;
 
-		/** 当数值short溢出时进行重限位，并补充可尝试次数 */
+		/** When the value short overflows, the limit is imposed
+		 *  and the number of attempts is replenished.
+		 *  */
 		if (v < 0) {
 			v = Unsign_Max_ADC + v;
 			tries -= 10;

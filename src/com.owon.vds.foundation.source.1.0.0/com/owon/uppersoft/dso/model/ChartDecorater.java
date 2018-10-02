@@ -26,26 +26,26 @@ import com.owon.uppersoft.vds.data.LocRectangle;
 import com.owon.uppersoft.vds.data.Point;
 
 /**
- * ChartDecorater，Chart画图器
+ * ChartDecorater，Chart Painter
  * 
  */
 public class ChartDecorater implements Decorate, AreaImageHelper {
 
-	private ControlManager cm;
+	private ControlManager controlManager;
 	private Background bg;
 	private WaveFormManager wfm;
 	private WorkBench wb;
 	private DataHouse dh;
 
-	public ChartDecorater(final ControlManager cm, WorkBench wb, DataHouse dh) {
-		this.cm = cm;
+	public ChartDecorater(final ControlManager controlManager, WorkBench wb, DataHouse dh) {
+		this.controlManager = controlManager;
 		this.wb = wb;
 		this.dh = dh;
 		wfm = dh.getWaveFormManager();
-		pd = new PersistentDisplay(cm.getIRuntime(), this,
-				cm.getSupportChannelsNumber(), dh);
-		cm.pcs.addPropertyChangeListener(new PersistentPropertyChangeListener(
-				cm, pd));
+		pd = new PersistentDisplay(controlManager.getIRuntime(), this,
+				controlManager.getSupportChannelsNumber(), dh);
+		controlManager.pcs.addPropertyChangeListener(new PersistentPropertyChangeListener(
+				controlManager, pd));
 		bg = new Background() {
 
 			private int VpixPerDiv;
@@ -99,7 +99,9 @@ public class ChartDecorater implements Decorate, AreaImageHelper {
 	}
 
 	@Override
-	/** TODO 打印预览也调用此方法，余晖开启时由于使用画布，打印预览波形背景即使关闭仍有黑色背景 */
+	/** TODO This method is also called in print preview. When the backlight is turned on,
+	 *  due to the use of the canvas, the background of the print preview waveform is still
+	 *  black even if it is turned off. */
 	public void paintView(Graphics2D g2d, ScreenContext sc, Rectangle r) {
 		//Insets ci = sc.getChartInsets();
 		//AffineTransform at = g2d.getTransform();
@@ -113,7 +115,7 @@ public class ChartDecorater implements Decorate, AreaImageHelper {
 
 			pd.paintView(g2d, drawsz);
 
-			/** 余辉的时候画参考和数学计算 */
+			/** Afterglow painting reference and mathematical calculation */
 			wfm.paintViewWithoutWaveForms(g2d, sc, r);
 			// g2d.setColor(Color.pink);
 			// g2d.drawLine(40, 50, 60, 70);
@@ -121,7 +123,7 @@ public class ChartDecorater implements Decorate, AreaImageHelper {
 			paintLabels(g2d, sc, r);
 			paintMarks(g2d, sc);
 		} else {
-			// fillBackground(g2d);//这里填充背景会覆盖 打印预览的波形背景
+			// fillBackground(g2d);//The fill background here will overwrite the waveform background of the print preview.
 			bg.paintView(g2d, sc);
 			wfm.paintRulePoints(g2d, sc, r);
 			wfm.paintView(g2d, sc, r);
@@ -144,14 +146,14 @@ public class ChartDecorater implements Decorate, AreaImageHelper {
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		ChartScreenSelectModel cssm = wb.getMainWindow()
 				.getChartChannelSelectModel();
-		if (!cm.getCoreControl().isRunMode_slowMove()) {
+		if (!controlManager.getCoreControl().isRunMode_slowMove()) {
 
-			/** 非慢扫情况下，画水平触发位置 */
+			/** In the case of non-slow sweep, draw the horizontal trigger position */
 			int pos;
 			// if (dh.isDMLoad()) {
 			// pos = -wfm.getHorTrgPos(tc);
 			// } else {
-			TimeControl tc = cm.getTimeControl();
+			TimeControl tc = controlManager.getTimeControl();
 			pos = tc.getHorizontalTriggerPosition();
 			// }
 
@@ -168,8 +170,8 @@ public class ChartDecorater implements Decorate, AreaImageHelper {
 			}
 		}
 		lr.set(x0, x1, y0, y1);
-		/** 画通道标签 */
-		wfm.paintWaveFormInfo(g2d, pc, r, cm, lr, cssm);
+		/** Paint channel label */
+		wfm.paintWaveFormInfo(g2d, pc, r, controlManager, lr, cssm);
 
 		wfm.paintPFLabel(g2d, pc);
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -183,11 +185,11 @@ public class ChartDecorater implements Decorate, AreaImageHelper {
 
 		Rectangle r = pc.getChartRectangle();
 
-		/** 光标测量线 */
-		cm.mcctr.drawMarkCursor(g2d, r);
+		/** Cursor measurement line */
+		controlManager.mcctr.drawMarkCursor(g2d, r);
 
-		/** 视窗扩展线 */
-		cm.getZoomAssctr().drawMarks(g2d, r);
+		/** Window extension line */
+		controlManager.getZoomAssctr().drawMarks(g2d, r);
 	}
 
 	public static final void fillBackground(BufferedImage pesistbi, int w, int h) {
