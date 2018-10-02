@@ -10,10 +10,10 @@
       <sourceFolder url="file://$MODULE_DIR$/src/RealScope" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
+    <orderEntry type="library" exported="" name="RXTXcomm_2.1.7" level="project" />
+    <orderEntry type="library" exported="" name="ch.ntb.usb_0.5" level="project" />
+    <orderEntry type="library" exported="" name="jxl_2.6.6" level="project" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="ch.ntb.usb_0.5" level="project" />
-    <orderEntry type="library" name="jxl_2.6.6" level="project" />
-    <orderEntry type="library" name="RXTXcomm_2.1.7" level="project" />
     <orderEntry type="library" name="usb4java-1.2.0" level="project" />
   </component>
 </module>
