@@ -1,11 +1,9 @@
 package com.owon.uppersoft.dso.global;
 
-import javax.swing.JOptionPane;
-
 import com.owon.uppersoft.dso.view.MainWindow;
 
 /**
- * 运行平台，上层架构尽量抽象而无须修改替换
+ * Run the platform, the upper architecture is as abstract as possible without modifying and replacing
  * 
  */
 public class Platform {
@@ -13,27 +11,26 @@ public class Platform {
 		WorkBench createWorkBench();
 	}
 
-	static PrincipleFactory fff;
+	static PrincipleFactory principleFactory;
 
 	public static final void launch(PrincipleFactory ff) {
-		fff = ff;
+		principleFactory = ff;
 		wb = null;
 		try {
 			wb = ff.createWorkBench();
 			wb.join();
 		} catch (Throwable e) {
 			e.printStackTrace();
-			// 方便测试中捕获异常，确定处理
-			JOptionPane.showMessageDialog(null, e.getMessage());
+			System.out.println(e);
 		}
 	}
 
 	public static final void relaunch() {
-		launch(fff);
+		launch(principleFactory);
 	}
 
 	/**
-	 * @return 主框架
+	 * @return Main frame
 	 */
 	public static final MainWindow getMainWindow() {
 		if (wb == null)
@@ -42,7 +39,7 @@ public class Platform {
 	}
 
 	/**
-	 * @return 核心控制
+	 * @return Core control
 	 */
 	public static final ControlApps getControlApps() {
 		if (wb == null)
@@ -51,7 +48,7 @@ public class Platform {
 	}
 
 	/**
-	 * @return 数据模型
+	 * @return Data model
 	 */
 	public static final DataHouse getDataHouse() {
 		if (wb == null)
@@ -60,7 +57,7 @@ public class Platform {
 	}
 
 	/**
-	 * @return 控制管理器
+	 * @return Control manager
 	 */
 	public static final ControlManager getControlManager() {
 		if (wb == null)
@@ -69,7 +66,7 @@ public class Platform {
 	}
 
 	/**
-	 * @return 核心控制器
+	 * @return Core controller
 	 */
 	public static final CoreControl getCoreControl() {
 		if (wb == null)

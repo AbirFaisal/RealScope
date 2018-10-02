@@ -45,14 +45,14 @@ public class Main  extends Application {
 	static XYChart.Series series = new XYChart.Series();
 	static XYChart.Series minMarker = new XYChart.Series();
 	static XYChart.Series maxMarker = new XYChart.Series();
-	static SwingNode swingNode = new SwingNode();
+	//static SwingNode swingNode = new SwingNode();
 
 	@Override
     public void start(Stage primaryStage) throws Exception{
 
-	    zeroAnchor(swingNode);
+	    //zeroAnchor(swingNode);
 
-	    AnchorPane anchorPane = new AnchorPane(swingNode);
+	    AnchorPane anchorPane = new AnchorPane();
 
         primaryStage.setTitle("RealScope");
         primaryStage.setScene(new Scene(anchorPane, 1280, 720));
@@ -106,7 +106,7 @@ public class Main  extends Application {
 
 
 
-        launch(args);
+        //launch(args);
     }
 
 }
