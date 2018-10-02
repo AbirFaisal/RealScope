@@ -157,7 +157,7 @@ public class ButtonPane extends JPanel implements Localizable,
 		//btn_3in1.setPreferredSize(new Dimension(btnW, btnH));
 
 		frmlbl = new JLabel();
-		frmlbl.setPreferredSize(new Dimension(350, 25));
+		//frmlbl.setPreferredSize(new Dimension(350, 25));
 		frmlbl.setForeground(Color.white);
 
 		empty = new JLabel();
@@ -200,8 +200,7 @@ public class ButtonPane extends JPanel implements Localizable,
 	}
 
 	private void updateLabel() {
-		frmlbl.setText(SFormatter.dataformat("fps:%.1f,cmd:%d,wfs:%d,pts:%d%s",
-				fps, cmdCount, wfs, points, pkn));
+		frmlbl.setText(SFormatter.dataformat("fps:%.1f,cmd:%d,wfs:%d,pts:%d%s", fps, cmdCount, wfs, points, pkn));
 	}
 
 	public void factorySet() {

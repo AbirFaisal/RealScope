@@ -129,7 +129,8 @@ public class SmallTimebasePreHandler {
 	}
 
 	/**
-	 * 补全拉触发的各种细节，然后查硬件频率，以及保存文件格式，dm等
+	 * Completing the various details of the pull trigger, then checking
+	 * the hardware frequency, and saving the file format, dm, etc.
 	 * 
 	 * @param ci
 	 * @param fullscreen
@@ -145,9 +146,9 @@ public class SmallTimebasePreHandler {
 		if (cdi == null)
 			return 0;
 
-		logln(">>>>>>>>>>>>>>>>>>>>>>>> channel " + chl);
+		logln(">>>>>>>>>> channel " + chl);
 		ByteBuffer trgbb = cdi.getTrgLocBuffer();
-		/** 打印满屏和拉触发数据 */
+		/** Print full screen and pull trigger data */
 		// logData(bb, cdi, fullscreen);
 		int shift = 0;
 		logln("handleLocate");
@@ -186,9 +187,9 @@ public class SmallTimebasePreHandler {
 		return shift;
 	}
 
-	private void shiftChannelRTBuffer(ChannelsTransportInfo_Tiny ci,
-			int fullscreen, TinyPlugHelper pluger, ChannelDataInfo_Tiny cdi,
-			int shift) {
+	private static void shiftChannelRTBuffer(ChannelsTransportInfo_Tiny ci,
+	                                         int fullscreen, TinyPlugHelper pluger, ChannelDataInfo_Tiny cdi,
+	                                         int shift) {
 		cdi.dmfullscreen = fullscreen;
 		ByteBuffer dmbuf = cdi.getALLDMBuffer();
 
