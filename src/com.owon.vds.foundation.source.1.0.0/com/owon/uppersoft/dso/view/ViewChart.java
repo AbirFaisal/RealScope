@@ -52,18 +52,18 @@ public class ViewChart extends JPanel implements Decorate, Localizable {
 	}
 
 	/**
-	 * 
-	 * 调整大小，为更新到缓冲图像作准备
+	 * Resize to prepare for updating to buffered image
 	 */
 	public void adjustView(ScreenContext pc, Rectangle bd) {
-		/** 这里使用拷贝，防止传入的引用对象内容在今后被修改 */
+		/** Use copy here to prevent incoming reference object
+		 * content from being modified in the future */
 		locInfo.setBounds(bd);
 		dc.adjustView(pc, locInfo);
 	}
 
 	public void paintView(Graphics2D g2d, ScreenContext pc, Rectangle r) {
 		// pc.setCurrentLocInfo(locInfo);
-		/** TODO 考虑如何显示余晖 */
+		/** TODO Consider how to display the afterglow */
 		dc.paintView(g2d, pc, r);
 	}
 
