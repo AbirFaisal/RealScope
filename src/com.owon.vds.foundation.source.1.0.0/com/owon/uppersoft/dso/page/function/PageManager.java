@@ -26,7 +26,7 @@ import com.owon.uppersoft.vds.core.aspect.help.ILoadPersist;
 import com.owon.uppersoft.vds.ui.resource.SwingResourceManager;
 import com.owon.uppersoft.vds.util.Pref;
 import com.owon.uppersoft.vds.util.ui.CListModel;
-import sun.font.DelegatingShape;
+//import sun.font.DelegatingShape;
 
 public abstract class PageManager implements ILoadPersist {
 	public LinkedList<Integer> linked;

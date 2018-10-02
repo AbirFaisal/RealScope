@@ -1,16 +1,13 @@
 package com.owon.uppersoft.vds.ui.window;
 
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Frame;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.JFrame;
 
-import com.sun.awt.AWTUtilities;
+//import com.sun.awt.AWTUtilities;
 
 /**
  * WndSizer，支持调整窗口大小
@@ -130,7 +127,8 @@ public class ShellResizer implements MouseMotionListener, MouseListener {
 
 			}
 			// WindowUtil.ShapeWindow(frm, def.WND_SHAPE_ARC);
-			AWTUtilities.setWindowOpaque(frm, false);
+			//AWTUtilities.setWindowOpaque(frm, false);
+			frm.setBackground(Color.GRAY);
 		}
 	}
 

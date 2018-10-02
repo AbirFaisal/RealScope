@@ -121,7 +121,7 @@ public class DisplayPaneTiny extends DisplayPane {
 
 		jp.add(smallBtn);
 
-		/** 以下为闭环校正对应的控件 */
+		/** The following are the controls corresponding to the closed loop correction. */
 
 		final JButton cicleBtn = new JButton(I18nProvider.bundle().getString("M.Display.circle"));
 		cicleBtn.addActionListener(new ActionListener() {

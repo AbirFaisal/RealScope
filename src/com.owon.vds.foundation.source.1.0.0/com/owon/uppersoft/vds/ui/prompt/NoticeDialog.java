@@ -15,7 +15,7 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
-import com.sun.awt.AWTUtilities;
+//import com.sun.awt.AWTUtilities;
 
 public class NoticeDialog extends JDialog {
 	public static final int arc = 6;
@@ -74,11 +74,14 @@ public class NoticeDialog extends JDialog {
 		add(jp, BorderLayout.CENTER);
 		setFont(font);
 
-		AWTUtilities.setWindowOpaque(this, false);
+		//AWTUtilities.setWindowOpaque(this, false);
+		this.setBackground(Color.GRAY);
+
 		setLocationRelativeTo(null);
 
-		/** 改为无渐变效果的 */
-		AWTUtilities.setWindowOpacity(this, 0.75f);
+		/** Changed to no gradient effect */
+		//AWTUtilities.setWindowOpacity(this, 0.75f);
+		this.setOpacity(0.75f);
 	}
 
 	private void recomputeDialgSize() {
@@ -125,24 +128,30 @@ public class NoticeDialog extends JDialog {
 	private void fading() {
 		float v = 0f;
 		out = false;
-		AWTUtilities.setWindowOpacity(this, v += 0.1f);
+		//AWTUtilities.setWindowOpacity(this, v += 0.1f);
+		this.setOpacity(0.1f);
+
 		this.setVisible(true);
 		try {
 			while (v < 0.85 && !out) {
-				AWTUtilities.setWindowOpacity(this, v);
+				//AWTUtilities.setWindowOpacity(this, v);
+				this.setOpacity(v);
+
 				v += 0.1f;
 				Thread.sleep(170);
 			}
 			Thread.sleep(1000);
 			v -= 0.2f;
 			while (v > 0.5 && !out) {
-				AWTUtilities.setWindowOpacity(this, v);
+				//AWTUtilities.setWindowOpacity(this, v);
+				this.setOpacity(v);
 				v -= 0.06f;
 				Thread.sleep(260);
 			}
 
 			while (v > 0 && !out) {
-				AWTUtilities.setWindowOpacity(this, v);
+				//AWTUtilities.setWindowOpacity(this, v);
+				this.setOpacity(v);
 				v -= 0.08f;
 				Thread.sleep(180);
 			}

@@ -42,7 +42,7 @@ import com.owon.uppersoft.vds.ui.widget.custom.CButton;
 import com.owon.uppersoft.vds.ui.widget.custom.CLabel;
 import com.owon.uppersoft.vds.ui.widget.custom.LButton;
 import com.owon.uppersoft.vds.ui.window.ComponentMover;
-import com.sun.awt.AWTUtilities;
+//import com.sun.awt.AWTUtilities;
 
 public class AboutDialog implements Localizable {
 	private static final int outorc = 25, inorc = 24, orcw = 15, orch = 15;
@@ -83,8 +83,9 @@ public class AboutDialog implements Localizable {
 		frame.setResizable(false);
 		frame.setVisible(true);
 		// WindowUtil.ShapeWindow(frame, Define.def.WND_SHAPE_ARC_2);//
-		// 边框圆角化,第2参圆角画化程度
-		AWTUtilities.setWindowOpaque(frame, false);
+		//The border is rounded, and the second part is rounded.
+		//AWTUtilities.setWindowOpaque(frame, false);
+		frame.setOpacity(1f);
 	}
 
 	private void initialize(Window owner, final ControlManager cm) {

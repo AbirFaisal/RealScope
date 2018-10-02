@@ -12,7 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import com.owon.uppersoft.dso.pref.Define;
-import com.sun.awt.AWTUtilities;
+//import com.sun.awt.AWTUtilities;
 
 public class FloatGlassPane extends JDialog {
 	private Color background;
@@ -39,7 +39,9 @@ public class FloatGlassPane extends JDialog {
 		setUndecorated(true);
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		AWTUtilities.setWindowOpaque(this, false);
+		//AWTUtilities.setWindowOpaque(this, false);
+		this.setColor(Color.DARK_GRAY);
+		this.setOpacity(0.5f);
 	}
 
 	public void setColor(Color bg) {

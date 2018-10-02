@@ -92,7 +92,8 @@ public class CByteArrayInputStream {
 		}
 		if (buf instanceof DirectBuffer) {
 			DirectBuffer db = (DirectBuffer) buf;
-			db.cleaner().clean();
+			//db.cleaner().clean();
+
 			System.err.println("RELEASE");
 		}
 

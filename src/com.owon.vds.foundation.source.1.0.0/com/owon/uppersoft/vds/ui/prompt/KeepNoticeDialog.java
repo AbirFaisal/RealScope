@@ -15,7 +15,7 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
-import com.sun.awt.AWTUtilities;
+//import com.sun.awt.AWTUtilities;
 
 public class KeepNoticeDialog extends JDialog {
 	public static final int arc = 6;
@@ -74,11 +74,14 @@ public class KeepNoticeDialog extends JDialog {
 		add(jp, BorderLayout.CENTER);
 		setFont(font);
 
-		AWTUtilities.setWindowOpaque(this, false);
+		//AWTUtilities.setWindowOpaque(this, false);
+		this.setBackground(Color.GRAY);
+
 		setLocationRelativeTo(null);
 
-		/** 改为无渐变效果的 */
-		AWTUtilities.setWindowOpacity(this, 0.75f);
+		/** Changed to no gradient effect */
+		//AWTUtilities.setWindowOpacity(this, 0.75f);
+		this.setOpacity(0.75f);
 	}
 
 	private void recomputeDialgSize() {
@@ -96,12 +99,16 @@ public class KeepNoticeDialog extends JDialog {
 	}
 
 	/**
-	 * 可持续显示更新提示的窗口，并在显示最后一条一段时间后自动关闭
+	 * A window that continuously displays the update prompt and
+	 * automatically closes after the last time period is displayed
 	 * 
-	 * 各个提示独立线程，分别累加mstime，然后休眠，在醒来后减去各自时间，最后一个减的会使mstime到零，然后触发关闭动作，
-	 * 其间除了休眠都对对话框加锁
+	 * Each prompt separate threads, respectively add mstime, then sleep,
+	 * after waking up to subtract their respective time, the last one will
+	 * make mstime to zero, and then trigger the close action, during
+	 * which the dialog is locked except for hibernation
 	 * 
-	 * 为避免关闭动作设计对话框的引用置零而引入复杂的加锁逻辑，对话框只是隐藏而不关闭
+	 * In order to avoid closing the reference zeroing of the action design dialog
+	 * and introducing complex locking logic, the dialog is just hidden and not closed.
 	 * */
 	public void keepShow() {
 		keepShow(2000);
@@ -145,24 +152,28 @@ public class KeepNoticeDialog extends JDialog {
 	private void fading() {
 		float v = 0f;
 		out = false;
-		AWTUtilities.setWindowOpacity(this, v += 0.1f);
+		//AWTUtilities.setWindowOpacity(this, v += 0.1f);
+		this.setOpacity(0.1f);
 		this.setVisible(true);
 		try {
 			while (v < 0.85 && !out) {
-				AWTUtilities.setWindowOpacity(this, v);
+				//AWTUtilities.setWindowOpacity(this, v);
+				this.setOpacity(v);
 				v += 0.1f;
 				Thread.sleep(170);
 			}
 			Thread.sleep(1000);
 			v -= 0.2f;
 			while (v > 0.5 && !out) {
-				AWTUtilities.setWindowOpacity(this, v);
+				//AWTUtilities.setWindowOpacity(this, v);
+				this.setOpacity(v);
 				v -= 0.06f;
 				Thread.sleep(260);
 			}
 
 			while (v > 0 && !out) {
-				AWTUtilities.setWindowOpacity(this, v);
+				//AWTUtilities.setWindowOpacity(this, v);
+				this.setOpacity(v);
 				v -= 0.08f;
 				Thread.sleep(180);
 			}

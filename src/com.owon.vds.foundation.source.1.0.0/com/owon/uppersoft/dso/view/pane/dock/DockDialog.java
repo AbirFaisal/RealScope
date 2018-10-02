@@ -19,13 +19,16 @@ import com.owon.uppersoft.dso.util.PropertiesItem;
 import com.owon.uppersoft.vds.ui.resource.FontCenter;
 import com.owon.uppersoft.vds.ui.window.MaxMinAnimator;
 import com.owon.uppersoft.vds.ui.window.WindowChaser;
-import com.sun.awt.AWTUtilities;
+//import com.sun.awt.AWTUtilities;
 
 /**
- * 事件监听在 WaveFormManager.pcs 上
+ * Event listener on WaveFormManager.pcs
  * 
- * KNOW 由于这个侧边栏在java7下收起再打开会无法显示内容，所以java7暂无法使用
- * 自定义dialog弹出后再缩回去以后，再次弹出无法显示其中的内容，疑为无调用画图方法
+ * KNOW Because this sidebar is closed and opened under java7,
+ * it will not be able to display the content, so java7 can't
+ * be used temporarily. After the custom dialog pops up and then
+ * retracts it, it can't display the content again after it pops up.
+ * It is suspected that there is no call drawing method.
  * 
  */
 public class DockDialog implements PropertyChangeListener {
@@ -139,7 +142,8 @@ public class DockDialog implements PropertyChangeListener {
 		wnd.addComponentListener(new WindowChaser(wnd, dlg));
 
 		// WindowUtil.ShapeWindow(dlg, Define.def.WND_SHAPE_ARC);
-		AWTUtilities.setWindowOpaque(dlg, false);
+
+		dlg.setOpacity(0.5f);
 	}
 
 	@Override

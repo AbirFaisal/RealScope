@@ -6,27 +6,34 @@ import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JOptionPane;
 
-import com.sun.awt.AWTUtilities;
+//import com.sun.awt.AWTUtilities;
+
 
 public class WindowUtil {
 	/**
-	 * 对顶级窗口设置外形轮廓
+	 * Set the outline of the top-level window
 	 * 
 	 * @param window
 	 * @param arc
 	 */
 	public static void ShapeWindow(Window window, int arc) {
 		if (arc == 0)
-			AWTUtilities.setWindowShape(window, new Rectangle2D.Double(0, 0,
-					window.getWidth(), window.getHeight()));
+
+			window.setShape(new Rectangle2D.Double(0, 0, window.getWidth(), window.getHeight()));
+
+			//Only in JDK6
+			//AWTUtilities.setWindowShape(window, new Rectangle2D.Double(0, 0, window.getWidth(), window.getHeight()));
 		else
-			AWTUtilities.setWindowShape(window, new RoundRectangle2D.Double(0,
-					0, window.getWidth(), window.getHeight(), arc, arc));
+
+			window.setShape(new RoundRectangle2D.Double(0, 0, window.getWidth(), window.getHeight(), arc, arc));
+
+			//JDK6
+			//AWTUtilities.setWindowShape(window, new RoundRectangle2D.Double(0, 0, window.getWidth(), window.getHeight(), arc, arc));
 	}
 
 	/**
 	 * @param msn
-	 * @param parent 在此父窗口上弹出取消的提示，如yes，则关闭此父窗口
+	 * @param parent A prompt to cancel the popup on this parent window, such as yes, closes the parent window
 	 * @return
 	 */
 	public static boolean showCancelDialog(String msn, Window parent) {

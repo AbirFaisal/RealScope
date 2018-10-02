@@ -41,7 +41,7 @@ import com.owon.uppersoft.vds.ui.resource.SwingResourceManager;
 import com.owon.uppersoft.vds.ui.widget.custom.CCheckBox;
 import com.owon.uppersoft.vds.ui.widget.custom.CLabel;
 import com.owon.uppersoft.vds.ui.window.ComponentMover;
-import com.sun.awt.AWTUtilities;
+//import com.sun.awt.AWTUtilities;
 
 public class TipsWindow implements Localizable {
 
@@ -100,7 +100,8 @@ public class TipsWindow implements Localizable {
 		creatDlg(mw);
 		init();
 		new ComponentMover(tipsDlg, tipsDlg);
-		AWTUtilities.setWindowOpaque(tipsDlg, false);
+		//AWTUtilities.setWindowOpaque(tipsDlg, false);
+		tipsDlg.setOpacity(0.5f);
 		// WindowUtil.ShapeWindow(tipsDlg, 27);
 	}
 

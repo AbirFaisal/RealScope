@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 
 import com.owon.uppersoft.vds.ui.paint.LineDrawTool;
 import com.owon.uppersoft.vds.ui.resource.SwingResourceManager;
-import com.sun.awt.AWTUtilities;
+//import com.sun.awt.AWTUtilities;
 
 /**
  * SymmetryCSliderBar，The special scroll bar at the center of the slider,
@@ -339,7 +339,8 @@ public class SymmetrySliderBar extends JPanel implements MouseListener, MouseMot
 				csb, dlg, false, rb);
 
 		dlg.addFocusListener(fa);
-		AWTUtilities.setWindowOpaque(dlg, false);
+//		AWTUtilities.setWindowOpaque(dlg, false);
+		dlg.setOpacity(0.5f);
 		dlg.setVisible(true);
 		dlg.requestFocus();
 
@@ -382,7 +383,10 @@ public class SymmetrySliderBar extends JPanel implements MouseListener, MouseMot
 				csb, dlg, SliderDelegate.BtnStatus0, pcl, false, rb);
 
 		dlg.addFocusListener(fa);
-		AWTUtilities.setWindowOpaque(dlg, false);
+		//AWTUtilities.setWindowOpaque(dlg, false);
+
+		dlg.setBackground(Color.GRAY);
+
 		dlg.setVisible(true);
 		dlg.requestFocus();
 
@@ -430,7 +434,8 @@ public class SymmetrySliderBar extends JPanel implements MouseListener, MouseMot
 				csb, dlg, BtnStatus, pcl, true, rb);
 
 		dlg.addFocusListener(fa);
-		AWTUtilities.setWindowOpaque(dlg, false);
+		//AWTUtilities.setWindowOpaque(dlg, false);
+		dlg.setOpacity(0.5f);
 		dlg.setVisible(true);
 		dlg.requestFocus();
 		return dlg;

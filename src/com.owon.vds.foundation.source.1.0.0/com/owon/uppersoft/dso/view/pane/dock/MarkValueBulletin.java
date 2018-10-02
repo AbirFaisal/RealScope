@@ -28,7 +28,6 @@ import com.owon.uppersoft.dso.view.MainWindow;
 import com.owon.uppersoft.vds.core.paint.PaintContext;
 import com.owon.uppersoft.vds.ui.resource.SwingResourceManager;
 import com.owon.uppersoft.vds.ui.window.WindowChaser;
-import com.sun.awt.AWTUtilities;
 
 public class MarkValueBulletin extends JDialog implements MouseListener,
 		PropertyChangeListener {
@@ -81,7 +80,10 @@ public class MarkValueBulletin extends JDialog implements MouseListener,
 		setUndecorated(true);
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		AWTUtilities.setWindowOpaque(this, false);
+
+		//TODO this changes the opacity of the mark value area
+		this.setOpacity(0.5f);
+
 
 		addMouseListener(this);
 		// addMouseMotionListener(this);

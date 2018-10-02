@@ -1,6 +1,5 @@
 package com.abirfaisal.Realscope;
 
-import com.oracle.tools.packager.IOUtils;
 import com.owon.uppersoft.dso.global.Platform;
 import com.owon.uppersoft.dso.global.WorkBench;
 import com.owon.uppersoft.dso.global.WorkBenchTiny;

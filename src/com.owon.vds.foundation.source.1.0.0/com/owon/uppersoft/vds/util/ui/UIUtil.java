@@ -12,8 +12,8 @@ import java.util.Set;
 import javax.swing.*;
 
 import com.owon.uppersoft.vds.data.RGB;
-import com.sun.java.swing.plaf.motif.MotifLookAndFeel;
-import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
+//import com.sun.java.swing.plaf.motif.MotifLookAndFeel;
+//import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 
 
 /**
@@ -25,7 +25,7 @@ import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 public class UIUtil {
 	public static void modifylaf() {
 		try {
-			String lafn = MotifLookAndFeel.class.getName();
+			//String lafn = MotifLookAndFeel.class.getName();
 			//UIManager.setLookAndFeel(lafn);
 
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());

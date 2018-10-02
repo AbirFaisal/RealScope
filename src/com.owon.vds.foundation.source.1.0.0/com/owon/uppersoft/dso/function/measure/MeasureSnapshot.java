@@ -45,7 +45,7 @@ import com.owon.uppersoft.vds.ui.widget.custom.LButton;
 import com.owon.uppersoft.vds.ui.window.ComponentMover;
 import com.owon.uppersoft.vds.util.LocalizeCenter;
 import com.owon.uppersoft.vds.util.format.SFormatter;
-import com.sun.awt.AWTUtilities;
+//import com.sun.awt.AWTUtilities;
 
 public class MeasureSnapshot implements Localizable {
 
@@ -272,7 +272,8 @@ public class MeasureSnapshot implements Localizable {
 		frame.setLocationRelativeTo(null);
 
 		// WindowUtil.ShapeWindow(frame, Define.def.WND_SHAPE_ARC_2);
-		AWTUtilities.setWindowOpaque(frame, false);
+		//AWTUtilities.setWindowOpaque(frame, false);
+		frame.setBackground(Color.LIGHT_GRAY);
 	}
 
 	public void localize(ResourceBundle rb) {
