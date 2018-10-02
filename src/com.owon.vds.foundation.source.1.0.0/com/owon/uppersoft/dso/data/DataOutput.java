@@ -32,10 +32,10 @@ import com.owon.uppersoft.vds.util.format.SimpleStringFormatter;
 
 public class DataOutput {
 	//
-	// int pos = 19;// 区长度位置15加int长4
+	// int pos = 19;// Zone length position 15 plus int length 4
 	public static final int everyPageCount = 50000, sheetLimitperBook = 1;
-	public String unitTxt;
 	private final String freqlbl = "AutoMeasure.FREQuency";
+	public String unitTxt;
 
 	public DataOutput() {
 	}
@@ -71,7 +71,7 @@ public class DataOutput {
 	}
 
 	public final void exportWaveAsBin(File out, ProgressMonitorDialog pm,
-			WaveFormManager wfm, File tempsave) {
+	                                  WaveFormManager wfm, File tempsave) {
 		pm.toFront();
 		pm.setValue_Note(0);
 		File copy = tempsave;
@@ -88,7 +88,7 @@ public class DataOutput {
 	}
 
 	public final void exportXLS(File out, ProgressMonitorDialog pm,
-			WaveFormManager wfm) {
+	                            WaveFormManager wfm) {
 		unitTxt = I18nProvider.bundle().getString("Label.ExportUnit");
 		// final boolean sequence = dtd.isSequenceSelected();
 		int allSheetPage, lastSheetPage, allRowCount = 0;
@@ -97,7 +97,7 @@ public class DataOutput {
 		DataHouse dh = Platform.getDataHouse();
 		WFO wfo = new WFO(dh.getDeepMemoryStorage(), dh.controlManager);
 
-		/* 使用所有列数中的最大值作为列数 */
+		/* Use the maximum of all column counts as the number of columns */
 		ON_WF_Iterator owi = wfm.on_wf_Iterator();
 		while (owi.hasNext()) {
 			IExportableWF wf = wfo.setWF(owi.next());
@@ -136,7 +136,7 @@ public class DataOutput {
 
 					ws = wwb.createSheet("Sheet" + csp, 0);
 					// System.out.println("sheet:" + csp);
-					/* 添加单位标识行 */
+					/* Add unit ID line */
 					label = new jxl.write.Label(0, 0, unitTxt);
 					ws.addCell(label);
 
@@ -164,7 +164,7 @@ public class DataOutput {
 
 					int dataRow = baseRow + alen;
 
-					/* 添加序号列 */
+					/* Add sequence number column */
 					// if (sequence) {
 					csp += offset;
 					int index = ((csp - 1) * everySheetCount) + 1;
@@ -175,7 +175,7 @@ public class DataOutput {
 					}
 					// }
 
-					/* 添加每一个通道列 */
+					/* Add each channel column */
 					int channelsOrder = 1;
 					owi = wfm.on_wf_Iterator();
 					while (owi.hasNext()) {
@@ -185,18 +185,18 @@ public class DataOutput {
 							wwb.close();
 							return;
 						}
-						/* 是否存在及被选择 */
+						/* Whether it exists and is selected */
 						if (wf == null) {
 							continue;
 						}
 						String name = wf.getChannelLabel();
 
-						/* 波形名(列名) */
+						/* Waveform name (column name) */
 						label = new jxl.write.Label(channelsOrder, 0, name);
 						ws.addCell(label);
 
 						csp = currentSheetPage;
-						/* 遍历每一行 */
+						/* Traverse each line */
 						csp += offset;
 						int idx = (csp - 1) * everySheetCount;
 						int end = dataRow + length;
@@ -231,13 +231,13 @@ public class DataOutput {
 	}
 
 	public final void exportCSV(File out, ProgressMonitorDialog pm,
-			WaveFormManager wfm) {
+	                            WaveFormManager wfm) {
 		unitTxt = I18nProvider.bundle().getString("Label.ExportUnit");
 
 		DataHouse dh = Platform.getDataHouse();
 		WFO wfo = new WFO(dh.getDeepMemoryStorage(), dh.controlManager);
 
-		/* 使用所有列数中的最大值作为列数 */
+		/* Use the maximum of all column counts as the number of columns */
 		int rowCount = 0;
 		ON_WF_Iterator owi = wfm.on_wf_Iterator();
 		while (owi.hasNext()) {
@@ -254,13 +254,13 @@ public class DataOutput {
 		try {
 			FileWriter fw = new FileWriter(out);
 
-			/* 单位标识 */
+			/* Unit identification */
 			fw.append(unitTxt + newline);
 
 			// if (sequence)
 			fw.append("");
 
-			/* 波形名(列名) */
+			/* Waveform name (column name) */
 			owi = wfm.on_wf_Iterator();
 			while (owi.hasNext()) {
 				IExportableWF wf = wfo.setWF(owi.next());
@@ -325,7 +325,7 @@ public class DataOutput {
 	}
 
 	public final void exportText(File out, ProgressMonitorDialog pm,
-			WaveFormManager wfm, int dmidx) {
+	                             WaveFormManager wfm, int dmidx) {
 		unitTxt = I18nProvider.bundle().getString("Label.ExportUnit");
 		// final boolean sequence = dtd.isSequenceSelected();
 		pm.setVisible(true);

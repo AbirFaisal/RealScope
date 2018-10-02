@@ -34,7 +34,9 @@ public class WFO implements IExportableWF {
 		return wfi.ci.isOn();
 	}
 
-	/** 以下为导出数据到各种格式的方法，目前只支持直接导出深存储的内容，屏幕范围的后续有空再做 */
+	/** The following is a method for exporting data to various formats.
+	 * Currently, only the content of deep storage is directly exported,
+	 * and the screen range is available later. */
 	@Override
 	public int getDatalen() {
 		return wfi.getDataLen();
@@ -45,7 +47,7 @@ public class WFO implements IExportableWF {
 	}
 
 	/**
-	 * 随机获取数据点的电压值 TODO 每次获取要get运算，可以优化
+	 * Randomly obtain the voltage value of the data point TODO Optimize each time you get a get operation
 	 * 
 	 * @param i
 	 * @return
