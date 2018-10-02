@@ -3,7 +3,7 @@ package com.owon.uppersoft.dso.global;
 import com.owon.uppersoft.dso.view.MainWindow;
 
 /**
- * 工作台，连接各个主要功能模块
+ * Workbench, connecting all major functional modules
  * 
  */
 public interface WorkBench {

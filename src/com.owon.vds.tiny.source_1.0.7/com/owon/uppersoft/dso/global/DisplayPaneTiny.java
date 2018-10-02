@@ -27,8 +27,8 @@ import com.owon.vds.tiny.circle.agp.SerialPortUtil;
 
 public class DisplayPaneTiny extends DisplayPane {
 
-	private static String[] VmpList = { "30mVpp", "60mVpp", "120mVpp",
-			"300mVpp", "600mVpp", "1.2Vpp", "3Vpp", "6Vpp", "12Vpp", "30Vpp" };
+	private static String[] VmpList = {"30mVpp", "60mVpp", "120mVpp",
+			"300mVpp", "600mVpp", "1.2Vpp", "3Vpp", "6Vpp", "12Vpp", "30Vpp"};
 
 	private boolean btBool;
 	private DFAGP dfagp;
@@ -46,7 +46,7 @@ public class DisplayPaneTiny extends DisplayPane {
 	}
 
 	protected void circleCal(final Window wnd, final PrincipleTiny pt,
-			final AGPControl agp) {
+	                         final AGPControl agp) {
 		final ControlApps ca = Platform.getControlApps();
 		final TinyMachine tm = pt.getMachineType();
 
@@ -110,8 +110,7 @@ public class DisplayPaneTiny extends DisplayPane {
 	}
 
 	@Override
-	protected void createHideContent(final Window wnd, final JPanel jp,
-			final ControlManager cm) {
+	protected void createHideContent(final Window wnd, final JPanel jp, final ControlManager cm) {
 		final PrincipleTiny pt = (PrincipleTiny) cm.getPrinciple();
 		final JButton smallBtn = new JButton("25M");
 		smallBtn.addActionListener(new ActionListener() {
@@ -169,7 +168,8 @@ public class DisplayPaneTiny extends DisplayPane {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				/** 由于闭环的子界面仅在绑定串口后才可工作，所以agp可在绑定时初始化 */
+				/** Since the closed-loop sub-interface works only after binding
+				 *  the serial port, agp can be initialized at the time of binding. */
 				if (dfagp == null) {
 					dfagp = new DFAGP(cm.getCoreControl().getVoltageProvider());
 					btBool = false;

@@ -3,7 +3,7 @@ package com.owon.uppersoft.vds.ui.prompt;
 import java.awt.Window;
 
 /**
- * 可实现渐变式的置顶显示提示
+ * Gradient top display hints
  * 
  */
 public class FadeIOShell {
@@ -12,7 +12,7 @@ public class FadeIOShell {
 	}
 
 	/**
-	 * 渐变式提示
+	 * Gradient prompt
 	 * 
 	 * @param m
 	 */
@@ -21,7 +21,7 @@ public class FadeIOShell {
 	}
 
 	/**
-	 * 渐变式提示
+	 * Gradient prompt
 	 * 
 	 * @param m
 	 */

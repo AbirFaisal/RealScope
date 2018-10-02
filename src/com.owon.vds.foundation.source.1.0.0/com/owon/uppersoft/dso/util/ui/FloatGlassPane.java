@@ -9,6 +9,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -73,7 +74,5 @@ public class FloatGlassPane extends JDialog {
 	public void paintContent(Graphics2D g) {
 		paintBackGround(g);
 	}
-
-
 
 }

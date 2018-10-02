@@ -136,7 +136,6 @@ public class NoticeDialog extends JDialog {
 			while (v < 0.85 && !out) {
 				//AWTUtilities.setWindowOpacity(this, v);
 				this.setOpacity(v);
-
 				v += 0.1f;
 				Thread.sleep(170);
 			}

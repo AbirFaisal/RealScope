@@ -13,8 +13,8 @@
     <orderEntry type="library" exported="" name="RXTXcomm_2.1.7" level="project" />
     <orderEntry type="library" exported="" name="ch.ntb.usb_0.5" level="project" />
     <orderEntry type="library" exported="" name="jxl_2.6.6" level="project" />
-    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="JavaFX" level="application" />
     <orderEntry type="library" name="usb4java-1.2.0" level="project" />
-    <orderEntry type="library" name="JavaFX" level="application" />
+    <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
