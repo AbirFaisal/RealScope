@@ -85,7 +85,7 @@ public class StorageView extends JPanel implements Localizable {
 			int dl = dmc.getDeepDataLen();
 			/** v_fsl 代表屏幕内波形长度，运行状态下即两括号之间的距离 */
 			int v_fsl = tc.getRTfullScreenNumber() * wlen / dl;
-			// System.err.println(cm.timeControl.rtfls + ", " + wlen + ", "
+			// System.err.println(controlManager.timeControl.rtfls + ", " + wlen + ", "
 			// + dl);
 
 			/**

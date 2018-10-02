@@ -131,7 +131,7 @@ public class TestPane extends FunctionPanel implements Runnable {
 		autoGenButton = nbtnt("auto get");
 		autoGenButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// ca.cm.sendRun();
+				// ca.controlManager.sendRun();
 				ca.keepload();
 			}
 		});
@@ -139,7 +139,7 @@ public class TestPane extends FunctionPanel implements Runnable {
 		stopButton = nbtnt("stop");
 		stopButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// ca.cm.sendStop();
+				// ca.controlManager.sendStop();
 				ca.stopkeep();
 			}
 		});
@@ -151,7 +151,7 @@ public class TestPane extends FunctionPanel implements Runnable {
 				// 过时的协议，可能不再适用
 				// GetDataRunner gdr = ca.getDaemon().getGetDataRunner();
 				// gdr.sendCommand(sm, GetDataRunner.sgad, t);
-				// ca.interComm.receiveALL(cm, sm);
+				// ca.interComm.receiveALL(controlManager, sm);
 				// gdr.ci.DMem = 'M';
 				// sm.acceptDMData(gdr.ci);
 				// Platform.getDataHouse().receiveRTData(gdr.ci,
@@ -186,8 +186,8 @@ public class TestPane extends FunctionPanel implements Runnable {
 						// ca.interComm;
 						// // Platform.getDataHouse().Run = false;
 						// DMInfo ci = DataSaver.saveFileM(ca.getDaemon()
-						// .getGetDataRunner(), cm, f, new PropertyCL(),
-						// ic.getSaverHandler(), cm.sourceManager);
+						// .getGetDataRunner(), controlManager, f, new PropertyCL(),
+						// ic.getSaverHandler(), controlManager.sourceManager);
 						// if (ci.status == DMInfo.Status_RT_NoDM) {
 						//
 						// ic.showNoDM();
@@ -245,7 +245,7 @@ public class TestPane extends FunctionPanel implements Runnable {
 		nrip();
 //		nlblt("MeasureTimes: ");
 //		final JSpinner mtjs = new JSpinner(new SpinnerNumberModel(
-//				cm.measureTimes2, 1, MaxMeasureTimes, 1));
+//				controlManager.measureTimes2, 1, MaxMeasureTimes, 1));
 //		ip.add(mtjs);
 //
 //		mtjs.addChangeListener(new ChangeListener() {
@@ -253,7 +253,7 @@ public class TestPane extends FunctionPanel implements Runnable {
 //			public void stateChanged(ChangeEvent e) {
 //				if (!listening)
 //					return;
-//				cm.measureTimes2 = (Integer) mtjs.getValue();
+//				controlManager.measureTimes2 = (Integer) mtjs.getValue();
 //			}
 //		});
 

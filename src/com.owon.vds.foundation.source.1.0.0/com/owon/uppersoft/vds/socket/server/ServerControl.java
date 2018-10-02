@@ -19,7 +19,7 @@ import com.owon.uppersoft.vds.util.Pref;
 
 public class ServerControl {
 
-	/** SCPI服务器启动和关闭相关控制 */
+	/** SCPI server startup and shutdown related controls */
 	private Server socketServer;
 	private int mPort = 5188;
 	private final int DATABLOCK = 2048;

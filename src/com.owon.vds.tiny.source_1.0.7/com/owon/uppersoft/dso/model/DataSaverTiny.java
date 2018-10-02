@@ -139,8 +139,8 @@ public class DataSaverTiny extends AbsDataSaver {
 			t1 = raf.getFilePointer();
 			// 迭代存储
 
-			// BigDecimal bd = cm.getCurrentSampleRateBD_kHz();
-			// MachineType mi = cm.getMachine();
+			// BigDecimal bd = controlManager.getCurrentSampleRateBD_kHz();
+			// MachineType mi = controlManager.getMachine();
 
 			while (it.hasNext()) {
 				DMDataInfo cd = it.next();

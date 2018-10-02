@@ -85,7 +85,7 @@ public class DataImporterTiny implements IDataImporter {
 		int machID = ba.nextInt();
 		ci.machine_type = machID;
 		if (!cm.isSuitableMachineType(machID)) {
-			// String machine_name = cm.getMachineTypeName(machID);
+			// String machine_name = controlManager.getMachineTypeName(machID);
 			cm.reloadManager.prepareReloadDM(machID, fp);
 			return null;
 		}

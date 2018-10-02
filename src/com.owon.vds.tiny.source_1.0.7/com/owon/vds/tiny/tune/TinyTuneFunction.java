@@ -173,8 +173,8 @@ public class TinyTuneFunction implements ITuneFunction {
 				int i = jtp.getSelectedIndex();
 				cmdt = tm.cmdts.get(i);
 				tid = i;
-				// cm.pcs.firePropertyChange(PropertiesItem.SampleRateChange,
-				// null, cm.getCurrentSampleRate());
+				// controlManager.pcs.firePropertyChange(PropertiesItem.SampleRateChange,
+				// null, controlManager.getCurrentSampleRate());
 			}
 		});
 		panel.add(jtp, BorderLayout.CENTER);

@@ -191,7 +191,7 @@ public class Tune2 implements PropertyChangeListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (um == null || !um.getFrame().isDisplayable()) {
-					// USBSourceManager usm = cm.sourceManager
+					// USBSourceManager usm = controlManager.sourceManager
 					// .getUSBSourceManager();
 					um = new UsbCommunicator();
 				}

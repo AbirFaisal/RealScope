@@ -1,24 +1,26 @@
 package com.abirfaisal.Realscope;
 
-import com.owon.uppersoft.dso.global.Platform;
-import com.owon.uppersoft.dso.global.WorkBench;
-import com.owon.uppersoft.dso.global.WorkBenchTiny;
-import javafx.application.Application;
-import javafx.embed.swing.SwingNode;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Paint;
-import javafx.stage.Stage;
+import com.owon.uppersoft.dso.control.IDataImporter;
+import com.owon.uppersoft.dso.function.ref.IReferenceWaveForm;
+import com.owon.uppersoft.dso.global.*;
+import com.owon.uppersoft.dso.machine.aspect.IMultiReceiver;
+import com.owon.uppersoft.dso.model.WaveFormManager;
+import com.owon.uppersoft.dso.model.trigger.TrgTypeDefine;
+import com.owon.uppersoft.dso.model.trigger.TriggerControl;
+import com.owon.uppersoft.dso.ref.IRefSource;
+import com.owon.uppersoft.dso.source.manager.SourceManager;
+import com.owon.uppersoft.vds.core.comm.ICommunicateManager;
+import com.owon.uppersoft.vds.core.comm.IRuntime;
+import com.owon.uppersoft.vds.core.pref.Config;
+import com.owon.uppersoft.vds.source.comm.InterCommTiny;
+import com.owon.uppersoft.vds.util.Pref;
+import com.owon.vds.tiny.firm.FPGADownloader;
 import org.usb4java.*;
 import sun.nio.ch.IOUtil;
 
 import javax.swing.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
@@ -27,7 +29,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Main  extends Application {
+
+/**
+ * Notes:
+ *
+ * Files of interest:
+ *   CmdFactory.java
+ *
+ */
+public class Main {
 
 	static short VENDOR_ID = 0x5345;
 	static short PRODUCT_ID = 0x1234;
@@ -39,74 +49,63 @@ public class Main  extends Application {
 	static int lb = -2500;
 	static int ub = 2500;
 
-	static NumberAxis xAxis = new NumberAxis(lb,ub,250);
-	static NumberAxis yAxis = new NumberAxis(-3,3,1);
-	static LineChart lineChart = new LineChart(xAxis,yAxis);
-	static XYChart.Series series = new XYChart.Series();
-	static XYChart.Series minMarker = new XYChart.Series();
-	static XYChart.Series maxMarker = new XYChart.Series();
-	//static SwingNode swingNode = new SwingNode();
-
-	@Override
-    public void start(Stage primaryStage) throws Exception{
-
-	    //zeroAnchor(swingNode);
-
-	    AnchorPane anchorPane = new AnchorPane();
-
-        primaryStage.setTitle("RealScope");
-        primaryStage.setScene(new Scene(anchorPane, 1280, 720));
-        primaryStage.show();
-    }
-
-    void zeroAnchor(Node node){
-	    AnchorPane.setTopAnchor(node,0.0);
-	    AnchorPane.setBottomAnchor(node,0.0);
-	    AnchorPane.setLeftAnchor(node,0.0);
-	    AnchorPane.setRightAnchor(node,0.0);
-    }
-
-
-	static WorkBench workBench;
-	static Platform.PrincipleFactory principleFactory;
-	static WorkBenchTiny workBenchTiny;
-
-	static void launchVDS(){
-
-		principleFactory = new Platform.PrincipleFactory() {
-			@Override
-			public WorkBench createWorkBench() {
-				workBenchTiny = new WorkBenchTiny();
-				return workBenchTiny;
-			}
-		};
-		launch(principleFactory);
-	}
-
-
-	public static final void launch(Platform.PrincipleFactory pf) {
-		principleFactory = pf;
-		workBench = null;
-		try {
-			workBench = pf.createWorkBench();
-			workBench.join();
-
-		} catch (Throwable e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-		}
-	}
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-	    launchVDS();
+//	    Platform.launch(new Platform.PrincipleFactory() {
+//		    @Override
+//		    public WorkBench createWorkBench() {
+//			    return new WorkBenchTiny();
+//		    }
+//	    });
 
 
-		//createWorkBench();
+//	    ICommunicateManager iCommunicateManager = new ICommunicateManager() {
+//		    @Override
+//		    public boolean tryRescue() {
+//			    return false;
+//		    }
+//
+//		    @Override
+//		    public int retryTimes() {
+//			    return 0;
+//		    }
+//
+//		    @Override
+//		    public boolean isConnected() {
+//			    return false;
+//		    }
+//
+//		    @Override
+//		    public int write(byte[] arr, int len) {
+//			    return 1;
+//		    }
+//
+//		    @Override
+//		    public int acceptResponse(byte[] arr, int len) {
+//			    return 1;
+//		    }
+//	    };
+//	    FPGADownloader fpgaDownloader = new FPGADownloader();
+//	    System.out.println(fpgaDownloader.queryFPGADownloaded(iCommunicateManager));
+//	    File fpgaFile = fpgaDownloader.checkFPGAAvailable("vds1022");
+//	    System.out.println("FPGA File Exists:" + fpgaFile.exists());
+//	    PropertyChangeListener propertyChangeListener = new PropertyChangeListener() {
+//		    @Override
+//		    public void propertyChange(PropertyChangeEvent evt) {
+//
+//		    }
+//	    };
+//	    fpgaDownloader.downloadFPGA(
+//	    		propertyChangeListener,
+//			    iCommunicateManager,
+//			    fpgaFile);
 
 
 
-        //launch(args);
+
     }
 
+
 }
+

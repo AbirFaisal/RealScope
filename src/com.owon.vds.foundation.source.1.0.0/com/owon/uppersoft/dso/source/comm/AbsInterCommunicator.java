@@ -147,7 +147,7 @@ public abstract class AbsInterCommunicator {
 
 		ca.setDMDataGotAlready(false);
 		// /** 开始运行，设定成不能导出波形 */
-		// cm.pcs.firePropertyChange(PropertiesItem.AFTER_GOT_DM_DATA, null,
+		// controlManager.pcs.firePropertyChange(PropertiesItem.AFTER_GOT_DM_DATA, null,
 		// false);
 		SubmitorFactory.getSubmitable().sendRun();
 		if (syncChannel) {

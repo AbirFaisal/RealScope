@@ -214,7 +214,7 @@ public class RecordPane extends FunctionPanel {
 		ItemPane ip = fp.nrip();
 		fp.nlbl("Action.TimeGap");
 		final int gdp = rc.intervalTime;
-		rjs = new JSpinner(new SpinnerNumberModel(gdp, 0, 100000, 10));// cm.getDataPeroid
+		rjs = new JSpinner(new SpinnerNumberModel(gdp, 0, 100000, 10));// controlManager.getDataPeroid
 		rjs.setPreferredSize(new Dimension(80, 30));
 		ip.add(rjs);
 		rjs.addChangeListener(new ChangeListener() {
@@ -244,7 +244,7 @@ public class RecordPane extends FunctionPanel {
 		rbtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				rc.setTimegap((Integer) rjs.getValue());// - cm.getDataPeroid;
+				rc.setTimegap((Integer) rjs.getValue());// - controlManager.getDataPeroid;
 				int max = (Integer) mjs.getValue();
 				rc.setMaxframe(max);
 

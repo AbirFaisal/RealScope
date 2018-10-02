@@ -239,7 +239,7 @@ public class MeasurePane extends FunctionPanel {
 	@Deprecated
 	private void loadpref(CCheckBox[] chcb, CCheckBox[] mtcb,
 			CCheckBox[] othmtcb) {
-		// int channelNumber = cm.getSupportChannelsNumber();
+		// int channelNumber = controlManager.getSupportChannelsNumber();
 		// for (Integer i : measMod.CHlinked) {
 		// if (i < channelNumber)
 		// chcb[(int) i].setSelected(true);

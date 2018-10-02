@@ -162,7 +162,7 @@ public class GetDataRunner2 extends AbsGetDataRunner {
 	}
 
 	private void routineGetData(AddValueAttachCommand gda) {
-		// cm.pcs.firePropertyChange(Tune2.APPEND_TXTLINE2, null,
+		// controlManager.pcs.firePropertyChange(Tune2.APPEND_TXTLINE2, null,
 		// ((Submitor2) (SubmitorFactory.getSubmitable())).getLogTrg());
 
 		// vl.logln("Loop: " + ct);

@@ -205,7 +205,7 @@ public class AboutDialog implements Localizable {
 		// machine.setForeground(Color.WHITE);
 		// rightPane.add(machine);
 
-		// boolean isMachCon = cm.sourceManager.isConnected();// true;//
+		// boolean isMachCon = controlManager.sourceManager.isConnected();// true;//
 		//
 		// String ver_bios, ver_os, ver_fpga;
 		// if (isMachCon) {
@@ -239,7 +239,7 @@ public class AboutDialog implements Localizable {
 //		updatebtn.addActionListener(new ActionListener() {
 //			public void actionPerformed(ActionEvent e) {
 //				//updateAct.updateAction();
-//				// cm.restartWhenMismatching(101);
+//				// controlManager.restartWhenMismatching(101);
 //			}
 //		});
 

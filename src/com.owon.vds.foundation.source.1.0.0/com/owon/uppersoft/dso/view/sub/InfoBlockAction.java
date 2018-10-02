@@ -168,7 +168,7 @@ public class InfoBlockAction implements ComboBoxOwner, SliderDelegate, SliderBar
 
 		// if (on) {
 		// /** 要关闭 */
-		// MathControl mc = cm.mathControl;
+		// MathControl mc = controlManager.mathControl;
 		// if (mc.isFFTon() && mc.getFFTchl() == ci.number) {
 		// /** 提示一下通道在做fft，将使fft失效，然后不允许关闭 */
 		// FadeIOShell pv = new FadeIOShell();

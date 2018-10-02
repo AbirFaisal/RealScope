@@ -91,8 +91,8 @@ public class DisplayControl implements ColorProvider {
 
 	public void changeGridBrightness(int v, MainWindow mw) {
 		initGridBrightness(v);
-//		if (cm.paintContext != null)
-//			cm.paintContext.setGridColor(getGridColor());
+//		if (controlManager.paintContext != null)
+//			controlManager.paintContext.setGridColor(getGridColor());
 		mw.updateGridColor();
 	}
 

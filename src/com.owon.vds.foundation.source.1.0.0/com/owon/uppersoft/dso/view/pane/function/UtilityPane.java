@@ -411,7 +411,7 @@ public class UtilityPane extends FunctionPanel {
 
 		// if (n.equalsIgnoreCase(PropertiesItem.AFTER_GOT_DM_DATA)) {
 		// boolean v = (Boolean) evt.getNewValue();
-		// cm.ewc.lastExportWave(cm.ewc.expOutFile, wfm);
+		// controlManager.ewc.lastExportWave(controlManager.ewc.expOutFile, wfm);
 		// }else if (n.equals(PropertiesItem.RSSTATUS_CHANGE)) {
 		// // TitlePane.enableBtns(),enableBtns
 		// // boolean v = (Boolean) evt.getNewValue();

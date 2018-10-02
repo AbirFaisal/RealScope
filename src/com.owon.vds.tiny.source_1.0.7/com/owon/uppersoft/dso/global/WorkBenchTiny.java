@@ -6,10 +6,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
-import javax.swing.Icon;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.owon.uppersoft.dso.machine.aspect.IMultiReceiver;
@@ -17,7 +14,6 @@ import com.owon.uppersoft.dso.machine.aspect.IMultiWFManager;
 import com.owon.uppersoft.dso.model.WFTimeScopeControl;
 import com.owon.uppersoft.dso.model.WaveFormManager;
 import com.owon.uppersoft.dso.view.MainWindow;
-import com.owon.uppersoft.dso.view.TitlePane;
 import com.owon.uppersoft.dso.view.ToolPane;
 import com.owon.uppersoft.dso.view.sub.ButtonPane;
 import com.owon.uppersoft.dso.wf.common.MultiReceiver;
@@ -26,17 +22,16 @@ import com.owon.uppersoft.vds.core.pref.Config;
 import com.owon.uppersoft.vds.machine.PrincipleTiny;
 import com.owon.uppersoft.vds.machine.TinyMachine;
 import com.owon.uppersoft.vds.ui.resource.FontCenter;
-import com.owon.uppersoft.vds.ui.resource.SwingResourceManager;
 import com.owon.uppersoft.vds.util.ui.UIUtil;
 import com.owon.vds.tiny.firm.pref.model.Register;
 import com.owon.vds.tiny.tune.TinyTuneFunction;
-
 /**
- * 工作台，连接各个主要功能模块
+ * Workbench, connecting all major functional modules
  * 
- * 在通往android的vds_tiny的重构移植过程中，涉及如何架构和迭代，终端的手机调试存在的问题，让我们选择了基于一个基础进行更改，方便调试和移植，
- * 但这需要对原有项目的改动在可控的，不影响原有发布周期的情况下；需要不断找到更全面的理解和清晰的构架，再去重构对应的子模块
- * 
+ * In the refactoring migration process of vds_tiny to android, how to structure and iterate,
+ * the problem of terminal mobile phone debugging, let us choose to make changes based on a basis,
+ * convenient for debugging and porting, but this requires the original project The changes are controllable and do not affect the original release cycle; you need to constantly find a more comprehensive understanding and clear framework, and then reconstruct the corresponding sub-modules
+ *
  * 模型一如已经想过的更改，然后从最末端开始，从ui控制和扩展插件开始
  */
 public class WorkBenchTiny implements WorkBench {
@@ -86,7 +81,7 @@ public class WorkBenchTiny implements WorkBench {
 		Properties p = conf.getSessionProperties();
 		// channelsNumber = conf.getChannelsNumber();
 
-		/** 装入机型类别 */
+		/** Load model category */
 		String productParam = p.getProperty("productParam", "VDS3102ONE")
 				.toUpperCase();
 
@@ -95,7 +90,7 @@ public class WorkBenchTiny implements WorkBench {
 		cc = new CoreControlTiny(conf, pt);
 		ctrlMgr = new ControlManagerTiny(conf, pt, cc);
 
-		/** dm先于mf，但可以把初始化工作延后 */
+		/** Dm precedes mf, but can delay initialization */
 		dh = new DataHouse(ctrlMgr, this) {
 			@Override
 			public IMultiReceiver createMultiReceiver(ControlManager cm,
@@ -114,7 +109,7 @@ public class WorkBenchTiny implements WorkBench {
 
 					@Override
 					protected WFTimeScopeControl createWFTimeScopeControl() {
-						return new WFTimeScopeControl(cm) {
+						return new WFTimeScopeControl(controlManager) {
 							@Override
 							protected int getPKType(boolean dm, int drawMode) {
 								return ((TinyMachine) (cm.getMachine()))

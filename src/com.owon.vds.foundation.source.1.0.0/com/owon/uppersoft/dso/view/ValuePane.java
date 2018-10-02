@@ -87,7 +87,7 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 	@Override
 	protected void paintComponent(Graphics g) {
 		// super.paintComponent(g);
-		// if (!cm.getMeasureManager().ison())
+		// if (!controlManager.getMeasureManager().ison())
 		// return;
 		Graphics2D g2d = (Graphics2D) g;
 		boolean isCH_empty = measMod.isCHlinkEmpty();
@@ -265,7 +265,7 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 		/* 移动 */
 		// int x = e.getX();
 		// int insCol = getPointColumn(x);
-		// cm.measMod.moveMTlinkedElem(selCol, insCol);
+		// controlManager.measMod.moveMTlinkedElem(selCol, insCol);
 		/* 删除 */
 		if (dragDelete) {
 			cm.measMod.removeSelCol(selCol);
@@ -327,7 +327,7 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 		// 选中效果2
 		if (isSelFrameOn && selCol >= 0) {
 			Point l = getselColScreenLocation(selCol);
-			final int w = COLGAP, h = getHeight();// cm.measMod.getRowCount()
+			final int w = COLGAP, h = getHeight();// controlManager.measMod.getRowCount()
 			seljf = new FloatGlassP(l.x, l.y, w, h);
 			gp.add(seljf);
 			gp.setVisible(true);

@@ -88,67 +88,67 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	}
 
 	public WaveFormInfoControl getWaveFormInfoControl() {
-		return cc.getWaveFormInfoControl();
+		return coreControl.getWaveFormInfoControl();
 	}
 
 	public TriggerControl getTriggerControl() {
-		return cc.getTriggerControl();
+		return coreControl.getTriggerControl();
 	}
 
 	public TimeControl getTimeControl() {
-		return cc.getTimeControl();
+		return coreControl.getTimeControl();
 	}
 
 	public SampleControl getSampleControl() {
-		return cc.getSampleControl();
+		return coreControl.getSampleControl();
 	}
 
 	public DeepMemoryControl getDeepMemoryControl() {
-		return cc.getDeepMemoryControl();
+		return coreControl.getDeepMemoryControl();
 	}
 
 	public SysControl getSysControl() {
-		return cc.getSysControl();
+		return coreControl.getSysControl();
 	}
 
 	public FFTControl getFFTControl() {
-		return cc.getFFTControl();
+		return coreControl.getFFTControl();
 	}
 
 	public boolean isTrgLevelDisable() {
-		return cc.isTrgLevelDisable();
+		return coreControl.isTrgLevelDisable();
 	}
 
 	public String getCurrentSampleRate_Text() {
-		return cc.getCurrentSampleRate_Text();
+		return coreControl.getCurrentSampleRate_Text();
 	}
 
 	public BigDecimal getCurrentSampleRateBD_kHz() {
-		return cc.getCurrentSampleRateBD_kHz();
+		return coreControl.getCurrentSampleRateBD_kHz();
 	}
 
 	public int getAllChannelsNumber() {
-		return cc.getAllChannelsNumber();
+		return coreControl.getAllChannelsNumber();
 	}
 
 	public int getSupportChannelsNumber() {
-		return cc.getSupportChannelsNumber();
+		return coreControl.getSupportChannelsNumber();
 	}
 
 	public MachineInfo getMachineInfo() {
-		return cc.getMachineInfo();
+		return coreControl.getMachineInfo();
 	}
 
 	public MachineType getMachine() {
-		return cc.getMachine();
+		return coreControl.getMachine();
 	}
 
 	public int getMachineTypeForSave() {
-		return cc.getMachineTypeForSave();
+		return coreControl.getMachineTypeForSave();
 	}
 
 	public CoreControl getCoreControl() {
-		return cc;
+		return coreControl;
 	}
 
 	public Principle getPrinciple() {
@@ -223,7 +223,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 
 	private Config conf;
 
-	private CoreControl cc;
+	private CoreControl coreControl;
 
 	public int circleSerialPort;
 	private Principle principle;
@@ -271,11 +271,11 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	}
 
 	public void measure(MeasureWFSupport wfm) {
-		double freLimit = cc.getMachine().getLimitFrequency();
+		double freLimit = coreControl.getMachine().getLimitFrequency();
 		boolean mayDelayInvalid = mayDelayInvalid();
-		mm.measure(wfm, cc.getTriggerControl(), freLimit, mayDelayInvalid,
-				cc.getVoltageProvider(), measMod,
-				cc.getSupportChannelsNumber(), cc);
+		mm.measure(wfm, coreControl.getTriggerControl(), freLimit, mayDelayInvalid,
+				coreControl.getVoltageProvider(), measMod,
+				coreControl.getSupportChannelsNumber(), coreControl);
 	}
 
 	private LocalizeCenter lc = new LocalizeCenter();
@@ -293,15 +293,15 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	}
 
 	public ControlManager(Config conf, final Principle principle,
-			final CoreControl cc) {
+			final CoreControl coreControl) {
 		this.conf = conf;
 		this.principle = principle;
 
 		binIn = geBinaryFileImporter();
 
-		this.cc = cc;
+		this.coreControl = coreControl;
 
-		pcs = cc.getPropertyChangeSupport();
+		pcs = coreControl.getPropertyChangeSupport();
 
 		sc = new SoftwareControl(this);
 		Pref p = conf.getSessionProperties();
@@ -327,7 +327,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 		rc = createRecordControl(this, p);
 		reloadManager = new ReloadManager(this);
 
-		cc.load(p);
+		coreControl.load(p);
 
 		getDockControl().init(this);
 
@@ -337,29 +337,29 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 		ruleManager = new PFRuleManager(p, channelsNumber);
 		mathControl = new MathControl(p);
 
-		zoomAssctr = new AssitControl(cc.getTimeControl(), p,
-				cc.getTimeConfProvider(), pcs);
+		zoomAssctr = new AssitControl(coreControl.getTimeControl(), p,
+				coreControl.getTimeConfProvider(), pcs);
 
-		cc.updateHorTrgPosRange();
-		cc.updateHorTrgIdx4View();
+		coreControl.updateHorTrgPosRange();
+		coreControl.updateHorTrgIdx4View();
 
-		mcctr = new MarkCursorControl(p, channelsNumber, cc.getTimeControl(),
+		mcctr = new MarkCursorControl(p, channelsNumber, coreControl.getTimeControl(),
 				pcs, new MarkableProvider() {
 					@Override
 					public Markable get(int idx) {
-						return cc.getWaveFormInfo(idx).ci;
+						return coreControl.getWaveFormInfo(idx).ci;
 					}
 				});
 		fftctr = new FFTCursorControl(this, p);
 		displayControl = new DisplayControl(p, this);
-		rwc = new ReferenceWaveControl(p, cc);
+		rwc = new ReferenceWaveControl(p, coreControl);
 		playCtrl = new PlayerControl(this, p);
 		ewc = new ExportWaveControl(this);// 用到pcs
 		docManager = new DocsManager(this);
 		paintContext = new PaintContext() {
 			@Override
 			public IPaintOne getIPaintOne() {
-				return cc.getMachine().getPaintOne();
+				return coreControl.getMachine().getPaintOne();
 			}
 		};
 		paintContext.setColorProvider(displayControl);
@@ -403,7 +403,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	 * @param bbuf
 	 */
 	public void initDetail(Submitable sbm) {
-		cc.initDetail(sbm);
+		coreControl.initDetail(sbm);
 	}
 
 	/**
@@ -412,7 +412,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	 * @param bbuf
 	 */
 	public void syncDetail(Submitable sbm) {
-		cc.syncDetail(sbm);
+		coreControl.syncDetail(sbm);
 	}
 
 	/**
@@ -423,11 +423,11 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	 * @return 峰值检测实际是否开启
 	 */
 	public boolean isPeakDetectWork() {
-		return cc.isPeakDetectWork();
+		return coreControl.isPeakDetectWork();
 	}
 
 	public void persist(Pref p) {
-		cc.persist(p);
+		coreControl.persist(p);
 		ruleManager.persist(p);
 		mathControl.persist(p);
 		displayControl.persist(p);
@@ -535,7 +535,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 
 	public void factorySet() {
 		Pref p = conf.getFactoryProperties();
-		cc.factoryset(p);
+		coreControl.factoryset(p);
 		load(p);
 
 		int channelsNumber = getSupportChannelsNumber();
@@ -544,7 +544,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 		zoomAssctr.factoryload(p);
 
 		// updateHorTrgRange();
-		cc.updateHorTrgIdx4View();
+		coreControl.updateHorTrgIdx4View();
 
 		mathControl.load(p);
 
@@ -621,7 +621,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	}
 
 	public boolean mayDelayInvalid() {
-		return cc.mayDelayInvalid();
+		return coreControl.mayDelayInvalid();
 	}
 
 	// public boolean shouldSkipBeforeFrames() {

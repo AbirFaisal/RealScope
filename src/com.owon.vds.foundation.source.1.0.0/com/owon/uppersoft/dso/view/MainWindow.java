@@ -104,9 +104,9 @@ public class MainWindow implements Localizable, Promptable {
 
 		initialize();
 
-		// updateAct = new UpdateAction(cm, frame);
-		// cm.getLocalizeCenter().addLocalizable(updateAct);
-		//UpdateAction.handleUpdateAction(cm, frame);
+		// updateAct = new UpdateAction(controlManager, frame);
+		// controlManager.getLocalizeCenter().addLocalizable(updateAct);
+		//UpdateAction.handleUpdateAction(controlManager, frame);
 	}
 
 	public DataHouse getDataHouse() {

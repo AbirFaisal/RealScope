@@ -14,19 +14,19 @@ import com.owon.uppersoft.vds.socket.command.CmdFactory;
 import com.owon.uppersoft.vds.socket.command.CommandKey;
 
 public class Server extends Thread {
-	/** 自定义 */
+	/** customize */
 	public static final int DEFAULT_PORT = 5188;
 
 	private int mPort;
 	private CmdFactory factory;
 	private ServerControl svCtr;
 	private ScpiConsole dbgView;
-	// TODO 一次性办法：在这里判断trans标记是否传完，直到传完才register(selector,OP_WRITE),目前采用分段发送adc
+	// TODO Secondary method: here to determine whether the trans tag is passed, until the end of the register (selector, OP_WRITE), currently using segmentation to send adc
 	private boolean onlargeTransmit = false, onDmTransmit = false;
 	protected boolean isRemoteTransmit = false;
 	private boolean isExit = false;
 
-	/** 必要定义 */
+	/** Necessary definition */
 	protected ByteBuffer clientBuffer = ByteBuffer.allocate(1024);// 相当于reciveBuffer,接受客户端指令
 	// protected CharsetDecoder decoder;
 	protected Selector selector;
@@ -90,14 +90,14 @@ public class Server extends Thread {
 		}
 	}
 
-	/** 处理事件 */
+	/** Handling events */
 	protected void process(SelectionKey key) throws IOException {
-		if (key.isAcceptable()) { // 接收请求。测试此键的通道是否已准备好接受新的套接字连接。
-			// 返回创建此键的通道。
+		if (key.isAcceptable()) { // Receive the request. Test if the channel for this key is ready to accept a new socket connection.
+			// Returns the channel that created this key.
 			ServerSocketChannel server = (ServerSocketChannel) key.channel();
-			// 接受到此通道套接字的连接。返回的套接字通道（如果有）将处于阻塞模式。
+			// Accept the connection to this channel socket. The returned socket channel (if any) will be in blocking mode.
 			SocketChannel client = server.accept();
-			// 设置非阻塞模式
+			// Set non-blocking mode
 			client.configureBlocking(false);
 			// 注册到selector，等待连接
 			client.register(selector, SelectionKey.OP_READ);
@@ -105,7 +105,7 @@ public class Server extends Thread {
 			SocketChannel client = (SocketChannel) key.channel();
 			int count = -1;
 			try {
-				/** 该读取函数在客户端异常断开下，须捕获异常并关闭SocketChannel，否则服务端无法再连上 */
+				/** The read function must catch the exception and close the SocketChannel when the client is abnormally disconnected, otherwise the server can no longer connect. */
 				count = client.read(clientBuffer);// 读取客户端发送来的数据到缓冲区中
 			} catch (Exception e) {
 				client.close();

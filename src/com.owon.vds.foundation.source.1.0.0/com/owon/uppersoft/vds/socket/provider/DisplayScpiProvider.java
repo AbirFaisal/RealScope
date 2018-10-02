@@ -50,12 +50,12 @@ public class DisplayScpiProvider {
 					mcc.setOnVoltbaseM(b);
 					break;
 				case 2:
-					// if (!cm.getFFTControl().isFFTon())
+					// if (!controlManager.getFFTControl().isFFTon())
 					// return "FFT IS CLOSE";
 					fcc.setOnFrebaseMark(b);
 					break;
 				case 3:
-					// if (!cm.getFFTControl().isFFTon())
+					// if (!controlManager.getFFTControl().isFFTon())
 					// return "FFT IS CLOSE";
 					fcc.setOnVoltbaseMark(b);
 					break;

@@ -224,7 +224,7 @@ public class Label extends JComponent implements MouseListener,
 
 			if (!rolloverR) {
 				rolloverR = true;
-				if (ts.isVoltsenseSupport()) {// &&!cm.triggerControl.isSingleTrg()
+				if (ts.isVoltsenseSupport()) {// &&!controlManager.triggerControl.isSingleTrg()
 					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 					repaint();
 				}

@@ -28,7 +28,7 @@ public abstract class ControlApps implements IStopable {
 
 		interComm = createInterCommunicator(dh, mw);
 		daemon = createInfiniteDaemon(dh, mw, df, interComm);
-		// cm.reloadManager.reload();
+		// controlManager.reloadManager.reload();
 		reload();
 		daemon.start();
 	}

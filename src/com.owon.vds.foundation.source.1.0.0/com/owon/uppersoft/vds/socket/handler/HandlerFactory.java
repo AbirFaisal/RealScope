@@ -29,7 +29,7 @@ public class HandlerFactory {
 	private LinkedList<StringHandler> handlers = new LinkedList();
 	private final String Dot = ".";
 
-	/** 查询handler的写法要改进参考《Java开发专家》的枚举类Gender类HashMap写法 */
+	/** Query the handle of the handler to improve the reference to the Java Development Expert's enumeration class Gender class HashMap */
 	public HandlerFactory(CmdFactory fac, MainProvider tfc) {
 		this.cmdfac = fac;
 		this.provider = tfc;
@@ -200,7 +200,7 @@ public class HandlerFactory {
 	}
 
 	/**
-	 * **************** 以下是具体的handler实例化 ******************
+	 * **************** The following is a specific handler instantiation ******************
 	 */
 
 	public StringHandler IDN = new StringHandler() {
@@ -278,7 +278,7 @@ public class HandlerFactory {
 		}
 	};
 
-	/** :CHANnel命令子系统 */
+	/** :CHANnel command subsystem */
 	StringHandler $CHANnel = new StringHandler() {// "2"
 
 		public Object handle(CommandKey cmd) {
@@ -440,7 +440,7 @@ public class HandlerFactory {
 			return CHANnel + Dot + CmdFactory.INVerse;
 		}
 	};
-	/** :MEASure命令子系统 */
+	/** :MEASure Command Subsystem */
 	StringHandler $MEASure = new StringHandler() {// "3"
 		public Object handle(CommandKey cmd) {
 			return analyseChIdx(cmd);
@@ -496,7 +496,7 @@ public class HandlerFactory {
 		}
 	};
 
-	/** :ACQuire命令子系统 */
+	/** :ACQuire Command Subsystem */
 	StringHandler ACQuire_STATE = new StringHandler() {// "4.0"
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
@@ -562,7 +562,7 @@ public class HandlerFactory {
 		}
 	};
 
-	/** :TIMebase命令子系统 */
+	/** :TIMebase Command Subsystem */
 	StringHandler TIMebase_SCALe = new StringHandler() {// "5.0"
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();
@@ -595,7 +595,7 @@ public class HandlerFactory {
 			return TIMebase + Dot + CmdFactory.HOFFset;
 		}
 	};
-	/** :TRIGger命令子系统 */
+	/** :TRIGger Command Subsystem */
 	StringHandler TRIGger_TYPE = new StringHandler() {// "6.0"
 		public Object handle(CommandKey cmd) {
 			String args = cmd.getPrecmd();

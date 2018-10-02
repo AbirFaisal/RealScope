@@ -70,10 +70,10 @@ public class FPGADownloader implements Logable {
 	}
 
 	/**
-	 * 识别fpga运行状态：<0出错，==0未下载，>0已下载
+	 * Identify fpga running status: <0 error, ==0 not downloaded, >0 downloaded
 	 * 
 	 * @param sm
-	 * @return 负值为出错，正值非0表示已下载
+	 * @return Negative value is an error, positive value is not 0 means downloaded
 	 * 
 	 */
 	public int queryFPGADownloaded(ICommunicateManager sm) {
@@ -96,15 +96,18 @@ public class FPGADownloader implements Logable {
 	public static final AddValueAttachCommand FPGA_DOWNLOAD_QUERY_ADD = new AddValueAttachCommand(
 			"FPGA_DOWNLOAD_QUERY_ADD", 0x223, 1, 0); // 判断fpga是否已经下载过了
 
-	public boolean downloadFPGA(PropertyChangeListener pcl,
-			ICommunicateManager sm, File fpgafile) {
+	public boolean downloadFPGA(
+			PropertyChangeListener pcl,
+			ICommunicateManager sm,
+			File fpgafile) {
+
 		byte[] arr;
 		int rn;
 
 		int fsize = (int) fpgafile.length(), mcusize, orderLen = 5, FailLimt = 5;
 		pcl.propertyChange(new PropertyChangeEvent(this, FPD_SENDFILESIZE, -1,
 				fsize));
-		/** 1.发送FPGA文件大小,获取MCU缓存大小 */
+		/** 1. Send the FPGA file size to get the MCU cache size. */
 		ByteBuffer bbuf = ByteBuffer.allocate(9).order(ByteOrder.LITTLE_ENDIAN);
 		AddressAttachCommand fda = FPGA_DOWNLOAD_ADD;
 		bbuf.putInt(fda.address);
@@ -112,7 +115,7 @@ public class FPGADownloader implements Logable {
 		bbuf.putInt(fsize);
 		arr = bbuf.array();
 		int len = bbuf.position();// 缓存put时position也跟着移动,这里不是0
-		/** 发送FPGA文件 F+'文件大小(4字节)' */
+		/** Send FPGA file F+'file size (4 bytes)' */
 		int wrn = sm.write(arr, len);
 		if (wrn <= 0) {
 			pcl.propertyChange(new PropertyChangeEvent(this, FPD_SENDSIZE_ERR,
@@ -120,7 +123,7 @@ public class FPGADownloader implements Logable {
 			return false;
 		}
 
-		/** MCU端回复缓冲区大小 D+'缓冲区大小(4字节)' */
+		/** MCU side reply buffer size D+'buffer size (4 bytes)' */
 		pcl.propertyChange(new PropertyChangeEvent(this, FPD_QUERY_BUFSIZE,
 				null, null));
 		rn = sm.acceptResponse(arr, orderLen);
@@ -134,31 +137,30 @@ public class FPGADownloader implements Logable {
 		mcusize = EndianUtil.nextIntL(arr, 1);
 		logln((char) arr[0] + " MCUbufferSize:" + mcusize);
 
-		/** 2.建立1后,开始进行文件等包的传输. */
-		int p = 0;
-		int frame = 0;// 帧号从0开始
+		/** 2. After establishing 1, start the transmission of files and other packages. */
+		int packetSize = 0;
+		int frame = 0;// Frame number starts from 0
 		int counter = 0;
 		byte[] usbbuf = new byte[mcusize];
 		int datasize = mcusize - 4;
-		pcl.propertyChange(new PropertyChangeEvent(this, FPD_START_SEND, -1,
-				fsize));
+		pcl.propertyChange(new PropertyChangeEvent(this, FPD_START_SEND, -1, fsize));
 		logln("start sending package...");
 
 		try {
 			RandomAccessFile raf = new RandomAccessFile(fpgafile, "r");
 			logln("[send FP buf " + datasize + " bytes >>]");
 			int fpgaLen = fsize;
-			while (p < fpgaLen) {
+			while (packetSize < fpgaLen) {
 				int sendsize = datasize;
-				if (fpgaLen - p < datasize) {
-					sendsize = fpgaLen - p;
+				if (fpgaLen - packetSize < datasize) {
+					sendsize = fpgaLen - packetSize;
 					log(" +" + sendsize + " bytes");
 				} else {
 					log(".");
 				}
 
 				EndianUtil.writeIntL(usbbuf, 0, frame);// 写入帧数(4字节,开头)，验证对了
-				/** usbbuf填充数据 */
+				/** Usbbuf fills the data */
 				// ba.get(usbbuf, 4, sendsize);
 				raf.read(usbbuf, 4, sendsize);
 				// printSendWrapBufInfo(usbbuf, sendsize, frame);
@@ -170,14 +172,15 @@ public class FPGADownloader implements Logable {
 					e.printStackTrace();
 				}
 
-				/** 写入包括帧号+一个包(4字节,开头) */
+				/** Write includes frame number + one packet (4 bytes, beginning) */
 				sm.write(usbbuf, usbbuf.length);
 				// logln("write done,waiting MCUreply...");
 
 				// bbuf.clear();
 				Arrays.fill(arr, (byte) 0);
 				/**
-				 * MCU端回复：接收外理正确：S+'帧号(4字节)' .接收处理错误：F+'帧号(4字节)'
+				 * MCU side reply: Receive externally correct: S+' frame number (4 bytes)'.
+				 * Receive processing error: F+' frame number (4 bytes)'
 				 */
 				int r = sm.acceptResponse(arr, len);
 				int resf = EndianUtil.nextIntL(arr, 1);
@@ -201,7 +204,7 @@ public class FPGADownloader implements Logable {
 					continue;
 				}
 
-				p += sendsize;
+				packetSize += sendsize;
 				frame++;
 			}
 			pcl.propertyChange(new PropertyChangeEvent(this, FPD_DONE, null,

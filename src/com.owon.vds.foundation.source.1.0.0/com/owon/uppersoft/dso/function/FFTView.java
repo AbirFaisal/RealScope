@@ -143,7 +143,7 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 		// ArrayLogger.configArray(adc, p, len);
 		/** 在运行时使用adc数据中的指定个数点作fft */
 		// if (dh.isRuntime()) {
-		// int length = cm.mathControl.fftAvailablePoints();
+		// int length = controlManager.mathControl.fftAvailablePoints();
 		// if (length <= 0 || length > len)
 		// return;
 		// if (length < len) {
@@ -220,13 +220,13 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 		BigDecimal dnum = BigDecimal.valueOf(len);
 		BigDecimal peroid_S = cm.getTimeControl().getBDTimebase()
 				.multiply(BigDecimal.valueOf(xbases));
-		// System.out.println("fftTb:" + cm.timeControl.getBDTimebase());
+		// System.out.println("fftTb:" + controlManager.timeControl.getBDTimebase());
 		BigDecimal pfreq;
-		if (true) {// cm.isRuntime()
+		if (true) {// controlManager.isRuntime()
 			pfreq = BigDecimal.valueOf(0);
 			if (oldFFTversion) {
 				// 要是启用该情况,需开启MathControl.getFftCompressRate()等方法。
-				// pfreq = cm.getSampleRate().getBDValue().divide(
+				// pfreq = controlManager.getSampleRate().getBDValue().divide(
 				// BigDecimal.valueOf(mc.getFftCompressRate()));
 			} else {
 				pfreq = cm.getMachineInfo().BDFFTTimeBases[mc
@@ -461,7 +461,7 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 				* FFTControl.SCALES_VALUE[cm.getFFTControl().fftscale];
 		fre = UnitConversionUtil.getSimplifiedFrequencyLabel_Hz(fpd);
 		// } else {
-		// fre = cm.getMachineInfo().FFTTimeBases[mc.getFFTTimebaseIndex()];
+		// fre = controlManager.getMachineInfo().FFTTimeBases[mc.getFFTTimebaseIndex()];
 		// }
 
 		g2d.drawString("H: " + fre + " / Div", x0, y0);// "Fre:"
@@ -538,7 +538,7 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 	private int getFFTScreenPixNum() {
 		boolean isFFTon = cm.paintContext.isScreenMode_3();
 		return PaintContext.getFFTScreenPixNum(isFFTon);
-		// return cm.paintContext.isScreenMode_3() ? PaintContext.wrange : 1000;
+		// return controlManager.paintContext.isScreenMode_3() ? PaintContext.wrange : 1000;
 	}
 
 	private int get_T_x0(Rectangle r) {

@@ -38,67 +38,57 @@ import com.owon.uppersoft.vds.data.LocRectangle;
 import com.owon.uppersoft.vds.util.LocalizeCenter;
 
 /**
- * WaveFormManager，管理波形
- * 
+ * WaveFormManager，Management waveform
  */
 public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 		Localizable {
 
-	private DataHouse dh;
-
+	public static final int RollOverCheckGap = 10;
+	public int freqFreshCount;
+	protected WFTimeScopeControl wfTimeScopeControl;
+	protected ControlManager controlManager;
+	private DataHouse dataHouse;
 	private XYView xyView;
-	private FFTView fftv;
-	private CompositeWaveForm cwf;
-	private ReferenceWaveControl rwc;
-
-	private IMultiWFManager mwfm;
-	protected WFTimeScopeControl wftsc;
-	protected ControlManager cm;
+	private FFTView fftView;
+	private CompositeWaveForm compositeWaveForm;
+	private ReferenceWaveControl referenceWaveControl;
+	private IMultiWFManager iMultiWFManager;
 	private ArrayList<WaveForm> offWfs;
+	private PFRuleManager ruleManager;
+	private boolean hideDraw = false;
+	/**
+	 * Can be used to force refresh hardware frequency meter
+	 */
+	private boolean forcefreshFreq = false;
+	private WaveFormInfoControl wfic;
 
-	public WaveFormInfoControl getWaveFormInfoControl() {
-		return wfic;
-	}
+	public WaveFormManager(DataHouse dataHouse) {
+		this.dataHouse = dataHouse;
+		controlManager = dataHouse.controlManager;
 
-	public boolean isMath(int chl) {
-		return !(chl >= 0 && chl < cm.getSupportChannelsNumber());
-	}
-
-	public boolean isMathSupport() {
-		return cm.getSupportChannelsNumber() > 1;
-	}
-
-	@Override
-	public void localize(ResourceBundle rb) {
-		xyView.localize(rb);
-		fftv.localize(rb);
-	}
-
-	public WaveFormManager(DataHouse dh) {
-		this.dh = dh;
-		cm = dh.controlManager;
-
-		wfic = cm.getWaveFormInfoControl();
-		wfic.setDataHouse(dh);
+		wfic = controlManager.getWaveFormInfoControl();
+		wfic.setDataHouse(dataHouse);
 		retainClosedWaveForms();
-		xyView = new XYView(this, cm.displayControl);
-		fftv = new FFTView(this, cm);
+		xyView = new XYView(this, controlManager.displayControl);
+		fftView = new FFTView(this, controlManager);
 
-		LocalizeCenter lc = cm.getLocalizeCenter();
+		LocalizeCenter lc = controlManager.getLocalizeCenter();
 		lc.addPrimeTextLocalizable(this);
 
-		cwf = new CompositeWaveForm(this, cm.mathControl, cm.getCoreControl()
-				.getVoltageProvider(), cm);
-		rwc = cm.rwc;
+		compositeWaveForm = new CompositeWaveForm(
+				this,
+				controlManager.mathControl,
+				controlManager.getCoreControl()
+				.getVoltageProvider(),
+				controlManager);
 
-		ruleManager = cm.ruleManager;
-		mwfm = createMultiWFManager(cm);
+		referenceWaveControl = controlManager.rwc;
+		ruleManager = controlManager.ruleManager;
+		iMultiWFManager = createMultiWFManager(controlManager);
+		wfTimeScopeControl = createWFTimeScopeControl();
+		freqFreshCount = controlManager.computeFreqTimes;
 
-		wftsc = createWFTimeScopeControl();
-
-		freqFreshCount = cm.computeFreqTimes;
-
-		cm.pcs.addPropertyChangeListener(new PropertyChangeListener() {
+		controlManager.pcs.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				String pn = evt.getPropertyName();
@@ -111,20 +101,38 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 		});
 	}
 
+	public WaveFormInfoControl getWaveFormInfoControl() {
+		return wfic;
+	}
+
+	public boolean isMath(int chl) {
+		return !(chl >= 0 && chl < controlManager.getSupportChannelsNumber());
+	}
+
+	public boolean isMathSupport() {
+		return controlManager.getSupportChannelsNumber() > 1;
+	}
+
+	@Override
+	public void localize(ResourceBundle rb) {
+		xyView.localize(rb);
+		fftView.localize(rb);
+	}
+
 	protected abstract IMultiWFManager createMultiWFManager(ControlManager cm);
 
 	protected abstract WFTimeScopeControl createWFTimeScopeControl();
 
 	public boolean is3in1On() {
-		return xyView.isOn() || cm.getFFTControl().isFFTon();
+		return xyView.isOn() || controlManager.getFFTControl().isFFTon();
 	}
 
 	public void setZeroYLoc(WaveForm wf, int yl, boolean commit) {
 		boolean moveWithPos0 = false;
-		if (dh.isDMLoad()) {
+		if (dataHouse.isDMLoad()) {
 			moveWithPos0 = true;
-		} else if ((cm.allowTransformScreenWaveForm_Ready())
-				|| dh.allowTransformScreenWaveFormVertical()) {
+		} else if ((controlManager.allowTransformScreenWaveForm_Ready())
+				|| dataHouse.allowTransformScreenWaveFormVertical()) {
 			moveWithPos0 = true;
 		}
 
@@ -132,20 +140,21 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 	}
 
 	/**
-	 * 正常、单次触发下，电压改变等到所有指令都发下得到应答后再进行缩放，
-	 * 
-	 * 而且缩放是无论是否有触发的情况都进行的
-	 * 
-	 * 正常触发时，Trg'd->Ready比较久，为了保证期间能够支持缩放，只有不判断条件皆可缩放
-	 * 
-	 * 这期间也会进行缩放
+	 * Under normal, single-shot, the voltage changes until all instructions are sent and then acknowledged.
+	 * <p>
+	 * And scaling is done regardless of whether there is a trigger or not
+	 * <p>
+	 * Trg'd->Ready is longer when the trigger is normal. In order to ensure that the zoom can
+	 * be supported during the period, only the conditions can be scaled without judgment.
+	 * <p>
+	 * Zooming during this time
 	 */
 	public boolean setVoltBaseIndex(WaveForm wf, int vb) {
 		boolean tranWithVB = false;
-		if (dh.isDMLoad()) {
+		if (dataHouse.isDMLoad()) {
 			tranWithVB = true;
-		} else if ((cm.allowTransformScreenWaveForm_Ready())
-				|| dh.allowTransformScreenWaveFormVertical()) {
+		} else if ((controlManager.allowTransformScreenWaveForm_Ready())
+				|| dataHouse.allowTransformScreenWaveFormVertical()) {
 			tranWithVB = true;
 		}
 
@@ -178,41 +187,42 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 
 	public void retainClosedWaveForms() {
 		// offWfs = null;
-		WaveFormInfoControl wfic = cm.getWaveFormInfoControl();
+		WaveFormInfoControl wfic = controlManager.getWaveFormInfoControl();
 		offWfs = wfic.getClosedWaveForms();
 	}
 
 	public boolean isNoWFDataFilled(WaveForm wf) {
-		if (cm.isRuntime())
+		if (controlManager.isRuntime())
 			return false;
 		return offWfs.contains(wf);
 	}
 
 	/**
-	 * KNOW 都用索引值即时去取通道，可以保证使用的都是当前获取的那次数据
+	 * KNOW Use the index value to get the channel in real time,
+	 * you can guarantee that the data that is currently acquired is used.
 	 */
 	public WaveForm getCHX() {
-		return getWaveForm(cm.displayControl.wfx);
+		return getWaveForm(controlManager.displayControl.wfx);
 	}
 
 	public WaveForm getCHY() {
-		return getWaveForm(cm.displayControl.wfy);
+		return getWaveForm(controlManager.displayControl.wfy);
 	}
 
 	public WaveForm getM1() {
-		return getWaveForm(cm.mathControl.m1);
+		return getWaveForm(controlManager.mathControl.m1);
 	}
 
 	public WaveForm getM2() {
-		return getWaveForm(cm.mathControl.m2);
-	}
-
-	public void setMathOperation(int idx) {
-		cm.mathControl.operation = idx;
+		return getWaveForm(controlManager.mathControl.m2);
 	}
 
 	public int getMathOperation() {
-		return cm.mathControl.operation;
+		return controlManager.mathControl.operation;
+	}
+
+	public void setMathOperation(int idx) {
+		controlManager.mathControl.operation = idx;
 	}
 
 	public boolean isCHXYSupport() {
@@ -228,7 +238,7 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 	}
 
 	/**
-	 * @return 选择的波形
+	 * @return Selected waveform
 	 */
 	public WaveForm getSelectedWaveForm() {
 		return wfic.getSelectedWF();
@@ -242,11 +252,9 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 
 		wfic.setSelectedwfIdx(idx);
 
-		cm.pcs.firePropertyChange(PropertiesItem.SELECT_W_F, tmp, idx);
+		controlManager.pcs.firePropertyChange(PropertiesItem.SELECT_W_F, tmp, idx);
 		return true;
 	}
-
-	public static final int RollOverCheckGap = 10;
 
 	private boolean checkChannelRoll(int pos, int loc, int y, int bottom) {
 		int up, low;
@@ -286,8 +294,8 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 			}
 		}
 
-		if (cwf.isOn()) {
-			int p = cwf.getPos0onChart(pc);
+		if (compositeWaveForm.isOn()) {
+			int p = compositeWaveForm.getPos0onChart(pc);
 			if (checkChannelRoll(p, loc, y, bottom)) {
 				return CompositeWaveForm.CompositeWaveFormIndex;
 			}
@@ -297,28 +305,28 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 	}
 
 	/**
-	 * 对x轴上的两种变换需在这里传递到每个WaveForm及ChannelInfo中去
-	 * 
+	 * The two transformations on the x-axis need to be passed to each WaveForm and ChannelInfo here.
+	 * <p>
 	 * +...-
-	 * 
+	 *
 	 * @param del
 	 */
 	public void addWaveFormsRTXloc(int del, ScreenContext pc) {
-		if (cm.allowTransformScreenWaveForm_Ready()) {
-			wftsc.addWaveFormsXloc(del);
-			cwf.receiveNewData(pc);
+		if (controlManager.allowTransformScreenWaveForm_Ready()) {
+			wfTimeScopeControl.addWaveFormsXloc(del);
+			compositeWaveForm.receiveNewData(pc);
 		}
 	}
 
 	/**
-	 * 对x轴上的两种变换需在这里传递到每个WaveForm及ChannelInfo中去
-	 * 
+	 * The two transformations on the x-axis need to be passed to each WaveForm and ChannelInfo here.
+	 * <p>
 	 * +...-
-	 * 
+	 *
 	 * @param del
 	 */
 	public void addWaveFormsDMXloc(int del, ScreenContext pc) {
-		// 经粗测在100范围以内System.out.println("del: " + del);
+		//After rough measurement within 100 range System.out.println("del: " + del);
 		WaveFormInfo[] wfis = wfic.getWaveFormInfos();
 		for (WaveFormInfo wfi : wfis) {
 			if (wfi.ci.isOn()) {
@@ -326,19 +334,19 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 			}
 		}
 
-		mwfm.simulateReloadAsDM(pc, wfic, wftsc, this);
+		iMultiWFManager.simulateReloadAsDM(pc, wfic, wfTimeScopeControl, this);
 	}
 
 	private void setWaveFormTimebaseRTIndex(int idx, int lastidx) {
 		ScreenContext pc = getScreenContext();
-		if (cm.allowTransformScreenWaveForm_Ready()) {
-			wftsc.setTimebaseIndex(idx, lastidx);
-			cwf.receiveNewData(pc);
+		if (controlManager.allowTransformScreenWaveForm_Ready()) {
+			wfTimeScopeControl.setTimebaseIndex(idx, lastidx);
+			compositeWaveForm.receiveNewData(pc);
 		}
 	}
 
 	private ScreenContext getScreenContext() {
-		return cm.paintContext;
+		return controlManager.paintContext;
 	}
 
 	private void setWaveFormTimebaseDMIndex(int idx, int lastidx) {
@@ -350,7 +358,7 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 			}
 		}
 
-		mwfm.simulateReloadAsDM(pc, wfic, wftsc, this);
+		iMultiWFManager.simulateReloadAsDM(pc, wfic, wfTimeScopeControl, this);
 	}
 
 	public void offAllWaveForms() {
@@ -362,85 +370,80 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 	}
 
 	public void afterWaveFormsFeed(ScreenContext pc) {
-		cwf.receiveNewData(pc);
-		fftv.receiveNewData();
+		compositeWaveForm.receiveNewData(pc);
+		fftView.receiveNewData();
 	}
 
 	public void receiveOfflineData(OfflineChannelsInfo cti, ScreenContext pc,
-			boolean slow, int tbIdx) {
+	                               boolean slow, int tbIdx) {
 		int screendatalen = cti.screendatalen;
 		int slowMove = cti.slowMove;
 		boolean pkdetect = cti.isPKDetect;
 
-		wftsc.loadRT(screendatalen, slowMove, slow, pkdetect, false);
+		wfTimeScopeControl.loadRT(screendatalen, slowMove, slow, pkdetect, false);
 
 		// cti.prepareLoad(true);
-		mwfm.receiveOfflineData(cti, pc, this);
+		iMultiWFManager.receiveOfflineData(cti, pc, this);
 	}
 
 	public void receiveOfflineDMData(DMInfo cti, ScreenContext pc,
-			BigDecimal tbbd, int tbIdx) {
-		mwfm.receiveOfflineDMData(cti, pc, tbbd, tbIdx, this);
+	                                 BigDecimal tbbd, int tbIdx) {
+		iMultiWFManager.receiveOfflineDMData(cti, pc, tbbd, tbIdx, this);
 	}
 
 	public void receiveRTDMData(DMInfo cti, ScreenContext pc, BigDecimal tbbd,
-			int tbIdx) {
-		mwfm.receiveRTDMData(cti, pc, tbbd, tbIdx, this);
+	                            int tbIdx) {
+		iMultiWFManager.receiveRTDMData(cti, pc, tbbd, tbIdx, this);
 	}
 
 	/**
-	 * 在fft的情况下，使用均等分的画图方式
-	 * 
+	 * In the case of fft, use equal division of drawing
+	 *
 	 * @param cti
 	 * @param pc
 	 * @param slow
 	 */
 	public void receiveRTData(ChannelsTransportInfo cti, ScreenContext pc,
-			boolean slow) {
-		boolean pkdetect = cm.isPeakDetectWork();
-		FFTControl fftc = cm.getFFTControl();
+	                          boolean slow) {
+		boolean pkdetect = controlManager.isPeakDetectWork();
+		FFTControl fftc = controlManager.getFFTControl();
 		boolean forFFT = fftc.isFFTon();
 
 		int screendatalen = cti.screendatalen;
 		// System.out.println("cti.screendatalen:"+cti.screendatalen);
 		int slowMove = cti.slowMove;
 
-		wftsc.loadRT(screendatalen, slowMove, slow, pkdetect, forFFT);
+		wfTimeScopeControl.loadRT(screendatalen, slowMove, slow, pkdetect, forFFT);
 
-		boolean freshFreq = (freqFreshCount == cm.computeFreqTimes)
-				|| forcefreshFreq;
+		boolean freshFreq = (freqFreshCount == controlManager.computeFreqTimes) || forcefreshFreq;
 
-		// 防止在触发正常的情况下，一些新帧略过了重置的状态
-		// if (cm.allowTransformScreenWaveForm())
+		// Prevent some new frames from skipping the reset state when the trigger is normal
+		// if (controlManager.allowTransformScreenWaveForm())
 		resetVbmulti();
 
-		mwfm.receiveRTData(cti, pc, this, freshFreq);
+		iMultiWFManager.receiveRTData(cti, pc, this, freshFreq);
 		ruleManager.receiveData(this, screendatalen);
 		releaseWFIDMLocInfos();
 
-		/** 只在运行时使用隔段刷新频率计 */
+		/** Use a segment refresh rate meter only at runtime */
 		if (freqFreshCount <= 0) {
-			freqFreshCount = cm.computeFreqTimes;
+			freqFreshCount = controlManager.computeFreqTimes;
 		} else {
 			freqFreshCount--;
 		}
 	}
-
-	public int freqFreshCount;
 
 	public void releaseWFIDMLocInfos() {
 		wfic.releaseWFIDMLocInfos();
 	}
 
 	public WFTimeScopeControl getWFTimeScopeControl() {
-		return wftsc;
+		return wfTimeScopeControl;
 	}
-
-	private PFRuleManager ruleManager;
 
 	public void paintRulePoints(Graphics2D g2d, ScreenContext pc, Rectangle r) {
 		ruleManager.paintRulePoints(g2d, pc.isScreenMode_3(), r,
-				dh.getGlobalDecorater());
+				dataHouse.getGlobalDecorater());
 	}
 
 	public void paintPFLabel(Graphics2D g2d, ScreenContext pc) {
@@ -449,19 +452,17 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 
 	@Override
 	public void adjustView(ScreenContext pc, Rectangle bound) {
-		rwc.adjustReferenceView(pc, bound);
+		referenceWaveControl.adjustReferenceView(pc, bound);
 		ON_WF_Iterator owi = on_wf_Iterator();
 		while (owi.hasNext()) {
 			WaveForm wf = owi.next();
 			wf.adjustView(pc, bound);
 		}
-		// 在wf之后计算
-		cwf.adjustView(pc, bound);
+		// Calculated after wf
+		compositeWaveForm.adjustView(pc, bound);
 
 		ruleManager.adjustView();
 	}
-
-	private boolean hideDraw = false;
 
 	public void hideDraw() {
 		hideDraw = true;
@@ -470,9 +471,6 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 	public void resumeDraw() {
 		hideDraw = false;
 	}
-
-	/** 可用来强制刷新硬件频率计 */
-	private boolean forcefreshFreq = false;
 
 	public void forceFreshFreq() {
 		forcefreshFreq = true;
@@ -483,14 +481,14 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 	}
 
 	public void setTrgEdgeMiddle() {
-		if (!cm.getTriggerControl().getTriggerUIInfo().isAuto_trglevel_middle()
-				|| !cm.getMachine().isTrgEdgeMiddleSupport())
+		if (!controlManager.getTriggerControl().getTriggerUIInfo().isAuto_trglevel_middle()
+				|| !controlManager.getMachine().isTrgEdgeMiddleSupport())
 			return;
 
 		ON_WF_Iterator owi = on_wf_Iterator();
 		while (owi.hasNext()) {
 			WaveForm wf = owi.next();
-			wf.setTrgEdgeMiddle(cm.getTriggerControl());
+			wf.setTrgEdgeMiddle(controlManager.getTriggerControl());
 		}
 	}
 
@@ -499,9 +497,9 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 		if (hideDraw)
 			return;
 
-		rwc.paitReferenceWaves(g2d, pc, r);
+		referenceWaveControl.paitReferenceWaves(g2d, pc, r);
 
-		FFTControl fftc = cm.getFFTControl();
+		FFTControl fftc = controlManager.getFFTControl();
 		if (fftc.isFFTon()) {
 			getWaveForm(fftc.getFFTchl()).paintView(g2d, pc, r);
 		} else {
@@ -512,13 +510,13 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 			}
 		}
 
-		cwf.paintView(g2d, pc, r);
+		compositeWaveForm.paintView(g2d, pc, r);
 	}
 
 	public void paintViewWithoutWaveForms(Graphics2D g2d, ScreenContext pc,
-			Rectangle r) {
-		rwc.paitReferenceWaves(g2d, pc, r);
-		cwf.paintView(g2d, pc, r);
+	                                      Rectangle r) {
+		referenceWaveControl.paitReferenceWaves(g2d, pc, r);
+		compositeWaveForm.paintView(g2d, pc, r);
 	}
 
 	public int getOnWaveForms() {
@@ -545,15 +543,13 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 		}
 	}
 
-	private WaveFormInfoControl wfic;
-
 	public void paintWaveFormInfo(Graphics2D g2d, ScreenContext pc,
-			Rectangle r, ControlManager cm, LocRectangle lr,
-			ChartScreenSelectModel cssm) {
+	                              Rectangle r, ControlManager cm, LocRectangle lr,
+	                              ChartScreenSelectModel cssm) {
 		if (hideDraw)
 			return;
 
-		rwc.paitReferenceItems(g2d, pc, r);
+		referenceWaveControl.paitReferenceItems(g2d, pc, r);
 
 		TriggerLevelDelegate tld = cm.getCoreControl()
 				.getTriggerLevelDelegate();
@@ -562,7 +558,7 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 
 		int sidx = cssm.getScreenSelectWFidx();
 
-		/** 置顶的绘图逻辑只出现在这一个方法体内 */
+		/** Topping drawing logic only appears in this method body */
 		FFTControl fftc = cm.getFFTControl();
 		if (fftc.isFFTon()) {
 			// int yb = pc.hcenter;
@@ -576,7 +572,7 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 					WaveForm wf = owi.next();
 					// System.err.println("wf.getChannelNumber():
 					// "+wf.getChannelNumber());
-					// 判断当前通道是否置顶
+					// Determine if the current channel is topped
 					if (wf.getChannelNumber() == sidx) {
 						tmp = wf;
 						continue;
@@ -584,8 +580,8 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 					wf.paintItem(g2d, pc, r, cm, false);
 				}
 
-				cwf.paintItem(g2d, pc, r, cm, false);
-				// 补画置顶的通道
+				compositeWaveForm.paintItem(g2d, pc, r, cm, false);
+				// Replenishing the top channel
 				if (tmp != null)
 					tmp.paintItem(g2d, pc, r, cm, true);
 				return;
@@ -597,29 +593,29 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 				wf.paintItem(g2d, pc, r, cm, false);
 			}
 		}
-		// 兼容各通道都不需要置顶的情况
-		cwf.paintItem(g2d, pc, r, cm,
+		// Compatible with each channel without pinning
+		compositeWaveForm.paintItem(g2d, pc, r, cm,
 				(sidx == CompositeWaveForm.CompositeWaveFormIndex));
 	}
 
 	public CompositeWaveForm getCompositeWaveForm() {
-		return cwf;
+		return compositeWaveForm;
 	}
 
 	public FFTView getFFTView() {
-		return fftv;
+		return fftView;
 	}
 
 	public DataHouse getDataHouse() {
-		return dh;
+		return dataHouse;
 	}
 
 	public int getHorTrgPos(TimeControl tc) {
-		return cm.getTimeControl().getHorizontalTriggerPosition();
+		return controlManager.getTimeControl().getHorizontalTriggerPosition();
 	}
 
 	public int getSkipPoints() {
-		return wftsc.getSkipPoints();
+		return wfTimeScopeControl.getSkipPoints();
 	}
 
 	public void reduceFrame() {
@@ -630,7 +626,7 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 		}
 	}
 
-	// // 当录制回放设置loadRtPos0返回给RT状态使用
+	// // When the recording playback setting loadRtPos0 is returned to the RT state,
 	// public void setRtPos0backRT() {
 	// ON_WF_Iterator owi = on_wf_Iterator();
 	// while (owi.hasNext()) {
@@ -665,11 +661,11 @@ public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 	}
 
 	public ReferenceWaveControl getReferenceWaveControl() {
-		return rwc;
+		return referenceWaveControl;
 	}
 
 	public void setWaveFormTimebaseIndex(int newidx, int oldidx) {
-		if (dh.isDMLoad()) {
+		if (dataHouse.isDMLoad()) {
 			setWaveFormTimebaseDMIndex(newidx, oldidx);
 		} else {
 			setWaveFormTimebaseRTIndex(newidx, oldidx);

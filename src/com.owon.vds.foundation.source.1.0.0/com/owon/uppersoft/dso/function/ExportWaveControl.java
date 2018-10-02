@@ -52,7 +52,7 @@ public class ExportWaveControl implements PropertyChangeListener {
 
 	public ExportWaveControl(ControlManager cm) {
 		this.cm = cm;
-		// this.pcs = cm.pcs;
+		// this.pcs = controlManager.pcs;
 		this.dataOutput = new DataOutput();
 		cm.pcs.addPropertyChangeListener(this);
 	}

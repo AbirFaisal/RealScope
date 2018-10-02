@@ -41,7 +41,7 @@ public class MachineSettingPane extends FunctionPanel {
 		// nrip();
 		// nlbl("M.Utility.MachineSetting.TypeSelect");
 		// nrip();
-		// USBSourceManager usbsm = cm.sourceManager.getUSBSourceManager();
+		// USBSourceManager usbsm = controlManager.sourceManager.getUSBSourceManager();
 		// nccb(usbsm.refreshUSBPort());
 		// nbtn("M.Utility.MachineNet.Refresh");
 

@@ -84,9 +84,9 @@ public class InterCommTiny extends AbsInterCommunicator {
 	}
 
 	/**
-	 * 操作时唤起
+	 * Arouse during operation
 	 * 
-	 * @return 是否支持时间轴的操作(如tb, htp)，并在合适的时候获取深存储
+	 * @return Whether to support timeline operations (such as tb, htp) and get deep storage when appropriate
 	 */
 	public boolean isTimeOperatableNTryGetDM() {
 		if (cm.isRuntime())
@@ -100,7 +100,7 @@ public class InterCommTiny extends AbsInterCommunicator {
 		if (isPlaying)
 			return true;
 
-		/** 比如正常触发情况下，从Ready状态停止，无法获取深存储数据 */
+		/** For example, in the case of normal triggering, it stops from the Ready state and cannot obtain deep storage data. */
 		if (cc.getTriggerControl().isSweepNormal()
 				&& getChannelsTransportInfo().getFrameCount() == 0)
 			return true;
@@ -126,7 +126,7 @@ public class InterCommTiny extends AbsInterCommunicator {
 		sm = smt;
 		this.pp = pp;
 
-		// cm.sc.quickPass();
+		// controlManager.sc.quickPass();
 
 		data_receive_broadcast = new PropertyChangeSupport(this);
 	}
@@ -157,16 +157,16 @@ public class InterCommTiny extends AbsInterCommunicator {
 
 	@Override
 	public void onExport_get() {
-		/** 深存储,导出 */
+		/** Deep storage, export */
 		boolean acquired = getDMDataBackgroundWhenAsk();
 		if (!acquired)
-			// cm.pcs.firePropertyChange(ExportWaveControl.AFTER_EXPORT, null,
+			// controlManager.pcs.firePropertyChange(ExportWaveControl.AFTER_EXPORT, null,
 			// true);
 			cm.ewc.setAuthorizeExport(false);
 	}
 
 	/**
-	 * 主动要求
+	 * Proactive request
 	 */
 	private boolean getDMDataBackgroundWhenAsk() {
 		// System.err.println("whenask:" + dh.isDMDataGotAlready());
@@ -201,7 +201,7 @@ public class InterCommTiny extends AbsInterCommunicator {
 
 		dh.receiveRTDMData(ci);
 		ca.setDMDataGotAlready(true);
-		/** 停止并获取完DM数据，才允许导出波形 */
+		/** Stop and get DM data before exporting waveforms */
 		cm.pcs.firePropertyChange(PropertiesItem.AFTER_GOT_DM_DATA, null,
 				dh.getWaveFormManager());
 	}
@@ -233,11 +233,11 @@ public class InterCommTiny extends AbsInterCommunicator {
 	public void doSyncFactorySet2Machine() {
 		Submitor2 sb = reinitSubmitor2();
 		PrefControl pc = pp.getPrefControl();
-		// 厂家设置覆写当前设置
+		// Factory settings override current settings
 		pc.rollFactory2Device();
 		syncFlash();
 
-		// 使用新的参数将当前的示波器设置应用一次
+		// Factory settings override current settings...
 		cm.initDetail(sb);
 		sb.apply();
 	}

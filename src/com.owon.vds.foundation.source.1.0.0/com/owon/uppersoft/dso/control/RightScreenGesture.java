@@ -115,7 +115,7 @@ public class RightScreenGesture implements TrgLevelCheckHandler {
 			return;
 
 		int rollOverChannel = ccsm.getOperateChannel();
-		// cm.onShowTrgDetail = true;
+		// controlManager.onShowTrgDetail = true;
 		int del = loc0.y - y;
 		// System.out.println(trgOverInfo + ", " + rollOverChannel);
 

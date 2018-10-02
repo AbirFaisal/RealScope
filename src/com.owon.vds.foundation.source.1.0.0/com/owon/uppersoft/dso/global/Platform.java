@@ -7,11 +7,14 @@ import com.owon.uppersoft.dso.view.MainWindow;
  * 
  */
 public class Platform {
+
+	static PrincipleFactory principleFactory;
+
+
 	public interface PrincipleFactory {
 		WorkBench createWorkBench();
 	}
 
-	static PrincipleFactory principleFactory;
 
 	public static final void launch(PrincipleFactory ff) {
 		principleFactory = ff;

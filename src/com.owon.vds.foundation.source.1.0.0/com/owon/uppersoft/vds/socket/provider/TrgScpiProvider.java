@@ -47,11 +47,11 @@ public class TrgScpiProvider {
 
 	// private void applyTrgMode(int chl, int trgTyp, TrgTypeDefine trgMod) {
 	// // 设触发模式 TrgTypeDefine.Edge,Video;
-	// if (cm.getPrinciple().singleVideoAlow(trgMod, chl, tc)) {
+	// if (controlManager.getPrinciple().singleVideoAlow(trgMod, chl, tc)) {
 	// TriggerSet ts = tc.getTriggerSet(trgTyp);
 	// tc.c_setTrigger(ts.getTriggerSet(trgMod));
 	// } else {
-	// cm.pcs.firePropertyChange(PropertiesItem.CHOOSE_TRGMODECB, null, tc
+	// controlManager.pcs.firePropertyChange(PropertiesItem.CHOOSE_TRGMODECB, null, tc
 	// .getCurrentTriggerSet().getTrigger().type);
 	// }
 	// }

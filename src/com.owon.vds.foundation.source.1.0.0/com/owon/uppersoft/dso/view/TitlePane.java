@@ -166,7 +166,7 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 	// btnOption.setEnabled(false);
 
 	// /** 当RS按钮Unable则"Pause&Export"不能点 */
-	// cm.pcs.firePropertyChange(
+	// controlManager.pcs.firePropertyChange(
 	// PropertiesItem.RSSTATUS_CHANGE, null, false);
 	// }
 

@@ -28,7 +28,7 @@ public class PrincipleTiny implements Principle {
 	private TinyMachine mt;
 
 	public PrincipleTiny(String macpara) {
-		/** 似乎只用在机型查找表 */
+		/** Seems to be used only in model lookup tables */
 		machTypIdMap = new HashMap<Integer, MachineType>();
 		machTypIdMap.put(100, new VDS1022());
 		machTypIdMap.put(102, new VDS2052());
