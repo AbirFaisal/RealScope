@@ -76,9 +76,11 @@ public class DisplayPaneTiny extends DisplayPane {
 						};
 						agp.turnChannels(false);
 						/**
-						 * 这里以线程的方式执行下一步，否则会出现莫名死锁锁住Flow的mission，问题尚未查明；
-						 * 另AutomaticWorkManager的onFinished任务中出现了在指令队列中添加任务的语句
-						 * ，可能影响执行顺序
+						 * Here is the thread to execute the next step, otherwise there
+						 * will be an inexplicable deadlock to lock the Flow's mission, the
+						 * problem has not been ascertained; another AutomaticWorkManager's
+						 * onFinished task appears in the instruction queue to add a task
+						 * statement, may affect the execution order
 						 */
 						new Thread() {
 							@Override
@@ -90,8 +92,10 @@ public class DisplayPaneTiny extends DisplayPane {
 				};
 				agp.turnChannels(true);
 				/**
-				 * 这里以线程的方式执行下一步，否则会出现莫名死锁锁住Flow的mission，问题尚未查明；
-				 * 另AutomaticWorkManager的onFinished任务中出现了在指令队列中添加任务的语句 ，可能影响执行顺序
+				 * Here is the thread to execute the next step, otherwise there will be an
+				 * inexplicable deadlock to lock the Flow's mission, the problem has not been
+				 * ascertained; another AutomaticWorkManager's onFinished task appears in the
+				 * instruction queue to add a task statement, may affect the execution order
 				 */
 				new Thread() {
 					@Override

@@ -55,7 +55,7 @@ public class MarkValueBulletin extends JDialog implements MouseListener,
 		// return;
 
 		final int w = width, h = height;
-				String maxBtnPath = "/com/owon/uppersoft/dso/image/markvalueshow.png";
+		String maxBtnPath = "/com/owon/uppersoft/dso/image/markvalueshow.png";
 		final Image maxBtnImg = SwingResourceManager.getIcon(
 				MarkValueBulletin.class, maxBtnPath).getImage();
 		background = Define.def.style.CO_DockContainer;
@@ -82,7 +82,8 @@ public class MarkValueBulletin extends JDialog implements MouseListener,
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		//TODO this changes the opacity of the mark value area
-		this.setOpacity(0.5f);
+		this.setBackground(Color.BLACK);
+		this.setOpacity(0.15f);
 
 
 		addMouseListener(this);
@@ -123,7 +124,7 @@ public class MarkValueBulletin extends JDialog implements MouseListener,
 		int y = e.getY();
 		int x0 = getWidth() - 18;
 		int y0 = getHeight() - 25;
-	if (x > x0 && y < 15) {
+		if (x > x0 && y < 15) {
 			mcc.closeMarkCursor();
 		} else if (x < 25 && y > y0) {
 			cm.getDockControl().dockDialogQuickOpenHide(MarkPage.Name);

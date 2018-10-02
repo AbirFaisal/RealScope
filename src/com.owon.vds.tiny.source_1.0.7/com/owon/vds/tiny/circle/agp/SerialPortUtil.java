@@ -18,9 +18,9 @@ import java.util.TooManyListenersException;
 
 public class SerialPortUtil implements SerialPortEventListener {
 	/**
-	 * 装载可用的串口
+	 * Load available serial ports
 	 * 
-	 * @return 可用串口的文本列表
+	 * @return Text list of available serial ports
 	 */
 	public static List<String> loadAvailablePort() {
 		Enumeration portList;

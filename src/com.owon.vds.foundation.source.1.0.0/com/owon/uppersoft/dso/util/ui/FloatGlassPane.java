@@ -6,6 +6,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -40,8 +43,9 @@ public class FloatGlassPane extends JDialog {
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		//AWTUtilities.setWindowOpaque(this, false);
-		this.setColor(Color.DARK_GRAY);
-		this.setOpacity(0.5f);
+		this.setBackground(Color.LIGHT_GRAY);
+		this.setOpacity(1f);
+
 	}
 
 	public void setColor(Color bg) {
@@ -64,10 +68,12 @@ public class FloatGlassPane extends JDialog {
 	}
 
 	/**
-	 * 用于绘画玻璃面板上的文字图片等
+	 * Used to draw text pictures on glass panels, etc.
 	 */
 	public void paintContent(Graphics2D g) {
 		paintBackGround(g);
 	}
+
+
 
 }

@@ -42,7 +42,7 @@ public class SendComand {
 	}
 
 	public boolean check_usb_rs232() {
-		/* 检测串口有没有连接 */
+		/* Check if the serial port is connected */
 		// sc.init();
 		String res = sendCMD(WAVE_SAUARE);
 		if (res.equals("")) {
@@ -119,7 +119,7 @@ public class SendComand {
 
 		boolean b = sc.openPort(sPort);
 		if (!b) {
-			// 串口被占用
+			// Serial port is occupied
 			System.out.println("serial busy");
 			return;
 		}
