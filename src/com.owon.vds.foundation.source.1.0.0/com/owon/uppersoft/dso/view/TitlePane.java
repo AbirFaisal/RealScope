@@ -55,10 +55,10 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 	public static final String RunPath = ImageDirectory + "run.png";
 	public static final String StopPath = ImageDirectory + "stop.png";
 
-	public static final String AutosetPath = ImageDirectory + "autoset_u.png";
-	public static final String Autoset_pPath = ImageDirectory + "autoset_p.png";
-	public static final String SinglePath = ImageDirectory + "single.png";
-	public static final String Single_pPath = ImageDirectory + "single_p.png";
+	//public static final String AutosetPath = ImageDirectory + "autoset_u.png";
+	//public static final String Autoset_pPath = ImageDirectory + "autoset_p.png";
+	//public static final String SinglePath = ImageDirectory + "single.png";
+	//public static final String Single_pPath = ImageDirectory + "single_p.png";
 
 	/**
 	 * 
@@ -72,10 +72,10 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 
 	private RSLButton btnRS;
 	// private LButton btnOption;
-	private CLButton btnAutoset, btnSingle;
+	private LButton btnAutoset, btnSingle;
 	private boolean run;
-	private ImageIcon ri;
-	private ImageIcon si;
+	//private ImageIcon ri;
+	//private ImageIcon si;
 
 	/**
 	 * @return 存储视图
@@ -199,8 +199,9 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 	public void askSweepOnce() {
 		dh.getControlApps().keepload();
 		run = true;
-		btnRS.setIcon(si);
-		btnRS.setRolloverIcon(LineDrawTool.getRolloverIcon(si));
+		btnRS.setText("Stop");
+		//btnRS.setIcon(si);
+		//btnRS.setRolloverIcon(LineDrawTool.getRolloverIcon(si));
 
 		TriggerControl trgc = cm.getTriggerControl();
 		trgc.trySweepOnce();
@@ -265,13 +266,13 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 		operatePane.setOpaque(false);
 		operatePane.setLayout(new OneRowLayout());
 
-		ImageIcon i;
-		btnAutoset = new CLButton();
-		i = SwingResourceManager.getIcon(TitlePane.class, AutosetPath);
-		btnAutoset.setIcon(i);
-		btnAutoset.setRolloverIcon(LineDrawTool.getRolloverIcon(i));
-		i = SwingResourceManager.getIcon(TitlePane.class, Autoset_pPath);
-		btnAutoset.setPressedIcon(i);
+		//ImageIcon i;
+		btnAutoset = new LButton("Auto");
+		//i = SwingResourceManager.getIcon(TitlePane.class, AutosetPath);
+		//btnAutoset.setIcon(i);
+		//btnAutoset.setRolloverIcon(LineDrawTool.getRolloverIcon(i));
+		//i = SwingResourceManager.getIcon(TitlePane.class, Autoset_pPath);
+		//btnAutoset.setPressedIcon(i);
 		operatePane.add(btnAutoset);
 		btnAutoset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -279,56 +280,64 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 			}
 
 		});
-		btnAutoset.setPreferredSize(new Dimension(35, 32));
+		//btnAutoset.setPreferredSize(new Dimension(35, 32));
+
+
+
 
 		btnRS = new RSLButton(this);
-		si = SwingResourceManager.getIcon(TitlePane.class, StopPath);
-		ri = SwingResourceManager.getIcon(TitlePane.class, RunPath);
+		btnRS.setText("Stop");
+		//si = SwingResourceManager.getIcon(TitlePane.class, StopPath);
+		//ri = SwingResourceManager.getIcon(TitlePane.class, RunPath);
 		btnRS.setEnabled(false);
-		btnRS.setIcon(si);
+		//btnRS.setIcon(si);
+
 
 		run = true;
-		btnRS.setPreferredSize(new Dimension(30, 32));
+		//btnRS.setPreferredSize(new Dimension(30, 32));
+
+
+
 
 		/** 单次触发的快捷操作 */
-		btnSingle = new CLButton();
-		i = SwingResourceManager.getIcon(TitlePane.class, SinglePath);
-		btnSingle.setIcon(i);
-		btnSingle.setRolloverIcon(LineDrawTool.getRolloverIcon(i));
-		i = SwingResourceManager.getIcon(TitlePane.class, Single_pPath);
-		btnSingle.setPressedIcon(i);
+		btnSingle = new LButton("Single");
+		//i = SwingResourceManager.getIcon(TitlePane.class, SinglePath);
+		//btnSingle.setIcon(i);
+		//btnSingle.setRolloverIcon(LineDrawTool.getRolloverIcon(i));
+		//i = SwingResourceManager.getIcon(TitlePane.class, Single_pPath);
+		//btnSingle.setPressedIcon(i);
 
 		btnSingle.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				askSweepOnce();
 			}
 		});
-		btnSingle.setPreferredSize(new Dimension(30, 32));
+		//btnSingle.setPreferredSize(new Dimension(30, 32));
 		updateBtnSingle();
-		final LButton btnMin = new LButton();
 
+
+
+		final LButton btnMin = new LButton("Min");
 		btnMin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mw.minSize();
 			}
 		});
-		i = SwingResourceManager.getIcon(TitlePane.class, MinimizePath);
-		btnMin.setIcon(i);
+		//i = SwingResourceManager.getIcon(TitlePane.class, MinimizePath);
+		//btnMin.setIcon(i);
 		// i = SwingResourceManager.getIcon(TitlePane.class, Minimize_pPath);
-		btnMin.setRolloverIcon(SwingResourceManager.getIcon(TitlePane.class,
-				Minimize_pPath));
-		btnMin.setPressedIcon(i);
-		btnMin.setPreferredSize(iconsize);
+		//btnMin.setRolloverIcon(SwingResourceManager.getIcon(TitlePane.class, Minimize_pPath));
+		//btnMin.setPressedIcon(i);
+		//btnMin.setPreferredSize(iconsize);
 
-		final LButton btnClose = new LButton();
-		btnClose.setPreferredSize(iconsize);
 
-		i = SwingResourceManager.getIcon(TitlePane.class, ClosePath);
-		btnClose.setIcon(i);
+		final LButton btnClose = new LButton("X");
+		//btnClose.setPreferredSize(iconsize);
+		//i = SwingResourceManager.getIcon(TitlePane.class, ClosePath);
+		//btnClose.setIcon(i);
 		// i = SwingResourceManager.getIcon(TitlePane.class, Close_pPath);
-		btnClose.setRolloverIcon(SwingResourceManager.getIcon(TitlePane.class,
-				Close_pPath));
-		btnClose.setPressedIcon(i);
+		//btnClose.setRolloverIcon(SwingResourceManager.getIcon(TitlePane.class, Close_pPath));
+		//btnClose.setPressedIcon(i);
 		btnClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mw.getFrame().dispose();
@@ -345,8 +354,9 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 
 	public void applyStop() {
 		run = false;
-		btnRS.setIcon(ri);
-		btnRS.setRolloverIcon(LineDrawTool.getRolloverIcon(ri));
+		//btnRS.setIcon(ri);
+		btnRS.setText("Run");
+		//btnRS.setRolloverIcon(LineDrawTool.getRolloverIcon(ri));
 	}
 
 	public void updateView() {
@@ -355,7 +365,7 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 	}
 
 	protected void createbtnMax() {
-		final LButton btnMax = new LButton();
+		final LButton btnMax = new LButton("Max");
 		btnMax.setBackground(def.CO_TITLE);
 		btnMax.setPreferredSize(iconsize);
 
@@ -364,8 +374,7 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 				mw.exchangeSize();
 			}
 		});
-		btnMax.setIcon(SwingResourceManager.getIcon(TitlePane.class,
-				RestorePath));
+		//btnMax.setIcon(SwingResourceManager.getIcon(TitlePane.class, RestorePath));
 	}
 
 	@Override
@@ -390,13 +399,15 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 			updateBtnSingle();
 		} else if (pn.equals(PropertiesItem.OPERATE_RUN)) {
 			run = true;
-			btnRS.setIcon(si);
-			btnRS.setRolloverIcon(LineDrawTool.getRolloverIcon(si));
+			btnRS.setText("Stop");
+			//btnRS.setIcon(si);
+			//btnRS.setRolloverIcon(LineDrawTool.getRolloverIcon(si));
 		} else if (pn.equals(PropertiesItem.OPERATE_STOP)) {
 			run = false;
 			btnRS.setEnabled(false);
-			btnRS.setIcon(ri);
-			btnRS.setRolloverIcon(LineDrawTool.getRolloverIcon(ri));
+			btnRS.setText("Run");
+			//btnRS.setIcon(ri);
+			//btnRS.setRolloverIcon(LineDrawTool.getRolloverIcon(ri));
 		} else if (pn.equals(PropertiesItem.START_AUTOSET)) {
 			statuslbl.setTempStatus(true);
 			enableAllButtons(false);

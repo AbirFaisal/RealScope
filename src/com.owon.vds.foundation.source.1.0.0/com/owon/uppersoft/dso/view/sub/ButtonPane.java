@@ -88,6 +88,7 @@ public class ButtonPane extends JPanel implements Localizable,
 		});
 		patchbtn.setVisible(false);
 
+
 		tunebtn = new LButton("Tune");
 		tunebtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -96,13 +97,8 @@ public class ButtonPane extends JPanel implements Localizable,
 		});
 		tunebtn.setVisible(false);
 
-		//i = SwingResourceManager.getIcon(TitlePane.class, exportPath);
+
 		pau_expbtn = new LButton("Export");
-		//pau_expbtn.setIcon(i);
-		//i = SwingResourceManager.getIcon(TitlePane.class, export_pPath);
-		//pau_expbtn.setRolloverIcon(i);
-		// LineUtil.getRolloverIcon((ImageIcon) i)
-		//pau_expbtn.setPreferredSize(new Dimension(btnW, btnH));
 		pau_expbtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -112,19 +108,14 @@ public class ButtonPane extends JPanel implements Localizable,
 			}
 		});
 
-		//i = SwingResourceManager.getIcon(TitlePane.class, factoryPath);
+
 		factorybtn = new LButton("Reset");
-		//factorybtn.setIcon(i);
-		//i = SwingResourceManager.getIcon(TitlePane.class, factory_pPath);
-		//factorybtn.setRolloverIcon(i);// LineUtil.getRolloverIcon((ImageIcon)i)
-		// factorybtn.setPressedIcon(SwingResourceManager.getIcon(TitlePane.class,
-		// factory_pPath));
-		//factorybtn.setPreferredSize(new Dimension(btnW, btnH));
 		factorybtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				factorySet();
 			}
 		});
+
 
 		toolbtn = new LButton("Menu");
 		cm.getDockControl().initialize(mw.getWindow(), cm.pcs, toolbtn);
@@ -133,15 +124,7 @@ public class ButtonPane extends JPanel implements Localizable,
 				cm.getDockControl().dockDlgOnOff();
 			}
 		});
-		//i = SwingResourceManager.getIcon(TitlePane.class, ToolPath);
-		//toolbtn.setIcon(i);
-		toolbtn.setRolloverIcon(SwingResourceManager.getIcon(TitlePane.class,
-				Tool_pPath));
-		//toolbtn.setPressedIcon(i);
-		//toolbtn.setPreferredSize(new Dimension(btnW + 8, btnH));
-
-		//i = SwingResourceManager.getIcon(TitlePane.class, _3in1Path);
-		// dh.getWaveFormManager().is3in1On()?_3in1Path : _1in1Path
+		toolbtn.setRolloverIcon(SwingResourceManager.getIcon(TitlePane.class, Tool_pPath));
 
 
 		btn_3in1 = new LButton("3View");
@@ -151,10 +134,6 @@ public class ButtonPane extends JPanel implements Localizable,
 			}
 		});
 
-		//btn_3in1.setIcon(i);
-		//i = SwingResourceManager.getIcon(TitlePane.class, _1in1Path);
-		//btn_3in1.setRolloverIcon(i);
-		//btn_3in1.setPreferredSize(new Dimension(btnW, btnH));
 
 		frmlbl = new JLabel();
 		//frmlbl.setPreferredSize(new Dimension(350, 25));

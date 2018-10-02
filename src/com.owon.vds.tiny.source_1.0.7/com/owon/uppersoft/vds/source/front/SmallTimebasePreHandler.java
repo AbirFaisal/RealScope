@@ -54,7 +54,7 @@ public class SmallTimebasePreHandler {
 	}
 
 	private void logData(ByteBuffer bb, ChannelDataInfo_Tiny cdi, int fullscreen) {
-		/** 打印满屏实际数据 */
+		/** Print full screen actual data */
 		final int bp = bb.position();
 		final int bl = bb.limit();
 		byte[] barr = bb.array();
@@ -62,7 +62,7 @@ public class SmallTimebasePreHandler {
 		ptr -= (fullscreen >> 1);
 		ArrayLogger.outArray2Logable(vl, barr, ptr, fullscreen);
 
-		/** 打印拉触发段数据 */
+		/** Print pull trigger segment data */
 		ByteBuffer bb2 = cdi.getTrgLocBuffer();
 		final int p = bb2.position();
 		final int l = bb2.limit();
