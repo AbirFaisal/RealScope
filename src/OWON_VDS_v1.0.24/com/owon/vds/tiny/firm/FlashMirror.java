@@ -14,7 +14,7 @@ import com.owon.uppersoft.vds.util.BufferHandleUtil;
 import com.owon.uppersoft.vds.util.format.EndianUtil;
 
 /**
- * FlashMirror，Flash镜像，可提供设备分区和厂家分区
+ * FlashMirror，Flash image ，Device partition and factory partition are available
  * 
  */
 public class FlashMirror implements Logable {
@@ -30,20 +30,20 @@ public class FlashMirror implements Logable {
 	}
 
 	/**
-	 * @return 提供原始分区，从可用的起始位置开始
+	 * @return Provide raw partition，Starting from the available starting position
 	 */
 	private ByteBuffer prepareRawPartition_LE() {
 		ByteBuffer b2 = ByteBuffer.wrap(flashArray, 0, flashArray.length);
 		b2.order(ByteOrder.LITTLE_ENDIAN);
 
-		/** ByteBuffer包装flash对应的数组，mark只读存储区的起始位置 */
+		/** ByteBuffer wraps the array corresponding to flash，The starting position of the mark read-only memory area */
 		BufferHandleUtil.skipByteBuffer(b2, DEVPREF_CRCSKIPBYTES
 				+ DEVPREF_PTC_VER_LEN);
 		return b2;
 	}
 
 	/**
-	 * @return 提供厂家分区，并已设置的position和limit
+	 * @return Provide factory partition and set position and limit
 	 */
 	public ByteBuffer getFactoryPartition_LE() {
 		logln("getFactoryPartition_LE");
@@ -54,7 +54,7 @@ public class FlashMirror implements Logable {
 	}
 
 	/**
-	 * @return 提供设备分区，并已设置的position和limit
+	 * @return Provide device partitioning and set position and limit
 	 */
 	public ByteBuffer getDeviceArgPartition_LE() {
 		logln("getDeviceArgPartition_LE");
@@ -73,11 +73,11 @@ public class FlashMirror implements Logable {
 		System.arraycopy(devPref, 0, arr, 0, arr.length);
 		byte b0 = arr[0];
 		byte b1 = arr[1];
-		/** 前两个字节是特殊码 */
+		/** The first two bytes are special codes */
 		if (b0 != DEVPREF_RBYTE0 || b1 != DEVPREF_RBYTE1)
 			return false;
 		int version = EndianUtil.nextIntL(arr, DEVPREF_CRCSKIPBYTES);
-		/** 不满足前缀int则视为无效 */
+		/** If the prefix int is not satisfied, it is considered invalid. */
 		if (version != DEVPREF_PTC_VER)
 			return false;
 

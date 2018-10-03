@@ -62,7 +62,7 @@ public class DeviceFlashCommunicator implements Logable {
 		int rn = ism.acceptResponse(arr, len);
 		logln("rn: " + rn);
 
-		/** 若不用下fpga，似乎就读不到了? */
+		/** If you don't need fpga, you can't seem to read it? */
 		// 0xAA 0x55
 		// lg.log("0x");
 		// lg.log(Integer.toHexString(arr[0]));

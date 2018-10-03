@@ -4,7 +4,7 @@ OWON VDS1022 Software Modification Project, Because having a USB scope should be
 Working.zip contains a tested and functional version.
 
 
-Tested on MacOS, you do need install the appriate the drivers though
+Tested on MacOS, you do need install the appropriate the drivers though
 
 To install with Homebrew on MacOS:
 > brew install libusb-compat libusb

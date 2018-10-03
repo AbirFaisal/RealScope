@@ -6,19 +6,19 @@ public interface IWFCalRoutine2 {
 	public static final int ROUT_ONE = 1;
 
 	/**
-	 * 准备就绪
+	 * Ready
 	 */
 	void getReady();
 
 	/**
-	 * 进入某一电压档位
+	 *Enter a voltage position
 	 * 
 	 * @param vb
 	 */
 	void forVB(int vb);
 
 	/**
-	 * 进行一次基于波形数据值的校正尝试：
+	 * Perform a calibration attempt based on waveform data values：
 	 * 
 	 * 先验证波形数据值是否符合目标，如果是，则进展到下一个项目；否则，调整参数值，等到下一次获取数据的验证
 	 * 
