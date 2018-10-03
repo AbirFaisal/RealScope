@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: ch.ntb.usb-0.5.9.jar jxl.jar RXTXcomm.jar
+Main-Class: com.owon.vds.tiny.Main
+
