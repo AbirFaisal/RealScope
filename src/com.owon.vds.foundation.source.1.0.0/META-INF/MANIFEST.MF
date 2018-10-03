@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Eclipse-SourceBundle: com.owon.vds.foundation;version="1.0.0";roots:="
- ."
-Bundle-Version: 1.0.0
-Bundle-Localization: plugin
-Bundle-Name: %pluginName
-Bundle-ManifestVersion: 2
-Bundle-SymbolicName: com.owon.vds.foundation.source
-
