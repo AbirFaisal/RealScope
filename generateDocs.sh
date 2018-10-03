@@ -7,7 +7,5 @@ OPTIONS="-subpackages . -private"
 
 
 
-javadoc $OPTIONS -sourcepath $SRC_PATH -classpath lib -d javadoc com.owon
+javadoc $OPTIONS -sourcepath $SRC_PATH -classpath lib -d docs com.owon
 
-
-#javadoc -sourcepath $SRC_PATH -classpath lib -d doc com.owon.vds.tiny -verbose -private
