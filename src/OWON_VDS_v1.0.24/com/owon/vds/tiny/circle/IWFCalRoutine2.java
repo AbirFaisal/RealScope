@@ -20,9 +20,13 @@ public interface IWFCalRoutine2 {
 	/**
 	 * Perform a calibration attempt based on waveform data values：
 	 * 
-	 * 先验证波形数据值是否符合目标，如果是，则进展到下一个项目；否则，调整参数值，等到下一次获取数据的验证
+	 * First verify that the waveform data value meets the target, and if so,
+	 * progress to the next item; otherwise, adjust the parameter value and
+	 * wait until the next time the data is validated.
 	 * 
-	 * @return 本次波形数据是否验证了当前项目的参数调整结果符合目标，取值见上表ROUT_DONE等
+	 * @return Whether the waveform data of this current data verifies that the
+	 * parameter adjustment result of the current project meets the target, and
+	 * the value is shown in the above table ROUT_DONE, etc.
 	 */
 	int routOut();
 
