@@ -4,6 +4,8 @@ OWON VDS1022 Software Modification Project, Because having a USB scope should be
 Working.zip contains a tested and functional version.
 
 
+JavaDocs: https://abirfaisal.github.io/RealScope/
+
 Tested on MacOS, you do need install the appropriate the drivers though
 
 To install with Homebrew on MacOS:
