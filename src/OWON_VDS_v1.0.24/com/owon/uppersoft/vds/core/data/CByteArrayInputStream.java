@@ -14,7 +14,12 @@ import java.nio.channels.FileChannel.MapMode;
 
 import sun.nio.ch.DirectBuffer;
 
-public class CByteArrayInputStream {
+
+
+
+public class CByteArrayInputStream  {
+
+
 	private ByteBuffer buf = null;
 	private FileChannel fc = null;
 	private File file = null;
@@ -130,6 +135,7 @@ public class CByteArrayInputStream {
 		}
 
 		buf.get(bs, beg, len);
+
 	}
 
 	public final void getIntArray(int[] bs, int beg, int len) {
