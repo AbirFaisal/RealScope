@@ -1,11 +1,9 @@
 # RealScope
 OWON VDS1022 Software Modification Project, Because having a USB scope should be like having a RealScope.
 
+
 Working.zip contains a tested and functional version. Just use that for now.
 I am still trying to figure out exactly what direction to go with the software.
-
-
-
 
 
 
@@ -29,11 +27,5 @@ If you haven't added JDK to your $PATH then you need to install it as well.
 >brew install java
 
 
-This should compile on JDK11 with the following compiler option (not needed on JDK8):
+You need to compile with this option on JDK11 (not needed on JDK8):
 > --add-exports=java.base/sun.nio.ch=ALL-UNNAMED
-
-
-
-
-The end goal of this project is to develop an instrumentation GUI that isn't
-horrible nor time consuming to change simple settings.
