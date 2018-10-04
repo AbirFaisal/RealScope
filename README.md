@@ -1,22 +1,39 @@
 # RealScope
 OWON VDS1022 Software Modification Project, Because having a USB scope should be like having a RealScope.
 
-Working.zip contains a tested and functional version.
+Working.zip contains a tested and functional version. Just use that for now.
+I am still trying to figure out exactly what direction to go with the software.
+
+
+
+
 
 
 JavaDocs: https://abirfaisal.github.io/RealScope/
 
-Tested on MacOS, you do need install the appropriate the drivers though
 
-To install with Homebrew on MacOS:
+**Windows:** If the unmodified software works this should as well.
+Obviously you need the drivers so grab them from the stock Owon application.
+
+
+
+**MacOS:**
+
+This software is built and tested on MacOS. The master branch should
+always build with no errors on JDK11.
+
+Install drivers with Homebrew on MacOS:
 > brew install libusb-compat libusb
 
-
-If the OEM software works on windows then this modified version should work as is.
-
-
+If you haven't added JDK to your $PATH then you need to install it as well.
+>brew install java
 
 
+This should compile on JDK11 with the following compiler option (not needed on JDK8):
+> --add-exports=java.base/sun.nio.ch=ALL-UNNAMED
 
-For additional performance replace logo.png in com.owon.uppersoft.dso.image with a keysight logo.
-Because its not about the scope you have its about the scope you feel like you have. JK don't do that.
+
+
+
+The end goal of this project is to develop an instrumentation GUI that isn't
+horrible nor time consuming to change simple settings.
