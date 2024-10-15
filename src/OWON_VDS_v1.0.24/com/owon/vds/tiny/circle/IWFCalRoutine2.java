@@ -31,10 +31,11 @@ public interface IWFCalRoutine2 {
 	int routOut();
 
 	/**
-	 * 用于判断是否还有校正项目
+	 * Check if there are still calibration items left
 	 * 
-	 * @return 负值为校正终结，正值为校正类型id
+	 * @return Negative values indicate calibration completion, positive values represent calibration type ID.
 	 */
+<intEND>
 	int getRoutCalType();
 
 }

@@ -7,19 +7,17 @@ import com.owon.uppersoft.vds.util.BufferHandleUtil;
 import com.owon.vds.tiny.firm.FlashMirror;
 
 /**
- * Translator_Tiny，用于将指令的参数部分转化为协议规定的数值
+ * Translator_Tiny, used to convert instruction parameters into values defined by the protocol.
  * 
- * 内部通过TuneFunction实现参数转译
+ * Internally, it uses TuneFunction for parameter translation.
  * 
- * 
- * 
+ *
+ *
  * FactoryPartition_LE
  * 
  * 200以外
- * 
+ *
  * Register
- * 
- * 1k以外
  * 
  * DeviceArgPartition_LE
  */

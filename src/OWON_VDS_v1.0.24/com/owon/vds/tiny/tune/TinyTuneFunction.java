@@ -30,9 +30,9 @@ import com.owon.vds.tiny.ui.tune.TinyTuneDialog;
 import com.owon.vds.tiny.ui.tune.control.DefaultTinyTuneDelegate;
 
 /**
- * 选择不同的卡片或是下拉框，会载入保存的数值，只有当数值被修改成功，才会发送下去，并保存下来
+ * Selecting different tabs or dropdowns loads saved values, but only sends and saves them when the values have been successfully modified.
  * 
- * 暂时不使用，在未确定生产调试界面方案的情况下仅提供文本修改更新
+ * Currently not in use, as a text-based update is provided temporarily until the production debugging interface layout is finalized.
  */
 
 public class TinyTuneFunction implements ITuneFunction {
@@ -72,7 +72,9 @@ public class TinyTuneFunction implements ITuneFunction {
 	public AbsCalArgType cmdt;
 
 	public TinyTuneFunction(int channelsNumber, int[] vbs) {
-		/** 内部初始化一些参数 */
+
+		/** Internal initialization of some parameters */
+
 		channels = new String[channelsNumber];
 		for (int i = 0; i < channelsNumber; i++) {
 			channels[i] = "CH" + (i + 1);
@@ -197,7 +199,7 @@ public class TinyTuneFunction implements ITuneFunction {
 	}
 
 	public void release() {
-		/** machine.txt不希望被当前设置覆盖 */
+		/** The "machine.txt" file should not be overwritten by the current settings */
 		// output(new File(txtrpath));
 		tunewnd = null;
 	}

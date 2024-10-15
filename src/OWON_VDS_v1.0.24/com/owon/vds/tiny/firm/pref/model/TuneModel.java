@@ -27,27 +27,40 @@ public class TuneModel implements DevicePref {
 
 	protected void fillArgTypeList(List<DefaultCalArgType> cmdts,
 			int channelNumber, int vbNum) {
-		// 粗调增益
+		// Coarse Gain
 		DefaultCalArgType coarseGain = new DefaultCalArgType(
 				ArgType.Gain.ordinal(), Cending.ascending, channelNumber, vbNum);
 		cmdts.add(coarseGain);
 
-		// 零点步进
+		// Zero Amplitude Step
 		DefaultCalArgType zeroAmplitude = new DefaultCalArgType(
 				ArgType.Step.ordinal(), Cending.ascending, channelNumber, vbNum);
 		cmdts.add(zeroAmplitude);
 
-		// 零点补偿
+		// Zero Amplitude Compensation
 		DefaultCalArgType zeroCompensation = new DefaultCalArgType(
 				ArgType.Compensation.ordinal(), Cending.descending,
 				channelNumber, vbNum);
 		cmdts.add(zeroCompensation);
-		// cmdts.add(new WindowTrigRaiseFall(this));// 触发上升&下降
-		// cmdts.add(new CF_Multiple(this));// 触发移动倍率
-		// cmdts.add(new WindowTrig(this));// 触发高低窗口
-		// cmdts.add(new FullScale(this));// 满量程
-		// cmdts.add(new FineGain(this));// 细调增益
-		// cmdts.add(new ADCPhase(this));// ADC相位
+
+		// Trigger rise & fall
+		// cmdts.add(new WindowTrigRaiseFall(this));
+
+		// Trigger move ratio
+		// cmdts.add(new CF_Multiple(this));
+
+		// Trigger high-low window
+		// cmdts.add(new WindowTrig(this));
+
+		// Full scale
+		// cmdts.add(new FullScale(this));
+
+		// Fine gain adjustment
+		// cmdts.add(new FineGain(this));
+
+		// ADC phase adjustment
+		// cmdts.add(new ADCPhase(this));
+	
 	}
 
 	public AbsCalArgType getSimpleAdjustCMDType(int type) {
@@ -114,8 +127,8 @@ public class TuneModel implements DevicePref {
 	private PropertyChangeListener pcl;
 
 	/**
-	 * 从分区读出当前参数
-	 * 
+	 * Read the current parameters from the partition.
+	 *
 	 * @param bb
 	 */
 	public void readArgsFromPartitionBuffer(ByteBuffer bb) {

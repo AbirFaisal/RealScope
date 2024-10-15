@@ -114,7 +114,10 @@ public class FPGADownloader implements Logable {
 		bbuf.put((byte) fda.bytes);
 		bbuf.putInt(fsize);
 		arr = bbuf.array();
-		int len = bbuf.position();// 缓存put时position也跟着移动,这里不是0
+		
+		// The buffer's position moves along with the cache when putting data, so it is not 0 here.
+		int len = bbuf.position();
+		
 		/** Send FPGA file F+'file size (4 bytes)' */
 		int wrn = sm.write(arr, len);
 		if (wrn <= 0) {

@@ -37,7 +37,7 @@ public abstract class AbsCalArgType implements ICal {
 	public abstract int[][] getArgs();
 
 	/**
-	 * @return txt中的前导文本
+	 * @return Returns the leading text from the txt string
 	 */
 	public abstract String prekey();
 
