@@ -63,7 +63,7 @@ public class DefaultPrefControl implements PrefControl, Logable {
 	public void save2FactoryPart() {
 		logln("wrDevicePref2FactorySetPref");
 
-		/** 写入了当前设置区 */
+		/** Write to current settings partition */
 		save2DevicePart();
 
 		ByteBuffer bb = flashMirror.getFactoryPartition_LE();
@@ -93,9 +93,9 @@ public class DefaultPrefControl implements PrefControl, Logable {
 
 		if (!support) {
 			/**
-			 * 对不支持的flashMirror进行覆写，防止各种读入时读取出错误的值
+			 * Overwrite unsupported flashMirror to prevent various reading errors.
 			 * 
-			 * 从flash的信息读取检测和读取无效覆写两方面防止出错
+			 * Detect and read invalid overwrite from flash information on both sides to prevent errors.
 			 */
 			save2FactoryPart();
 			return false;

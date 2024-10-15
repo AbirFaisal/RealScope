@@ -53,6 +53,7 @@ public class SerialComm implements SerialPortEventListener {
 		}
 		return false;
 	}
+	
 
 	protected void init() {
 		try {

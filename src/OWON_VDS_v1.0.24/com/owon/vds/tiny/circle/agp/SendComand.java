@@ -74,7 +74,9 @@ public class SendComand {
 		config("turnChannels: " + on);
 		if (on) {
 			sendCMD(OUTPUT_OPEN);
-			/*延时一小段时间，由于串口收发需要时间*/
+
+			/* Add a small delay for serial communication */
+
 			try {
 				Thread.sleep(20);
 			} catch (InterruptedException e) {

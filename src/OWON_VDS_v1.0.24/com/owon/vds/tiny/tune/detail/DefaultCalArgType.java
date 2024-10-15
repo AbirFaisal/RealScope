@@ -4,7 +4,7 @@ import com.owon.uppersoft.vds.core.tune.Cending;
 import com.owon.vds.tiny.firm.pref.model.ArgType;
 
 /**
- * CoarseGain, ZeroAmplitude, ZeroCompensation三者共用
+ * CoarseGain, ZeroAmplitude, ZeroCompensation share the same functionality.
  */
 public class DefaultCalArgType extends AbsCalArgType {
 	protected int[][] args;

@@ -111,7 +111,10 @@ public class GainCalDelegate implements ProgressExecutor {
 		String cancelPrompt = rb.getString("Label.Cancel");
 		final ProgressableDialog jd = new ProgressableDialog(wnd, true, this,
 				title, cancelt, cancelPrompt);
-		// 改模态化,自校正时不允许其它操作
+
+		// Translate the comment to English.
+		// "Make it modal, during self-correction no other operations are allowed."
+		jd.setModal(true);
 		jd.setVisible(true);
 	}
 }
