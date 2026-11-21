@@ -6,23 +6,23 @@ public interface IWFCalRoutine {
 	public static final int ROUT_ONE = 1;
 
 	/**
-	 * 准备就绪
+	 * Ready
 	 */
 	public abstract void getReady();
 
 	/**
-	 * 进行一次基于波形数据值的校正尝试：
+	 * Perform one calibration attempt based on waveform data values:
 	 * 
-	 * 先验证波形数据值是否符合目标，如果是，则进展到下一个项目；否则，调整参数值，等到下一次获取数据的验证
+	 * First verify whether the waveform data values meet the target; if so, advance to the next item; otherwise, adjust the parameter value and wait for verification on the next data acquisition
 	 * 
-	 * @return 本次波形数据是否验证了当前项目的参数调整结果符合目标，取值见上表ROUT_DONE等
+	 * @return whether this waveform data verified that the parameter adjustment result of the current item meets the target; for values see the table above (ROUT_DONE, etc.)
 	 */
 	public abstract int routOut();
 
 	/**
-	 * 用于判断是否还有校正项目
+	 * Used to determine whether there are more calibration items
 	 * 
-	 * @return 负值为校正终结，正值为校正类型id
+	 * @return negative means calibration finished, positive is the calibration type id
 	 */
 	public abstract int getRoutCalType();
 

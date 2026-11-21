@@ -19,7 +19,7 @@ import com.owon.uppersoft.vds.data.LocaleObject;
 import com.owon.uppersoft.vds.util.Pref;
 
 /**
- * Config，配置中心，配置中心不再单独存储主要信息，而是在内部将信息中转到内部逻辑中
+ * Config, configuration center; the configuration center no longer stores the main information itself but relays information internally to the internal logic
  */
 public class Config implements PropertiesItem {
 	private Pref defalutProperties, sessionProperties;
@@ -73,7 +73,7 @@ public class Config implements PropertiesItem {
 	}
 
 	/**
-	 * 从Properties中装载信息，也在这里修正无效的信息
+	 * Load information from Properties, and also correct invalid information here
 	 * 
 	 * @param p
 	 */
@@ -85,7 +85,7 @@ public class Config implements PropertiesItem {
 	}
 
 	/**
-	 * 将信息持久化到Properties中
+	 * Persist information to Properties
 	 * 
 	 * @param p
 	 */
@@ -130,7 +130,7 @@ public class Config implements PropertiesItem {
 	}
 
 	public void updateLocales(List<LocaleObject> txtlocales) {
-		// 国际版
+		// International version
 		if (1 == 1)
 			return;
 		LocaleObject lo = locales.get(localeIndex);
@@ -138,7 +138,7 @@ public class Config implements PropertiesItem {
 
 		Iterator<LocaleObject> it = txtlocales.iterator();
 		while (it.hasNext()) {
-			// 仅在这里使用locales_support_native(完整支持的机型列表)，而不是locales即上一次保存的语言支持列表(可能来自于其它载入的机型设置)
+			// Only use locales_support_native (the list of fully supported models) here, rather than locales, the language support list saved last time (which may come from other loaded model settings)
 			if (!locales_support_native.contains(it.next()))
 				it.remove();
 		}

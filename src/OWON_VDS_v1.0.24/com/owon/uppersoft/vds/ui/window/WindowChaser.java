@@ -6,7 +6,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 /**
- * 跟随父窗口移动，只有两个参数之间是Window和Dialog的关系，Dialog会随着Window最小化而最小化
+ * Follows the parent window's movement; only for two arguments that are a Window and a Dialog, where the Dialog minimizes when the Window minimizes
  * 
  */
 public class WindowChaser extends ComponentAdapter {

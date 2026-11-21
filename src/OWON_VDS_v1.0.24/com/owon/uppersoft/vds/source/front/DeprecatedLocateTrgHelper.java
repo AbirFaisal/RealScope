@@ -10,9 +10,9 @@ public class DeprecatedLocateTrgHelper extends LocateTrgHelper {
 
 	/**
 	 * 
-	 * 继续尝试：
+	 * Continue trying:
 	 * 
-	 * 先拉，后插值
+	 * locate the trigger first, then interpolate
 	 */
 	private int doHandleTrg_PullPlugPull(ByteBuffer trgb, boolean raise,
 			int level, int fullscreen, TinyPlugHelper tph, int chl) {
@@ -64,9 +64,9 @@ public class DeprecatedLocateTrgHelper extends LocateTrgHelper {
 
 	/**
 	 * 
-	 * 最后尝试：
+	 * Last attempt:
 	 * 
-	 * 根据fullscreen，区分处理
+	 * handle differently according to fullscreen
 	 */
 	private int doHandleTrg_both(ByteBuffer trgb, boolean raise, int level,
 			int fullscreen, TinyPlugHelper tph, int chl) {
@@ -87,7 +87,7 @@ public class DeprecatedLocateTrgHelper extends LocateTrgHelper {
 
 	/**
 	 * 
-	 * 获取拉的位移
+	 * get the locating shift
 	 * 
 	 * @param raise
 	 * @param p_trgb
@@ -107,9 +107,9 @@ public class DeprecatedLocateTrgHelper extends LocateTrgHelper {
 		int i = center;
 		int shift;
 		/**
-		 * 当波形斜率不大的时候，容易拉到
+		 * when the waveform slope is small, it is easy to locate
 		 * 
-		 * 当波形斜率很大的时候，拉的前后容易过头
+		 * when the waveform slope is large, the locating easily overshoots before or after
 		 */
 		if (raise) {
 			logPull("before shift: " + i);

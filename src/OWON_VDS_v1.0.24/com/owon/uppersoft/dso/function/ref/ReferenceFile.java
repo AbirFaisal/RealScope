@@ -1,7 +1,7 @@
 package com.owon.uppersoft.dso.function.ref;
 
 /**
- * ReferenceWaveControl，是不同于WaveForm实现的另一种屏幕波形效果
+ * ReferenceWaveControl, another kind of on-screen waveform effect different from the WaveForm implementation
  * 
  */
 public class ReferenceFile {
@@ -17,7 +17,7 @@ public class ReferenceFile {
 	public boolean use;
 	private String name;
 
-	/** 获得与目标相同序号的字母 */
+	/** Get the letter with the same index as the target */
 	public Character getLetter() {
 		return (char) (id + 97);
 	}

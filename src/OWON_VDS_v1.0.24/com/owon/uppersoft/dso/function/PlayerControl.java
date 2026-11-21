@@ -104,7 +104,7 @@ public class PlayerControl implements Runnable, PropertyChangeListener {
 	}
 
 	/**
-	 * @return isPlaying，如果为真，则代表继续进行回放，而退出准备进行的其它可能打断回放的操作
+	 * @return isPlaying, if true, playback continues and other pending operations that might interrupt playback are abandoned
 	 */
 	public boolean confirmGoOnPlaying() {
 		boolean keepPlay = isPlaying();
@@ -233,7 +233,7 @@ public class PlayerControl implements Runnable, PropertyChangeListener {
 	private Thread playtrd;
 
 	public void startPlaying() {
-		if (!isPlaying()) {// 从当前帧开始播放文件中的波形
+		if (!isPlaying()) {// start playing the waveforms in the file from the current frame
 			playing = VIDEO_PLAY;
 
 			if (isCurrentReset())
@@ -249,8 +249,8 @@ public class PlayerControl implements Runnable, PropertyChangeListener {
 
 	public void pausePlaying() {
 		playing = VIDEO_PAUSE;
-		// 暂停播放和拖拽的时候一定要join，防止争抢ba.
-		// 暂停时线程还没OUT,又new start，有概率会争抢ba;拖拽同理。
+		// When pausing playback and dragging, join must be called to prevent contention for ba.
+		// When pausing, the thread has not yet exited OUT and a new start may contend for ba; same for dragging.
 		try {
 			playtrd.join();
 		} catch (InterruptedException e) {
@@ -260,22 +260,22 @@ public class PlayerControl implements Runnable, PropertyChangeListener {
 	}
 
 	public boolean fileInvalid() {
-		/** 当前显示的播放地址不存在文件，则返回 */
+		/** If the file at the currently displayed playback address does not exist, return */
 		return filesize <= 0;
 	}
 
 	/**
-	 * @return 是否需要继续更新控件文本
+	 * @return whether the control text still needs to be updated
 	 */
 	public boolean switchPlaying() {
 
-		if (!isPlaying()) {// 从当前帧开始播放文件中的波形
+		if (!isPlaying()) {// start playing the waveforms in the file from the current frame
 			playing = VIDEO_PLAY;
 
 			if (isCurrentReset())
 				ba.reset(frame0Pos);
 			threadStart();
-		} else {// 暂停播放
+		} else {// pause playback
 			pausePlaying();
 		}
 		return true;
@@ -291,24 +291,24 @@ public class PlayerControl implements Runnable, PropertyChangeListener {
 	}
 
 	public void setCurrentNStreamPointer(int curf) {
-		// 设置当前帧
+		// Set the current frame
 		current = curf;
-		// 通过当前帧获取该帧CByteArrayInputStream上的指针
+		// Get the pointer into this frame's CByteArrayInputStream from the current frame
 		List<Point> tps = tl.timepoints;
 		Iterator<Point> it = tps.iterator();
 		Point p;
 		// System.out.println("tps.size:" + tps.size());
 		if (it.hasNext()) {
 			p = it.next();
-			len = p.x;// 帧所在buf的位置
-			num = p.y;// p.x表示的帧总共个数
+			len = p.x;// position of the frame in buf
+			num = p.y;// p.x is the total number of frames
 		}
-		bp = frame0Pos;// 0帧
+		bp = frame0Pos;// 0 frame
 		for (int f = 0; f < curf; f++) {// curf==pc.getCurrent()
-			bp += len;// 加1帧
+			bp += len;// add 1 frame
 
 			num--;
-			// 当len改变，得到正确len;
+			// When len changes, get the correct len;
 			if (num == 0) {
 				if (it.hasNext()) {
 					p = it.next();
@@ -339,8 +339,8 @@ public class PlayerControl implements Runnable, PropertyChangeListener {
 			if (!isPlaying())
 				break IN;
 			/**
-			 * 下句pcl会把oevt.newInt发送给界面的timelineslider.setValue(newInt);
-			 * updateCurrentScreen()改在setValue(newInt)里调用
+			 * The next statement makes pcl send oevt.newInt to the UI's timelineslider.setValue(newInt);
+			 * updateCurrentScreen() is now called from setValue(newInt)
 			 */
 			// updateCurrentScreen();
 			current++;
@@ -353,7 +353,7 @@ public class PlayerControl implements Runnable, PropertyChangeListener {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			// 如果当前帧播放完毕，清零
+			// If the current frame has finished playing, reset to zero
 			if (current >= end) {// counter
 				if (cyc) {
 					setCurrentNStreamPointer(sta);
@@ -363,7 +363,7 @@ public class PlayerControl implements Runnable, PropertyChangeListener {
 					pcl.propertyChange(oevt);
 
 					// resetCurrent();
-					current = sta;// 播放完从sta开始不是0
+					current = sta;// After playing, restart from sta, not 0
 					break IN;
 				}
 			}
@@ -371,7 +371,7 @@ public class PlayerControl implements Runnable, PropertyChangeListener {
 
 	}
 
-	/** 以下含savedcur的方法，用于离开Play页面current被设0之前，保存current值。 */
+	/** The methods below that contain savedcur save the current value before current is set to 0 on leaving the Play page. */
 	private int savedcur = 0;
 	private boolean reset = false;
 

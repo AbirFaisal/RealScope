@@ -140,7 +140,7 @@ public class HandlerFactory {
 		it.add(TRIGger_ALT);
 
 		it.add(TRIGger_SINGle_EDGe_SOURce);
-		// it.add(TRIGger_SINGle_EDGe_COUPling);// Vds无该指令
+		// it.add(TRIGger_SINGle_EDGe_COUPling);// VdsVds does not have this command
 		it.add(TRIGger_SINGle_EDGe_SLOPe);
 		it.add(TRIGger_SINGle_EDGe_LEVel);
 
@@ -150,7 +150,7 @@ public class HandlerFactory {
 		it.add(TRIGger_SINGle_VIDeo_LNUM);
 
 		it.add(TRIGger_ALT_EDGe_SOURce);
-		// it.add(TRIGger_ALT_EDGe_COUPling);// Vds无该指令
+		// it.add(TRIGger_ALT_EDGe_COUPling);// VdsVds does not have this command
 		it.add(TRIGger_ALT_EDGe_SLOPe);
 		it.add(TRIGger_ALT_EDGe_LEVel);
 

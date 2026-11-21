@@ -55,7 +55,7 @@ public class ProgressMonitorDialog extends JDialog {
 
 		if (parentComponent != null) {
 			setLocationRelativeTo(parentComponent);
-			// TODO....close、focus
+			// TODO....close, focus
 		} else {
 			setLocationRelativeTo(null);
 		}
@@ -190,12 +190,12 @@ public class ProgressMonitorDialog extends JDialog {
 		button.setText(buttonText);
 	}
 
-	// 以此 ，可获取JProgressBar的所有方法。
+	// Through this, all methods of JProgressBar can be obtained.
 	public JProgressBar getProgressBar() {
 		return pBar;
 	}
 
-	// 可考虑增删其他组件的方法，如按钮。
+	// Consider adding or removing methods of other components, such as buttons.
 	/**
 	 * 
 	 * 

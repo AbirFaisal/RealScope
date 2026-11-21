@@ -1,30 +1,30 @@
 package com.owon.uppersoft.vds.ui.slider;
 
 /**
- * 在zoom中使用这个
+ * Use this in zoom
  * 
  */
 public interface SliderDelegate2 extends SliderDisposeDelegate {
 
 	// /**
-	// * 操作结束
+	// * Operation ended
 	// */
 	// void actionOff();
 	//
 	// /**
-	// * 关闭释放
+	// * Close and release
 	// */
 	// void onDispose();
 
 	/**
-	 * 用于持续性的数值改变"增量"，可以包含默认值(如0)的改变，但是不会触发actionOff()
+	 * Used for continuous value "delta" changes, may include changes to the default value (e.g. 0), but does not trigger actionOff()
 	 * 
 	 * @param v
 	 */
 	void valueIncret(int delta);
 
 	/**
-	 * 默认值(如0)的瞬间设置，会触发actionOff()，只在zoom中使用这个方法
+	 * Instantaneous setting of the default value (e.g. 0), triggers actionOff(), only used in zoom
 	 */
 	void onReset0();
 

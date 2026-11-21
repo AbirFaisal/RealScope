@@ -42,7 +42,7 @@ public class VoltSliderAdapter extends SliderAdapter {
 
 		v = halfRange - v;
 
-		// 附加反相
+		// append inversion
 		v = ci.getInverseValue(v);
 
 		boolean changed = vt.c_setVoltsense(v);

@@ -11,7 +11,7 @@ import com.owon.uppersoft.vds.ui.resource.FontCenter;
 import com.owon.uppersoft.vds.ui.widget.help.ToggleListener;
 
 /**
- * 自定义的CToggleButton
+ * Custom CToggleButton
  * 
  */
 public class CToggleButton extends JButton implements Localizable {
@@ -28,7 +28,7 @@ public class CToggleButton extends JButton implements Localizable {
 		this.selkey = selkey;
 		this.uslkey = uslkey;
 		this.rb = rb;
-		/** 三个参数也可作为对象成员，保存范围相差不大 */
+		/** The three parameters could also be object members; the saved range differs little */
 		setFont(FontCenter.getLabelFont());
 
 		setSelected(sel);
@@ -50,7 +50,7 @@ public class CToggleButton extends JButton implements Localizable {
 	}
 
 	public void setSelected(boolean sel) {
-		/** 重写方法，加入自定义文本改变的逻辑，不会触发ActionEvent */
+		/** Overridden method, adds custom text-change logic, does not trigger ActionEvent */
 		super.setSelected(sel);
 		u(selkey, uslkey);
 	}

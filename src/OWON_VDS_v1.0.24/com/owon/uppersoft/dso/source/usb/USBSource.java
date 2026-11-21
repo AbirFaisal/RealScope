@@ -10,7 +10,7 @@ import com.owon.uppersoft.vds.core.usb.CDevice;
 import com.owon.uppersoft.vds.core.usb.IDevice;
 
 /**
- * USB数据源
+ * USBUSB data source
  * 
  */
 public class USBSource implements ISource {

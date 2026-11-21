@@ -170,7 +170,7 @@ public class Tune2 implements PropertyChangeListener {
 		JButton btnReload = new JButton("Reload txt");
 		btnReload.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				/** 从txt中载入原型设置，使用默认配置覆盖当前设置 */
+				/** load the prototype settings from txt, overriding the current settings with the default configuration */
 				tf.createTuneTexter().resetup();
 			}
 

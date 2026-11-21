@@ -47,7 +47,7 @@ public class LineNumberFormatter extends NumberFormatter {
 		} else {
 			JFormattedTextField ftf = getFormattedTextField();
 			Object n = ftf.getValue();
-			// 这里取出并存入的都是Long
+			// Values both retrieved and stored here are Long
 			ftf.setValue(n);
 			return n;
 		}

@@ -18,7 +18,7 @@ public enum WndType {
 	}
 
 	/**
-	 * adc的数据在这里处理，取点和加窗同时做，提高效率
+	 * adc data is processed here; point fetching and windowing are done together for efficiency
 	 * 
 	 * @param adc
 	 * @param start

@@ -31,7 +31,7 @@ public abstract class TinyMachine extends AbsMacType {
 	public abstract DeviceAddressTable getDeviceAddressTable();
 
 	/**
-	 * 根据base，ref，计算出浮点型的硬件频率计数
+	 * calculate the floating-point hardware frequency count from base and ref
 	 * 
 	 * @param base
 	 * @param ref
@@ -71,17 +71,17 @@ public abstract class TinyMachine extends AbsMacType {
 		return getPKType(drawMode);
 	}
 
-	/** 以上方法为临时添加，快速无效 */
+	/** the above methods are temporary additions, quick and ineffective */
 	public final int getPKType(int drawMode) {
 		int pk_detect_type = PK_DETECT_TYPE_NO;
 		/**
-		 * 峰值检测在点模式画图时是普通画法，这就决定了adc数组不能针对峰值检测做特别更改
+		 * peak detect uses the ordinary drawing method in dot mode, which means the adc array cannot be specially modified for peak detect
 		 * 
-		 * 同时也是性能和维护的方便，故而这里只是简单转换到屏幕坐标
+		 * also for performance and ease of maintenance, so here it is simply converted to screen coordinates
 		 * 
-		 * 开/关峰值检测的情况下，adc采到的屏幕范围内的点数是相同的，只是采集的方式不同，
+		 * with peak detect on or off, the number of points the adc captures within the screen range is the same, only the acquisition method differs,
 		 * 
-		 * 即便深存储也不用针对开/关峰值检测有不同的满屏点统计，只是画法不同而已
+		 * even for deep memory there is no need for different full-screen point statistics for peak detect on/off, only the drawing method differs
 		 */
 		if (drawMode == WFDrawRTUtil.DrawMode1p) {
 			// if (pk_1kpix_250)

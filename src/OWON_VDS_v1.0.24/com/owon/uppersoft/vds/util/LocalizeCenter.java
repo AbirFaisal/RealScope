@@ -49,7 +49,7 @@ public class LocalizeCenter {
 	};
 
 	/**
-	 * 用于后续切换语言的内容，一般是基于文本的控件
+	 * Content used for later language switching, generally text-based controls
 	 * 
 	 * @param l
 	 */
@@ -58,7 +58,7 @@ public class LocalizeCenter {
 	}
 
 	/**
-	 * 用于优先切换语言的内容，一般是文本
+	 * Content used for priority language switching, generally text
 	 * 
 	 * @param l
 	 */

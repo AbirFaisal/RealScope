@@ -96,12 +96,12 @@ public class DeepMemoryControl implements IPatchable, IOrgan {
 	}
 
 	/**
-	 * 以后可能不只一档支持
+	 * More than one level may be supported in the future
 	 */
 	public static final int XYModeSupportOnly1DeepMemoryIndex = 0;
 
 	/**
-	 * 目前1k的情况不需要，其它情况都要
+	 * Currently not needed for 1k, needed in all other cases
 	 * 
 	 * @return
 	 */

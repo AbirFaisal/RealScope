@@ -14,7 +14,7 @@ import com.owon.uppersoft.vds.util.BufferHandleUtil;
 import com.owon.uppersoft.vds.util.format.EndianUtil;
 
 /**
- * FlashMirror，Flash image ，Device partition and factory partition are available
+ * FlashMirror, Flash image, Device partition and factory partition are available
  * 
  */
 public class FlashMirror implements Logable {
@@ -30,13 +30,13 @@ public class FlashMirror implements Logable {
 	}
 
 	/**
-	 * @return Provide raw partition，Starting from the available starting position
+	 * @return Provide raw partition, Starting from the available starting position
 	 */
 	private ByteBuffer prepareRawPartition_LE() {
 		ByteBuffer b2 = ByteBuffer.wrap(flashArray, 0, flashArray.length);
 		b2.order(ByteOrder.LITTLE_ENDIAN);
 
-		/** ByteBuffer wraps the array corresponding to flash，The starting position of the mark read-only memory area */
+		/** ByteBuffer wraps the array corresponding to flash, The starting position of the mark read-only memory area */
 		BufferHandleUtil.skipByteBuffer(b2, DEVPREF_CRCSKIPBYTES
 				+ DEVPREF_PTC_VER_LEN);
 		return b2;

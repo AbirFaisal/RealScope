@@ -135,7 +135,7 @@ public abstract class CalRunner2 implements Logable {
 				if (isExit())
 					return;
 
-				/** 校正终结的通道 */
+				/** Channel whose calibration has finished */
 				IWFCalRoutine2 wfr = wfri.next();
 				if (wfr.getRoutCalType() < 0)
 					continue;
@@ -146,7 +146,7 @@ public abstract class CalRunner2 implements Logable {
 					break;
 				}
 
-				/** 校正 */
+				/** Calibration */
 				int v = wfr.routOut();
 				if (v > 0) {
 					progress += v;
@@ -163,8 +163,8 @@ public abstract class CalRunner2 implements Logable {
 						if (isExit())
 							return;
 
-						// 也可以判断cancel
-						/** 校正终结的通道 */
+						// Could also check cancel
+						/** Channel whose calibration has finished */
 						IWFCalRoutine2 wfr = wfri.next();
 						wfr.forVB(vbidx);
 					}

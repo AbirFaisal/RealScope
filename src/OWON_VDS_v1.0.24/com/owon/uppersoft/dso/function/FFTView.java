@@ -29,16 +29,16 @@ import com.owon.uppersoft.vds.util.format.SFormatter;
 import com.owon.uppersoft.vds.util.format.UnitConversionUtil;
 
 /**
- * FFTView, fft时，下位机也处在fft的状态，发所有fft设置指令下去，拿fft的数据(默认2048个点)，
+ * FFTView, fft mode: the device is also in the fft state; send all fft setting commands down and get the fft data (2048 points by default),
  * 
- * 协议采用原有普通数据的接收方式，多帧则使用最后一帧，数据长则取2048个点，
+ * The protocol uses the original receiving method for normal data; with multiple frames the last frame is used, and if the data is long 2048 points are taken,
  * 
- * 停止后不支持拿深存储数据
+ * Getting deep memory data after stopping is not supported
  * 
  */
 public class FFTView implements IView, LocationLabelProvider, Localizable {
 
-	/** 加窗方式 */
+	/** windowing method */
 	public static WndType[] wndTypes = WndType.values();
 
 	public static final boolean FFTNew = true, oldFFTversion = false;
@@ -54,19 +54,19 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 	private Background bg;
 	private FFTControl mc;
 
-	private int len;// len,即dnum为满屏需要计算fft的采样点数
+	private int len;// len, i.e. dnum is the number of sampling points needed to compute the fft for a full screen
 	public static final int xbases = 20, ftxbases = 10;
 	public int dBbaseidx, vrmsbaseidx;
 	public String fftchlLack;
 
 	private int xb;
-	/** 在虚拟的屏幕上波形的x，y起始位置 */
+	/** Starting x, y position of the waveform on the virtual screen */
 	private int xoff, yoff;
 	private double xgap;
 	private int lastScaleIdx;
 	private int hc, wc;
 	private Rectangle rec;
-	public double yScaleRate = 1;// 若不需保存，初始化缩放比例为1
+	public double yScaleRate = 1;// If saving is not needed, initialize the zoom ratio to 1
 	private int vrmsIdx;
 
 	public FFTView(WaveFormManager wfm, ControlManager cm) {
@@ -79,7 +79,7 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 		vrmsIdx = wfm.getWaveForm(mc.getFFTchl()).getVoltbaseIndex();
 		vrmsbaseidx = vrmsIdx;
 		dBbaseidx = xoff = yoff = 0;
-		/** 将1024个fft计算结果画在500个屏幕像素上 */
+		/** Draw the 1024 fft results onto 500 screen pixels */
 		setXGap();
 		lastScaleIdx = mc.fftscale;
 	}
@@ -100,7 +100,7 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 
 	public void updateFFT() {
 		/**
-		 * 在运行时直接适用到下一幅，停止的话需要刷新
+		 * While running, applies directly to the next frame; when stopped, a refresh is needed
 		 */
 		if (cm.isKeepGet())
 			return;
@@ -109,7 +109,7 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 	}
 
 	public void receiveNewData() {
-		/** 加同步锁，防止处理data的同时被用来拖拽刷图，data可能被污染 */
+		/** Add a synchronization lock to prevent the data from being polluted when it is used for drag-refresh drawing while being processed */
 		synchronized (data) {
 			doReceiveNewData();
 		}
@@ -126,11 +126,11 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 		WaveForm wf = wfm.getWaveForm(mc.getFFTchl());
 		ByteBuffer bb = wf.getFFT_Buffer();
 
-		// 提供给fft用的，目前是最终画点的像素数组，需要真的运行时和深存储进行修改
+		// Provided for fft; currently the final pixel array for drawing points, which needs to be modified when actually running and in deep memory
 		if (bb == null)
 			return;
 
-		/** TODO 暂不支持深存储 */
+		/** TODO deep memory is not supported for now */
 		byte[] adc = bb.array();
 		int p = bb.position();
 		int l = bb.limit();
@@ -141,7 +141,7 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 		if (len <= 0)
 			return;
 		// ArrayLogger.configArray(adc, p, len);
-		/** 在运行时使用adc数据中的指定个数点作fft */
+		/** While running, use a specified number of points from the adc data for fft */
 		// if (dh.isRuntime()) {
 		// int length = controlManager.mathControl.fftAvailablePoints();
 		// if (length <= 0 || length > len)
@@ -173,25 +173,25 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 		}
 
 		/**
-		 * fft算法可查看具体的类，包括加窗，运算，转到dB或Vrms
+		 * fft algorithm: see the specific class, including windowing, computation, and conversion to dB or Vrms
 		 * 
-		 * 这里涉及的是外围算法，如何画图，思路是，确定该轴上的档位所代表的值范围，这样满量程的范围就可以确定，同时一载入后如何画波形也可以确定
+		 * This covers the peripheral algorithm, i.e. how to draw. The idea: determine the value range represented by the scale on that axis, so the full-scale range can be determined, and how to draw the waveform once loaded can also be determined
 		 * 
-		 * X轴：
+		 * X axis:
 		 * 
-		 * 设dnum为满屏需要计算fft的采样点数，peroid_S为以秒为单位的满屏的时间范围，xbases为x轴的格数
+		 * Let dnum be the number of sampling points needed to compute the fft for a full screen, peroid_S the time range of a full screen in seconds, and xbases the number of divisions on the x axis
 		 * 
-		 * 则采样点间的频率pfreq = dnum / peroid_S
+		 * Then the frequency between sampling points is pfreq = dnum / peroid_S
 		 * 
-		 * 将(pfreq/2) / xbases作为对应到fft下频率档位的参考值，即设定一组1，2，5为模式的频率档位，
+		 * Take (pfreq/2) / xbases as the reference value for the frequency scale under fft, i.e. set up a group of frequency scales in a 1, 2, 5 pattern,
 		 * 
-		 * 选择和这一参考值最接近的自定义为当前对应的频率档位，上下档位作为其缩放的选项，这样就得到了X轴的频率档位
+		 * Choose the custom one closest to this reference value as the current frequency scale, with the scales above and below as its zoom options; this gives the frequency scale of the X axis
 		 * 
-		 * Y轴：
+		 * Y axis:
 		 * 
-		 * Vrms得到和当前波形采集的值相同的数量单位，可使用当前电压档位进行换算
+		 * Vrms gives the same unit of quantity as the currently acquired waveform values, and can be converted using the current voltage scale
 		 * 
-		 * dB通过传入额外的浮点数，代表采样点间差值所对应的电压值，转换为dB数，无需和原来的电压档位系统对应，根据自定义的dB档位进行差值分档即可
+		 * dB passes in an extra floating-point number representing the voltage corresponding to the difference between sampling points and converts it to a dB value, with no need to correspond to the original voltage scale system; just divide the difference into steps according to the custom dB scale
 		 */
 
 		if (mc.fftvaluetype == 0) {
@@ -225,7 +225,7 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 		if (true) {// controlManager.isRuntime()
 			pfreq = BigDecimal.valueOf(0);
 			if (oldFFTversion) {
-				// 要是启用该情况,需开启MathControl.getFftCompressRate()等方法。
+				// If this case is enabled, methods such as MathControl.getFftCompressRate() must be enabled.
 				// pfreq = controlManager.getSampleRate().getBDValue().divide(
 				// BigDecimal.valueOf(mc.getFftCompressRate()));
 			} else {
@@ -233,11 +233,11 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 						.getFFTTimebaseIndex()];
 			}
 			return pfreq;
-		} else {// 可用于深存储的fft
-			/** 深存储下采样点间的频率pfreq = dnum / peroid_S */
+		} else {// deep memory capable fft
+			/** In deep memory, the frequency between sampling points is pfreq = dnum / peroid_S */
 			pfreq = dnum.divide(peroid_S);
 
-			/** (pfreq/2) / ftxbases 对应到fft下频率档位的参考值 */
+			/** (pfreq/2) / ftxbases gives the reference value for the frequency scale under fft */
 			BigDecimal v = pfreq.divide(BigDecimal.valueOf(2)).divide(
 					BigDecimal.valueOf(ftxbases));
 			return v;
@@ -280,12 +280,12 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 		switch (mc.fftvaluetype) {
 		case 0:
 			/**
-			 * KNOW VRMS缩放比率 分运行和停止两情况：
+			 * KNOW VRMS zoom ratio, two cases: running and stopped:
 			 * 
-			 * ⒈运行时：缩放率是 实时获取当前通道电压档位，与控件选择的电压档位的比值
+			 * ⒈While running: the zoom ratio is the ratio of the current channel voltage scale, obtained in real time, to the voltage scale selected in the control
 			 * 
-			 * ⒉停止时：缩放率是 载入时当前通道电压档位， 与控件选择的电压档位的比值
-			 * (载入时，控件设置为当前通道电压档位，即初始rate为1)
+			 * ⒉When stopped: the zoom ratio is the ratio of the channel voltage scale at load time to the voltage scale selected in the control
+			 * (At load time the control is set to the current channel voltage scale, so the initial rate is 1)
 			 */
 			boolean isRuntime = cm.isRuntime();
 			WaveForm wf = wfm.getWaveForm(mc.getFFTchl());
@@ -311,15 +311,15 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 		xb = bound.x;
 		wc = xb + (bound.width >> 1);
 		hc = bound.y + (bound.height >> 1);
-		setXGap();// adc每点间隔重调
-		resetXoff();// adc起点偏移量重调
-		cm.fftctr.resetCursor(bound);// 光标位置重调
-		bg.setXunitlen(pc.isScreenMode_3() ? 10 : 20);// 网格重调
+		setXGap();// adc point spacing readjusted
+		resetXoff();// adc start offset readjusted
+		cm.fftctr.resetCursor(bound);// cursor position readjusted
+		bg.setXunitlen(pc.isScreenMode_3() ? 10 : 20);// grid readjusted
 	}
 
 	public void increX(int del) {
 		xoff += del;
-		// 需刷新mark
+		// need to refresh mark
 	}
 
 	public void scale() {
@@ -337,7 +337,7 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 
 		int nxoff = hwr - xc;
 		xoff = nxoff;
-		// 需刷新mark
+		// need to refresh mark
 
 		lastScaleIdx = idx;
 	}
@@ -410,7 +410,7 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 		synchronized (data) {
 			paint_500(g2d, xo, yo);
 		}
-		// 画FFT光标测量线 和 FFT信息显示框
+		// Draw the FFT cursor measurement lines and the FFT info display box
 		cm.fftctr.drawFFTCursor(g2d, rec);
 		drawFFTInfoBoard(g2d, rec);
 	}
@@ -426,7 +426,7 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 		g2d.setColor(Color.PINK);
 		if (wf != null && wf.isOn())
 			g2d.setColor(wf.getColor());
-		g2d.drawString("T", get_T_x0(r), r.y + 11);// 水平触发位置
+		g2d.drawString("T", get_T_x0(r), r.y + 11);// horizontal trigger position
 		g2d.drawRoundRect(x0, y0, bw, bh, 15, 15);
 		x0 += 5;
 		drawHorizPosition(g2d, x0, y0 += hGap);
@@ -455,7 +455,7 @@ public class FFTView implements IView, LocationLabelProvider, Localizable {
 
 	protected void drawFFTTimeBases(Graphics2D g2d, int x0, int y0) {
 		String fre;
-		// 可用于深存储的fft
+		// deep memory capable fft
 		// if (oldFFTversion) {
 		double fpd = getHzPerDiv()
 				* FFTControl.SCALES_VALUE[cm.getFFTControl().fftscale];

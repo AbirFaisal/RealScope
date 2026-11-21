@@ -9,7 +9,7 @@ import com.owon.uppersoft.vds.core.comm.effect.JobUnitDealer;
 import com.owon.uppersoft.vds.core.comm.job.JobUnit;
 
 /**
- * DataFetcher，波形数据获取，本身只是一个将各工作环节连结起来的控制器
+ * DataFetcher, waveform data acquisition, itself only a controller linking the work stages together
  * 
  * JobQueueDispatcher
  * 
@@ -26,23 +26,23 @@ public class JobQueueDispatcher implements JobUnitDealer {
 		this.pcs = pcs;
 	}
 
-	// TODO 用堆指令无序有影响吗？，考虑使用queue
+	// TODO Does using a heap make command order matter?, consider using queue
 	private List<JobUnit> queue = Collections
 			.synchronizedList(new LinkedList<JobUnit>());
 
 	public boolean dealQueue() {
-		/** 针对网络作sleep(0)? */
+		/** For the network, do sleep(0)? */
 		synchronized (queue) {
 			/**
-			 * 通过加锁同步只能保证没有其它线程在调用指令下传的过程，但指令使用的数据仍然可由其它方改变的，并非线程安全，
-			 * 可考虑用固定的p0,vb,tb,t0代替堆，暂缓进一步优化，这样可以兼容新加进去的固定JobUnit
+			 * Locking for synchronization only guarantees that no other thread is in the process of calling command downlink, but the data used by the command can still be changed by others, so it is not thread-safe,
+			 * Could consider using fixed p0,vb,tb,t0 instead of a heap; further optimization is deferred; this would be compatible with newly added fixed JobUnit
 			 */
 			int num = queue.size();
 			pcs.firePropertyChange(UPDATE_CMD_COUNTER, -1, num);
 			if (num == 0)
 				return false;
 
-			/** 实现多线程互锁，防止在取元素的同时添加 */
+			/** Implement multi-thread mutual locking, to prevent adding while elements are being taken */
 			while (queue.size() > 0) {
 				JobUnit p = queue.remove(0);
 				// System.out.println(p.getName());
@@ -53,7 +53,7 @@ public class JobQueueDispatcher implements JobUnitDealer {
 	}
 
 	/**
-	 * 非同步加锁地添加任务
+	 * Add a task without synchronized locking
 	 * 
 	 * @param p
 	 * @return
@@ -73,7 +73,7 @@ public class JobQueueDispatcher implements JobUnitDealer {
 	}
 
 	/**
-	 * 添加指令任务，大部分指令，都不用即使生效
+	 * Add a command task; most commands do not need to take effect immediately
 	 * 
 	 * @param p
 	 */

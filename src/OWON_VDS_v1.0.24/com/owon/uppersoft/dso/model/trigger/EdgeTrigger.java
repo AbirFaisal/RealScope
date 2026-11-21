@@ -10,7 +10,7 @@ import com.owon.uppersoft.vds.socket.ScpiPool;
 import com.owon.uppersoft.vds.util.Pref;
 
 public class EdgeTrigger extends VoltsensableTrigger {
-	/** 控件为对称限位而设计 */
+	/** The control is designed for symmetric limiting */
 	public static final int VoltSenseHalfRange = GDefine.TriggerLevelDivRange
 			* GDefine.PIXELS_PER_DIV;
 

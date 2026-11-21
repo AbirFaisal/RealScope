@@ -34,7 +34,7 @@ public class Flow extends Thread implements Runnable {
 	}
 
 	/**
-	 * 目前的任务队列是在判断连接之前进行，而任务主要是和连接后相关的，也有部分是停止下做的内容
+	 * Currently the task queue runs before the connection check, and the tasks mostly relate to the connected state, though some are done while stopped
 	 */
 	private void doStuff() {
 		synchronized (missions) {
@@ -57,15 +57,15 @@ public class Flow extends Thread implements Runnable {
 			//ServerControl.startSocketServer();
 			while (true) {
 				// vl.logln("doStuff: " + System.currentTimeMillis());
-				/** 这里处理和传输有关并且必须插入先行的事务，尽量只在最开始的位置固定调用并处理mission */
+				/** Handle here the transfer-related matters that must be inserted first; ideally only call this at the very start at a fixed position and process the missionmission */
 				doStuff();
 
-				/** 这里判断程序是否退出,是则退出线程 */
+				/** Check here whether the program is exiting; if so, exit the thread */
 				if (ir.isExit())
 					break;
 
 				/**
-				 * 只在无连接的情况下进入usb检测，则网络连接时不会
+				 * Enter usb detection only when there is no connection, so it does not happen on a network connection
 				 */
 				// vl.logln("sm.isConnected(): " + sm.isConnected());
 				if (!sm.isConnected()) {
@@ -74,14 +74,14 @@ public class Flow extends Thread implements Runnable {
 					onNotConnecting();
 					continue;
 				}
-				/** 将预置的运行任务放在连接后，因其可用的前提是已经连接 */
+				/** Put the preset run tasks after connecting, since they are only usable once connected */
 				preMissionRun();
 				// vl.logln("df.dealQueue()");
 
 				if (ir.isRuntime()) {
-					/** 这里处理和指令收发有关事务，这里可以改善，将之后获取数据的长等待改为短轮询，可以填充JobUnit的发送 */
+					/** Handle here the matters related to sending and receiving commands; this could be improved by replacing the long wait for the subsequent data fetch with short polling, which can fill in JobUnit sending */
 					if (df.dealQueue()) {
-						// 等待指令生效
+						// Wait for the command to take effect
 
 						sleep(shortWait);
 
@@ -90,12 +90,12 @@ public class Flow extends Thread implements Runnable {
 
 				boolean b = ir.isKeepGet() && (!ir.isAllChannelShutDown());
 				if (!b) {
-					// 当无通道打开或只发指令不要数据时持续等待
+					// Keep waiting when no channel is open or when only commands are sent without requesting data
 					sleep(midWait);
 					continue;
 				}
 
-				/** 载入数据的方法，载入数据的完整过程，在这一句结束，可以得到包括测量，通过失败的结果信息 */
+				/** Method to load data; the complete data-loading process ends on this line, and the result info including measurement and pass/fail can be obtained */
 				ChannelsTransportInfo ci = gdr.getDataT();
 
 				afterTryGet(ci);
@@ -115,7 +115,7 @@ public class Flow extends Thread implements Runnable {
 	}
 
 	/**
-	 * 在已经连接后才可调用的任务，之后找机会重命名之
+	 * Task that can only be called after connecting; find a chance to rename it later
 	 */
 	protected void preMissionRun() {
 	}

@@ -6,18 +6,18 @@ import java.nio.IntBuffer;
 
 public class BufferHandleUtil {
 	/**
-	 * 为反相作调整
+	 * Adjust for inversion
 	 * 
 	 * @param pos
 	 * @param limit
 	 */
 	public static final void restrictForReverse(IntBuffer i_adcbuf,
 			boolean reverse, int loadPos0) {
-		/** 交给画图屏幕，处理反相问题 */
+		/** Hand over to the drawing screen, handling the inversion issue */
 		reverse = false;
 
-		/** 在adc数据取出绘图前进行必要的反相处理 */
-		/** 内部也在这里把intArray转成byteArray，可同时进行两项处理 */
+		/** Perform the necessary inversion on the adc data before it is taken out for drawing */
+		/** Internally the intArray is also converted to byteArray here, so both are handled at once */
 		if (reverse) {
 			int pos = i_adcbuf.position();
 			int limit = i_adcbuf.limit();
@@ -31,18 +31,18 @@ public class BufferHandleUtil {
 	}
 
 	/**
-	 * 为反相作调整
+	 * Adjust for inversion
 	 * 
 	 * @param pos
 	 * @param limit
 	 */
 	public static final void restrictForReverse(ByteBuffer i_adcbuf,
 			boolean reverse, int loadPos0) {
-		/** 交给画图屏幕，处理反相问题 */
+		/** Hand over to the drawing screen, handling the inversion issue */
 		reverse = false;
 
-		/** 在adc数据取出绘图前进行必要的反相处理 */
-		/** 内部也在这里把intArray转成byteArray，可同时进行两项处理 */
+		/** Perform the necessary inversion on the adc data before it is taken out for drawing */
+		/** Internally the intArray is also converted to byteArray here, so both are handled at once */
 		if (reverse) {
 			int pos = i_adcbuf.position();
 			int limit = i_adcbuf.limit();

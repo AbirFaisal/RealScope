@@ -1,35 +1,35 @@
 package com.owon.uppersoft.vds.core.comm;
 
 /**
- * ICommunicateManager，将比较底层的通用数据传输接口分离为单独的类
+ * ICommunicateManager, separates the relatively low-level generic data transfer interface into a standalone class
  * 
  */
 public interface ICommunicateManager {
 	/**
-	 * 对远程端在出现传输出错后，可以用来尝试恢复并重新连接
+	 * For the remote end, after a transmission error occurs, can be used to try to recover and reconnect
 	 * 
-	 * 使用基于通信类的该方法可以避免涉及通信方式的细节信息如端口ip等， 也不需要在重新连接中设置这些，方便使用
+	 * Using this communication-class-based method avoids involving details of the communication method such as port, ip, etc., and these need not be set during reconnection, which is convenient
 	 */
 	boolean tryRescue();
 
 	int retryTimes();
 
 	/**
-	 * 在具体的实现中，根据实现的连接状态判断；
+	 * In a concrete implementation, determined by the implementation's connection state;
 	 * 
-	 * 在统一的SourceManager/BufferredSourceManager中，使用特定变量判断
+	 * In the unified SourceManager/BufferredSourceManager, determined by a specific variable
 	 * 
 	 * @return
 	 */
 	boolean isConnected();
 
 	/**
-	 * 写指令
+	 * Write command
 	 */
 	int write(byte[] arr, int len);
 
 	/**
-	 * 接收单独指令
+	 * Receive a single command
 	 */
 	int acceptResponse(byte[] arr, int len);
 

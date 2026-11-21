@@ -31,7 +31,7 @@ import com.owon.uppersoft.vds.ui.widget.help.ToggleListener;
 import com.owon.uppersoft.vds.util.ui.ListComboBoxModel;
 
 /**
- * FunctionPanel，针对不同功能的通用面板
+ * FunctionPanel, general panel for different functions
  * 
  * @author Matt
  * 
@@ -65,22 +65,22 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 在当前pane离开之前调用，用于保存信息等
+	 * Called before the current pane is left, used to save info etc.
 	 */
 	public void beforeLeave() {
 	}
 
 	/**
-	 * GroupPane是圆角边容器，可横可竖，可添加容器或组件
+	 * GroupPaneGroupPane is a rounded-edge container, horizontal or vertical, to which containers or components can be added
 	 * 
-	 * ItemPane是附着在GroupPane上的透明容器，横，添加组件
+	 * ItemPaneItemPane is a transparent container attached to GroupPane, horizontal, to which components are added
 	 * 
-	 * 容器被创建会自动存入对象内部的当前引用
+	 * A created container is automatically stored in the object's current reference
 	 * 
-	 * 组件会自动添加到相应容器
+	 * Components are automatically added to the corresponding container
 	 * 
-	 * 继承自Localizable的组件会自动被添加到List<Localizable>
-	 * list并自动调用其Localize(ResourceBundle bundle)方法
+	 * Components inheriting from Localizable are automatically added to List<Localizable>List<Localizable>
+	 * list and its Localize(ResourceBundle bundle) method is called automatically
 	 * 
 	 * 
 	 */
@@ -109,7 +109,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 创建i18n多行文本框
+	 * Create an i18n multi-line text box
 	 * 
 	 * @param key
 	 * @return
@@ -125,7 +125,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 创建多行文本框
+	 * Create a multi-line text box
 	 * 
 	 * @param t
 	 * @return
@@ -140,7 +140,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 创建i18n带冒号后缀单行文本
+	 * Create an i18n single-line text with a colon suffix
 	 * 
 	 * @param key
 	 * @return
@@ -154,7 +154,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 创建i18n单行文本
+	 * Create an i18n single-line text
 	 * 
 	 * @param key
 	 * @return
@@ -168,7 +168,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 创建既没i18n也没冒号的单行文本
+	 * Create a single-line text with neither i18n nor a colon
 	 * 
 	 * @param key
 	 * @return
@@ -181,7 +181,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 创建带冒号后缀单行文本
+	 * Create a single-line text with a colon suffix
 	 * 
 	 * @param t
 	 * @return
@@ -260,7 +260,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 创建i18n单选框
+	 * Create an i18n radio button
 	 * 
 	 * @param key
 	 * @return
@@ -274,7 +274,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 创建单选框
+	 * Create a radio button
 	 * 
 	 * @param t
 	 * @return
@@ -287,7 +287,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 创建i18n按钮
+	 * Create an i18n button
 	 * 
 	 * @param key
 	 * @return
@@ -301,7 +301,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 创建按钮
+	 * Create a button
 	 * 
 	 * @param t
 	 * @return
@@ -314,7 +314,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 创建按钮
+	 * Create a button
 	 * 
 	 * @param t
 	 * @return
@@ -325,7 +325,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 创建按钮
+	 * Create a button
 	 * 
 	 * @param t
 	 * @return
@@ -340,7 +340,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 根据个数填充数值，从1开始
+	 * Fill in numeric values according to the count, starting from 1
 	 * 
 	 * @param ofs
 	 * @return
@@ -354,7 +354,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 在已有内容数组最后添加一项
+	 * Append an item at the end of the existing content array
 	 * 
 	 * @param os
 	 * @param last
@@ -371,7 +371,7 @@ public abstract class FunctionPanel extends JPanel implements Localizable,
 	}
 
 	/**
-	 * 在已有内容数组开头添加一项
+	 * Add an item at the start of the existing content array
 	 * 
 	 * @param first
 	 * @param os

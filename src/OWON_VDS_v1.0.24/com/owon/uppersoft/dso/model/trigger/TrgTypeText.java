@@ -21,7 +21,7 @@ public class TrgTypeText {
 			return false;
 
 		TrgTypeText ttt = (TrgTypeText) obj;
-		return (ttt.ttd == ttd);// 任一为空也不等
+		return (ttt.ttd == ttd);// unequal if either is empty
 	}
 
 	@Override

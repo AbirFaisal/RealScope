@@ -23,7 +23,7 @@ public class ChannelScpiProvider {
 		this.cm = ctrm;
 	}
 
-	/** :CHANnel命令子系统 */
+	/** :CHANnel command subsystem */
 	public boolean getIsChannelDisplay(int chlidx) {
 		return cm.getCoreControl().getWaveFormInfo(chlidx).ci.isOn();
 	}
@@ -99,14 +99,14 @@ public class ChannelScpiProvider {
 	}
 
 	public double getChannelSCALe(int chlidx) {
-		// KNOW 原为mV，要求返回单位为V的值，故除以1000
+		// KNOW originally in mV; a value in V is required to be returned, so divide by 10001000
 		double vt = cm.getCoreControl().getWaveFormInfo(chlidx).ci
 				.getVoltValue();
 		return vt / 1000;
 	}
 
 	public String setChannelSCALe(int chlidx, String dv) {
-		// 从字符得到设置电压
+		// get the voltage to set from the string
 		if (!NB.isNum(dv))
 			return ErrNum;
 		double vt;
@@ -115,9 +115,9 @@ public class ChannelScpiProvider {
 		} catch (Exception e) {
 			return Failed;
 		}
-		vt *= 1000;// V转mV
+		vt *= 1000;// V to mV
 
-		// 遍历电压档位找到相同电压，设置进去
+		// iterate over the voltage scales to find the same voltage and set it
 		Volt[] vs = cm.getCoreControl().getWaveFormInfo(chlidx).ci
 				.getVoltageLabels();
 		int vtidx = -1;
@@ -161,7 +161,7 @@ public class ChannelScpiProvider {
 		if (ib == null)
 			return ScpiPool.ErrCh;
 		InfoBlockAction ibd = ib.getInfoBlockDelegate();
-		pixs = ibd.valueChanged_Directly(pixs);// 自带有限定offsset范围
+		pixs = ibd.valueChanged_Directly(pixs);// already limits the offsset range
 		return ScpiPool.Success + ",Valid Set:" + String.valueOf(pixs);
 	}
 

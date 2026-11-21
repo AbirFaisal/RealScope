@@ -172,7 +172,7 @@ public class SerialComm implements SerialPortEventListener {
 	int flag = 0;
 
 	/*
-	 * 在数据可用时处理
+	 * Handled when data is available
 	 */
 	private void responseOnDataAvaible() {
 		config("responseOnDataAvaible\r\n");
@@ -209,7 +209,7 @@ public class SerialComm implements SerialPortEventListener {
 	}
 
 	/*
-	 * 延迟一定时间以继续处理通讯
+	 * Delay for a certain time before continuing to process communication
 	 */
 	private void waitToReceiveAll(int delay) {
 		int delayRead = delay;

@@ -27,27 +27,27 @@ public class TuneModel implements DevicePref {
 
 	protected void fillArgTypeList(List<DefaultCalArgType> cmdts,
 			int channelNumber, int vbNum) {
-		// 粗调增益
+		// Coarse gain
 		DefaultCalArgType coarseGain = new DefaultCalArgType(
 				ArgType.Gain.ordinal(), Cending.ascending, channelNumber, vbNum);
 		cmdts.add(coarseGain);
 
-		// 零点步进
+		// Zero-point step
 		DefaultCalArgType zeroAmplitude = new DefaultCalArgType(
 				ArgType.Step.ordinal(), Cending.ascending, channelNumber, vbNum);
 		cmdts.add(zeroAmplitude);
 
-		// 零点补偿
+		// Zero-point compensation
 		DefaultCalArgType zeroCompensation = new DefaultCalArgType(
 				ArgType.Compensation.ordinal(), Cending.descending,
 				channelNumber, vbNum);
 		cmdts.add(zeroCompensation);
-		// cmdts.add(new WindowTrigRaiseFall(this));// 触发上升&下降
-		// cmdts.add(new CF_Multiple(this));// 触发移动倍率
-		// cmdts.add(new WindowTrig(this));// 触发高低窗口
-		// cmdts.add(new FullScale(this));// 满量程
-		// cmdts.add(new FineGain(this));// 细调增益
-		// cmdts.add(new ADCPhase(this));// ADC相位
+		// cmdts.add(new WindowTrigRaiseFall(this));// Trigger rise & fall
+		// cmdts.add(new CF_Multiple(this));// Trigger move multiplier
+		// cmdts.add(new WindowTrig(this));// Trigger high/low window
+		// cmdts.add(new FullScale(this));// Full scale
+		// cmdts.add(new FineGain(this));// Fine gain
+		// cmdts.add(new ADCPhase(this));// ADC phase
 	}
 
 	public AbsCalArgType getSimpleAdjustCMDType(int type) {
@@ -83,14 +83,14 @@ public class TuneModel implements DevicePref {
 	// }
 
 	/**
-	 * 在分区写入当前参数
+	 * Write the current parameters into the partition
 	 * 
 	 * @param bb
 	 */
 	public void writeArgsAtPartitionBuffer(ByteBuffer bb) {
 		int p = bb.position();
 
-		/** 10*6*2个byte的参数 */
+		/** 10*6*2 bytes of parameters */
 		for (int i = 0; i < getAbsCalArgTypeNumber(); i++) {
 			AbsCalArgType za = getSimpleAdjustCMDType(i);
 			logln(za.getType());
@@ -114,12 +114,12 @@ public class TuneModel implements DevicePref {
 	private PropertyChangeListener pcl;
 
 	/**
-	 * 从分区读出当前参数
+	 * Read the current parameters from the partition
 	 * 
 	 * @param bb
 	 */
 	public void readArgsFromPartitionBuffer(ByteBuffer bb) {
-		/** 10*6*2个byte的参数 */
+		/** 10*6*2 bytes of parameters */
 		for (int i = 0; i < getAbsCalArgTypeNumber(); i++) {
 			AbsCalArgType za = getSimpleAdjustCMDType(i);
 			logln(za.getType());

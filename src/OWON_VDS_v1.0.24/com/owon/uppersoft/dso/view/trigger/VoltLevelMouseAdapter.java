@@ -70,7 +70,7 @@ public class VoltLevelMouseAdapter extends MouseAdapter implements
 		int defV = ci.getPos0byRange(hr);
 
 		VoltsensableTrigger vt = (VoltsensableTrigger) at;
-		// 附加反相
+		// append inversion
 		int vs = ci.getInverseValue(vt.c_getVoltsense());
 
 		SymmetrySliderBar.createSymmetrySliderFrame(Platform.getMainWindow().getFrame(), p.x, p.y,

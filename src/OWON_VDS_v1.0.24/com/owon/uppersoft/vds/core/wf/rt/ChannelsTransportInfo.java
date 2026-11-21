@@ -46,12 +46,12 @@ public abstract class ChannelsTransportInfo extends LoadMedia {
 		return j;
 	}
 
-	/** 持续获取统计得到的帧总数 */
+	/** Total number of frames obtained by continuous acquisition statistics */
 	public int frameAllNum = 0;
-	/** 有效数据示数，普通情况下为满屏数，fft时为有效数据个数 */
+	/** Valid data count; normally the full-screen count, for fft the number of valid data points */
 	public int points = -1;
 
-	// KNOW 深存储，是一种停止状态下获取数据的方式，所以在深存储的情况下，是停止的
+	// KNOW Deep memory is a way of getting data in the stopped state, so with deep memory the scope is stopped
 	private byte DMem;
 
 	public byte getDMem() {
@@ -59,23 +59,23 @@ public abstract class ChannelsTransportInfo extends LoadMedia {
 	}
 
 	/**
-	 * 通道开关的位标志
+	 * Bit flags for channel on/off
 	 */
 	public byte chlflag;
 
-	/** 判断存储深度在网络中选择不同的发送方式 */
+	/** Choose different sending methods over the network based on the memory depth */
 	public int dmidx;
 
 	public int screendatalen, slowMove;
 
-	/** 接收通用 */
+	/** Common for receiving */
 	public int status;
 	public int channelStatus = 0;
 
 	public int triggerStatus = 0;
 
 	/**
-	 * 包含情况当前channelsList列表
+	 * Current channelsList list, depending on what is included
 	 * 
 	 * @param t
 	 */
@@ -86,7 +86,7 @@ public abstract class ChannelsTransportInfo extends LoadMedia {
 	}
 
 	/**
-	 * 包含情况当前channelsList列表
+	 * Current channelsList list, depending on what is included
 	 * 
 	 * @param t
 	 */

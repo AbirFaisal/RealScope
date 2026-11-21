@@ -26,14 +26,14 @@ public class DefaultTranslator2 extends AbsTranslator {
 		// System.out.println("step: " + step);
 		// System.out.println("pos0: " + pos0);
 		/**
-		 * 最终发的参数值和采集点的对应是反的，发送的值在(0~Unsign_Max_ADC)，所以公式最外对Unsign_Max_ADC取补，
-		 * 各个项维持正比关系
+		 * the final sent parameter value is inversely related to the acquisition point; the sent value is in (0~Unsign_Max_ADC), so the outermost part of the formula takes the complement of Unsign_Max_ADC,
+		 * each term keeps a proportional relationship
 		 * 
-		 * 步进的数值本是浮点小数，这里用整数要除以100来使用；
+		 * the step value is originally a floating-point decimal; here it is an integer and must be divided by 100 when used;
 		 * 
-		 * 在调零点补偿时，步进乘0，所以单位补偿值和发送值一一对应；
+		 * when adjusting the zero point compensation, the step is multiplied by 0, so the unit compensation value corresponds one to one with the sent value;
 		 * 
-		 * 在调零点步进时，零点位置为100，补偿固定，所以单位步进值和发送值一一对应
+		 * when adjusting the zero point step, the zero point position is 100 and the compensation is fixed, so the unit step value corresponds one to one with the sent value
 		 * 
 		 * VDS1021:
 		 * 

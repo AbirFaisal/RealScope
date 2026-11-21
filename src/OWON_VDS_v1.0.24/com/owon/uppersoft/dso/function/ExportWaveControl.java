@@ -87,7 +87,7 @@ public class ExportWaveControl implements PropertyChangeListener {
 			if (rsl == JFileChooser.APPROVE_OPTION) {
 
 				File fnoSuffix = jfc.getSelectedFile();
-				expOutFile = fnoSuffix;// 要导出,先确定文件
+				expOutFile = fnoSuffix;// to export, first determine the file
 				pauseNIntendtoExport();
 
 			} else if (rsl == JFileChooser.CANCEL_OPTION) {
@@ -108,7 +108,7 @@ public class ExportWaveControl implements PropertyChangeListener {
 		if (rsl == JFileChooser.APPROVE_OPTION) {
 			final File out = FileUtil.checkFileSuffix(jfc, filter.getEnds());
 
-			expOutFile = out;// 要导出,先确定文件
+			expOutFile = out;// to export, first determine the file
 			pauseNIntendtoExport();
 
 		} else if (rsl == JFileChooser.CANCEL_OPTION) {
@@ -140,23 +140,23 @@ public class ExportWaveControl implements PropertyChangeListener {
 			return;
 		}
 
-		/** 离线载入时也可导出 */
+		/** Export is also possible when loaded offline */
 		if (dh.isDMLoad()) {
 			println("isDMLoad()");
 			lastExportWave(expOutFile, wfm);
 			return;
 		}
 
-		// 只有深存储获取完成才能exportDMfile();
+		// Only after deep memory acquisition completes can exportDMfile();
 		if (cm.isRuntime()) {
-			/** 停止并深存储,导出会在深存储完fire机制执行 */
+			/** Stop and acquire deep memory; the export is executed by the fire mechanism after deep memory completes */
 			interComm.statusStop(true);
 		} else {
 			if (!ca.isDMDataGotAlready()) {
 				interComm.onExport_get();
 			} else {
 				if (ca.isDMAvailable()) {
-					/** 只导出 */
+					/** Export only */
 					lastExportWave(expOutFile, wfm);
 				}
 			}
@@ -211,7 +211,7 @@ public class ExportWaveControl implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		String n = evt.getPropertyName();
-		/** 用于在获取深存储的线程完成后，紧接着导出波形到硬盘 */
+		/** Used to export the waveform to disk right after the deep memory acquisition thread finishes */
 		if (n.equalsIgnoreCase(PropertiesItem.AFTER_GOT_DM_DATA)) {
 			WaveFormManager wfm = (WaveFormManager) evt.getNewValue();
 			lastExportWave(cm.ewc.expOutFile, wfm);

@@ -14,7 +14,7 @@ import com.owon.uppersoft.vds.ui.resource.FontCenter;
 
 /**
  * 
- * 多行文本，CTextArea
+ * Multi-line text, CTextArea
  * 
  * @author Matt
  * 

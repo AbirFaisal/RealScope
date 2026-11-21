@@ -31,7 +31,7 @@ public class Style {
 		Toolname = "tool.png";
 		Tool_pname = "tool_p.png";
 		// MainWindow
-		// 注释掉的那张图片，最后可以删掉
+		// the commented-out image can be deleted in the end
 		MWBGimgname = "titlebar.png";// "background.png";
 		// TriggerInfoPane
 		Trgvoltname = "trgvolt.png";
@@ -59,7 +59,7 @@ public class Style {
 	public Color CO_DockHomeCellBack;
 	public Color CO_DockHomeSeparator;
 	public Color CO_DockHomeCellFore;
-	// GroupPane 、 ImagePaintUtil 、FunctionPanel
+	// GroupPane, ImagePaintUtil, FunctionPanel
 	public Color CO_DockTitle;
 	public Color CO_DockBack;
 	public Color CO_DockContainer;

@@ -11,7 +11,7 @@ public class SliderView implements ISliderView {
 		this.max = max;
 		this.delegate = delegate;
 
-		/** KNOW 这里可能需要对min,max,v三者进行关系限界判断 */
+		/** KNOW A bounds check on the relationship among min, max and v may be needed here */
 		value = v;
 	}
 
@@ -20,7 +20,7 @@ public class SliderView implements ISliderView {
 	private int RightBorder = 500, LeftBorder = -500;
 
 	/**
-	 * 供内部改变值时调用，可以fire监听事件
+	 * Called when the value is changed internally; can fire listener events
 	 * 
 	 * @param v
 	 */
@@ -46,7 +46,7 @@ public class SliderView implements ISliderView {
 	public void adjustAdd(int del) {
 		int tmp = Math.abs(del);
 		// System.out.println(String.format("del:%d,tmp:%d", del, tmp));
-		/** 这里往左为负 */
+		/** Leftward is negative here */
 		if (value > RightBorder) {
 			if (tmp < critical40) {
 			} else if (tmp >= critical40) {

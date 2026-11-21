@@ -7,7 +7,7 @@ import java.awt.Rectangle;
 import com.owon.uppersoft.vds.ui.paint.LineDrawTool;
 
 /**
- * Background，背景绘制器
+ * Background, background painter
  * 
  */
 public class Background {
@@ -57,7 +57,7 @@ public class Background {
 
 		int YUnitLength = yunitlen;
 		int ygnum = yunitnum;
-		/** 向上 */
+		/** Up */
 		i = 1;
 		y -= YUnitLength;
 		while (y > ytop) {
@@ -82,7 +82,7 @@ public class Background {
 
 		y = ycenter;
 
-		/** 向下 */
+		/** Down */
 		i = 1;
 		y += YUnitLength;
 
@@ -165,9 +165,9 @@ public class Background {
 	}
 
 	protected void paintLines(Graphics2D g2d, Color co) {
-		/** 外轴 */
+		/** Outer axis */
 		g2d.setPaint(co);
-		/** 画矩形时少一个像素，因为线条占一个 */
+		/** One pixel less when drawing a rectangle, since the line occupies one */
 		g2d.drawRect(xleft, ytop, xright - xleft, ybottom - ytop - 1);
 		g2d.drawLine(xleft, ycenter, xright, ycenter);
 		g2d.drawLine(xcenter, ytop, xcenter, ybottom);

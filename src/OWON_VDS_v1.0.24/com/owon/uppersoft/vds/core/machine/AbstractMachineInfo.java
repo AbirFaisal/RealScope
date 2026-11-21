@@ -27,7 +27,7 @@ public abstract class AbstractMachineInfo extends MachineInfo {
 
 	public void output_FullScreenNumbers(File f) {
 		try {
-			WritableWorkbook wwb = Workbook.createWorkbook(f);// 用WritableWorkbook对象的createSheet方法创建Sheet,路径名等
+			WritableWorkbook wwb = Workbook.createWorkbook(f);// Create a Sheet using the createSheet method of the WritableWorkbook object, path name, etc.
 
 			WritableFont wfc = new WritableFont(WritableFont.ARIAL, 10,
 					WritableFont.BOLD, true, UnderlineStyle.NO_UNDERLINE,
@@ -43,7 +43,7 @@ public abstract class AbstractMachineInfo extends MachineInfo {
 			Label label;
 			Number labelN;
 
-			ws = wwb.createSheet("Sheet", 0);// 创建一个sheet
+			ws = wwb.createSheet("Sheet", 0);// create a sheet
 			int tblen = TIMEBASE.length;
 			int cfgCount = sampling_configuration_count;
 			int deep = DEEP.length;
@@ -91,20 +91,20 @@ public abstract class AbstractMachineInfo extends MachineInfo {
 	}
 
 	/**
-	 * 这个方法将详细统计，在多种通道合并及存储深度情况下(使用不同sheet页)、时基档位情况下，载入深存储数据，展示的满屏数情况，以红色斜线的方式出现
-	 * 。
+	 * This method collects detailed statistics for the loaded deep memory data across various channel merge and memory depth cases (using different sheets) and timebase scales, showing the full-screen point counts, which appear as red diagonal lines
+	 * .
 	 * 
-	 * 同时红色还用来表示满屏数达到存储深度的情况，这是压缩情况下只用压缩一次的边界情况
+	 * Red is also used to mark the case where the full-screen count reaches the memory depth, which is the boundary case in compression where only one compression pass is needed
 	 * 
-	 * 这条线的位置，往上时基拉开进行放大，往下时基叠起进行缩小。
+	 * At this line's position, going up the timebase is spread out to zoom in, going down the timebase is stacked to zoom out.
 	 * 
-	 * 默认的屏幕像素点是1k，所以以1k数值(代表1k满屏数，那么就是1:1显示)为分界，往上为拉伸的情况，往下为压缩的情况
+	 * The default screen pixel count is 1k, so the value 1k (meaning a 1k full-screen count, i.e. 1:1 display) is the dividing line; above it is the stretch case, below it is the compression case
 	 * 
-	 * 拉伸的部分显示的数值是拉伸率，压缩的部分显示的数值是压缩率
+	 * The stretched part shows the stretch ratio; the compressed part shows the compression ratio
 	 * 
-	 * 蓝色标明的是拉伸率或压缩率不为整数的情况，也有拉伸率过大而无法用int表示的情况
+	 * Blue marks cases where the stretch or compression ratio is not an integer, including cases where the stretch ratio is too large to be represented by int
 	 * 
-	 * 拉伸的情况会出现拉伸率大于1k，即屏幕上不一定有点；压缩的情况会出现压缩在不足一点的情况，都采用棕色标明
+	 * In the stretch case the stretch ratio may exceed 1k, meaning there may be no point on the screen; in the compression case it may compress to less than one point; both are marked in brown
 	 * 
 	 * @param f
 	 */
@@ -112,7 +112,7 @@ public abstract class AbstractMachineInfo extends MachineInfo {
 		String[] ChannelsUnit = { "CH1", "CH2", "CH4" };
 		int cfgCount = sampling_configuration_count;
 		try {
-			WritableWorkbook wwb = Workbook.createWorkbook(f);// 用WritableWorkbook对象的createSheet方法创建Sheet,路径名等
+			WritableWorkbook wwb = Workbook.createWorkbook(f);// Create a Sheet using the createSheet method of the WritableWorkbook object, path name, etc.
 
 			WritableSheet ws = null;
 			Label label;
@@ -145,34 +145,34 @@ public abstract class AbstractMachineInfo extends MachineInfo {
 			BigDecimal bd1k = BigDecimal.valueOf(1000);
 			for (int a = 0; a < cfgCount; a++) {
 				for (int b = 0; b < deep; b++) {
-					/** 每种通道合并&存储深度情况单独创建一个sheet */
+					/** Each channel merge & memory depth case creates a separate sheet */
 					int n = a * deep + b;
 					ws = wwb.createSheet(ChannelsUnit[a] + "_" + DEEP[b], n);
 					int dm = DEEPValue[b];
 
-					for (int m = 0; m < tblen; m++) {// 行
-						/** 0列填充时基 */
+					for (int m = 0; m < tblen; m++) {// row
+						/** 0 column filled with timebase */
 						label = new Label(0, m, TIMEBASE[m]);
 						ws.addCell(label);
 
-						/** 填充计算的基础值，%%即对角线位置，停止的情况下，以此时基载入波形 */
+						/** Fill in the base value for the computation; %% is the diagonal position; when stopped, the waveform is loaded with this timebase */
 						int fs = FullScreenData[n][m];
 
 						labelN = new Number(m + 1, m, fs);
 						labelN.setCellFormat(wcf_red);
 						ws.addCell(labelN);
 
-						/** 基础值对应的时基 */
+						/** timebase corresponding to the base value */
 						BigDecimal bd = bdTIMEBASE[m];
 						BigDecimal bdv = BigDecimal.valueOf(fs);
 
 						if (m != lastTb) {
 							int i = m;
-							/** 时基递增计算 */
+							/** timebase increment computation */
 							while (i < lastTb) {
 								i++;
 
-								/** 计算对应时基下的满屏数 */
+								/** compute the full-screen count under the corresponding timebase */
 								BigDecimal tmp = bd.divide(bdTIMEBASE[i]);
 								BigDecimal v = bdv.divide(tmp);
 								double dbv = v.doubleValue();
@@ -181,36 +181,36 @@ public abstract class AbstractMachineInfo extends MachineInfo {
 									labelN = new Number(m + 1, i, dbv);
 									labelN.setCellFormat(wcf_red);
 									/**
-									 * 标记可能的存储深度位置，%%超过存储深度压缩的处理量达到最大，压缩率增大，
-									 * 结果长度变小
+									 * Mark the possible memory depth position; %% beyond the memory depth the compression workload reaches its maximum, the compression ratio increases,
+									 * the result length becomes smaller
 									 */
 								} else if (dbv > dm) {
-									/** 满屏数超过存储深度为缩小的情况 */
-									/** %%计算满存储深度在当前像素宽度上的压缩率 */
+									/** full-screen count exceeds the memory depth: zoom-out case */
+									/** %%compute the compression ratio of the full memory depth at the current pixel width */
 									dbv = v.divide(bd1k).doubleValue();
 
 									labelN = new Number(m + 1, i, dbv);
 								} else if (dbv < 1000) {
-									/** %%计算拉伸率 */
+									/** %%compute the stretch ratio */
 									dbv = bd1k.divide(v).doubleValue();
 									if (dbv > 1000)
 										dbv = 0;
 
 									labelN = new Number(m + 1, i, dbv);
 								} else {
-									/** %%计算可能的压缩率 */
+									/** %%compute the possible compression ratio */
 									if (dbv > 1000)
 										dbv = v.divide(bd1k).doubleValue();
 
 									labelN = new Number(m + 1, i, dbv);
 								}
 								if (dbv >= 1) {
-									/** 过小数值另外考虑 */
-									if (!PrimaryTypeUtil.canHoldAsInt(dbv)) // 压缩率非整
+									/** handle values that are too small separately */
+									if (!PrimaryTypeUtil.canHoldAsInt(dbv)) // compression ratio is not an integer
 										labelN.setCellFormat(wcf_blue);
-									else if (dbv == 1) // 载入时的档位
+									else if (dbv == 1) // scale at load time
 										labelN.setCellFormat(wcf_red);
-									else if (dbv > dm) // 压缩率超过存储深度
+									else if (dbv > dm) // compression ratio exceeds the memory depth
 										labelN.setCellFormat(wcf_brown);
 									ws.addCell(labelN);
 								}
@@ -219,33 +219,33 @@ public abstract class AbstractMachineInfo extends MachineInfo {
 
 						if (m != 0) {
 							int i = m;
-							/** 时基递减计算 */
+							/** timebase decrement computation */
 							while (i > 0) {
 								i--;
 
-								/** 计算对应时基下的满屏数 */
+								/** compute the full-screen count under the corresponding timebase */
 								BigDecimal tmp = bd.divide(bdTIMEBASE[i]);
 								BigDecimal v = bdv.divide(tmp);
 								double dbv = v.doubleValue();
 
-								/** %%计算可能的压缩率 */
+								/** %%compute the possible compression ratio */
 								if (dbv > 1000)
 									dbv = v.divide(bd1k).doubleValue();
 								else if (dbv < 1000) {
-									/** %%计算拉伸率 */
+									/** %%compute the stretch ratio */
 									dbv = bd1k.divide(v).doubleValue();
 									// if (dbv > 1000)
 									// dbv = 0;
 								}
 
 								if (dbv >= 1) {
-									/** 过小数值另外考虑 */
+									/** handle values that are too small separately */
 									labelN = new Number(m + 1, i, dbv);
-									if (!PrimaryTypeUtil.canHoldAsInt(dbv))// 拉伸率非整
+									if (!PrimaryTypeUtil.canHoldAsInt(dbv))// stretch ratio is not an integer
 										labelN.setCellFormat(wcf_blue);
-									else if (dbv == 1)// 载入时的档位
+									else if (dbv == 1)// scale at load time
 										labelN.setCellFormat(wcf_red);
-									else if (dbv > 1000)// 压缩率超过1k，屏幕上可能无实际点
+									else if (dbv > 1000)// compression ratio exceeds 1k; there may be no actual points on the screen
 										labelN.setCellFormat(wcf_brown);
 									ws.addCell(labelN);
 								}

@@ -29,7 +29,7 @@ public abstract class AutoCalDelegate implements ProgressExecutor {
 	@Override
 	public void execute(final ProgressObserver po) {
 		/**
-		 * 自校正的过程比较长，占用该线程的时间和usb端口资源
+		 * Self-calibration takes a long time and occupies this thread and the usb port resources
 		 */
 		ca.getDaemon().addMission(new Runnable() {
 			@Override
@@ -69,7 +69,7 @@ public abstract class AutoCalDelegate implements ProgressExecutor {
 		String cancelPrompt = rb.getString("Label.Cancel");
 		final ProgressableDialog jd = new ProgressableDialog(wnd, true, this,
 				title, cancelt, cancelPrompt);
-		// 改模态化,自校正时不允许其它操作
+		// Made modal; no other operations are allowed during self-calibration
 		jd.setVisible(true);
 	}
 }

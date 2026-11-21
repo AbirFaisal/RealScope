@@ -21,23 +21,23 @@ import com.owon.uppersoft.vds.ui.widget.custom.CCheckBox;
 /**
  * 
  * <code>
- * 通过失败	开启，关闭	
- 操作	开始，停止
- 输出	通过，失败，响玲
- 输出即停（开启，关闭）
- 信息显示（开启，关闭）
+ * Pass/fail	on, off	
+ Operation	start, stop
+ Output	pass, fail, beep
+ Stop on output (on, off)
+ Info display (on, off)
 
- 规则	信源（ch1,ch2,ch3,ch4）
- 水平设置（x格）
- 垂直设置（x格）
- 创建规则
+ Rule	Source (ch1,ch2,ch3,ch4)
+ Horizontal setting (x divisions)
+ Vertical setting (x divisions)
+ Create rule
  <code>
  * 
  * @author Matt
  * 
  */
 public class CustomPane extends FunctionPanel {
-	public static final int jbnum = 5; // checkBox 限定勾选5个
+	public static final int jbnum = 5; // checkBox limited to 5 checked
 	private boolean isSelected = false;
 	private CCheckBox[] cb;
 	private String icn;
@@ -56,7 +56,7 @@ public class CustomPane extends FunctionPanel {
 		cb = new CCheckBox[pm.getPageNum()];
 
 		ncgp();
-		// 在首行ItemPane建取消所有勾选按钮
+		// Create a button to uncheck all in the first-row ItemPane
 		ItemPane ip = nrip();
 		ip.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		JButton cancel = new JButton();
@@ -77,7 +77,7 @@ public class CustomPane extends FunctionPanel {
 		});
 		ip.add(cancel);
 
-		// 建立12个checkBox各放入ItemPane,并监听;勾选则在快捷栏添加该项并画出，取消则在快捷栏删除该项并抹去。
+		// Create 12 checkBoxes, each put into an ItemPane, and listen; checking adds the item to the shortcut bar and draws it, unchecking removes the item from the shortcut bar and erases it.
 		Iterator<IContentPage> it = pm.pageIterator();
 		while (it.hasNext()) {
 			IContentPage icp = it.next();

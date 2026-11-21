@@ -34,22 +34,22 @@ import com.owon.uppersoft.vds.util.StringPool;
 import com.owon.uppersoft.vds.util.format.UnitConversionUtil;
 
 public abstract class RefWaveForm implements IView, IReferenceWaveForm {
-	public static final int REFPROTOCOL_VDS_INVERSE = 1;// 从1开始，0表示原型版本
-	public static final int REFPROTOCOL_VDS_PK_EXTEND = 2;// 从2开始，加入峰值检测和扩展标识
-	public static final int REFPROTOCOL_VDS_DM = 3;// 从3开始，加入深存储检测
-	public static final int REFPROTOCOL_VDS_PROBE = 4;// 从4开始，加入探头比率检测
-	public static final int REFPROTOCOL_VDS_CURRENT = REFPROTOCOL_VDS_PROBE;// 始终使用软件当前的版本
+	public static final int REFPROTOCOL_VDS_INVERSE = 1;// Starts from 1, 0 denotes the prototype version
+	public static final int REFPROTOCOL_VDS_PK_EXTEND = 2;// Starts from 2, adds peak detect and extension flags
+	public static final int REFPROTOCOL_VDS_DM = 3;// Starts from 3, adds deep memory detection
+	public static final int REFPROTOCOL_VDS_PROBE = 4;// Starts from 4, adds probe ratio detection
+	public static final int REFPROTOCOL_VDS_CURRENT = REFPROTOCOL_VDS_PROBE;// Always use the software's current version
 
 	private Color co = Color.PINK;
 
-	/** 用来选择画图方法 */
+	/** Used to select the drawing method */
 	private byte statusType;// ?RT:DM
 	private int offset; // pix
 	// int width;//pix
 	private int pos0;
 	private int probeMultiIdx;
 
-	/** 深存储时画出参考波形要用的参数 */
+	/** Parameters needed to draw the reference waveform in deep memory */
 	private double gap;
 
 	private int objIdx;
@@ -64,7 +64,7 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 	}
 
 	/**
-	 * 仅供包内访问
+	 * Package-private access only
 	 */
 	protected RefWaveForm() {
 	}
@@ -96,7 +96,7 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 		objIdx = idx;
 	}
 
-	/** math和ch的电压档位已经分化成两种 */
+	/** math and ch voltage scales have diverged into two kinds */
 	public String getIntVoltageLabel_mV(VoltageProvider vp, MathControl mc) {
 		if (waveType == ReferenceFile.RefFile_Math)
 			return mc.MathVolt[vbIdx] + "V";
@@ -108,7 +108,7 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 		pos0 = p;
 	}
 
-	/** 运行时画出参考波形要用的参数 */
+	/** Parameters needed to draw the reference waveform at runtime */
 	protected int drawMode;
 
 	public int getDrawMode() {
@@ -123,14 +123,14 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 		drawMode = dm;
 	}
 
-	// 本方法复制于WFTimeScopeControl
+	// This method is copied from WFTimeScopeControl
 	protected abstract void setPK_detect_typeByDrawMode(boolean pk_detect, MachineType mt);
 
 	public void resetRTIntBuf(int yb, boolean ScreenMode_3) {
 		/**
-		 * KNOW 临时缓冲区被直接拿来使用，在多次传输中反复使用，并且所有内容共用一个大的缓冲区方便分配，少量配置信息出于方便也存在其中
+		 * KNOW The temporary buffer is used directly and reused across multiple transfers; all contents share one large buffer for easy allocation, and a small amount of configuration info is also kept in it for convenience
 		 * 
-		 * KNOW 数组包含了从下位机传上来的所有数据，但只有用initPos和screendatalen截取的才是画在屏幕上的
+		 * KNOW The array holds all data uploaded from the device, but only the part cut out with initPos and screendatalen is drawn on the screen
 		 */
 		IntBuffer buf = adcbuf;
 
@@ -143,12 +143,12 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 
 		if (ScreenMode_3) {
 			for (j = p; j < l; i++, j++) {
-				/** 这个数组为固定adc数据，不在上面直接倍乘或偏移 */
+				/** This array is fixed adc data and is not multiplied or offset in place */
 				pa[i] = yb - bb[j];
 			}
 		} else {
 			for (j = p; j < l; i++, j++) {
-				/** 这个数组为固定adc数据，不在上面直接倍乘或偏移 */
+				/** This array is fixed adc data and is not multiplied or offset in place */
 				pa[i] = yb - (bb[j] << 1);
 			}
 		}
@@ -177,7 +177,7 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 		g2d.setClip(r);
 
 		// System.err.println(" dr ref" + pk_detect + ", " + pk_detect_type);
-		/** 对DM的情况也需要知道画图模型(来自满屏点数信息)，才能在pk的情况下画图 */
+		/** For DM the drawing model (from the full-screen point count) must also be known, so that drawing works in the pk case */
 		Platform.getControlManager().getMachine().getPaintOne().paintRef(g2d,
 				drawMode, xb, linkline, r.y, r.height, pk_detect, pixbuf,
 				pk_detect_type, statusType, gap);
@@ -193,14 +193,14 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 			return hc - (pos0 << 1);
 	}
 
-	/** 获得与目标相同序号的字母 */
+	/** Get the letter with the same index as the target */
 	public Character getLetter() {
 		return (char) (objIdx + 97);
 	}
 
 	public void paintItem(Graphics2D g2d, ScreenContext pc, Rectangle r,
 			boolean onFront) {
-		/** 以下为同下位机连接的情况下，获取实时数据绘图，快速刷新 */
+		/** Below: while connected to the device, fetch real-time data for drawing, fast refresh */
 
 		Color tmp = g2d.getColor();
 		g2d.setColor(co);
@@ -209,7 +209,7 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 
 		int y = r.y;
 		int bottom = r.y + r.height;
-		/** 画左边的标尺 ,依次画顶 底 中 */
+		/** Draw the left ruler: top, bottom, middle in turn */
 		LineUtil.paintChannelLabel(yb, y, bottom, g2d, String
 				.valueOf(getLetter()), 2, onFront);
 
@@ -220,7 +220,7 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 	protected int pk_detect_type = PKDetectDrawUtil.PK_DETECT_TYPE_NO;
 
 	/**
-	 * 仅供包内访问，由RefWaveForm对象导入内部状态，如出错，则返回null，否则返回自身引用
+	 * Package-private access only. Imports the internal state from a RefWaveForm object; returns null on error, otherwise returns a reference to itself
 	 * 
 	 * @param f
 	 * @param cm
@@ -242,9 +242,9 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 			return null;
 		}
 
-		/** 机型信息 4 字节 */
+		/** Model info, 4 bytes */
 		int intMachType = ba.nextInt();
-		/** 版本信息 4 字节 */
+		/** Version info, 4 bytes */
 		int refFileVer = ba.nextInt();
 
 		if (refFileVer >= REFPROTOCOL_VDS_PK_EXTEND) {
@@ -261,17 +261,17 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 			DMlen = ba.nextInt();
 		}
 
-		/** 文件长度 4 字节 */
+		/** File length, 4 bytes */
 		int intFileSize = ba.nextInt();
 
-		/** 数据区标记0 */
+		/** Data section marker 00 */
 		byte dataMark = ba.nextByte();
-		/** 区长度 */
+		/** Section length */
 		int dataLen = ba.nextInt();
-		/** 区点数据 */
+		/** Section point data */
 		ba.skip(dataLen);
 
-		/** 波形信息区 */
+		/** Waveform info section */
 		byte waveMark = ba.nextByte();
 
 		int waveLen = ba.nextInt();
@@ -301,17 +301,17 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 		if (statusType == 'T')
 			setDrawMode((int) gap);
 
-		/** 参考波形在同一软件中仍可能跨机型使用，这里的问题和文件机型匹配同一级别，一同解决 */
+		/** A reference waveform may still be used across models within the same software; this problem is at the same level as file model matching and is solved together with it */
 		setPK_detect_typeByDrawMode(pk_detect, cm.getMachine());
 
 		int collectedDataP = ba.nextInt();
 
-		ba.reset(collectedDataP);// 跳到采集点数据的指针位置;
+		ba.reset(collectedDataP);// Jump to the pointer position of the acquired point data;;
 
 		IntBuffer adcbuf = IntBuffer.allocate(dataNums);
 		setAdcbuf(adcbuf);
-		int[] bs = adcbuf.array();// bs指向rwf.adcbuf
-		ba.getIntArray(bs, 0, dataNums);// 读从curPos,即采集点数据指针位置到limit数据，写入bs数据中
+		int[] bs = adcbuf.array();// bs points to rwf.adcbuf
+		ba.getIntArray(bs, 0, dataNums);// Read data from curPos, i.e. the acquired point data pointer position, to limit, and write it into the bs data
 		adcbuf.position(0);
 		adcbuf.limit(dataNums);
 
@@ -322,7 +322,7 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 
 	protected RefWaveForm createFromWF(ControlManager cm, IRefSource wf,
 			WaveFormManager wfm) {
-		/** 接收可画数据 */
+		/** Receive drawable data */
 		IntBuffer adcbuf = wf.save2RefIntBuffer();
 		setAdcbuf(adcbuf);
 
@@ -340,7 +340,7 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 
 		boolean isDM = dh.isDMLoad();
 
-		/** 保存画图模式(gap, drawMode)和offset */
+		/** Save the drawing mode (gap, drawMode) and offset */
 		if (isDM) {
 			WaveFormInfo dmli = cm.getWaveFormInfoControl()
 					.getWaveFormInfoForDM();
@@ -352,7 +352,7 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 
 			offset = wftsc.getSlowMoveOffset(wftsc.getDrawMode());
 		}
-		/** 对DM的情况也需要知道画图模型，才能在pk的情况下画图 */
+		/** For DM the drawing model must also be known, so that drawing works in the pk case */
 		drawMode = wftsc.getDrawMode();
 
 		DMlen = cm.getDeepMemoryControl().getDeepDataLen();
@@ -361,7 +361,7 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 		return this;
 	}
 
-	private int refFileVer = REFPROTOCOL_VDS_CURRENT;// 文件格式版本
+	private int refFileVer = REFPROTOCOL_VDS_CURRENT;// File format version
 
 	/**
 	 * @param cm
@@ -373,12 +373,12 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 		try {
 			RandomAccessFile raf = new RandomAccessFile(f, "rw");
 			final SoftwareControl sc = cm.getSoftwareControl();
-			/** 运行和深存储下读取文件头 */
+			/** Read the file header in run and deep memory modes */
 			byte[] fhb = sc.getMachineHeader().getBytes(StringPool.ASCIIString);
 
-			raf.write(fhb); // 文件头(10 字节, ASCII)
-			raf.writeInt(cm.getMachineTypeForSave()); // 4个字节机型信息 7102
-			raf.writeInt(refFileVer); // 4个字节版本信息 1
+			raf.write(fhb); // File header (10 bytes, ASCII), ASCII)
+			raf.writeInt(cm.getMachineTypeForSave()); // 4 bytes of model info 7102
+			raf.writeInt(refFileVer); // 4 bytes of version info 1
 
 			raf.writeByte(VDS_Portable.FILEFORMAT_REF);
 			raf.writeByte(0);
@@ -388,19 +388,19 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 			raf.writeInt(cm.getDeepMemoryControl().getDeepDataLen());
 
 			fileLenPos = raf.getFilePointer();
-			raf.writeInt(0);// 文件长度
+			raf.writeInt(0);// File length
 
-			/* 数据区 */
-			raf.writeByte(0);// 数据区入口标记为0(1字节，byte)
-			p1 = raf.getFilePointer();// 数据区入口指针
-			raf.writeInt(0);// 数据区长度
+			/* Data section */
+			raf.writeByte(0);// Data section entry marker is 0 (1 byte, byte)
+			p1 = raf.getFilePointer();// Data section entry pointer
+			raf.writeInt(0);// Data section length
 
-			t1 = collectedDataP = raf.getFilePointer();// 采集点数据的指针位置
+			t1 = collectedDataP = raf.getFilePointer();// Pointer position of the acquired point data
 
-			int[] dest = adcbuf.array();// dest指向rwf.adcbuf
+			int[] dest = adcbuf.array();// dest points to rwf.adcbuf
 			int p = adcbuf.position(), l = adcbuf.limit();
 			for (int i = p; i < l; i++)
-				raf.writeInt(dest[i]);// rwf.adcbuf的pos to limit,写入raf
+				raf.writeInt(dest[i]);// rwf.adcbuf's pos to limit, written to raf
 
 			dataNums = l - p;
 			t2 = raf.getFilePointer();
@@ -409,41 +409,41 @@ public abstract class RefWaveForm implements IView, IReferenceWaveForm {
 			raf.writeInt((int) (t2 - t1));
 			raf.seek(t2);
 
-			/* 波形信息区 */
-			raf.writeByte(1);// 波形通道区入口标记为1(1字节，byte)
+			/* Waveform info section */
+			raf.writeByte(1);// Waveform channel section entry marker is 1 (1 byte, byte)
 			p1 = raf.getFilePointer();
-			raf.writeInt(0);// 波形信息区长度
+			raf.writeInt(0);// Waveform info section length
 
 			t1 = raf.getFilePointer();
 
-			/** 运行或深存储的状态 */
+			/** Run or deep memory state */
 			raf.writeByte(statusType);
-			/** 参考波形类型: (4字节, int) */
+			/** Reference waveform type: (4 bytes, int) */
 			raf.writeInt(waveType);
 
 			raf.writeBoolean(pk_detect);
 
-			/** 零点位置 (4字节, int) */
+			/** Zero position (4 bytes, int) */
 			raf.writeInt(pos0);
-			/** 时基档位 (4字节, int) */
+			/** Timebase scale (4 bytes, int) */
 			raf.writeInt(tbIdx);
-			/** 电压档位(4字节,int) */
+			/** Voltage scale (4 bytes,int) */
 			raf.writeInt(vbIdx);
-			/** 探头比率(4字节,int)add */
+			/** Probe ratio (4 bytes,int)add */
 			raf.writeInt(probeMultiIdx);
 
-			/** 传输的数据点个数(4字节,int) */
+			/** Number of transferred data points (4 bytes,int) */
 			raf.writeInt(dataNums);
-			/** 画图起始偏移量(4字节,int) */
+			/** Drawing start offset (4 bytes,int) */
 			raf.writeInt(offset);
-			/** 深存储画图需要的点间隔, 非深存储时存放满屏点数 */
+			/** Point interval needed for deep memory drawing; holds the full-screen point count when not in deep memory */
 			if (statusType == 'M') {
 				raf.writeDouble(gap);
 			} else {
-				/** 以此确保存盘读入的ref也有DrawMode信息 */
+				/** This ensures that refs read from disk also have DrawMode info */
 				raf.writeDouble(rtscreendatalen);
 			}
-			/** 采集点数据的指针位置; (4字节, int) */
+			/** Pointer position of the acquired point data; (4 bytes, int) */
 			raf.writeInt((int) collectedDataP);
 
 			t2 = raf.getFilePointer();

@@ -65,7 +65,7 @@ public abstract class VoltsensableTrigger extends AbsTrigger {
 
 	@Override
 	public String getLabelText(boolean inverse, int voltbase, int pos0) {
-		// 在作为触发电平文本
+		// used as the trigger level text
 		double volt = c_getVoltsense() - pos0;
 		volt = volt * voltbase / GDefine.PIXELS_PER_DIV;
 		return UnitConversionUtil.getSimplifiedVoltLabel_mV(inverse ? -volt
@@ -74,12 +74,12 @@ public abstract class VoltsensableTrigger extends AbsTrigger {
 	}
 
 	/**
-	 * 对指定参数进行增减
+	 * Increment or decrement the specified parameter
 	 * 
 	 * @param del
-	 *            不为0才发指令改变
+	 *            Send a command to change only if non-zero
 	 * @param type
-	 * @return 触发的事件类名
+	 * @return class name of the trigger event
 	 */
 	public boolean handelIncr(int del, TrgCheckType type) {
 		if (del != 0) {
@@ -99,7 +99,7 @@ public abstract class VoltsensableTrigger extends AbsTrigger {
 	}
 
 	/**
-	 * 画触发电平标志
+	 * Draw the trigger level marker
 	 * 
 	 */
 	protected void paintChannelVoltsenseLabel(PaintChannelTrgLabelContext pctlc) {
@@ -116,19 +116,19 @@ public abstract class VoltsensableTrigger extends AbsTrigger {
 
 		int vs = c_getVoltsense();
 
-		/** 触发电平时，画线的就是要画框的 */
+		/** For the trigger level, the one that draws the line is the one that draws the box */
 		boolean showDetail = lineLevel && !pctlc.cssm.isTrgInfoControlActive();
 
 		int y = 0;
 
-		// 绘画框值信息
+		// draw the box value information
 		int voltbase = ci.getVoltageLabel().getValue();
 		int p0 = ci.getPos0();
 		boolean inverse = ci.isInverse();
 
 		String detailInfo = getLabelText(inverse, voltbase, p0);
 
-		// 反相画图倒一下就行了，在3in1前面
+		// for inverted drawing just flip it, placed before 3in1
 		if (inverted) {
 			vs = ChannelInfo.getLevelFromPos0(vs, pos0);
 		}
@@ -143,14 +143,14 @@ public abstract class VoltsensableTrigger extends AbsTrigger {
 		LineUtil.paintTrgLevel(y, lr, g2d, c, lineLevel, arrow, "T");
 
 		/**
-		 * 画触发电平标志的信息框
+		 * Draw the info box of the trigger level marker
 		 */
 		if (detailInfo != null && showDetail)
 			LineUtil.paintTrgLevelDetail(g2d, lr, y, detailInfo, c);
 	}
 
 	/**
-	 * 画触发电平标志
+	 * Draw the trigger level marker
 	 * 
 	 */
 	public void paintChannelTrgLabel(PaintChannelTrgLabelContext pctlc) {

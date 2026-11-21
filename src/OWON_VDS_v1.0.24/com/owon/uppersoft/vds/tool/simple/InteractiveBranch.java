@@ -45,7 +45,7 @@ public class InteractiveBranch implements Runnable, Logable {
 			}
 
 			// long p1 = System.currentTimeMillis();
-			int wn = ucc.write(req, req.length);// return -1，write failure
+			int wn = ucc.write(req, req.length);// return -1, write failure
 			if (wn <= 0) {
 				addTextArea(" send( " + wn + " bytes):  " + "Error!");
 				return;

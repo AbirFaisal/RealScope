@@ -58,13 +58,13 @@ public abstract class DMInfo {
 		return isPKDetect;
 	}
 
-	public int extend;// 扩展格式 -OfflineDM & 记录文件
+	public int extend;// Extended format -OfflineDM & recording file
 
 	/**
-	 * 边读取，边判断文件有无问题
+	 * Read while judging whether the file has problems
 	 * 
 	 * @param ba
-	 * @return 文件是否可用
+	 * @return Whether the file is usable
 	 */
 	public boolean setMore_OfflineDM(CByteArrayInputStream ba) {
 		extend = ba.nextInt();

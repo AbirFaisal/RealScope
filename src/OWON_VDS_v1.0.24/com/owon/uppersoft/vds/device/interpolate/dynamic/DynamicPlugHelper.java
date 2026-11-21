@@ -7,7 +7,7 @@ import com.owon.uppersoft.vds.device.interpolate.TinyPlugHelper;
 
 /**
  * 
- * 最右边为在插值后屏幕内1k点基础上增加的点数=（50+50）*插值倍数
+ * The rightmost is the number of points added on top of the 1k points within the screen after interpolation = (50+50) * interpolation factor
  * 
  * 5ns 10(100MS/s) 100 10000
  * 
@@ -43,7 +43,7 @@ public class DynamicPlugHelper extends TinyPlugHelper {
 		ByteBuffer bb = bbs[chl];
 		if (bb == null) {
 			bb = bbs[chl] = ByteBuffer.allocate(12000);
-			// dm: (10+50+50)*100+1000预留; trg:100*100
+			// dm: (10+50+50)*100+1000 reserved; trg:100*100
 		}
 		// Arrays.fill(bb.array(), (byte)0);
 
@@ -64,7 +64,7 @@ public class DynamicPlugHelper extends TinyPlugHelper {
 		// log(arr[i] + ", ");}
 		// logln("");
 		// logln(l - p);
-		/** 还有问题，判断是否线性的处理先关闭 */
+		/** There is still a problem; the handling of judging whether it is linear is turned off for now */
 		// int percentage = DynamicPlugUtil.arith_interp_mode(arr, p, l);
 		// logln("percentage: " + percentage);
 		int plugrate = (int) getPlugRate(fullscreen);
@@ -76,7 +76,7 @@ public class DynamicPlugHelper extends TinyPlugHelper {
 		// percentage <= 68 || percentage > 100
 		// sine
 		if (fullscreen == FULLSCREEN_400) {
-			// 200ns, vds1022从本档位开始拉触发
+			// 200ns, vds1022 starts trigger pull from this scale
 			p_adc = lineplug2_5(rtbuf);
 			pi.sinePlugRate = 1;
 			pi.linearPlugRate = 2.5;
@@ -90,7 +90,7 @@ public class DynamicPlugHelper extends TinyPlugHelper {
 				return doLineJob(fullscreen, plugrate, rtbuf, pi);
 			}
 			DynamicPlugUtil.sinc_interps(arr, p, l, out, plugrate, sincTable);
-			// 100ns时，5倍插值效果
+			// 100ns: effect of 5x interpolation
 			// Plug5.sine_interpolate(out, arr, len);
 			p_adc = ByteBuffer.wrap(out, 0, uselen);
 			pi.sinePlugRate = plugrate;
@@ -104,7 +104,7 @@ public class DynamicPlugHelper extends TinyPlugHelper {
 		// line
 		ByteBuffer p_adc = null;
 		switch (fullscreen) {
-		case FULLSCREEN_400:// 200ns, vds1022从本档位开始拉触发
+		case FULLSCREEN_400:// 200ns, vds1022 starts trigger pull from this scale
 			p_adc = lineplug2_5(bf);
 
 			pi.sinePlugRate = 1;
@@ -126,7 +126,7 @@ public class DynamicPlugHelper extends TinyPlugHelper {
 
 	public double getPlugRate(int fullscreen) {
 		switch (fullscreen) {
-		case FULLSCREEN_400:// 200ns, vds1022从本档位开始拉触发
+		case FULLSCREEN_400:// 200ns, vds1022 starts trigger pull from this scale
 			return 2.5;
 		case 200:// 100ns
 			return 5;

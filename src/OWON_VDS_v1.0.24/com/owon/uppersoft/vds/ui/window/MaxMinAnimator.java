@@ -10,15 +10,15 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 /**
- * 最大小化动画效果
+ * Maximize/minimize animation effect
  * 
- * 通过增加动画帧的间隔时间，减少帧次数，来达到在不同性能设备上的一直表现
+ * Increase the interval between animation frames and reduce the frame count to achieve consistent behavior on devices of different performance
  * 
  */
 public class MaxMinAnimator {
-	public static final int TitleDockHeight = 30;// TitleDialog高度
-	public static final int AnimationFrameCount = 3;// 改变次数
-	public static final int AnimationGapTime = 10;// 时间间隔
+	public static final int TitleDockHeight = 30;// TitleDialog height
+	public static final int AnimationFrameCount = 3;// Number of changes
+	public static final int AnimationGapTime = 10;// Time interval
 
 	private Font titleFont;
 	private Color titlebg;

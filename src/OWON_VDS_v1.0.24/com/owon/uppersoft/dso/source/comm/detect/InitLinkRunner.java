@@ -44,18 +44,18 @@ public class InitLinkRunner implements Runnable {
 
 		mw.prompt(pp, null);
 
-		// 加屏蔽可单独测试弹出提示
+		// With this masked, the popup prompt can be tested separately
 		// if (true)return;
 
-		// 连接成功&失败
+		// Connection succeeded & failed
 		boolean b = cm.sourceManager.connectUSB(id);
 		if (!b) {
-			// USB连接失败的提示?
+			// USBPrompt for USB connection failure??
 			mw.updateStatus(TrgStatus.Offline);
 			return;
 		}
 
-		// 成功连接，开始初始化等设置
+		// Connected successfully, start initialization and other settings
 		mw.updateStatus(TrgStatus.Connect);
 
 		try {

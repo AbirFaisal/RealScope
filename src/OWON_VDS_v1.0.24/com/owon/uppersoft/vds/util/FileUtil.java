@@ -10,7 +10,7 @@ import java.nio.channels.FileChannel;
 import javax.swing.JFileChooser;
 
 /**
- * FileUtil，文件工具类
+ * FileUtil, file utility class
  */
 public class FileUtil {
 
@@ -47,16 +47,16 @@ public class FileUtil {
 		}
 	}
 
-	/** 本方法需要增加过滤器后使用,jfc.addChoosableFileFilter(MyFileFilter filter); */
+	/** This method must be used after adding a filter,jfc.addChoosableFileFilter(MyFileFilter filter); */
 	public static File checkFileSuffix(JFileChooser jfc, String format) {
 		File f = jfc.getSelectedFile();
 
-		/** TODO 判断过滤器是否可用，不可用return f */
-		/** 如果文件是以选定扩展名结束的，则为真，使用原名 */
+		/** TODO Check whether the filter is usable; if not, return f */
+		/** If the file ends with the selected extension, true; use the original name */
 		boolean hasSuffix = f.getName().toUpperCase()
 				.endsWith("." + format.toUpperCase());
 		if (!hasSuffix) {
-			// 否则加上选定的扩展名
+			// Otherwise, append the selected extension
 			f = new File(f.getAbsolutePath() + "." + format);
 		}
 		return f;
@@ -65,11 +65,11 @@ public class FileUtil {
 	public static File cutFileSuffix(JFileChooser jfc, String format) {
 		File f = jfc.getSelectedFile();
 
-		/** 如果文件是以选定扩展名结束的，则为真 */
+		/** If the file ends with the selected extension, true */
 //		boolean hasSuffix = f.getName().toUpperCase()
 //				.endsWith("." + format.toUpperCase());
 //		if (hasSuffix) {
-			// 为真去掉选定的扩展名
+			// If true, remove the selected extension
 			int endIndex=f.getAbsolutePath().toUpperCase().lastIndexOf("."+ format.toUpperCase());
 			if(endIndex<0)
 				return f;
@@ -81,7 +81,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 拷贝文件或文件夹
+	 * Copy a file or folder
 	 * 
 	 * @param source
 	 * @param dest
@@ -138,7 +138,7 @@ public class FileUtil {
 	}
 	
 	/**
-	 * 截取文件source1的0到s1_End部分，和source2的s2_skip+1到文件尾之间部分，两者合成一个dest文件
+	 * Take the part of file source1 from 0 to s1_End and the part of source2 from s2_skip+1 to the end of the file, and merge the two into one dest file
 	 * 
 	 * @param source1
 	 * @param source2
@@ -187,7 +187,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 删除文件或文件夹
+	 * Delete a file or folder
 	 * 
 	 * @param path
 	 */
@@ -196,7 +196,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 删除文件或文件夹
+	 * Delete a file or folder
 	 * 
 	 * @param file
 	 * @return
@@ -220,7 +220,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 覆盖文件或文件夹，强制删除
+	 * Overwrite a file or folder, forcing deletion
 	 * 
 	 * @param dest
 	 * @return
@@ -233,7 +233,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 覆盖文件或文件夹到指定目录中，强制删除
+	 * Overwrite a file or folder into the specified directory, forcing deletion
 	 * 
 	 * @param destP
 	 * @param src

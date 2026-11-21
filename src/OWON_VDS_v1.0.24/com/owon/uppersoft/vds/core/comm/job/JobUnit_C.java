@@ -18,7 +18,7 @@ public abstract class JobUnit_C implements JobUnit {
 	}
 
 	/**
-	 * 在调用任务下传的过程中，缓冲区被反复重置使用，由于过程是串行的，不会出现使用冲突
+	 * While invoking the task downlink, the buffer is reset and reused repeatedly; since the process is serial, no usage conflict occurs
 	 * 
 	 */
 	protected abstract void packCJob(ByteBuffer bbuf);
@@ -33,13 +33,13 @@ public abstract class JobUnit_C implements JobUnit {
 		}
 
 		/**
-		 * 不使用本类提供的指令打包方法，而是重写packJob()来完全自定义发送指令的内容
+		 * Does not use the command packing method provided by this class; instead overrides packJob() to fully customize the content of the command sent
 		 */
 		ByteBuffer bbuf = sm.clearByteBuffer();
 		packCJob(bbuf);
 		// DBG.dbgArray(bbuf.array(), 0, bbuf.position());
 		sm.write(bbuf.array(), bbuf.position());
-		// 注释并关闭连接检测就可以单独调试发送的指令
+		// Comment out and disable the connection check to debug the commands sent in isolation
 
 		// long t1 = System.currentTimeMillis();
 
@@ -50,9 +50,9 @@ public abstract class JobUnit_C implements JobUnit {
 	}
 
 	/**
-	 * 在继承中重写
+	 * Override in subclasses
 	 * 
-	 * 在任务通用行为之后执行一些动作
+	 * Perform some actions after the task's common behavior
 	 * 
 	 * @param cm
 	 * @param sm

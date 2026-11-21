@@ -57,7 +57,7 @@ public class ChannelSelectionPane extends JPanel {
 
 		int chls = wfic.getLowMachineChannels();
 		String[] sels;
-		// tc.isSingleTrg() && 不限制这个，防止在交替时跳出判断
+		// tc.isSingleTrg() && not restricting this, to prevent jumping out of the check during alternate
 		if (isExtTrgSupport
 				&& TrgTypeDefine.Edge == tc.getSingleTriggerSet().getTrigger().type) {
 			sels = new String[chls + 1];
@@ -94,7 +94,7 @@ public class ChannelSelectionPane extends JPanel {
 				TriggerUIInfo tpp = tc.getTriggerUIInfo();
 				tpp.setCurrentAltChannel(selIdx);
 				// alt load
-				TrgTypeDefine etd = tpp.getCurrentTriggerSet().getTrigger().type;// 触发模式序号0~3
+				TrgTypeDefine etd = tpp.getCurrentTriggerSet().getTrigger().type;// trigger mode index 0~3
 				tp.simpleSelectCBBMode(etd);
 				tp.switch2Pane(etd);
 			}

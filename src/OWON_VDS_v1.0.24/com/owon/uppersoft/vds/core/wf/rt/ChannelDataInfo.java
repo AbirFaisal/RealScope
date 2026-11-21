@@ -15,7 +15,7 @@ public class ChannelDataInfo extends FreqInfo {
 	public static final int Max_8bit = 125, Min_8bit = -125;
 	public static final int Max = Max_8bit, Min = Min_8bit;
 
-	/** 通用 */
+	/** Common */
 	public int chl;
 	public int datalen;
 	public int initPos;
@@ -40,7 +40,7 @@ public class ChannelDataInfo extends FreqInfo {
 		}
 	}
 
-	/** 只给运行时使用 */
+	/** For runtime use only */
 	private LinkedList<ByteBuffer> buflist = new LinkedList<ByteBuffer>();
 
 	public LinkedList<ByteBuffer> getBuflist() {
@@ -89,7 +89,7 @@ public class ChannelDataInfo extends FreqInfo {
 
 	public OfflineInfo oi = new OfflineInfo();
 
-	/** 以下三者实际未使用 */
+	/** The following three are actually unused */
 	public int xoffset;
 
 	public void forceGround(int pos0) {
@@ -125,17 +125,17 @@ public class ChannelDataInfo extends FreqInfo {
 	}
 
 	/**
-	 * 在adc数据取出绘图前进行必要的反相处理
+	 * Perform necessary inversion before adc data is taken out for drawing
 	 * 
-	 * 在载入数据的入口就做了反相，后续如录制、参考波形，都可以使用现成的
+	 * Inversion is done at the entry for loading data, so later uses such as recording and reference waveforms can use it as is
 	 * 
-	 * 越界判断目前是每帧皆判断
+	 * Bounds checking is currently done for every frame
 	 * 
 	 * @param pos0
 	 * @param inverse
 	 */
 	public void handleADCBoundNInverse(int pos0, boolean inverse) {
-		/** LinkedList 的迭代器使用链式迭代，可找到最后一帧 */
+		/** LinkedList iterator uses chained iteration, which can find the last frame */
 		Iterator<ByteBuffer> lb = buflist.iterator();
 		while (lb.hasNext()) {
 			ByteBuffer buf = lb.next();
@@ -144,11 +144,11 @@ public class ChannelDataInfo extends FreqInfo {
 	}
 
 	/**
-	 * 在adc数据取出绘图前进行必要的反相处理
+	 * Perform necessary inversion before adc data is taken out for drawing
 	 * 
-	 * 在载入数据的入口就做了反相，后续如录制、参考波形，都可以使用现成的
+	 * Inversion is done at the entry for loading data, so later uses such as recording and reference waveforms can use it as is
 	 * 
-	 * 越界判断目前是每帧皆判断
+	 * Bounds checking is currently done for every frame
 	 * 
 	 * @param pos0
 	 * @param inverse

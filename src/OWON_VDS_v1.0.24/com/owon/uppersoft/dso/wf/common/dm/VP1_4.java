@@ -39,7 +39,7 @@ public class VP1_4 extends VirtualPoint {
 	}
 
 	/**
-	 * 用于压缩率很大算不出满屏数的情况下
+	 * Used when the compression ratio is so large that the full-screen count cannot be computed
 	 * 
 	 * @param rate
 	 */
@@ -59,7 +59,7 @@ public class VP1_4 extends VirtualPoint {
 
 	@Override
 	protected int getDilute2EndRemaining(boolean neg, int re) {
-		// 由于pixel == 1，不会有余量像素偏移
+		// Since pixel == 1, there is no leftover pixel offset
 		return 0;
 	}
 
@@ -79,7 +79,7 @@ public class VP1_4 extends VirtualPoint {
 			// 1:1
 			arr[abeg] = tmp[tbeg];
 		} else if (sample < 4) {
-			// 把1:2,1:3的情况都适用到1:4，汇总出最大最小起始
+			// Apply the 1:2 and 1:3 cases to 1:4 as well, and gather the maximum and minimum starts
 			_4for1(arr, abeg, tmp, tbeg, sample);
 		} else {
 			_4for1(arr, abeg, tmp, tbeg, sample);
@@ -104,7 +104,7 @@ public class VP1_4 extends VirtualPoint {
 			// 1:1
 			arr[abeg] = tmp[tbeg];
 		} else if (sample < 4) {
-			// 把1:2,1:3的情况都适用到1:4，汇总出最大最小起始
+			// Apply the 1:2 and 1:3 cases to 1:4 as well, and gather the maximum and minimum starts
 			_4for1(arr, abeg, tmp, tbeg, num);
 		} else {
 			_4for1(arr, abeg, tmp, tbeg, num);
@@ -112,7 +112,7 @@ public class VP1_4 extends VirtualPoint {
 	}
 
 	/**
-	 * 循环使用缓冲区，比较得到最值等信息
+	 * Reuse the buffer in a loop, comparing to obtain extreme values and other information
 	 * 
 	 * @param arr
 	 * @param abeg
@@ -131,7 +131,7 @@ public class VP1_4 extends VirtualPoint {
 	}
 
 	/**
-	 * 循环使用缓冲区，比较得到最值等信息
+	 * Reuse the buffer in a loop, comparing to obtain extreme values and other information
 	 * 
 	 * @param min_max
 	 * @param first_last

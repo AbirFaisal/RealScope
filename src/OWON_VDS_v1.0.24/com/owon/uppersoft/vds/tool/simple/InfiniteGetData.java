@@ -26,13 +26,13 @@ public class InfiniteGetData implements Runnable {
 
 	public void run() {
 		try {
-			sendCMD(0x10A, 2, 0x2A0);// 垂直位置调整
+			sendCMD(0x10A, 2, 0x2A0);// Vertical position adjustment
 			sendCMD(0x108, 2, 0x250);
 			sendCMD(0xb, 1, 03);
-			sendCMD(0x224, 1, 1);// os识别的批量设置
-			sendCMD(0x2E, 2, 0xF100);// 触发位置设定0
+			sendCMD(0x224, 1, 1);// os recognition batch setting
+			sendCMD(0x2E, 2, 0xF100);// Trigger position setting 0
 			sendCMD(0x30, 2, 0xF100);
-			sendCMD(0x24, 2, 0x2000);// ch1: 0x0, ch2: 0x2000单触边沿触发
+			sendCMD(0x24, 2, 0x2000);// ch1: 0x0, ch2: 0x2000 single trigger edge trigger
 
 			Thread.sleep(shortsleep);
 			while (true) {
@@ -71,7 +71,7 @@ public class InfiniteGetData implements Runnable {
 			if (num == 0)
 				return false;
 
-			/** 没在加指令时才发送 */
+			/** Send only when no command is being added */
 			if (!uct.canAddcmd()) {
 				ucc.dealCMDInteractive();
 				System.out.println("dealCMD true");

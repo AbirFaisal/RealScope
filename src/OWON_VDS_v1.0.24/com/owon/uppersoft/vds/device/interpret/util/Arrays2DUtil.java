@@ -8,7 +8,7 @@ import com.owon.uppersoft.dso.util.PropertiesItem;
 public class Arrays2DUtil {
 
 	/**
-	 * 只传递非负数，否则用0
+	 * only non-negative numbers are passed, otherwise 0 is used0
 	 * 
 	 * @param dest
 	 * @param bb
@@ -51,7 +51,7 @@ public class Arrays2DUtil {
 	}
 
 	/**
-	 * 只传递非负数，否则用0
+	 * only non-negative numbers are passed, otherwise 0 is used0
 	 * 
 	 * @param bb
 	 * @param src

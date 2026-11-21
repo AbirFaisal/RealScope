@@ -1,18 +1,18 @@
 package com.owon.uppersoft.vds.ui.dialog;
 
 /**
- * ProgressExecutor，为执行任务的实际体，提供外部方法供控制执行过程
+ * ProgressExecutor, the actual body that executes the task, providing external methods to control the execution process
  * 
  */
 public interface ProgressExecutor {
 	/**
 	 * @param po
-	 *            进度观察者
+	 *            progress observer
 	 */
 	void execute(ProgressObserver po);
 
 	/**
-	 * 在ui线程调用，afterCancel也是执行ui相关内容
+	 * Called on the ui thread; afterCancel also executes ui-related content
 	 * 
 	 * @param afterCancel
 	 */

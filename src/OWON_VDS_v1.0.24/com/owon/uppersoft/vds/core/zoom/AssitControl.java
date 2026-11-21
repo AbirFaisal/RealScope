@@ -28,7 +28,7 @@ public class AssitControl {
 	private int ztbIdx;
 	private ITimeControl tc;
 
-	// 视窗扩展默认关闭
+	// View window extension is off by default
 	private int selected = MAIN_STATUS, prevSelected = NO_STATUS;
 
 	private int distance;
@@ -56,7 +56,7 @@ public class AssitControl {
 		});
 
 		load(p);
-		/** deltbm为扩展下b1b2的中间到两边界距离 */
+		/** deltbm is the distance from the middle of b1b2 to both boundaries under extension */
 		int deltbm = BigDecimal.valueOf(BORDER)
 				.multiply(tcp.ratio(ztbIdx, tc.getTimebaseIdx())).intValue();
 		b1 = middleb1b2 + deltbm;
@@ -66,12 +66,12 @@ public class AssitControl {
 			b2 = -BORDER;
 		}
 
-		/** 保存M时基、M水平触发位置 */
+		/** Save the M timebase and M horizontal trigger position */
 		mtbIdx = tc.getTimebaseIdx();
 		mhtp = tc.getHorizontalTriggerPosition();
 	}
 
-	/** 视窗设定下 黄线屏幕内移动 */
+	/** Under view window setting, the yellow line moves within the screen */
 	private void screenMoveWithin(int n, int t) {
 		b1 += n;
 		b2 += n;
@@ -79,7 +79,7 @@ public class AssitControl {
 			tc.c_setHorizontalTriggerPosition(b2);
 	}
 
-	/** 视窗设定下 b1b2到边界不能移动，引起水平触发位置反向移动 */
+	/** Under view window setting, b1b2 cannot move to the boundary, causing the horizontal trigger position to move in the opposite direction */
 	private void horizontalTriggerMove(int n, int t) {
 		int tn = t - n;
 		if (tn < b2)
@@ -88,33 +88,33 @@ public class AssitControl {
 			tc.c_setHorizontalTriggerPosition(tn);
 	}
 
-	/** 视窗设定下 黄线重置居中时时调用 */
+	/** Under view window setting, called when the yellow line is reset to center */
 	public void assistMoveb1b2Center() {
 		int del = -(b1 + b2) / 2;
 		assistSetMoveb1b2(del);
 	}
 
 	/**
-	 * 视窗设定下 黄线平移时调用 +...-
+	 * Under view window setting, called when the yellow line is translated +...-
 	 */
 	public void assistSetMoveb1b2(int n) {
 		int t = tc.getHorizontalTriggerPosition();
-		/** 该特例判断已经包含在下个判断 */
+		/** This special case check is already included in the next check */
 		// if (b1 == border & b2 == -border){
 		// return;
 		// }
 		/**
-		 * b1、b2视为一个整体平移，控件拖动距离为n。
+		 * b1 and b2 are treated as a whole and translated together; the control drag distance is n.
 		 * 
-		 * 总体分3种情况:平移后,b1、b2加移动距离n两者，
+		 * Overall there are 3 cases: after translation, adding the movement distance n to both b1 and b2,
 		 * 
-		 * 1.都仍在屏幕内 b1 += n;b2 += n;
+		 * 1. both are still within the screen b1 += n;b2 += n;
 		 * 
-		 * 2.在屏幕左界的左边，分两种情况处理： A:b1正好在左界，那么水平触发位置直接移动距离n;
-		 * B:b1差nn距离才到达左界，那么水平触发位置移动距离(n-nn)。
+		 * 2. to the left of the left screen boundary, handled in two cases: A: b1 is exactly at the left boundary, then the horizontal trigger position moves directly by distance n;
+		 * B:b1 is nn short of reaching the left boundary, then the horizontal trigger position moves by distance (n-nn).
 		 * 
-		 * 3.在屏幕右界的右边，分两种情况处理： A:b2正好在右界，那么水平触发位置直接移动距离n;
-		 * B:b2差nn距离才到达右界，那么水平触发位置移动距离(n-nn)。
+		 * 3. to the right of the right screen boundary, handled in two cases: A: b2 is exactly at the right boundary, then the horizontal trigger position moves directly by distance n;
+		 * B:b2 is nn short of reaching the right boundary, then the horizontal trigger position moves by distance (n-nn).
 		 */
 		int bn1 = b1 + n, bn2 = b2 + n;
 		if (bn1 <= BORDER & bn2 >= -BORDER) {
@@ -124,7 +124,7 @@ public class AssitControl {
 			/** b1Closeto LBorder , b1At LBorder */
 			if (b1 < BORDER) {
 				// b1ClosetoLBorder();
-				int nn = BORDER - b1;// nn是b1到border的距离
+				int nn = BORDER - b1;// nn is the distance from b1 to border
 				screenMoveWithin(nn, t);
 				n = n - nn;
 				horizontalTriggerMove(n, t);
@@ -135,7 +135,7 @@ public class AssitControl {
 		} else if (bn2 < -BORDER) {
 			if (b2 > -BORDER) {
 				// b2ClosetoRBorder();
-				int nn = -BORDER - b2;// nn是b2到-border距离
+				int nn = -BORDER - b2;// nn is the distance from b2 to -border
 				screenMoveWithin(nn, t);
 				n = n - nn;
 				horizontalTriggerMove(n, t);
@@ -151,9 +151,9 @@ public class AssitControl {
 
 	}
 
-	/** 视窗设定下 时基调整时调用 */
+	/** Under view window setting, called when the timebase is adjusted */
 	public void assistSetcomputDeltabb1b2(int ztbIdx, int mtbIdx) {
-		this.ztbIdx = ztbIdx;// 界面操作设定的ztb，通过这里传入
+		this.ztbIdx = ztbIdx;// The ztb set by the UI operation, passed in through here
 		if (mtbIdx == ztbIdx) {
 			b1 = BORDER;
 			b2 = -BORDER;
@@ -162,7 +162,7 @@ public class AssitControl {
 		/** deltb */
 		int deltbm = BigDecimal.valueOf(BORDER)
 				.multiply(tcp.ratio(ztbIdx, mtbIdx)).intValue();
-		/** b1、b2 */
+		/** b1, b2 */
 		int middleb1b2 = (b1 + b2) / 2;// b1-(b1-b2)/2;
 		int mb1 = middleb1b2 + deltbm;
 		int mb2 = middleb1b2 - deltbm;
@@ -176,7 +176,7 @@ public class AssitControl {
 			b1 = middleb1b2 + deltbm;
 			b2 = middleb1b2 - deltbm;
 		}
-		/** 当视窗设定的时基调整时限制t>=b2 */
+		/** When the timebase of the view window setting is adjusted, limit t>=b2 */
 		// int t = tc.getHorizontalTriggerPosition();
 		// if (t < b2)
 		// tc.c_setHorizontalTriggerPosition(b2);
@@ -209,12 +209,12 @@ public class AssitControl {
 
 	private void onHorTrgPosChangedByTimebase(int tbidx, int htp) {
 		if (isonZoom()) {
-			// 保存ztb,A与Z互切时要用
+			// Save ztb, needed when switching between A and Z
 			this.ztbIdx = tbidx;
 			keepZtbNotbiggerthanMtb(tbidx);
 		} else if (isonAssistSet()) {
 			mtbIdx = tbidx;
-			/** 主时基跟着变大，A切M导致触发位置反比例变小;A切M是重新载入mhtp,要赋新值 */
+			/** The main timebase grows accordingly, and switching A to M makes the trigger position shrink inversely proportionally; switching A to M reloads mhtp, so a new value must be assigned */
 			mhtp = htp;
 		}
 	}
@@ -227,12 +227,12 @@ public class AssitControl {
 		return selected == MAIN_STATUS;
 	}
 
-	/** 重新定位平触。 M到Z 、A到Z时调用 */
+	/** Relocate the horizontal trigger. Called for M to Z and A to Z */
 	private void reLocateHTP2Zoom() {
 		/**
-		 * Z平触 同屏幕中心零点位置的距离＝（A平触 同(b1+b2)/2的距离）*Rate
+		 * Z horizontal trigger's distance from the screen center zero point = (A horizontal trigger's distance from (b1+b2)/2)*Rate
 		 * 
-		 * Rate = mtb/ztb , deltb不为零时Rate = BORDER/deltb
+		 * Rate = mtb/ztb , deltb is nonzero, Rate = BORDER/deltb
 		 */
 		// BigDecimal mtb = tc.bdTIMEBASE[tc.getTimebaseIdx()];
 		// BigDecimal ztb = tc.bdTIMEBASE[ztbIdx];
@@ -242,7 +242,7 @@ public class AssitControl {
 		zhtp = (int) ((t - (b1 + b2) / 2) * Rate);
 
 		tc.c_setTimebase_HorTrgPos(ztbIdx, zhtp);
-		// KNOW 切到Zoom时，则Selected>0，detailPane设成不能调主时基,主水平触发位置。
+		// KNOW When switching to Zoom, Selected>0, and detailPane is set so that the main timebase and main horizontal trigger position cannot be adjusted.
 	}
 
 	private void Main2Zoom() {
@@ -258,7 +258,7 @@ public class AssitControl {
 		reLocateHTP2Zoom();
 	}
 
-	/** 重新定位b1b2。Z到M 、Z到A时调用。 Z状态下Z时基调整、ZHTP平移需重新定位A状态下的b1 b2 */
+	/** Relocate b1b2. Called for Z to M and Z to A. In Z state, Z timebase adjustment or ZHTP translation requires relocating (in A state) the b1 b2 */
 	private void reLocateb1b2pos2AssistSet() {
 		if (ztbIdx == mtbIdx) {
 			b1 = BORDER;
@@ -267,8 +267,8 @@ public class AssitControl {
 		}
 
 		/**
-		 * 求M下b1b2中心点坐标，M状态下mhtp到b1b2中心距离＝Z状态下的zhtp到屏幕中心点的距离乘以倍率，倍率=ztb/mtb;
-		 * 得mhtp-middleb1b2=(zhtp-0)*rate
+		 * Find the center point coordinate of b1b2 under M; in M state the distance from mhtp to the b1b2 center = the distance from zhtp to the screen center point in Z state times the ratio, ratio=ztb/mtb;
+		 * gives mhtp-middleb1b2=(zhtp-0)*rate
 		 */
 		int middleb1b2 = mhtp
 				- BigDecimal.valueOf(tc.getHorizontalTriggerPosition())
@@ -292,18 +292,18 @@ public class AssitControl {
 
 	private void zoom2Main() {
 		reLocateb1b2pos2AssistSet();
-		/** 载入 M时基 M平触 */
+		/** Load M timebase and M horizontal trigger */
 		tc.c_setTimebase_HorTrgPos(mtbIdx, mhtp);
 	}
 
 	private void assistSet2Main() {
-		// KNOW 保存A下平触位置与b1b2中心的距离。
+		// KNOW Save the distance between the horizontal trigger position in A and the b1b2 center.
 		distance = tc.getHorizontalTriggerPosition() - (b1 + b2) / 2;
-		/** 载入 M时基 M平触 */
+		/** Load M timebase and M horizontal trigger */
 		tc.c_setTimebase_HorTrgPos(mtbIdx, mhtp);
 	}
 
-	/** 重新定位b1b2。M到A时调用。 如果在M下有移动T，切到A下保持b1b2相对T位置不变 */
+	/** Relocate b1b2. Called for M to A. If T is moved under M, keep the position of b1b2 relative to T unchanged after switching to A */
 	private void keepb1b2RelativeHtp() {
 		int middleb1b2 = mhtp - distance;
 		int deltbm = BigDecimal.valueOf(BORDER)
@@ -326,7 +326,7 @@ public class AssitControl {
 	}
 
 	private void main2AssistSet() {
-		/** 保存M时基、M水平触发位置 */
+		/** Save the M timebase and M horizontal trigger position */
 		mtbIdx = tc.getTimebaseIdx();
 		mhtp = tc.getHorizontalTriggerPosition();
 
@@ -339,11 +339,11 @@ public class AssitControl {
 	private void zoom2AssistSet() {
 		reLocateb1b2pos2AssistSet();
 
-		/** 载入 M时基 M平触 */
+		/** Load M timebase and M horizontal trigger */
 		tc.c_setTimebase_HorTrgPos(mtbIdx, mhtp);
 	}
 
-	/** 各状态切换汇总成三大状态切换 */
+	/** Summarize the switches between states into three major state switches */
 	public void switch2Zoom(ControlManager cm) {
 		boolean isRuntime = cm.isRuntime();
 		if (!isRuntime) {
@@ -351,7 +351,7 @@ public class AssitControl {
 			new FadeIOShell().prompt(msg, Platform.getMainWindow().getFrame());
 		}
 
-		/** 保存M时基、M水平触发位置 */
+		/** Save the M timebase and M horizontal trigger position */
 		mtbIdx = tc.getTimebaseIdx();
 		mhtp = tc.getHorizontalTriggerPosition();
 		if (prevSelected == MAIN_STATUS)
@@ -362,8 +362,8 @@ public class AssitControl {
 
 	public void switch2Main() {
 		/**
-		 * KNOW A状态和Z状态下若调大Z时基，大到M时基跟着改变时， 存的mtbIdx 、mhtpz需重算;
-		 * 已在astbcbb和zmtbcbb的limitZTB()判断中重算。
+		 * KNOW A state and Z state: if the Z timebase is increased so much that the M timebase changes with it, the stored mtbIdx, mhtpz need recalculation;
+		 * already recalculated in the limitZTB() checks of astbcbb and zmtbcbb.
 		 */
 		if (prevSelected == ASSIT_STATUS)
 			assistSet2Main();
@@ -379,13 +379,13 @@ public class AssitControl {
 	}
 
 	public void keepZtbNotbiggerthanMtb(int ztbIdx) {
-		/** Z状态下调时基,Z时基大于M时基，则DetailPane主时基跟着变大更新 */
+		/** Z state: adjusting the timebase, if the Z timebase is greater than the M timebase, the DetailPane main timebase grows accordingly and is updated */
 		if (ztbIdx > mtbIdx) {
-			/** Z时基变大导致M时基跟着变大；Z切M是重新载入ac.mtbIdx,要赋ac.mtbIdx新值 */
+			/** Z timebase growing makes the M timebase grow; switching Z to M reloads ac.mtbIdx, so a new value must be assigned to ac.mtbIdx */
 			int old_mtb = mtbIdx;
 			mtbIdx = ztbIdx;
 
-			/** M时基跟着变大，导致M触发位置反比例变小;Z切M是重新载入ac.mhtp,要重计算、赋ac.mhtp新值 */
+			/** M timebase growing makes the M trigger position shrink inversely proportionally; switching Z to M reloads ac.mhtp, so it must be recalculated and a new value assigned to ac.mhtp */
 			int newmhtp = BigDecimal.valueOf(mhtp)
 					.multiply(tcp.ratio(old_mtb, ztbIdx)).intValue();
 			mhtp = newmhtp;
@@ -432,7 +432,7 @@ public class AssitControl {
 	}
 
 	public void drawMarks(Graphics2D g2d, Rectangle r) {
-		/** ac中以屏幕中线为坐标原点，画图时这里的b1、b2也相应与其统一原点 */
+		/** ac uses the screen center line as the coordinate origin; when drawing, b1 and b2 here also share that origin */
 		int b1 = BORDER + r.x - this.b1;
 		int b2 = BORDER + r.x - this.b2;
 		if (isonAssistSet()) {
@@ -440,7 +440,7 @@ public class AssitControl {
 			LineDrawTool.drawUnequalDashesLine(g2d, r.y, b1, r.y + r.height);
 			LineDrawTool.drawUnequalDashesLine(g2d, r.y, b2, r.y + r.height);
 		}
-		/** 主视窗时基、水平触发值 */
+		/** Main window timebase, horizontal trigger value */
 		drawMtbMhtp(g2d, r);
 	}
 

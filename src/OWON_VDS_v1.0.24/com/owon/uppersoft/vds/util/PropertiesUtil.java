@@ -20,7 +20,7 @@ import com.owon.uppersoft.vds.data.Point;
 import com.owon.uppersoft.vds.data.RGB;
 
 /**
- * PropertiesUtil，对Properties中的值和基本类型的转换
+ * PropertiesUtil, conversion between values in Properties and primitive types
  * 
  */
  class PropertiesUtil {
@@ -29,7 +29,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	public static final String Variant = "Variant";
 
 	/**
-	 * 装载boolean，非1为false，1为true
+	 * Load a boolean: non-1 is false, 1 is true
 	 * 
 	 * @param p
 	 * @param key
@@ -41,7 +41,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	}
 
 	/**
-	 * 持久化boolean，true则设为1，false设为0
+	 * Persist a boolean: true is set to 1, false is set to 0
 	 * 
 	 * @param p
 	 * @param key
@@ -53,7 +53,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	}
 
 	/**
-	 * 装载Locale
+	 * Load a Locale
 	 * 
 	 * @param p
 	 * @return
@@ -70,7 +70,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	}
 
 	/**
-	 * 持久化Locale
+	 * Persist a Locale
 	 * 
 	 * @param p
 	 * @param locale
@@ -82,7 +82,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	}
 
 	/**
-	 * 装载文件历史列表
+	 * Load the file history list
 	 * 
 	 * @param p
 	 * @param key
@@ -107,7 +107,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	}
 
 	/**
-	 * 持久化文件历史列表
+	 * Persist the file history list
 	 * 
 	 * @param p
 	 * @param key
@@ -124,7 +124,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	}
 
 	/**
-	 * 装载整型值列表
+	 * Load a list of integer values
 	 * 
 	 * @param p
 	 * @param key
@@ -143,7 +143,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	}
 
 	/**
-	 * 持久化整形值列表
+	 * Persist a list of integer values
 	 * 
 	 * @param p
 	 * @param key
@@ -161,7 +161,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	}
 
 	/**
-	 * 装载字符列表
+	 * Load a list of strings
 	 * 
 	 * @param p
 	 * @param key
@@ -180,7 +180,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	}
 
 	/**
-	 * 装载字符列表
+	 * Load a list of strings
 	 * 
 	 * @param p
 	 * @param key
@@ -201,7 +201,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	}
 
 	/**
-	 * 持久化字符列表
+	 * Persist a list of strings
 	 * 
 	 * @param p
 	 * @param key
@@ -219,12 +219,12 @@ import com.owon.uppersoft.vds.data.RGB;
 	}
 
 	/**
-	 * 装载RGB，会改变传入rgb的值
+	 * Load RGB; changes the value of the passed-in rgb
 	 * 
 	 * @param p
 	 * @param key
 	 * @param rgb
-	 *            默认rgb，为空则自行创建默认
+	 *            default rgb; if null, a default is created
 	 * @return
 	 */
 	public static RGB loadRGB(Properties p, String key, RGB rgb) {
@@ -233,7 +233,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	}
 
 	/**
-	 * 持久化RGB
+	 * Persist RGB
 	 * 
 	 * @param p
 	 * @param key
@@ -244,7 +244,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	}
 
 	/**
-	 * 装载int
+	 * Load int
 	 * 
 	 * @param p
 	 * @param key
@@ -269,7 +269,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	}
 
 	/**
-	 * 持久化int
+	 * Persist int
 	 * 
 	 * @param p
 	 * @param key
@@ -281,7 +281,7 @@ import com.owon.uppersoft.vds.data.RGB;
 
 	/**
 	 * @param name
-	 * @return 获取名字对应的Locale
+	 * @return Get the name's corresponding Locale
 	 */
 	public static Locale forLocale(String name) {
 		String[] strs = name.split("_");
@@ -300,7 +300,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	
 	/**
 	 * @param names
-	 * @return 批量获取名字对应的Locale
+	 * @return Batch get the names' corresponding Locale
 	 */
 	public static List<Locale> forNames(String[] names) {
 		List<Locale> tls = new LinkedList<Locale>();
@@ -316,7 +316,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	 * @param p
 	 * @param key
 	 * @param pt
-	 *            可能包含默认值，如为null，将创建默认(0, 0)
+	 *            May contain default values; if null, will create default (0, 0)
 	 * @return
 	 */
 	public static Point loadPoint(Properties p, String key, Point pt) {
@@ -345,7 +345,7 @@ import com.owon.uppersoft.vds.data.RGB;
 	 * @param p
 	 * @param key
 	 * @param length
-	 *            >0时用于判断所需的数组大小
+	 *            >0: used to determine the required array size
 	 * @return
 	 */
 	public static int[] loadInts(Properties p, String key, int length) {

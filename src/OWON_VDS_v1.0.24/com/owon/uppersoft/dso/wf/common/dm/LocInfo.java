@@ -15,42 +15,42 @@ import com.owon.uppersoft.vds.core.wf.dm.DMDataInfo;
 import com.owon.uppersoft.vds.core.wf.dm.DMInfo;
 
 /**
- * LocInfo，算法前提和设计思路前提：
+ * LocInfo, premise of the algorithm and of the design approach:
  * 
- * 用途：是支持停止情况和静态载入波形的情况，读入深存储(无慢扫)的数据，
+ * Purpose: supports the stopped case and the static loaded waveform case, reading in deep memory (no slow sweep) data,
  * 
- * 需要实现水平移动和时基切换带来的缩放，需要标记水平触发的位置，需要较好的画图效果。
- * 
- * 
- * 
- * 
- * 第一步：明确可能出现的所有情况，以下；
- * 
- * 通道开关、存储深度、时基和共同决定了采样率，从而也决定了满屏数
- * 
- * 拉伸还是压缩，伸缩率整数与否
- * 
- * 读入各种已知状态的参数，计算采样率和伸缩率表，建立结果集，才能明确适当效率的算法
+ * needs to implement the zoom brought by horizontal movement and timebase switching, needs to mark the horizontal trigger position, needs a good drawing effect.
  * 
  * 
  * 
- * 第二步：分别考虑拉伸和压缩，选用合适的内部结构和内存数组
  * 
- * 然后考虑是否可合并，这样对于外部需要进行的电压缩放、零点平移、3in1缩放、画图坐标切换自动适用
+ * Step 1: clarify all possible cases, below;
  * 
+ * Channel on/off, memory depth and timebase together determine the sampling rate, and thus the full-screen count
  * 
+ * Stretch or compress, whether the zoom ratio is an integer
  * 
- * 第三步：实现跨越伸缩两种状态的时基切换，先完成伸缩各自的时基切换，
- * 
- * 再找到两种共有的临界状态，即压缩率==拉伸率==1的情况，把整个切换链路连起来
- * 
- * 
- * 
- * 第四步：实现伸缩，初测
+ * Read in the parameters of the various known states, compute the sampling rate and zoom ratio tables, and build the result set, so that an algorithm of suitable efficiency can be identified
  * 
  * 
  * 
- * 第五步：实现水平触发位置和顶端视图
+ * Step 2: consider stretch and compress separately, choose suitable internal structures and memory arrays
+ * 
+ * Then consider whether they can be merged, so that externally required voltage scaling, zero point panning, 3in1 zoom and drawing coordinate switching apply automatically
+ * 
+ * 
+ * 
+ * Step 3: implement timebase switching across the stretch and compress states; first finish the timebase switching within each of them,
+ * 
+ * then find the critical state common to both, i.e. compression ratio == stretch ratio == 1, and link up the whole switching chain
+ * 
+ * 
+ * 
+ * Step 4: implement stretch/compress, initial test
+ * 
+ * 
+ * 
+ * Step 5: implement the horizontal trigger position and the top view
  * 
  */
 public abstract class LocInfo {
@@ -61,13 +61,13 @@ public abstract class LocInfo {
 	public int filePointer;
 	public int datalen;
 
-	/** 切换时基时存放前次的时基情况 */
+	/** Holds the previous timebase state when switching timebase */
 	public BigDecimal bdtb;
 	public BigDecimal bdfsl;// fullScreenLen
 
 	public final int pixs, halfpixs;
 
-	/** 满屏压缩率 */
+	/** Full-screen compression ratio */
 	public int fsrate;
 
 	public LocInfo() {
@@ -97,7 +97,7 @@ public abstract class LocInfo {
 		loadPos0 = cdi.pos0;
 		this.shouldReverse = shouldReverse;
 
-		/** 在深存储时通过慢速移动数，计算新的filePointer，锁定有效波形区 */
+		/** In deep memory, compute the new filePointer from the slow move count, locking the valid waveform area */
 		filePointer = cdi.filePointer;
 
 		screendatalen = cdi.screendatalen;
@@ -112,7 +112,7 @@ public abstract class LocInfo {
 
 		wasSlowMove = getMachineInfo().isSlowMove(tbidx);
 		if (wasSlowMove) {
-			/** 在进入compress模式的时候，初始化设置databeg为和运行时同样算法下的值，然后在compress的任何情况下都是如此 */
+			/** When entering compress mode, initialize databeg to the value under the same algorithm as at run time; this holds in all compress cases */
 			int r = datalen / pixs;
 			if (r > 1) {
 				slowmove -= slowmove % r;
@@ -121,7 +121,7 @@ public abstract class LocInfo {
 			}
 		}
 
-		/** 尝试把1k满屏的情况视为压缩，这样Dilute的情况就少了，不用处理慢扫 */
+		/** Try treating the 1k full-screen case as compress, which reduces the Dilute cases and avoids handling slow sweep */
 		compress = becomeCompress(screendatalen);
 
 		diu = createDiluteInfoUnit(this);
@@ -133,7 +133,7 @@ public abstract class LocInfo {
 		// System.err.println(screendatalen+", "+compress);
 
 		diu.reinit();
-		/** 1k个点默认交给diu来处理，但是插值只在<1k个点的情况下 */
+		/** 1k points are handed to diu by default, but interpolation is only for fewer than 1k points */
 		if (compress) {
 			ciu.initLoad(this, cdi);
 		} else {
@@ -175,7 +175,7 @@ public abstract class LocInfo {
 		BigDecimal nexbdtb = getMachineInfo().bdTIMEBASE[idx];
 		if (bdtb == null)
 			System.err.println("bdtb==null");
-		// 运行切到暂停，快速滚动鼠标轮，深存储完后有可能bdtb为空，也许是没完全载入就去调时基造成。
+		// Switching from run to pause and scrolling the mouse wheel quickly, bdtb may be empty after deep memory finishes, perhaps caused by adjusting the timebase before it fully loaded.
 		BigDecimal bi = nexbdtb.divide(bdtb);// BigDecimal.divide(UnknownSource)
 		BigDecimal nexfsl = bdfsl.multiply(bi);
 		double dblnexfsl = nexfsl.doubleValue();
@@ -223,7 +223,7 @@ public abstract class LocInfo {
 	}
 
 	/**
-	 * 取不同情况下触发点相对屏幕中心的像素差，作为画图和获取时间值的算法源头
+	 * Get the pixel difference of the trigger point relative to the screen center in different cases, as the source of the algorithms for drawing and getting time values
 	 * 
 	 * -...+
 	 * 

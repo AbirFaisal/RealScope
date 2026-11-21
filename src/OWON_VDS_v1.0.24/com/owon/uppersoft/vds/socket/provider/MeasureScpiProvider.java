@@ -42,7 +42,7 @@ public class MeasureScpiProvider {
 		return Double.toString(1.0 * sum / (len - ps));
 	}
 
-	/** :MEASure命令子系统 */
+	/** :MEASure command subsystem */
 	public String getMeasureValue(int chidx, int typidx, String[] msts) {
 		if (!cm.getMeasureManager().ison())
 			return ScpiPool.WarnMeasureOff;
@@ -65,7 +65,7 @@ public class MeasureScpiProvider {
 		VR[] vrs = wf.getMeasureADC().vrs;
 		double v = vrs[typidx].v;
 		// System.out.println("Value:" + vrs[typidx].vu + ", v:  " +v);
-		/* 以下测量类型的值要从mV转为V */
+		/* the values of the following measurement types must be converted from mV to VV */
 		MeasureT mt = MeasureT.VALUES[typidx];
 		switch (mt) {
 		case PKPK:
@@ -76,7 +76,7 @@ public class MeasureScpiProvider {
 		case VBASe:
 		case AVERage:
 		case CYCRms:
-			v = v / 1000;// mV转V;
+			v = v / 1000;// mV to V;
 			break;
 		}
 		b = vrs[typidx].vu == "?";

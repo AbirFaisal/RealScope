@@ -3,7 +3,7 @@ package com.owon.uppersoft.vds.device.interpolate.dynamic;
 public class SineTables {
 
 	/**
-	 * 可以使用本类的N*5插值参数，也可使用TableUtil的N*9插值参数
+	 * Either the N*5 interpolation parameters of this class or the N*9 interpolation parameters of TableUtil can be used
 	 * 
 	 * @param interp
 	 * @return

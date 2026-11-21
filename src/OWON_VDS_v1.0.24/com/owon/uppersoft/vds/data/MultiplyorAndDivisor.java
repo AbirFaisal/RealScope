@@ -3,15 +3,15 @@ package com.owon.uppersoft.vds.data;
 import java.math.BigDecimal;
 
 /**
- * 给Dilute的Pluger和普通情况下通用
+ * Shared by Dilute's Pluger and the ordinary case
  * 
  */
 public class MultiplyorAndDivisor {
 
-	/** 被除数, 单位拉伸范围 */
+	/** Dividend, unit stretch range */
 	private int multiplyor = 1;
 
-	/** 除数, 单位拉伸范围内的点数 */
+	/** Divisor, number of points within the unit stretch range */
 	private int divisor = 1;
 
 	public MultiplyorAndDivisor() {
@@ -64,9 +64,9 @@ public class MultiplyorAndDivisor {
 	/**
 	 * v / multiplyor * divisor; when divisor = 1
 	 * 
-	 * 必须先除去掉余数然后再乘，顺序不对结果就不对
+	 * The remainder must be removed first and then multiplied; the wrong order gives wrong results
 	 * 
-	 * 可用于得到cpidx层面上的前后偏移点数
+	 * Can be used to get the front and back offset point counts at the cpidx level
 	 * 
 	 * @param v
 	 * @return
@@ -76,7 +76,7 @@ public class MultiplyorAndDivisor {
 	}
 
 	/**
-	 * md所对应的pix_block的前后偏移个数
+	 * md: the front and back offset counts of the corresponding pix_block
 	 * 
 	 * @param v
 	 * @return

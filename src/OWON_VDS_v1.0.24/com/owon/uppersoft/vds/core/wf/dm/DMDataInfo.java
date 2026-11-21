@@ -21,7 +21,7 @@ public abstract class DMDataInfo extends FreqInfo {
 	public int filePointer;
 
 	/**
-	 * 在有拉触发拿前后各多拿原始点的情况下，这个值为拉触发判断的起始位置，如果有插值，这个值也是插值的起始位置
+	 * When extra original points are taken before and after for trigger pull, this value is the starting position of the trigger pull judgment; if there is interpolation, this value is also the starting position of the interpolation
 	 */
 	public int initPos;
 
@@ -47,7 +47,7 @@ public abstract class DMDataInfo extends FreqInfo {
 		inverseType = ba.nextInt();
 	}
 
-	/** 拉触发参数只在需要插值的情况下使用 */
+	/** Trigger pull parameters are used only when interpolation is needed */
 	public PlugInfo pi = new PlugInfo();
 
 	public int receivePlugInfo(byte[] arr2nd, int i) {
@@ -121,22 +121,22 @@ public abstract class DMDataInfo extends FreqInfo {
 	}
 
 	/**
-	 * 将纯粹的一些通道相关波形信息存入raf
+	 * Store purely channel-related waveform info into raf
 	 * 
 	 * @param raf
 	 * @throws IOException
 	 */
 	public void writeRandomAccessFile(RandomAccessFile raf) throws IOException {
 		raf.writeInt(initPos);
-		// 在传输的数据点中的起始画图点位置
-		raf.writeInt(screendatalen); // 满屏画图点个数:
+		// Starting drawing point position within the transmitted data points
+		raf.writeInt(screendatalen); // Number of full-screen drawing points:
 
 		raf.writeInt(pi.plugDataLength);
 		raf.writeInt(pi.sinePlugRate);
 		raf.writeFloat((float) pi.linearPlugRate);
 		raf.writeInt(pi.pluggedTrgOffset);
 
-		raf.writeInt(datalen); // 传输的数据点个数：
+		raf.writeInt(datalen); // Number of transmitted data points:
 		raf.writeInt(slowMove);//
 
 		raf.writeInt(pos0);

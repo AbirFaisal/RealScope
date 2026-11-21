@@ -22,9 +22,9 @@ public class DeviceFlashCommunicator implements Logable {
 	public static final byte DEVPREF_RBYTE1 = (byte) 0x55;
 
 	public static final AddValueAttachCommand write_flash = new AddValueAttachCommand(
-			"write_flash", 0x1a0, 1, 1);// 写flash
+			"write_flash", 0x1a0, 1, 1);// Write flash
 	public static final AddValueAttachCommand read_flash = new AddValueAttachCommand(
-			"read_flash", 0x1b0, 1, 1);// 读flash
+			"read_flash", 0x1b0, 1, 1);// Read flash
 
 	public DeviceFlashCommunicator() {
 	}

@@ -40,7 +40,7 @@ public class TitleStatusLabel extends JLabel implements MouseListener {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		int mouseBtn = e.getButton();
-		// KOWN 这句有报空错误,做下面处理
+		// KOWN This line throws a null error, handled below
 		if (Platform.getControlApps() == null)
 			return;
 		InfiniteDaemon dae = Platform.getControlApps().getDaemon();
@@ -76,7 +76,7 @@ public class TitleStatusLabel extends JLabel implements MouseListener {
 		return ts;
 	}
 
-	private boolean tempStatus = false;// 用于临时改为autoseting...
+	private boolean tempStatus = false;// Used to temporarily change to autoseting...
 
 	public void setTempStatus(boolean tempStatus) {
 		this.tempStatus = tempStatus;
@@ -102,7 +102,7 @@ public class TitleStatusLabel extends JLabel implements MouseListener {
 			setForeground(Color.WHITE);
 		String t = ts.toString();
 
-		/** 由于使用tempStatus以后仍然可能拿一帧再开始自动设置，所以有可能还是被改成Trg'd，这里需要屏蔽掉 */
+		/** Since after using tempStatus a frame may still be taken before auto setting starts, it may still be changed to Trg'd; this needs to be masked here */
 		if (!tempStatus)
 			setText(t);
 

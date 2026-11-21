@@ -9,7 +9,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 /**
- * ComponentMover，移动组件
+ * ComponentMover, moves components
  * 
  */
 public class ComponentMover implements MouseMotionListener, MouseListener {
@@ -65,7 +65,7 @@ public class ComponentMover implements MouseMotionListener, MouseListener {
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		/** 在此可添加双击最大化的代码 */
+		/** Code for maximizing on double-click can be added here */
 	}
 
 	public void mousePressed(MouseEvent e) {

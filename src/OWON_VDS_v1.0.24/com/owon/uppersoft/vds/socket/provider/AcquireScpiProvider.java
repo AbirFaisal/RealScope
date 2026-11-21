@@ -26,13 +26,13 @@ public class AcquireScpiProvider {
 		String state = TrgStatus.VALUES[trgIdx].toString();
 		if (state.equals(TrgStatus.Ready.toString()))
 			state = "SINGle";
-		//修复：当它断开连接，只会查询到最后一次设置的triggerStatus，而不是offline
+		//fix: when it is disconnected, only the last set triggerStatus is queried, instead of offlineoffline
 		if(!Platform.getControlManager().sourceManager.isConnected())
 			state = "Offline";
 		return state;
 	}
 
-	// TODO 未实现控制状态
+	// TODO control state not implemented
 	public String setACQuireState(String arg) {
 		// Platform.getMainWindow().getTitlePane().askSwitchRS();
 		return ScpiPool.Failed;

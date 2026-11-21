@@ -56,7 +56,7 @@ public abstract class AbsInterCommunicator {
 		dh.releaseDeepMemoryStorage();
 
 		FileUtil.checkPath(dmf);
-		/** KNOW 删除旧dmf:若新dmf比原来的内容少，新dmf尾部会有原来dmf的遗留。 */
+		/** KNOW Delete the old dmf: if the new dmf has less content than before, the tail of the new dmf will contain leftovers of the old dmf. */
 		dmf.delete();
 		if (dmf.exists())
 			DBG.errprintln("dmf.exists");
@@ -71,9 +71,9 @@ public abstract class AbsInterCommunicator {
 	protected abstract void doSyncFactorySet2Machine();
 
 	/**
-	 * 操作时唤起
+	 * Invoked on operation
 	 * 
-	 * @return 是否支持时间轴的操作(如tb, htp)，并在合适的时候获取深存储
+	 * @return whether time-axis operations (such as tb, htp) are supported, and fetch deep memory at the appropriate time
 	 */
 	public abstract boolean isTimeOperatableNTryGetDM();
 
@@ -114,7 +114,7 @@ public abstract class AbsInterCommunicator {
 	}
 
 	public void syncFactorySet2Machine() {
-		// 判断并让它运行起来,再厂家设置
+		// Check and get it running, then apply the factory settings
 		if (cm.isRuntimeStop()) {
 			statusRun(false, true);
 		}
@@ -146,7 +146,7 @@ public abstract class AbsInterCommunicator {
 		}
 
 		ca.setDMDataGotAlready(false);
-		// /** 开始运行，设定成不能导出波形 */
+		// /** Start running, set so that waveforms cannot be exported */
 		// controlManager.pcs.firePropertyChange(PropertiesItem.AFTER_GOT_DM_DATA, null,
 		// false);
 		SubmitorFactory.getSubmitable().sendRun();
@@ -175,7 +175,7 @@ public abstract class AbsInterCommunicator {
 
 	/**
 	 * @param pf
-	 *            1通过，0失败
+	 *            1 = pass, 0 = fail
 	 */
 	public void sync_pf(int pf) {
 		final SysControl sys = cc.getSysControl();
@@ -198,12 +198,12 @@ public abstract class AbsInterCommunicator {
 		pcs.firePropertyChange(APPLY_CHANNELS, null, null);
 		tp.updateChannels();
 
-		/** 下面两种只是预留的KVO */
+		/** The two below are only reserved KVO */
 		pcs.firePropertyChange(APPLY_TIMEBASE, null, null);
 		pcs.firePropertyChange(APPLY_DEEPMEMORY, null, null);
 		pcs.firePropertyChange(ITimeControl.onTimebaseUpdated, null, null);
 
-		/** 自动设置完成后也要相应更新采样率，并更新面板 */
+		/** After auto setting completes, also update the sampling rate accordingly and update the panel */
 		cc.updateCurrentSampleRate();
 		pcs.firePropertyChange(SampleRate.sampleRateUpdated, null, null);
 		cm.notifyShouldEnableTrg();
@@ -229,7 +229,7 @@ public abstract class AbsInterCommunicator {
 			statusRun(false, true);
 		}
 
-		// 开启模态框
+		// Open the modal dialog
 		ResourceBundle rb = I18nProvider.bundle();
 		String cancelt = rb.getString("Action.Cancel");
 		String cancelPrompt = rb.getString("Label.Cancel");
@@ -242,7 +242,7 @@ public abstract class AbsInterCommunicator {
 			@Override
 			public void run() {
 				updateForAutoSet();
-				pid.close();// 关闭模态框
+				pid.close();// Close the modal dialog
 
 				cm.pcs.firePropertyChange(PropertiesItem.STOP_AUTOSET, null,
 						null);

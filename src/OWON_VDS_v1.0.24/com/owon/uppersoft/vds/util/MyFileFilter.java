@@ -31,7 +31,7 @@ public class MyFileFilter extends FileFilter {
 
 	}
 
-	public String ends; // 文件后缀
+	public String ends; // file suffix
 	public String description;
 
 	@Override
@@ -45,7 +45,7 @@ public class MyFileFilter extends FileFilter {
 	}
 
 	@Override
-	// 只显示符合扩展名的文件，目录全部显示
+	// Only show files that match the extension; show all directories
 	public boolean accept(File file) {
 		if (file.isDirectory())
 			return true;
@@ -56,13 +56,13 @@ public class MyFileFilter extends FileFilter {
 	}
 
 	@Override
-	// 返回这个扩展名过滤器的描述
+	// Return the description of this extension filter
 	public String getDescription() {
 		String tail = "(*." + ends + ")";
 		return I18nProvider.bundle().getString(description) + tail;
 	}
 
-	// 返回这个扩展名过滤器的扩展名
+	// Return the extension of this extension filter
 	public String getEnds() {
 		return this.ends;
 	}

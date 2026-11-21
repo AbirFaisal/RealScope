@@ -13,7 +13,7 @@ enum VBAim {
 }
 
 /**
- * WFAutoRoutine，自校正要准确才能自动设置，否则遵循的波形规律就失效了
+ * WFAutoRoutine, auto-calibration must be accurate for autoset to work, otherwise the waveform rules it follows become invalid
  * 
  */
 public class WFAutoRoutine {
@@ -64,7 +64,7 @@ public class WFAutoRoutine {
 	private VLog vl = new VLog();
 
 	/**
-	 * @return 是否结束了该通道的所有设置
+	 * @return Whether all settings for this channel are finished
 	 */
 	public boolean routOut() {
 		vl.logln(".......routOut..... >> " + getChlName() + ", AutoStatus: "
@@ -97,7 +97,7 @@ public class WFAutoRoutine {
 		vl.logln(pkcr);
 		int max = Math.abs(pkcr.max), min = Math.abs(pkcr.min);
 
-		/** 当超过界限值，可以一次认定为开启 */
+		/** Once the threshold is exceeded, it can be considered on in one go */
 		if (max > limitAMP || min > limitAMP) {
 			detemineOn();
 			return false;
@@ -127,7 +127,7 @@ public class WFAutoRoutine {
 	private void detemineOn() {
 		vl.logln("checkOut Input >> " + getChlName());
 		setVoltBaseIndex(midvb);
-		// 设置了，需要在下一次再取数据判断
+		// Set; need to fetch data again next time to judge
 		as = AutoStatus.ContinueCheckVB;
 		vbaim = VBAim.both;
 	}
@@ -183,7 +183,7 @@ public class WFAutoRoutine {
 	}
 
 	/**
-	 * 旨在将波形拉到屏幕内并且是比较容易锁住触发的位置
+	 * Aims to bring the waveform within the screen and to a position where it is easy to lock the trigger
 	 * 
 	 * @return
 	 */
@@ -203,7 +203,7 @@ public class WFAutoRoutine {
 				setVoltBaseIndex(vb + 1);
 				return false;
 			} else {
-				// 电压幅度太大，不再尝试
+				// Voltage amplitude too large, stop trying
 				return toPosLevel();
 			}
 		} else if (vbaim != VBAim.bigger && amp < ADC_LOCKTRG_RANGE) {
@@ -218,7 +218,7 @@ public class WFAutoRoutine {
 				return toPosLevel();
 			}
 		} else {
-			// 下一阶段
+			// Next stage
 			return toPosLevel();
 		}
 	}

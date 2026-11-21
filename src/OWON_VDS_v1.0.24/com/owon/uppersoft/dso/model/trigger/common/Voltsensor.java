@@ -2,9 +2,9 @@ package com.owon.uppersoft.dso.model.trigger.common;
 
 
 /**
- * 触发电平值
+ * Trigger level value
  * 
- * TODO 是否基于零点，是否使用电压值在开关的时候转换为像素值；好像也不是很必要
+ * TODO whether it is based on the zero point, whether to convert voltage values to pixel values when switching; it seems not really necessary either
  * 
  */
 public class Voltsensor {
@@ -35,7 +35,7 @@ public class Voltsensor {
 	}
 
 	/**
-	 * 直接设置long，内部保存，使用时进行限界，这样当恢复到可用范围时就还能恢复回来
+	 * Set the long directly and store it internally; it is clamped when used, so that it can be restored when back in the usable range
 	 * 
 	 * @param v
 	 * @return

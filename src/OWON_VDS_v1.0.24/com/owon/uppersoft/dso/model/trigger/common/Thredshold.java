@@ -6,7 +6,7 @@ import com.owon.uppersoft.vds.core.GDefine;
 import com.owon.uppersoft.vds.util.format.UnitConversionUtil;
 
 /**
- * 阈值上下限
+ * Threshold upper and lower limits
  * 
  */
 public class Thredshold {
@@ -19,7 +19,7 @@ public class Thredshold {
 	}
 
 	/**
-	 * 可以用无限界的值
+	 * Unbounded values can be used
 	 * 
 	 * @param inverse
 	 * @param voltbase
@@ -31,7 +31,7 @@ public class Thredshold {
 	}
 
 	/**
-	 * 可以用无限界的值
+	 * Unbounded values can be used
 	 * 
 	 * @param inverse
 	 * @param voltbase
@@ -51,7 +51,7 @@ public class Thredshold {
 	}
 
 	/**
-	 * 直接设置long，内部保存，使用、发送时进行限界，这样当恢复到可用范围时就还能恢复回来
+	 * Set the long directly and store it internally; it is clamped when used or sent, so that it can be restored when back in the usable range
 	 * 
 	 */
 	public boolean setUppest(long v) {
@@ -62,7 +62,7 @@ public class Thredshold {
 	}
 
 	/**
-	 * 直接设置long，内部保存，使用、发送时进行限界，这样当恢复到可用范围时就还能恢复回来
+	 * Set the long directly and store it internally; it is clamped when used or sent, so that it can be restored when back in the usable range
 	 * 
 	 */
 	public boolean setLowest(long v) {
@@ -81,9 +81,9 @@ public class Thredshold {
 	}
 
 	/**
-	 * c_setXXX或c_getXXX均在输入或输出的时候限制了值在指定的范围内，
+	 * c_setXXX or c_getXXX both limit the value to the specified range on input or output,
 	 * 
-	 * 同时也会改变无c_的内部值，因为其实只有一个保存值的
+	 * They also change the internal value without c_, because there is actually only one stored value
 	 */
 	public boolean c_setUppest(int v) {
 		v = restrictValue(v, halfRange);
@@ -92,7 +92,7 @@ public class Thredshold {
 			return false;
 
 		uppest = v;
-		// 在可设置的值的范围内
+		// within the settable value range
 		if (v < lowest) {
 			lowest = v;
 		}
@@ -106,7 +106,7 @@ public class Thredshold {
 			return false;
 
 		lowest = v;
-		// 在可设置的值的范围内
+		// within the settable value range
 		if (v > uppest) {
 			uppest = v;
 		}

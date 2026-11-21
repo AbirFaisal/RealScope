@@ -36,7 +36,7 @@ public class ImagePaintUtil {
 	}
 
 	/**
-	 * 获取图片作为TexturePaint
+	 * Get an image as a TexturePaint
 	 * 
 	 * @param path
 	 * @return
@@ -55,7 +55,7 @@ public class ImagePaintUtil {
 	}
 
 	/**
-	 * 使用既定Paint作为TexturePaint
+	 * Use a given Paint as a TexturePaint
 	 * 
 	 * @param gp
 	 * @param w
@@ -75,7 +75,7 @@ public class ImagePaintUtil {
 	}
 
 	/**
-	 * 画指向右的三角形
+	 * Draw a right-pointing triangle
 	 * 
 	 * @param w
 	 * @param h
@@ -97,7 +97,7 @@ public class ImagePaintUtil {
 	}
 
 	/**
-	 * 4个圆角边沿合在一个Image中
+	 * 4Combine the 4 rounded-corner edges into one Image
 	 * 
 	 * @param hw
 	 * @param hh
@@ -114,7 +114,7 @@ public class ImagePaintUtil {
 		g2d.setPaint(bgup);
 		g2d.fillRect(0, 0, w, hh);
 
-		/** 这里使用pt或是bglow，可以画出半/全圆角矩阵 */
+		/** Using pt or bglow here, half/full rounded-corner rectangles can be drawn */
 		g2d.setPaint(bglow);
 		g2d.fillRect(0, hh, w, hh);
 
@@ -128,7 +128,7 @@ public class ImagePaintUtil {
 	}
 
 	/**
-	 * 4个圆角边沿合在一个Image中
+	 * 4Combine the 4 rounded-corner edges into one Image
 	 * 
 	 * @param hw
 	 * @param hh
@@ -161,7 +161,7 @@ public class ImagePaintUtil {
 	}
 
 	/**
-	 * 基于已知边界画出四边圆角
+	 * Draw rounded corners on all four sides based on the known bounds
 	 * 
 	 * @param g
 	 * @param width
@@ -177,7 +177,7 @@ public class ImagePaintUtil {
 	}
 
 	/**
-	 * 基于已知边界画出上边圆角
+	 * Draw rounded corners on the top side based on the known bounds
 	 * 
 	 * @param g
 	 * @param width
@@ -193,7 +193,7 @@ public class ImagePaintUtil {
 	}
 
 	/**
-	 * 基于已知边界画出下边圆角
+	 * Draw rounded corners on the bottom side based on the known bounds
 	 * 
 	 * @param g
 	 * @param width

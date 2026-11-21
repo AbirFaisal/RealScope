@@ -68,7 +68,7 @@ public class FFTControl implements IOrgan, IPatchable {
 		this.fftwnd = p.loadInt("Math.fftwnd");
 		fftscale = p.loadInt("Math.fftscale");
 
-		// 实现对缩放档位的保存不太容易载入，而且意义也不大
+		// Saving the zoom scale is not easy to load, and is of little significance anyway
 		fftscale = 0;
 
 		ffton = p.loadBoolean("Math.ffton");
@@ -135,7 +135,7 @@ public class FFTControl implements IOrgan, IPatchable {
 			return;
 
 		this.ffton = ffton;
-		/** 要更新采样率 */
+		/** The sampling rate must be updated */
 
 		wfm.getFFTView().updateYScaleRate();
 		// System.err.println("FFT "+ ffton);
@@ -159,7 +159,7 @@ public class FFTControl implements IOrgan, IPatchable {
 	public BigDecimal getFFTSampleRateBD() {
 		BigDecimal bd = getFFTTimebaseBD();
 		// System.out.println(bd);
-		// fft频谱档位*10*2得到采样率
+		// fftfft spectrum scale * 10 * 2 gives the sampling rate
 		return bd.multiply(VALUE_OF_20);
 	}
 

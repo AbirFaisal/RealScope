@@ -55,8 +55,8 @@ public class MachineNetPane extends FunctionPanel {
 		lb.setFont(Define.def.alphafont);
 		lb.setPreferredSize(new Dimension(Define.def.DockFrameWidth, tipsHeight));
 
-		lb.setLineWrap(true);// 换行
-		lb.setWrapStyleWord(true);// 单词本行放不下，自动放下一行
+		lb.setLineWrap(true);// Line wrap
+		lb.setWrapStyleWord(true);// If a word does not fit on this line, it goes automatically to the next line
 		lb.setHighlighter(null);
 		lb.setEditable(false);
 		lb.setBorder(null);

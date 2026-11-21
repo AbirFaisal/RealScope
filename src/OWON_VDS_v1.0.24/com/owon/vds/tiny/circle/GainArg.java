@@ -27,7 +27,7 @@ public class GainArg extends AbsArg {
 
 	/**
 	 * @param del2Standard
-	 *            原名shouldIncrease
+	 *            formerly named shouldIncrease
 	 */
 	public void stepCrease(int amp, int vbidx) {
 		int sign = 0;

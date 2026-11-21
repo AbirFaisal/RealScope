@@ -24,7 +24,7 @@ import com.owon.uppersoft.vds.ui.widget.custom.CLabel;
 
 /**
  * 
- * 光标 类型 电压，时间，关闭 信源 ch1,ch2,ch3,ch4(如果有fft，则转为fft信源)
+ * Cursor: Type: voltage, time, off; Source: ch1,ch2,ch3,ch4 (if fft exists, switches to the fft source))
  * 
  * 
  * @author Matt
@@ -58,7 +58,7 @@ public class MarkPane extends FunctionPanel {
 			chlccb = null;
 
 		remindip = nrip();
-		remindtxt = nlblt("");// 当某通道电压测量目标关闭,该文本更新用以提醒
+		remindtxt = nlblt("");// When the voltage measurement target of a channel is off, this text is updated as a reminder
 
 		fftgp = ncgp();
 		fftgp.setVisible(false);

@@ -3,12 +3,12 @@ package com.owon.uppersoft.dso.model.trigger.helper;
 import com.owon.uppersoft.vds.core.trigger.help.EnumNValue;
 
 /**
- * 实现从EnumNValue中引用的枚举类需要具备的额外方法
+ * Extra methods that an enum class referenced from EnumNValue needs to implement
  * 
  */
 public interface EnumLabelProvider {
 	/**
-	 * 从vpart转换出文本
+	 * Convert text from vpart
 	 * 
 	 * @param vpart
 	 * @return
@@ -16,7 +16,7 @@ public interface EnumLabelProvider {
 	String toString(int vpart);
 
 	/**
-	 * 结合vpart转换出值用于序列化
+	 * Combine with vpart to convert out a value for serialization
 	 * 
 	 * @param vpart
 	 * @return
@@ -24,7 +24,7 @@ public interface EnumLabelProvider {
 	int toInt(int vpart);
 
 	/**
-	 * 获取v的下一个有效EnumTypeNValue，返回的类型包含继承自IenumDelegate的类作为泛型参数类
+	 * Get the next valid EnumTypeNValue after v; the returned type includes a class inheriting from IenumDelegate as the generic parameter class
 	 * 
 	 * @param v
 	 * @return
@@ -32,7 +32,7 @@ public interface EnumLabelProvider {
 	EnumNValue getNext(int v, int stepidx);
 
 	/**
-	 * 获取v的上一个有效EnumTypeNValue，返回的类型包含继承自IenumDelegate的类作为泛型参数类
+	 * Get the previous valid EnumTypeNValue before v; the returned type includes a class inheriting from IenumDelegate as the generic parameter class
 	 * 
 	 * @param v
 	 * @return

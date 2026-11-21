@@ -38,7 +38,7 @@ public abstract class AbsGetDataRunner {
 	}
 
 	protected void updateFrame(int fc) {
-		/** 记录实际接收帧数 */
+		/** Records the number of frames actually received */
 		// System.err.println(receiveFrameCount);
 		// t2 = System.currentTimeMillis();
 		// del = t2 - t1;
@@ -52,7 +52,7 @@ public abstract class AbsGetDataRunner {
 	protected abstract ChannelsTransportInfo getData();
 
 	/**
-	 * 采集后进行平均值和接地的处理，以及反相
+	 * After acquisition, perform averaging, grounding and inversion
 	 * 
 	 * @param cti
 	 */
@@ -64,11 +64,11 @@ public abstract class AbsGetDataRunner {
 			WaveFormInfo wfi = wfm.getWaveForm(cdi.chl).wfi;
 			ChannelInfo ci = wfi.ci;
 			/**
-			 * 可控的软件接地实现，仅针对屏幕的adc点，
+			 * Controllable software grounding implementation, only for the adc points on the screen,
 			 * 
-			 * 保存为文件时须存储耦合方式以在dm文件载入时设置正确的耦合方式
+			 * When saving to a file, the coupling mode must be stored so that the correct coupling mode is set when the dm file is loaded
 			 * 
-			 * 同时也处理了adc限界，所以条件转入后即可continue
+			 * It also handles the adc limits, so continue once the condition is enteredcontinue
 			 */
 			if (ci.isGround()) {
 				cdi.forceGround(ci.getPos0());
@@ -79,13 +79,13 @@ public abstract class AbsGetDataRunner {
 	}
 
 	/**
-	 * 采集后进行平均值和接地的处理，以及反相
+	 * After acquisition, perform averaging, grounding and inversion
 	 * 
-	 * 只对屏幕点做平均值，这样速度快，而且在拉触发和插值后，此时深存储停下只有最后一帧
+	 * Average only the on-screen points, which is fast; also, after trigger pull and interpolating, deep memory stopped at that moment has only the last frame
 	 * 
-	 * fft开启时不处理
+	 * fftNot processed when fft is on
 	 * 
-	 * 接地或限界后，仍可以进入平均值的处理
+	 * After grounding or limiting, averaging can still be applied
 	 * 
 	 * @param cti
 	 */
@@ -118,7 +118,7 @@ public abstract class AbsGetDataRunner {
 		long timeCount = System.currentTimeMillis() - tbeg;
 		if (timeCount > 1000) {
 			float tmp = framesCount / (float) timeCount;// frame/ms
-			float fps = tmp * 1000;// ms转s
+			float fps = tmp * 1000;// ms to s
 			// BigDecimal tmp = BigDecimal.valueOf(framesCount).divide(
 			// BigDecimal.valueOf(timeCount));
 			// fps = tmp.multiply(BigDecimal.valueOf(1000000000)).intValue();

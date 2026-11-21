@@ -284,7 +284,7 @@ public class MeasureSnapshot implements Localizable {
 		}
 		for (int i = 0; i < chLabels.length; i++) {
 			String type = rb.getString(chPageItems[i]);
-			type = SFormatter.getRestrictSubString(type, 12);// 限定字符
+			type = SFormatter.getRestrictSubString(type, 12);// limit the characters
 			chLabels[i].setText(type + " = " + vrs[i].vu);
 			chLabels[i].setFont(ft);
 		}
@@ -292,7 +292,7 @@ public class MeasureSnapshot implements Localizable {
 		if (othLabels != null)
 			for (int i = 0; i < othLabels.length; i++) {
 				String type = rb.getString(othPageItems.get(i).label);
-				type = SFormatter.getRestrictSubString(type, 14);// 限定字符
+				type = SFormatter.getRestrictSubString(type, 14);// limit the characters
 				othLabels[i].setText(type + " = " + OthMTlinked.get(i).vu);
 				othLabels[i].setFont(ft);
 			}

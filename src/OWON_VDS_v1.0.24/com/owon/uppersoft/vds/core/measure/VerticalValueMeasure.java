@@ -31,18 +31,18 @@ public class VerticalValueMeasure {
 	}
 
 	public void getVtopVbase(ByteBuffer buf, int pos0) {
-		rewind();// MEM_1k全部置0。
+		rewind();// MEM_1k all set to 0.
 		int v, Vsum = 0, Vnum;
-		/** 在1024个不同的值中，找出出现频率最多的，按其大小，作为顶端值和底端值 */
+		/** Among 1024 different values, find the most frequent ones and use their magnitudes as the top value and the base value */
 		byte array[] = buf.array();
 		int p = buf.position();
 		int l = buf.limit();
 		Vnum = l - p;
 
 		while (p < l) {
-			v = array[p];// v指采集来的垂直电压adc点， v为正负数
+			v = array[p];// v is the vertical voltage adc point acquired, v can be positive or negative
 			Vsum += v;
-			/* v范围在-128~127，建立等大小字节数组MEM_1k,相同电压的点出现越多,(以该电压加128为索引的)字节标记越大 */
+			/* v ranges from -128 to 127; build an equal-size byte array MEM_1k; the more points of the same voltage, the larger the byte mark (indexed by that voltage plus 128) */
 			MEM_1k[v + 128]++;
 			p++;
 		}
@@ -54,15 +54,15 @@ public class VerticalValueMeasure {
 		int tmp = (int) (Vavg + 128);
 		int v1 = MEM_1k[0], v2 = MEM_1k[tmp];
 		int i1 = tmp, i2 = tmp;
-		/** 在低于平均值的一半MEM_1k[]中出现最多的v，既是底端值Vbase */
+		/** The v that occurs most in the half of MEM_1k[] below the average is the base value Vbase */
 		for (int i = 0; i < tmp; i++) {
 			v = MEM_1k[i];
 			if (v > v1) {
 				v1 = v;
-				i1 = i; // 在MEM_1k数组中遍历0到tmp，i1最大，即i1代表的那个点出现最多次。
+				i1 = i; // Traverse MEM_1k from 0 to tmp; the largest i1 is the point that appears the most times.
 			}
 		}
-		/** 在高于平均值的一半MEM_1k[]中出现最多的v，既是顶端值Vbase */
+		/** The v that occurs most in the half of MEM_1k[] above the average is the top value Vbase */
 		for (int i = tmp; i < len1k; i++) {
 			v = MEM_1k[i];
 			if (v > v2) {
@@ -71,14 +71,14 @@ public class VerticalValueMeasure {
 			}
 		}
 		// System.out.println(i2 +", "+i1);
-		// 如果重复值小于一定程度20，那么不认为存在底端值
+		// If the repeat count is below a certain level (20), the base value is considered nonexistent
 		// if (v1 < 4)
 		// i1 = Vmin + 128;
 		// if (v2 < 4)
 		// i2 = Vmax + 128;
 
-		/** 此处为扣去零点的adc纯采样数值 */
-		/** 从索引值转回原数据,原数据未考虑pos0,需要补上 */
+		/** Here is the pure adc sampling value with the zero point removed */
+		/** Convert from index back to original data; the original data did not account for pos0, so it needs to be added back */
 		this.Vtop = i2 - 128 - pos0;
 		this.Vbase = i1 - 128 - pos0;
 
@@ -100,15 +100,15 @@ public class VerticalValueMeasure {
 		int l = madc.l, p = madc.p;
 
 		int VmaxPos = p, VminPos = p;
-		int Vmax, Vmin, Vsum = 0, Vnum = l - p;// Vnum：有效波形中 ，点的个数。
+		int Vmax, Vmin, Vsum = 0, Vnum = l - p;// Vnum: number of points in the valid waveform.
 		long Vsquare_sum = 0;
 		Vmax = Vmin = array[p];
-		// rewind(MEM_1k);// MEM_1k全部置0。
+		// rewind(MEM_1k);// MEM_1k all set to 0.
 
-		/** 找出max，min；计算平方和，累计1024种[-511~512]不同值出现的次数 */
+		/** Find max and min; compute the sum of squares and accumulate the occurrence counts of the 1024 different values [-511~512] */
 		int tmp_p = p;
 		while (p < l) {
-			v = array[p];// array[p],v指采集来的垂直电压adc点，已经把pos0考虑在内 v为正负数
+			v = array[p];// array[p],v is the vertical voltage adc point acquired, pos0 already taken into account, v can be positive or negative
 			if (v > Vmax) {
 				Vmax = v;
 				VmaxPos = p;
@@ -118,7 +118,7 @@ public class VerticalValueMeasure {
 			}
 			Vsum += v;
 			Vsquare_sum += v * v;
-			/* v范围在-128~127，建立等大小字节数组MEM_1k,相同电压的点出现越多,(以该电压加128为索引的)字节标记越大 */
+			/* v ranges from -128 to 127; build an equal-size byte array MEM_1k; the more points of the same voltage, the larger the byte mark (indexed by that voltage plus 128) */
 			// MEM_1k[v + 128]++;
 			p++;
 		}
@@ -132,7 +132,7 @@ public class VerticalValueMeasure {
 		this.Vpp = Math.abs(this.Vmax - this.Vmin);
 
 		// System.err.println(String.format("Vmax:%d,Vmin:%d", Vmax, Vmin));
-		/** 计算平均值和均方根 */
+		/** Compute the average and RMS */
 		this.Vsum = Vsum;
 		this.Vnum = Vnum;
 		this.Vavg = (double) Vsum / (double) Vnum;
@@ -185,10 +185,10 @@ public class VerticalValueMeasure {
 
 	public void doMeasure(VR[] vrs, IWF wf, boolean isvideo, double freLimit,
 			double Vconst, ByteBuffer bb) {
-		/** 计算最大值和最小值,及平均值和均方根 */
+		/** Compute max and min, and the average and RMS */
 		getVmaxVmin(wf);
 
-		/** 计算顶端值和底端值 */
+		/** Compute top value and base value */
 		getVtopVbase(bb, wf.getFirstLoadPos0());
 
 		getShoots();

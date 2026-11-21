@@ -52,13 +52,13 @@ public class DisplayPaneTiny extends DisplayPane {
 
 		final BaselineCalDelegateTiny bcd1 = new BaselineCalDelegateTiny(wnd,
 				ca, tm, pt);
-		// 第1步自校正
+		// Step 1: self-calibration
 		bcd1.prompte = false;
 		bcd1.nextJob = new Runnable() {
 			@Override
 			public void run() {
 				final GainCalDelegate gcd = new GainCalDelegate(wnd, ca, tm, pt);
-				// 第2步闭环
+				// Step 2: closed loop
 				gcd.prompte = false;
 				gcd.nextJob = new Runnable() {
 
@@ -66,7 +66,7 @@ public class DisplayPaneTiny extends DisplayPane {
 					public void run() {
 						final BaselineCalDelegateTiny bcd2 = new BaselineCalDelegateTiny(
 								wnd, ca, tm, pt);
-						// 第3步自校正
+						// Step 3: self-calibration
 						bcd2.prompte = false;
 						bcd2.nextJob = new Runnable() {
 							@Override

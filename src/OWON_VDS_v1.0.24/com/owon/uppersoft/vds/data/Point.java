@@ -1,7 +1,7 @@
 package com.owon.uppersoft.vds.data;
 
 /**
- * 用于坐标或是高宽
+ * Used for coordinates or for height and width
  * 
  */
 public class Point {

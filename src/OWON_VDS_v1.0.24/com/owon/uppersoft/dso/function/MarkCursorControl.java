@@ -36,7 +36,7 @@ public class MarkCursorControl {
 	private final int r_y1in1 = PaintContext.ScreenMode1_ChartInsets.top,
 			r_y3in1 = PaintContext.ScreenMode3_ChartInsets.top;
 
-	private int x1pix, x2pix, y1pix, y2pix;// 基于1in1情况记录
+	private int x1pix, x2pix, y1pix, y2pix;// recorded based on the 1in1 case
 	private boolean onTimeMeasure, onVoltMeasure;
 	private boolean onx1, onx2, ony1, ony2;
 	public int chNum = 0;
@@ -70,7 +70,7 @@ public class MarkCursorControl {
 		});
 	}
 
-	/** TODO 最好改用其他方式引入ViewChart和DataHouse,避免代码耦合 */
+	/** TODO Preferably use another way to bring in ViewChart and DataHouse, to avoid code coupling */
 	public void acceptImporter(ViewChart vc, DataHouse dh) {
 		this.vc = vc;
 		this.pc = vc.getScreenContext();
@@ -189,7 +189,7 @@ public class MarkCursorControl {
 
 	/**
 	 * @param pixtime_mS
-	 *            波形界面x轴像素的mS值
+	 *            mS value of the x-axis pixels of the waveform view
 	 */
 	public void computeXValues() {
 		if (!onTimeMeasure)
@@ -202,18 +202,18 @@ public class MarkCursorControl {
 
 		int dhwl = (r.width >> 1) + r.x - htp;
 
-		// MarkCursor X1,X2 的像素值。
+		// MarkCursor X1,X2 pixel values of MarkCursor X1, X2.
 		double x1 = dhwl - x1pix;
 		double x2 = dhwl - x2pix;
 
-		// 1000个像素，20格，每格50像素; bdtimebase当前时基。
+		// 1000 pixels, 20 divisions, 50 pixels per division; bdtimebase is the current timebase.
 		x1 = x1 * pixtime_mS;
 		x2 = x2 * pixtime_mS;
-		// 计算Delta X
+		// Calculate Delta X
 		int x = Math.abs(x2pix - x1pix);
 		double dx = x * pixtime_mS;
 
-		// 规范单位
+		// Normalize units
 		x1val = getSimplifiedTimebaseLabel_mS(x1);
 		x2val = getSimplifiedTimebaseLabel_mS(x2);
 		dxval = getSimplifiedTimebaseLabel_mS(dx);
@@ -237,11 +237,11 @@ public class MarkCursorControl {
 		// " + r.y);
 		int pos0pix;
 		if (!pc.isScreenMode_3()) {
-			/** 若左上角为坐标原点,计算零点位置相对原点的垂直像素值。 */
+			/** If the top-left corner is the coordinate origin, calculate the vertical pixel value of the zero-point position relative to the origin. */
 			pos0pix = r_centreY - 2 * pos + r.y;
 			/**
-			 * 若左上角为坐标原点, y1pix、y2pix为y1标尺、y2标尺相对原点的垂直像素值。
-			 * pos-y1pix,得到标尺们相对于零点位置的像素正负偏移量。
+			 * If the top-left corner is the coordinate origin, y1pix and y2pix are the vertical pixel values of the y1 and y2 cursors relative to the origin.
+			 * pos-y1pix, gives the signed pixel offsets of the cursors relative to the zero-point position.
 			 */
 			y1 = pos0pix - y1pix;
 			y2 = pos0pix - y2pix;
@@ -252,7 +252,7 @@ public class MarkCursorControl {
 		}
 
 		/**
-		 * 将Y尺的像素正负偏移量,计算成电压对应值
+		 * Convert the signed pixel offsets of the Y cursors into the corresponding voltage values
 		 */
 		y1 = y1 / 50 * voltbase;
 		y2 = y2 / 50 * voltbase;
@@ -265,7 +265,7 @@ public class MarkCursorControl {
 		pcs.firePropertyChange(PropertiesItem.UPDATE_MARKBULLETIN, null, null);
 	}
 
-	// 画X,Y标尺线
+	// Draw X, Y cursor lines
 	private void drawXLines(Graphics2D g2d, Rectangle r) {
 		int MCx1 = x1pix;
 		int MCx2 = x2pix;
@@ -279,7 +279,7 @@ public class MarkCursorControl {
 		int MCy1 = y1pix;
 		int MCy2 = y2pix;
 
-		int y1 = MCy1, y2 = MCy2;// rectangle 高减半, MarkCursor Y 也减半。
+		int y1 = MCy1, y2 = MCy2;// rectangle height halved, MarkCursor Y also halved.
 		if (pc.isScreenMode_3()) {
 			y1 = ((MCy1 - r_y1in1) >> 1) + r_y3in1;
 			y2 = ((MCy2 - r_y1in1) >> 1) + r_y3in1;
@@ -288,12 +288,12 @@ public class MarkCursorControl {
 		g2d.drawLine(r.x, y2, r.x + r.width, y2);// MarkLine y2
 	}
 
-	/** 画X,Y标尺值显示 */
+	/** Draw X, Y cursor value display */
 	private int tia1[] = new int[3], tia2[] = new int[3];// Triangle_Coordinates
 	final int tiaIncr = 8;
 
 	/**
-	 * 画 Delta Δ \u0394
+	 * Draw Delta Δ \u0394
 	 * */
 	protected void drawTriangle(Graphics2D g2d, int x, int y) {
 		tia1[0] = x;
@@ -308,16 +308,16 @@ public class MarkCursorControl {
 	public void drawMarkCursor(Graphics2D g2d, Rectangle r) {
 		// Markable ci = wfm.get(chNum);
 		if (onTimeMeasure) {
-			// 画X标尺线
+			// Draw X cursor line
 			drawXLines(g2d, r);
-			// showXValues(g2d, r);// X标尺值显示
+			// showXValues(g2d, r);// X cursor value display
 		}
 		// else
 		if (onVoltMeasure) {
-			// 画Y标尺线
+			// Draw Y cursor line
 			drawYLines(g2d, r);
 			// if (ci.isOn()) {
-			// showYValues(g2d, ci.getPos0(), ci.getVoltValue(), r);// Y标尺值显示
+			// showYValues(g2d, ci.getPos0(), ci.getVoltValue(), r);// Y cursor value display
 			// } else
 			// showYReminder(g2d, ci.getName(), r);
 		}

@@ -36,14 +36,14 @@ public class RecognizeJob implements Runnable {
 			Iterator<WFAutoRoutine> wfri = wfrlist.iterator();
 
 			while (wfri.hasNext()) {
-				/** 校正终结的通道 */
+				/** Channel where calibration has finished */
 				WFAutoRoutine wfr = wfri.next();
 
 				if (wfr.routOut()) {
 					wfri.remove();
 
 					if (wfr.getAutoStatus() == WFAutoRoutine.AutoStatus.NoInput) {
-						/** 保留原来的通道关闭方式，否则无信号通道无法关闭 */
+						/** Keep the original channel-off mode, otherwise channels with no signal cannot be turned off */
 						wfr.getWaveForm().wfi.ci.c_setOn(false);
 					} else {
 						next_wfrlist.add(wfr);
@@ -51,7 +51,7 @@ public class RecognizeJob implements Runnable {
 				}
 			}
 
-			/** 防止通道都关闭不再获取数据而使自动设置任务流无法继续 */
+			/** Prevent all channels being off, no more data being fetched, and the autoset task flow being unable to continue */
 			if (wfrlist.size() == 0 && next_wfrlist.size() == 0) {
 				cc.getWaveFormInfoControl().preSetChannelsForFFT(0);
 

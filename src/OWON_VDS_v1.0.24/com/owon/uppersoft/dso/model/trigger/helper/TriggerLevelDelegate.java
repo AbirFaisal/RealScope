@@ -20,7 +20,7 @@ import com.owon.uppersoft.vds.core.paint.ScreenContext;
 import com.owon.uppersoft.vds.data.LocRectangle;
 
 /**
- * 代理触发电平等的判断和绘图
+ * Delegates the judgment and drawing of the trigger level etc.
  * 
  */
 public class TriggerLevelDelegate {
@@ -38,7 +38,7 @@ public class TriggerLevelDelegate {
 	}
 
 	/**
-	 * 画触发参数标签，显示高亮或虚线效果
+	 * Draw the trigger parameter label, showing a highlight or dashed-line effect
 	 * 
 	 * @param g2d
 	 * @param pc
@@ -62,8 +62,8 @@ public class TriggerLevelDelegate {
 				ts.paintTriggerSet(wfm, pctlc);
 			}
 
-			// 怎么取出头一个？
-			// line代表点选，选中才高亮
+			// how to take out the first one?
+			// line represents click selection, highlighted only when selected
 			// ts = it.next();
 			// ts.paintTriggerSet(wfm, pctlc);
 		}
@@ -75,7 +75,7 @@ public class TriggerLevelDelegate {
 	}
 
 	/**
-	 * 改变触发参数值
+	 * Change the trigger parameter value
 	 * 
 	 * @param chl
 	 * @param type
@@ -89,7 +89,7 @@ public class TriggerLevelDelegate {
 			return;
 
 		/**
-		 * 把反相作为单独adc控制，假设其它都不变，只是界面和操作上反了，反相就在拖拽的增量上也反一下
+		 * Treat inversion as a separate adc control; assuming everything else is unchanged and only the UI and operation are reversed, inversion simply flips the drag increment as well
 		 */
 		if (wf.isInverted()) {
 			del = -del;
@@ -175,7 +175,7 @@ public class TriggerLevelDelegate {
 	}
 
 	/**
-	 * 判断附近是否有触发参数
+	 * Determine whether there is a trigger parameter nearby
 	 * 
 	 * @param mousey
 	 * @param upborder

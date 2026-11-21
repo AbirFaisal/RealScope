@@ -181,7 +181,7 @@ public class ScpiConsole implements Localizable {
 
 	}
 
-	/** 控制 */
+	/** Control */
 
 	public boolean checkInvisible() {
 		return !console.isDisplayable();
@@ -218,7 +218,7 @@ public class ScpiConsole implements Localizable {
 		consoleArea.setText(null);
 	}
 
-	/** 模型 */
+	/** Model */
 
 	public static void main(String[] args) {
 		new ScpiConsole();

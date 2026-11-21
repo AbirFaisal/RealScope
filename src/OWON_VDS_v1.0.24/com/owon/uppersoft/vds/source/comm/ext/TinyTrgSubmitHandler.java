@@ -25,7 +25,7 @@ import com.owon.uppersoft.vds.device.interpret.util.CBitSet;
 import com.owon.uppersoft.vds.source.comm.Submitor2;
 
 public class TinyTrgSubmitHandler {
-	/** 可考虑转译 */
+	/** consider converting */
 	private static final int[] Tiny_TrgType = { 0, 2, 1, 3 };
 	private static final int[] Tiny_Sweep = { 0, 1, 2 };
 	private static final int[] Tiny_SYNC = { 0, 1, 2, 3, 4 };
@@ -41,7 +41,7 @@ public class TinyTrgSubmitHandler {
 			single = false;
 			int size = tc.getChannelsNumber();
 
-			/** 通道没开也会发... */
+			/** sent even if the channel is not on... */
 			for (int i = 0; i < size; i++) {
 				TriggerSet ts = tc.getAlternateTriggerSet(i);
 				if (ts != null) {
@@ -50,7 +50,7 @@ public class TinyTrgSubmitHandler {
 				}
 			}
 		} else {
-			/** 留意外部触发时 */
+			/** note the case of external trigger */
 			single = true;
 
 			TriggerSet ts = tc.getSingleTriggerSet();
@@ -66,10 +66,10 @@ public class TinyTrgSubmitHandler {
 
 		AbsTrigger trigger = ts.getTrigger();
 		int channel = ts.getChannel();
-		// 触发类型，和index对应的方式是高低位颠倒
+		// trigger type; the way it corresponds to index is with the high and low bits reversed
 		int type = Tiny_TrgType[trigger.type.ordinal()];
 		if (single) {
-			/** 留意外部触发时 */
+			/** note the case of external trigger */
 			bs.set1(alt, 15);
 			bs.setN(type, 8, 14);
 

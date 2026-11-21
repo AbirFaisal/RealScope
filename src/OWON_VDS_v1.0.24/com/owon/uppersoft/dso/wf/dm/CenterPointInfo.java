@@ -9,9 +9,9 @@ import com.owon.uppersoft.vds.data.Point;
 public class CenterPointInfo {
 	public static final int DEFINE_AREA_WIDTH = GDefine.AREA_WIDTH;
 
-	/** 参照点的索引值，cpidx的x坐标，起始于最左边，-...+ */
+	/** Index value of the reference point, x coordinate of cpidx, starting from the leftmost, -...+ */
 	private int cpidx;
-	/** 中心点为0值时参照点的位置-...+ */
+	/** Position of the reference point when the center point has value 0 -...+ */
 	private double cpoff;
 
 	public int getCenterPointIndex() {
@@ -49,7 +49,7 @@ public class CenterPointInfo {
 
 		int int_cpoff = (int) cpoff;
 
-		/** 逼近到离屏幕最中心的点 */
+		/** Approach the point closest to the screen center */
 		if (cpoff >= 0) {
 			int num = int_cpoff / mul;
 			cpoff -= num * mul;
@@ -71,7 +71,7 @@ public class CenterPointInfo {
 
 	VLog vl = new VLog();
 
-	/** 起始画图点离左边界的距离 */
+	/** Distance of the starting drawing point from the left boundary */
 	private int xbloc;
 
 	public int getXBloc() {
@@ -86,7 +86,7 @@ public class CenterPointInfo {
 			wc = PaintContext.hwidth;
 
 	/**
-	 * 确定cpidx, rate, cpoff；计算xbloc
+	 * Determine cpidx, rate, cpoff; compute xbloc
 	 */
 	public Point reDilute2(int databeg, int datalen,
 			MultiplyorAndDivisor diluteR) {
@@ -95,12 +95,12 @@ public class CenterPointInfo {
 		final int div = diluteR.getDivisor();
 
 		logcp();
-		/** 屏幕的起始和中点，这里如果遇上浮点数，可能被省略小数点后信息 */
+		/** Start and midpoint of the screen; if floating-point values occur here, digits after the decimal point may be dropped */
 		double int_cpoff = cpoff;
 		double x;
 		int i = cpidx;
 
-		/** i0，i1为无边界的点索引，不受具体0值和存储深度限制 */
+		/** i0, i1 are unbounded point indexes, not limited by the actual 0 value or the memory depth */
 		int i0 = i, i1 = i + 5;
 
 		x = int_cpoff;
@@ -118,14 +118,14 @@ public class CenterPointInfo {
 		}
 		while (i0 < databeg) {
 			i0 += div;
-			// x -= mul; 这里修复了从慢扫未半屏停止下来展开到dilute情况下存在的bug
+			// x -= mul; this fixes the case of stopping from slow sweep before half screen and expanding to dilute, where there was a bug
 			x += mul;
 		}
 		int v = (int) (x - -wc);
 		xbloc = v;
 
 		Point p = new Point(i0, i1);
-		// 再限制回数据边界
+		// Then limit back to the data boundary
 		return p;
 	}
 }

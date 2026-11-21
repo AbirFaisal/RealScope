@@ -57,7 +57,7 @@ import com.owon.uppersoft.vds.ui.window.ExtendedStataJFrame;
 import com.owon.uppersoft.vds.util.LocalizeCenter;
 
 /**
- * MainWindow，界面主框架
+ * MainWindow, main UI frame
  * 
  */
 public class MainWindow implements Localizable, Promptable {
@@ -114,7 +114,7 @@ public class MainWindow implements Localizable, Promptable {
 	}
 
 	/**
-	 * @return 顶级框架
+	 * @return Top-level frame
 	 */
 	public JFrame getFrame() {
 		return frame;
@@ -123,13 +123,13 @@ public class MainWindow implements Localizable, Promptable {
 	public void onDispose() {
 		wb.exit();
 		if (dh != null) {
-			dh.closePersistence();// 关闭余辉线程
+			dh.closePersistence();// Close the persistence thread
 		}
 		cm.scpiServer.destroyServer();
 	}
 
 	/**
-	 * 大小改变时的调整
+	 * Adjustment when the size changes
 	 */
 	public void exchangeSize() {
 		if (frame.getExtendedState() != Frame.MAXIMIZED_BOTH) {
@@ -195,7 +195,7 @@ public class MainWindow implements Localizable, Promptable {
 		// Define.def.FRM_Width, h = Define.def.FRM_Height;
 		// , bgh = bg.getHeight(null), delh = h - bgh;
 
-		/* 在根容器之上的唯一基础容器 */
+		/* The only base container above the root container */
 		basePane = new JPanel();
 		basePane.setBackground(Define.def.CO_FRM_Border);
 		basePane.setLayout(new BorderLayout());
@@ -398,9 +398,9 @@ public class MainWindow implements Localizable, Promptable {
 	}
 
 	/**
-	 * 重新缓冲画图
+	 * Repaint with buffering
 	 * 
-	 * 新的数据内容引起的更新，数据来得慢也能及时刷新
+	 * Update triggered by new data content; refreshes in time even when data arrives slowly
 	 */
 	public void updateShow() {
 		chartScreen.rebuffer();
@@ -417,7 +417,7 @@ public class MainWindow implements Localizable, Promptable {
 	private MarkValueBulletin mvb;
 
 	/**
-	 * 显示
+	 * Show
 	 */
 	public void show() {
 		frame.setVisible(true);
@@ -434,7 +434,7 @@ public class MainWindow implements Localizable, Promptable {
 	}
 
 	/**
-	 * @return 工具区
+	 * @return Tool area
 	 */
 	public ToolPane getToolPane() {
 		return toolPane;
@@ -467,21 +467,21 @@ public class MainWindow implements Localizable, Promptable {
 	}
 
 	/**
-	 * @return 标题栏
+	 * @return Title bar
 	 */
 	public TitlePane getTitlePane() {
 		return titlePane;
 	}
 
 	/**
-	 * @return 标题栏
+	 * @return Title bar
 	 */
 	public ITitleStatus getITitleStatus() {
 		return titlePane;
 	}
 
 	/**
-	 * @return 主绘图区
+	 * @return Main drawing area
 	 */
 	public ChartScreen getChartScreen() {
 		return chartScreen;

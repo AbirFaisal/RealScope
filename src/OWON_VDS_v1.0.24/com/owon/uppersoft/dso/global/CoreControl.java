@@ -72,7 +72,7 @@ public abstract class CoreControl implements TimePerPointProvider,
 
 		Pref p = conf.getSessionProperties();
 
-		/** 装入机型类别 */
+		/** Load the model type */
 		principle.prepareTuneFunction(p);
 
 		MachineInfo machine = principle.getMachine();
@@ -210,7 +210,7 @@ public abstract class CoreControl implements TimePerPointProvider,
 	}
 
 	/**
-	 * 初始同步，在任何模式下都发完整信息进行匹配
+	 * Initial synchronization, sends the complete information in any mode for matching
 	 * 
 	 * @param bbuf
 	 */
@@ -225,7 +225,7 @@ public abstract class CoreControl implements TimePerPointProvider,
 	}
 
 	/**
-	 * 在运行时同步，可在切入fft时只发必要信息
+	 * Synchronization while running, may send only the necessary information when switching to fft
 	 * 
 	 * @param bbuf
 	 */
@@ -240,7 +240,7 @@ public abstract class CoreControl implements TimePerPointProvider,
 	}
 
 	/**
-	 * 当无通道打开时返回-1
+	 * When no channel is open, returns -1
 	 * 
 	 * @return
 	 */
@@ -250,20 +250,20 @@ public abstract class CoreControl implements TimePerPointProvider,
 	}
 
 	/**
-	 * 数据点：min,max,min,max 可在改变采样率时判断，减少测试次数，但测试内容比较简单，这里就不优化了
+	 * Data points: min,max,min,max can be determined when changing the sampling rate, reducing the number of tests, but the test is simple, so it is not optimized here
 	 * 
-	 * 但是界面下方的采样率显示区不需要针对打开峰值检测而更改为实际的采样率
+	 * However, the sampling rate display area at the bottom of the UI does not need to change to the actual sampling rate when peak detect is on
 	 * 
-	 * @return 峰值检测实际是否开启
+	 * @return whether peak detect is actually enabled
 	 */
 	public boolean isPeakDetectWork() {
 		if (fftControl.isFFTon())
 			return false;
 
-		boolean pdon = sampleControl.isPeakDetect(); // 开启
+		boolean pdon = sampleControl.isPeakDetect(); // enabled
 		boolean b = pdon && checkPeakDetectWork();
 
-		/** TODO fire可再优化 */
+		/** TODO fire can be optimized further */
 		pcs.firePropertyChange(PropertiesItem.UPDATE_PK, null, b);
 		return b;
 	}
@@ -279,12 +279,12 @@ public abstract class CoreControl implements TimePerPointProvider,
 		SampleRate th = getChannelsSampleRate(cnf);
 		// System.err.println(cur + ", " + th);
 		/**
-		 * 峰值检测的判断是：在未开启峰值检测的情况下，如果屏幕采到的点数是屏幕像素的1倍以上就不用提升采样率来做；
+		 * Peak detect is decided as follows: when peak detect is not enabled, if the number of points sampled on screen is at least 1x the screen pixels, there is no need to raise the sampling rate;
 		 * 
-		 * 如果达不到，就看看采样率能否提升，能够提升也可以做
+		 * If not reached, check whether the sampling rate can be raised; if it can, it can also be done
 		 */
 
-		boolean samplePromtion = (!cur.equals(th));// 采样率可以提升，其实需要碰到是否可以提升到拿4:1的数据
+		boolean samplePromtion = (!cur.equals(th));// the sampling rate can be raised; actually it needs to be checked whether it can be raised to get 4:1 data
 		return samplePromtion;
 	}
 
@@ -292,12 +292,12 @@ public abstract class CoreControl implements TimePerPointProvider,
 		int fullscreenlen = timeControl.getRTfullScreenNumber();
 		int screenpixs = GDefine.AREA_WIDTH;
 
-		boolean larger = (fullscreenlen > screenpixs); // 比屏幕数大
+		boolean larger = (fullscreenlen > screenpixs); // larger than the screen count
 		return larger;
 	}
 
 	/**
-	 * @return 实时采样率
+	 * @return real-time sampling rate
 	 */
 	private SampleRate getSampleRateWithChannelNumFlag(int cnf) {
 		if (cnf < 0) {
@@ -383,20 +383,20 @@ public abstract class CoreControl implements TimePerPointProvider,
 	}
 
 	/**
-	 * 通道都已关闭，此时如何处理需要采样率的计算？
+	 * All channels are closed; how should the sampling rate calculation be handled then?
 	 * 
-	 * @return 实时采样率
+	 * @return real-time sampling rate
 	 */
 	private SampleRate computeSampleRate() {
 		return getSampleRateWithChannelNumFlag(getChannelSampleConfig());
 	}
 
 	/**
-	 * @return 当前通道个数下的最高采样率
+	 * @return highest sampling rate for the current number of channels
 	 */
 	private SampleRate getChannelsSampleRate(int cnf) {
 		MachineInfo machine = getMachineInfo();
-		/** 找对应通道的最高采样率，这里是算法是使用最小时基档位的采样率，存储深度为最大的情况下 */
+		/** Find the highest sampling rate for the corresponding channels; the algorithm here uses the sampling rate at the smallest timebase scale with the maximum memory depth */
 		SampleRate sr = machine
 				.getSampleRate(cnf, machine.DEEPValue.length - 1)[0];
 		return sr;
@@ -447,9 +447,9 @@ public abstract class CoreControl implements TimePerPointProvider,
 	}
 
 	/**
-	 * 计算满屏数
+	 * Calculate the full-screen count
 	 * 
-	 * 提供在改变通道开关、时基、存储深度时限制水平触发位置
+	 * Provides limiting of the horizontal trigger position when changing channel switches, timebase, or memory depth
 	 * 
 	 * @param controlManager
 	 *            TODO
@@ -483,7 +483,7 @@ public abstract class CoreControl implements TimePerPointProvider,
 	public abstract double getTimePerPoint(int points);
 
 	/**
-	 * @return FFT下采集传输过来的点
+	 * @return FFTpoints acquired and transferred under FFT
 	 */
 	public int fftAvailablePoints() {
 		return getMachineInfo().fftAvailablePoints(
@@ -496,12 +496,12 @@ public abstract class CoreControl implements TimePerPointProvider,
 			wfic.storeChannelsDisplaybeforeFFT();
 			wfic.preSetChannelsForFFT(fftchl);
 			sampleControl.c_setModelIdx(0);
-			// 改变界面状态；发fft指令，接收数据
+			// change UI state; send the fft command, receive data
 			n = PropertiesItem.FFT_ON;
 			// System.err.println("syncFFTStatus "+ ffton);
 		} else {
 			wfic.recoverChannelsDisplayfromNonFFT();// wfic.turnOnAllChannelsWitouSync();//
-			// 改变界面状态；发匹配指令
+			// change UI state; send the match command
 			n = PropertiesItem.FFT_OFF;
 		}
 		timeControl.updateTimebase();

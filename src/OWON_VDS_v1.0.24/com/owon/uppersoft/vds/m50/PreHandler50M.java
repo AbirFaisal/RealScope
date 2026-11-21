@@ -43,17 +43,17 @@ public class PreHandler50M extends AbsPreHandler {
 			Iterator<ChannelDataInfo_Tiny> it = ci.iterator_ChannelDataInfo();
 			while (it.hasNext()) {
 				ChannelDataInfo_Tiny cdi = it.next();
-				/** 对包含慢扫，截取屏幕范围的存储深度 */
+				/** for slow sweep included, the memory depth is cut to the screen range */
 				ByteBuffer dmbuf = cdi.getALLDMBuffer();
-				/** 先取出满屏位置的adc数据，都去除额外多拿的adc点(50*2) */
+				/** first take the adc data at the full-screen position, removing the extra adc points (50*2) in all cases(50*2) */
 				if (isSlowMove) {
-					/** 慢扫时，去除"靠前"额外多拿的adc点(50*2)，取靠后的满屏范围内的adc来用 */
+					/** in slow sweep, remove the extra adc points (50*2) taken at the "front" and use the adc within the later full-screen range */
 					BufferHandleUtil.skipByteBuffer(dmbuf, TRANBUFLEN_PREDM
 							+ TRANBUFLEN_SUFDM);
 				} else {
 					cdi.trimNgetADCByteBuffer();
 
-					/** 解决5k存深不足，在方波升降沿触发会抖的问题，人为偏一个点 */
+					/** fixes the jitter when triggering on square-wave edges due to insufficient 5k memory depth, by deliberately offsetting one point */
 					int p = dmbuf.position();
 					int l = dmbuf.limit();
 					dmbuf.limit(l + 1);
@@ -64,21 +64,21 @@ public class PreHandler50M extends AbsPreHandler {
 			}
 		} else if (tb >= getTB_1_4kkFullScreenIndex()) {
 			/**
-			 * 这些档位不支持峰值检测
+			 * these scales do not support peak detect
 			 */
 			Iterator<ChannelDataInfo_Tiny> it = ci.iterator_ChannelDataInfo();
 			while (it.hasNext()) {
 				ChannelDataInfo_Tiny cdi = it.next();
-				/** 对不插值不压缩的档位，去除额外多拿的adc点(50*2) */
+				/** for scales without interpolation or compression, remove the extra adc points (50*2)(50*2) */
 				ByteBuffer dmbuf = cdi.trimNgetADCByteBuffer();
-				/** 对满屏点为1k, 2.5k */
+				/** for full-screen point counts of 1k, 2.5k1k, 2.5k */
 				handelData_noplug(dmbuf, cdi, ci, tb, fullscreen);
 			}
 		} else {
 			Iterator<ChannelDataInfo_Tiny> it = ci.iterator_ChannelDataInfo();
 			while (it.hasNext()) {
 				ChannelDataInfo_Tiny cdi = it.next();
-				/** 对要插值和拉触发的时基档位，截取屏幕范围的存储深度 */
+				/** for timebase scales that need interpolation and trigger locating, the memory depth is cut to the screen range */
 				// ByteBuffer dmbuf =
 				cdi.trimNgetADCByteBuffer();
 				// handelData_fullscreen(dmbuf, cdi, ci, htp, false, 4);
@@ -90,11 +90,11 @@ public class PreHandler50M extends AbsPreHandler {
 			tli.htpExtraAdjustment = (tb == VDS2052.TB_5ns ? -20 : 0);
 			tli.htpTuneAdjustment = lcm.getRemainHtp();
 
-			/** 对插值的档位，使用完整存储深度 */
+			/** for interpolated scales, use the full memory depth */
 			/**
-			 * 开启withoutLocateTrg即可在不拉触发时看到数据中央的内容
+			 * enabling withoutLocateTrg shows the content at the center of the data without trigger locating
 			 * 
-			 * 获得可用的全部adc数据段，接下来拉触发
+			 * obtain all the usable adc data segments, then perform trigger locating
 			 * 
 			 */
 			TinyPlugHelper plugHelper = getTinyPlugHelper(cm

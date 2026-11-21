@@ -9,7 +9,7 @@ public class ParseUtil {
 	private static final BigDecimal VALUE_OF_1k = BigDecimal.valueOf(1000);
 
 	/**
-	 * 去引号
+	 * Strip quotes
 	 * 
 	 * @param org
 	 * @return
@@ -23,7 +23,7 @@ public class ParseUtil {
 	}
 
 	/**
-	 * km数值
+	 * km value
 	 * 
 	 * @param org
 	 * @return
@@ -48,7 +48,7 @@ public class ParseUtil {
 	}
 
 	/**
-	 * kmg的hz
+	 * kmg hz
 	 * 
 	 * @param org
 	 * @return
@@ -78,7 +78,7 @@ public class ParseUtil {
 	}
 
 	/**
-	 * kmg的数值
+	 * kmg value
 	 * 
 	 * @param org
 	 * @return
@@ -118,7 +118,7 @@ public class ParseUtil {
 	}
 
 	/**
-	 * 以秒为单位的准确的浮点数
+	 * Exact floating-point number in seconds
 	 * 
 	 * @param org
 	 * @return

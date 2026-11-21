@@ -22,11 +22,11 @@ public class ClockTimeAdjuster50M extends ClockTimeAdjuster {
 		Arg_En ae = new Arg_En(arg, en);
 
 		/**
-		 * 先还原为原始数值，然后除以8ns，得到的数量转换为科学计数法
+		 * first restore the original value, then divide by 8ns, and convert the resulting count to scientific notation
 		 * 
-		 * 这样上层仍然可保留原来的累加方式和步进档位，而下位机接收的是8ns的个数，忽略余数偏差
+		 * this way the upper layer can still keep the original accumulation method and step scales, while the device receives the number of 8ns units, ignoring the remainder deviation
 		 * 
-		 * 这边传入的数值计数最小单位是根据对应枚举类来定的，查表可知，需要在10ns的步进档作调整
+		 * the minimum counting unit of the value passed in here is determined by the corresponding enum class; per the table, adjustment is needed at the 10ns step scale
 		 * */
 		if (en == 0)
 			en = 1;

@@ -100,7 +100,7 @@ public class ContentPane extends JPanel implements Localizable {
 	}
 
 	/**
-	 * 用于表示当前页面，使IconBar图标选中状态与当前页对应
+	 * Represents the current page, so that the IconBar icon selection state corresponds to the current page
 	 * 
 	 * @param id
 	 */
@@ -116,7 +116,7 @@ public class ContentPane extends JPanel implements Localizable {
 	private TitleLContainer curtlc;
 
 	/**
-	 * 在两个备用容器中选择一个提供出去
+	 * Choose one of the two spare containers to provide
 	 * 
 	 * @return
 	 */
@@ -191,11 +191,11 @@ public class ContentPane extends JPanel implements Localizable {
 
 	/**
 	 * @param beforeApply
-	 *            afterApply页面的返回页面
+	 *            afterApplyReturn page of the afterApply page
 	 * @param afterApply
-	 *            要跳转的页面
+	 *            Page to jump to
 	 * @param toward
-	 *            跳转方式
+	 *            Jump mode
 	 */
 	public void applyContent(String beforeApply, String afterApply, int toward,
 			boolean isSwitch) {
@@ -206,18 +206,18 @@ public class ContentPane extends JPanel implements Localizable {
 
 	/**
 	 * @param beforePage
-	 *            afterApply页面的返回页面
+	 *            afterApplyReturn page of the afterApply page
 	 * @param afterPage
-	 *            要跳转的页面
+	 *            Page to jump to
 	 * @param toward
-	 *            跳转方式
+	 *            Jump mode
 	 */
 	public void applyContent(IContentPage beforePage, IContentPage afterPage,
 			int toward, boolean isSwitch) {
 		if (afterPage == null)
 			return;
 
-		/** 由currentPage来得到当前页面的判断和处理 */
+		/** Determine and handle the current page from currentPage */
 		if (currentPage != null) {
 			if (!currentPage.canLeave()) {
 				return;

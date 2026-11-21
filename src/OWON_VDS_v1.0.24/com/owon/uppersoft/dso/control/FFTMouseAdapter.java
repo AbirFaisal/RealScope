@@ -73,8 +73,8 @@ public class FFTMouseAdapter extends MouseAdapter {
 			loc0.x = e.getX();
 			loc0.y = e.getY();
 		}
-		// 在运行时，如果刷新率够快，可以不用重绘
-		// 拖拽的时候重绘可能PaintContext里面的内容还不是合适可用的，已加同步锁解决
+		// While running, if the refresh rate is fast enough, no repaint is needed
+		// Repainting during a drag may find that the contents of PaintContext are not yet usable; solved by adding a synchronization lock
 		// if (wfm.getDataHouse().isDMLoad())
 		v2.repaint();
 	}

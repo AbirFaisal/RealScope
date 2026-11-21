@@ -106,7 +106,7 @@ public class TuneTexter {
 		sr.nextWord();
 		j = sr.fineWord(volts);
 
-		/** 这边其实不用限制最大值 */
+		/** There is actually no need to limit the maximum here */
 		if (k < 0)
 			return;
 		if (j < 0)

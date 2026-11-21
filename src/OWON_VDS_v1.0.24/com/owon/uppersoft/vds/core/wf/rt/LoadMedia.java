@@ -11,7 +11,7 @@ public abstract class LoadMedia {
 	public abstract int getChannelCount();
 
 	/**
-	 * 两用：在填充需要的cdi后，从中遍历幅值的通道数据；幅值后在需要时遍历通道
+	 * Dual use: after filling the needed cdi, traverse the channel data from it for amplitude values; after that traverse channels when needed
 	 * 
 	 * @return
 	 */
@@ -35,7 +35,7 @@ public abstract class LoadMedia {
 	private LinkedList<ChannelDataInfo> use = new LinkedList<ChannelDataInfo>();
 
 	/**
-	 * 使用缓冲池内已有的ChannelDataInfo对象，使用前重置
+	 * Use an existing ChannelDataInfo object in the buffer pool, reset before use
 	 * 
 	 * @return
 	 */
@@ -54,7 +54,7 @@ public abstract class LoadMedia {
 		use.addLast(cdi);
 	}
 
-	/** 单次获取得到的帧的个数，各通道相同 */
+	/** Number of frames obtained in a single acquisition, the same for each channel */
 	private int frameCount = 1;
 
 	public void setFrameCount(int frameCount) {

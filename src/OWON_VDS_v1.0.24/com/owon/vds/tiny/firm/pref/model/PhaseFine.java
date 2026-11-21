@@ -7,10 +7,10 @@ public class PhaseFine {
 	private short abs_value;
 
 	public void setRdValue(short phase_fine_v) {
-		// 相位细调参数的符号位，为1代表递增，在界面上是勾选的状态，为0代表递减，在界面上是未勾选状态
+		// Sign bit of the phase fine-tune parameter: 1 means increasing, shown as checked in the UI; 0 means decreasing, shown as unchecked
 		select = phase_fine_v < 0;
 
-		// 相位细调参数的绝对值，去除第15位上的符号
+		// Absolute value of the phase fine-tune parameter, with the sign on bit 15 removed
 		abs_value = (short) (phase_fine_v & (~(1 << 15)));
 		validate();
 	}
@@ -21,7 +21,7 @@ public class PhaseFine {
 	}
 
 	public short getWrValue() {
-		// 设置相位细调参数，使用勾选状态设置第15位上的符号位
+		// Set the phase fine-tune parameter, using the checked state to set the sign bit on bit 15
 		int v = select ? (abs_value | (1 << 15)) : abs_value;
 		return (short) v;
 	}

@@ -32,9 +32,9 @@ import com.owon.uppersoft.vds.core.wf.rt.ChannelsTransportInfo;
 import com.owon.uppersoft.vds.util.Pref;
 
 /**
- * 在程序运行过程中始终运行，针对和传输相关的各种事务进行支持，如检测连接，接收数据，发送指令，判断连断等
+ * Runs throughout the program's lifetime, supporting transfer-related matters such as detecting connections, receiving data, sending commands, and detecting disconnection
  * 
- * 暂时只做检测连接的方法调用
+ * For now only calls the connection detection method
  * 
  */
 public class InfiniteDaemon extends Flow {
@@ -178,12 +178,12 @@ public class InfiniteDaemon extends Flow {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				// 如果开启afterKeep，并在内部开启要深存储文件的流程，便会在此处使用传输线程获取文件，相当于阻塞
-				// ca.setDMDataGotAlready(false);//开启会造成多次拿深存储数据
+				// If afterKeep is enabled and the flow requesting the deep memory file is started internally, the transfer thread is used here to fetch the file, which is equivalent to blocking
+				// ca.setDMDataGotAlready(false);//Enabling it would fetch deep memory data multiple times
 				ic.afterkeepload();
 				its.confirmStopStatus();
 			}
-			/** 改为分别在要不要dm的最后进行按钮恢复 */
+			/** Changed to restore the buttons separately at the end of the with-dm and without-dm branches */
 			// mw.getTitlePane().confirmStopStatus();
 		}
 	};
@@ -201,7 +201,7 @@ public class InfiniteDaemon extends Flow {
 
 	protected ChartScreen cs;
 
-	// 应该用于主动积极停止数据的获取
+	// Should be used to actively stop data fetching
 	public void activeStopGet() {
 		ca.stopkeep();
 		addMission(m_afterStop);
@@ -227,20 +227,20 @@ public class InfiniteDaemon extends Flow {
 			// vl.logln("Status_Fail");
 			onFail(ci);
 			vl.logln("sleep " + midWait + " ms on fail");
-			// 失败时等待
+			// Wait on failure
 			sleep(midWait);
 		}
 	}
 
 	/**
-	 * 载入波形的操作之后进行，判断接收success了，对调用的结果作出行为改变
+	 * Performed after waveform loading; determines whether reception succeeded and changes behavior based on the call result
 	 * 
 	 * @param ci
 	 */
 	private final void onSucess(ChannelsTransportInfo ci) {
 		TriggerControl triggerControl = cm.getTriggerControl();
 
-		// 一旦成功一次failure就清零
+		// Reset failure to zero as soon as one success occurs
 		failure = 0;
 
 		int trgs = ci.triggerStatus;
@@ -253,10 +253,10 @@ public class InfiniteDaemon extends Flow {
 			if (ic.isPreStop()) {
 				ci.checkReady();
 
-				// 这时之前有确定要dm
+				// At this point it was previously determined that dm is neededdm
 				realStop();
 			} else if (triggerControl.isSweepOnce()) {
-				// 判断单次触发，置停
+				// Check for single trigger, set to stop
 				// ic.askDM();
 				markAfterStop();
 				activeStopGet();
@@ -282,11 +282,11 @@ public class InfiniteDaemon extends Flow {
 	}
 
 	/**
-	 * 对调用的结果作出判断，fail后
+	 * Judge the call result; after fail
 	 * 
 	 * @param ci
 	 */
-	private final void onFail(ChannelsTransportInfo ci) {// 失败处理
+	private final void onFail(ChannelsTransportInfo ci) {// Failure handling
 		ci.updateStatus(ci.status);
 		// System.err.println(ci.status);
 		failure++;
@@ -344,9 +344,9 @@ public class InfiniteDaemon extends Flow {
 				break;
 			}
 
-			// 连接出错
-			// 下位机出错
-			// 上位机出错
+			// Connection error
+			// Device error
+			// Host error
 
 			failure = 0;
 		}

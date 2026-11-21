@@ -152,7 +152,7 @@ public abstract class WaveFormInfoControl implements IPatchable, IOrgan,
 	}
 
 	/**
-	 * @return 开启的通道的耦合
+	 * @return coupling of the enabled channels
 	 */
 	public ChannelSets[] getAllChannelSets() {
 		ChannelSets[] css = new ChannelSets[lowMachineChannels];
@@ -174,7 +174,7 @@ public abstract class WaveFormInfoControl implements IPatchable, IOrgan,
 	}
 
 	/**
-	 * 通过参数定制通道信息
+	 * Customize channel information via parameters
 	 * 
 	 * @param channels
 	 * @param coupling
@@ -202,10 +202,10 @@ public abstract class WaveFormInfoControl implements IPatchable, IOrgan,
 	}
 
 	/**
-	 * 通道状态标志在最低位. j的各位都为零,表示通道全关
+	 * The channel state flag is in the lowest bit. If all bits of j are zero, all channels are off
 	 * 
 	 * @param bits
-	 * @return j 从低到高位顺序记录1到N通道开关情况
+	 * @return j records the on/off status of channels 1 to N from low to high bits
 	 */
 	public int getWaveFormFlagTailing(int bits) {
 		int j = 0;
@@ -217,7 +217,7 @@ public abstract class WaveFormInfoControl implements IPatchable, IOrgan,
 	}
 
 	/**
-	 * 通道状态标志在最高位
+	 * The channel state flag is in the highest bit
 	 * 
 	 */
 	public int getWaveFormFlagHeading16bitsL(byte[] arr, final int begin,
@@ -344,9 +344,9 @@ public abstract class WaveFormInfoControl implements IPatchable, IOrgan,
 
 	public void setDataHouse(DataHouse dh) {
 		int len = wfinfo.length;
-		// 内部多数去掉直接引用
+		// most internal references are removed directly
 		wfs = new ArrayList<WaveForm>(len);
-		// 初始化时就固定的通道数，将改掉
+		// the channel count fixed at initialization will be changed
 
 		for (int i = 0; i < len; i++) {
 			WaveForm wf = createWaveForm(dh, wfinfo[i]);

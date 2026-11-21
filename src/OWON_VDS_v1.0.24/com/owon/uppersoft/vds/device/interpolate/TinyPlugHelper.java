@@ -13,7 +13,7 @@ public abstract class TinyPlugHelper implements Logable {
 	public static final int EXTRA = 50;
 
 	/**
-	 * 可再优化改变EXTRA使得其在拉触发以后只插有限的点，在插值后再做拉触发偏移
+	 * Can be further optimized by changing EXTRA so that after the trigger pull only a limited number of points are interpolated, and the trigger pull offset is done after interpolation
 	 * 
 	 * @param acp
 	 * @param cdi
@@ -35,11 +35,11 @@ public abstract class TinyPlugHelper implements Logable {
 		int ptr = ((p + l) >> 1) - (fullscreen >> 1);
 
 		/**
-		 * 必须使用原始数组src，这样才能多获取左右的50个像素点，用于正弦插值和拉触发
+		 * The original array src must be used so that the extra 50 pixels on each side can be fetched, for sine interpolation and trigger pull
 		 * 
-		 * buf长度多1，用于尾部插值
+		 * buf is 1 longer, for tail interpolation
 		 * 
-		 * 后续还要改10倍，解决范围有限问题，实现拉触发，解决htp对应的移动量
+		 * Later it also needs to change to 10x to solve the limited range problem, implement trigger pull, and solve the movement amount corresponding to htp
 		 */
 
 		int beg = ptr - EXTRA;
@@ -73,7 +73,7 @@ public abstract class TinyPlugHelper implements Logable {
 	protected void doPlugJob(int fullscreen, ByteBuffer rt_buf,
 			PlugPullContext ppContext, PlugInfo pi) {
 		double plugRate = getPlugRate(fullscreen);
-		int skip = (int) (EXTRA * plugRate);// 总插值倍数*50
+		int skip = (int) (EXTRA * plugRate);// Total interpolation factor*50
 		int demand = (int) (fullscreen * plugRate);
 		int chl = ppContext.getPlugedBuffer_Id();
 		ByteBuffer p_adc = plugJob(fullscreen, rt_buf, pi,
@@ -94,7 +94,7 @@ public abstract class TinyPlugHelper implements Logable {
 		ByteBuffer bb2;
 		int datalen = chllen * pr;
 
-		/** 多插一个点，确保边界显示 */
+		/** Interpolate one extra point to ensure the boundary is displayed */
 		int plen = chllen;
 		bb2 = ByteBuffer.allocate(datalen);
 		byte[] dest = bb2.array();
@@ -116,7 +116,7 @@ public abstract class TinyPlugHelper implements Logable {
 		ByteBuffer bb2;
 		int datalen = (int) (chllen * 2.5);
 
-		/** 多插一个点，确保边界显示 */
+		/** Interpolate one extra point to ensure the boundary is displayed */
 		bb2 = ByteBuffer.allocate(datalen);
 		byte[] dest = bb2.array();
 		VDSource.genSimulateLinearPlug_2_3(dest, 0, src, ptr, chllen, 0);

@@ -51,7 +51,7 @@ public class MarkValueBulletin extends JDialog implements MouseListener,
 		jf = mw.getFrame();
 		cs = mw.getChartScreen();
 
-		// if (!jf.isVisible())//隐藏主界面
+		// if (!jf.isVisible())//Hide the main UI
 		// return;
 
 		final int w = width, h = height;

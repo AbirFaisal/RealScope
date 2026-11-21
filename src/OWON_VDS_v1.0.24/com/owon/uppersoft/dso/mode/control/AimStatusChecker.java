@@ -2,13 +2,13 @@ package com.owon.uppersoft.dso.mode.control;
 
 public interface AimStatusChecker {
 	/**
-	 * 验证的方法一般为：
+	 * The verification method is generally:
 	 * 
-	 * 当前的索引值到达最大边界值时，delta为正，返回Max
+	 * When the current index reaches the maximum boundary value and delta is positive, returns Max
 	 * 
-	 * 当前的索引值到达最小边界值时，delta为负，返回Min
+	 * When the current index reaches the minimum boundary value and delta is negative, returns Min
 	 * 
-	 * 如果当前值不是边界值，对其的delta修改后可以自动纠正到合适范围内，仍然可以返回Pass，表示delta可被接受处理
+	 * If the current value is not a boundary value, after modifying it by delta it can be automatically corrected into a suitable range, and Pass can still be returned, indicating that the delta can be accepted and handled
 	 * 
 	 * @param delta
 	 * @return

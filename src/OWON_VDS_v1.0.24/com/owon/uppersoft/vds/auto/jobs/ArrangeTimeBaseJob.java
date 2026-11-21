@@ -26,12 +26,12 @@ public class ArrangeTimeBaseJob implements Runnable {
 	@Override
 	public void run() {
 
-		/** 从设置触发电平到硬件频率计计算出正确的数值，需要的时间接近信号的周期 */
+		/** From setting the trigger level to the hardware frequency counter computing the correct value takes time close to the period of the signal */
 		// if (arrangeTimeChecks < 0) {
 		// arrangeTimeChecks++;
 		// return;
 		// }
-		/** 从设置触发电平到硬件频率计计算出正确的数值，需要的时间接近信号的周期 */
+		/** From setting the trigger level to the hardware frequency counter computing the correct value takes time close to the period of the signal */
 		// TriggerControl tc = coreControl.getTriggerControl();
 		switch (num) {
 		case 1: {
@@ -54,7 +54,7 @@ public class ArrangeTimeBaseJob implements Runnable {
 			double max_msperiod = -1;
 			int chl = -1;
 
-			// 可作多次获取看看是否硬件频率计计算异常
+			// Can fetch multiple times to see whether the hardware frequency counter computes abnormally
 			// int i = 0;
 			// while (i < 5) {
 			Iterator<WFAutoRoutine> wfri = next_wfrlist.iterator();

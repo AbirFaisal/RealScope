@@ -9,7 +9,7 @@ public class MeasureADC {
 
 	public int[] array = new int[10000];
 
-	/** 建立一个与MeasureT枚举一一对应的数组来存放计算信息 */
+	/** Create an array in one-to-one correspondence with the MeasureT enum to hold calculation info */
 	public VR[] vrs = VR.createVRs();
 
 	public int p;

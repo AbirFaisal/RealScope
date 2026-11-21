@@ -15,7 +15,7 @@ public abstract class JobUnit_M extends JobUnit_C {
 	}
 
 	/**
-	 * 在继承中重写
+	 * Override in subclasses
 	 * 
 	 * @param bbuf
 	 */
@@ -39,9 +39,9 @@ public abstract class JobUnit_M extends JobUnit_C {
 	@Override
 	protected void afterJob(ICommunicateManager sm) {
 		/**
-		 * :M开头且指令第一字节为M的归为菜单类指令更新指令，统一应答
+		 * :M prefix with first command byte M are classified as menu command update commands, answered uniformly
 		 * 
-		 * 之类方法必须在实现的最开始调用super方法以完成应答的步骤
+		 * Methods of this kind must call the super method at the very start of the implementation to complete the response step
 		 */
 		// receiveResponse(sm, mresponse, mresponse.length);
 		// DBG.outArrayAlpha(mresponse, 0, mresponse.length);

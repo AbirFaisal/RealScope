@@ -26,7 +26,7 @@ public class ConfigFactoryTiny {
 				InputStream is = new FileInputStream(confFile);
 				ssPrpt.load(is);
 			} else {
-				/* 如果配置文件不存在，则使用Configuration中的默认值 */
+				/* If the configuration file does not exist, use the default values in Configuration */
 				ssPrpt = dfPrpt;
 			}
 			// or p.loadFromXML(is);

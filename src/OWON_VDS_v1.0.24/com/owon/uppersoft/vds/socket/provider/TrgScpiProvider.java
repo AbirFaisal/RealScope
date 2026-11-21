@@ -46,7 +46,7 @@ public class TrgScpiProvider {
 	}
 
 	// private void applyTrgMode(int chl, int trgTyp, TrgTypeDefine trgMod) {
-	// // 设触发模式 TrgTypeDefine.Edge,Video;
+	// // set trigger mode TrgTypeDefine.Edge,Video;
 	// if (controlManager.getPrinciple().singleVideoAlow(trgMod, chl, tc)) {
 	// TriggerSet ts = tc.getTriggerSet(trgTyp);
 	// tc.c_setTrigger(ts.getTriggerSet(trgMod));
@@ -57,7 +57,7 @@ public class TrgScpiProvider {
 	// }
 
 	private void applyTrgMode2(int chl, int trgTyp, TrgTypeDefine trgMod) {
-		// 设触发模式 TrgTypeDefine.Edge,Video;
+		// set trigger mode TrgTypeDefine.Edge,Video;
 		if (cm.singleVideoAlow(trgMod, chl, tc)) {
 			TriggerSet ts = getTriggerSet(trgTyp);
 			getTriggerSet(trgTyp).setTrigger(ts.getTriggerSet(trgMod));
@@ -97,7 +97,7 @@ public class TrgScpiProvider {
 			return ScpiPool.Failed + ",AT ALTERNATE MODE";
 		if (ts.isCurrentTrigger_Video())
 			return ScpiPool.Failed + ",AT VIDEO MODE";
-		// 交替触发时，触发模式仅为 AUTO
+		// with alternate trigger, the trigger mode is only AUTO AUTO
 		for (int i = 0; i < trgSweepMode.length; i++) {
 			if (args.equalsIgnoreCase(trgSweepMode[i])) {
 				ts.getTrigger().c_setSweep(i, tc);
@@ -127,7 +127,7 @@ public class TrgScpiProvider {
 			return ScpiPool.Failed;
 		int chl = getTriggerSetChannel(trgTyp);
 		applyTrgMode2(chl, trgTyp, trgMod);
-		// 更新
+		// update
 		updateTrgInfoPane();
 		cm.pcs.firePropertyChange(PropertiesItem.APPLY_TRIGGER, null, trgTyp);
 		return ScpiPool.Success;
@@ -176,9 +176,9 @@ public class TrgScpiProvider {
 		if (chIdx < 0 || chIdx > cm.getAllChannelsNumber() - 1)
 			return ScpiPool.ErrCh;
 
-		// 切single、Alt
+		// switch single, Alt
 		tc.c_setChannelMode(trgTyp);
-		// 设通道
+		// set channel
 		if (trgTyp == TriggerDefine.TrgModeAltIndex) {
 			setCurrentAltChannel(chIdx);
 		} else {
@@ -187,7 +187,7 @@ public class TrgScpiProvider {
 					tc.singleTriggerSet.getChannel());
 			tc.doSubmit();
 		}
-		// 设触发模式 TrgTypeDefine.Edge,Video;
+		// set trigger mode TrgTypeDefine.Edge,Video;
 		applyTrgMode2(chIdx, trgTyp, trgMod);
 		updateAllTrgUI(trgTyp);
 
@@ -206,7 +206,7 @@ public class TrgScpiProvider {
 		return respond;
 	}
 
-	// 传入trgTyp，即单触、交替状态，获得对应的边沿触发电平
+	// pass in trgTyp, i.e. single or alternate trigger state, to get the corresponding edge trigger level
 	public String get_EdgeLevel(int trgTyp) {
 		int chl = getTriggerSetChannel(trgTyp);
 		if (tc.isExtTrg(chl))
@@ -236,7 +236,7 @@ public class TrgScpiProvider {
 		tc.getTriggerUIInfo().setCurrentAltChannel(idx);
 	}
 
-	// 传入trgTyp，即单触、交替状态，设置对应的边沿触发电平为args
+	// pass in trgTyp, i.e. single or alternate trigger state, to set the corresponding edge trigger level to args
 	public String set_EdgeLevel(int trgTyp, String args) {
 		int chl = getTriggerSetChannel(trgTyp);
 		if (tc.isExtTrg(chl))
@@ -250,12 +250,12 @@ public class TrgScpiProvider {
 		int v = (int) Double.parseDouble(args);
 		// v = ts.getVoltsenseHalfRange() - v;
 		// System.out.println(args + "," + v);
-		// 附加反相
+		// plus inversion
 		v = ci.getInverseValue(v);
 
-		boolean changed = vt.c_setVoltsense(v);// 设置并限定v值
+		boolean changed = vt.c_setVoltsense(v);// set and limit the v value
 		if (changed) {
-			tc.getVTPatchable().submiteVoltsense(ci.getNumber(), vt);// 同步下位机
+			tc.getVTPatchable().submiteVoltsense(ci.getNumber(), vt);// sync to the device
 		}
 		cm.pcs.firePropertyChange(PropertiesItem.REPAINT_CHARTSCREEN, null,
 				null);
@@ -298,7 +298,7 @@ public class TrgScpiProvider {
 
 		int trg = tc.isSingleTrg() ? TriggerDefine.TrgModeSingleIndex
 				: TriggerDefine.TrgModeAltIndex;
-		// TODO 测试注意这里fire会否影响边沿斜率脉冲页面，都有NEXT_STATUS
+		// TODO test: note whether the fire here affects the edge/slope/pulse pages, all of which have NEXT_STATUSNEXT_STATUS
 		if (trgTyp == trg)
 			cm.pcs.firePropertyChange(PropertiesItem.NEXT_STATUS, null, vt);
 		updateTrgInfoPane();
@@ -331,7 +331,7 @@ public class TrgScpiProvider {
 
 			int trg = tc.isSingleTrg() ? TriggerDefine.TrgModeSingleIndex
 					: TriggerDefine.TrgModeAltIndex;
-			// TODO 测试注意这里fire会否影响边沿斜率脉冲页面，都有NEXT_STATUS
+			// TODO test: note whether the fire here affects the edge/slope/pulse pages, all of which have NEXT_STATUSNEXT_STATUS
 			if (trgTyp == trg)
 				cm.pcs.firePropertyChange(PropertiesItem.NEXT_STATUS, null, vt);
 			return ScpiPool.Success;

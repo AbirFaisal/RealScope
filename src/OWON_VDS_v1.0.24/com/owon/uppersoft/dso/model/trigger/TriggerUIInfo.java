@@ -33,15 +33,15 @@ public class TriggerUIInfo {
 	}
 
 	/**
-	 * 交替触发的通道名
+	 * channel name for alternate trigger
 	 * 
-	 * 对单一或交替的选择通道进行设置时，可以分别使用对应的方法；进行获取时，可合并使用方法
+	 * When setting the selected channel for single or alternate trigger, the corresponding methods can be used separately; when getting, a combined method can be used
 	 */
 	private int channel = 0;
 	private TriggerControl tc;
 
 	/**
-	 * 用于交替时选定通道
+	 * Used to select a channel during alternation
 	 * 
 	 * @param idx
 	 */

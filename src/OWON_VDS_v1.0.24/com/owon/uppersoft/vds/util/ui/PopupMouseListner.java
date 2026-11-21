@@ -6,7 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 /**
- * PopupMouseListner，鼠标事件模拟窗口图标的行为
+ * PopupMouseListner, mouse events simulate the behavior of the window icon
  * 
  * @author Matt
  * 

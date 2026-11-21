@@ -109,16 +109,16 @@ public class ZoomPane extends FunctionPanel {
 	 * nbtnt("DebugMess"); test.addActionListener(new ActionListener() {
 	 * 
 	 * @Override public void actionPerformed(ActionEvent e) {
-	 *           DBG.dbgln("--------------"); DBG.dbgln("Mtb存:" +
-	 *           machine.TIMEBASE[ac.mtbIdx] + " Mtb现拿:" +
+	 *           DBG.dbgln("--------------"); DBG.dbgln("Mtb stored:" +
+	 *           machine.TIMEBASE[ac.mtbIdx] + " Mtb fetched now:" +
 	 *           machine.TIMEBASE[tc.getTimebaseIdx()]); DBG.dbgln("Ztb:" +
-	 *           machine.TIMEBASE[ac.getZTBidx()]); DBG.dbgln("mhtp存:" + ac.mhtp
-	 *           + " htp现拿：" + tc.getHorizontalTriggerPosition());
+	 *           machine.TIMEBASE[ac.getZTBidx()]); DBG.dbgln("mhtp stored:" + ac.mhtp
+	 *           + " htp fetched now:" + tc.getHorizontalTriggerPosition());
 	 *           DBG.dbgln("--------------"); } });
 	 *           testb1b2.addActionListener(new ActionListener() {
 	 * @Override public void actionPerformed(ActionEvent e) {
 	 *           DBG.dbgln("--------------"); DBG.dbgln("b1:" + ac.b1 + " b2:" +
-	 *           ac.b2); DBG.dbgln("deltaB:" + ac.dltb); DBG.dbgln("htp：" +
+	 *           ac.b2); DBG.dbgln("deltaB:" + ac.dltb); DBG.dbgln("htp: " +
 	 *           tc.getHorizontalTriggerPosition());
 	 *           DBG.dbgln("--------------"); } });
 	 */
@@ -153,7 +153,7 @@ public class ZoomPane extends FunctionPanel {
 					return;
 				int i = (Integer) evt.getNewValue();
 				ac.setSelected(i);
-				/** 如果重复点击同一按钮，可能污染已保存的值 */
+				/** if the same button is clicked repeatedly, the saved values may be polluted */
 				if (ac.isPressedtheSame(i))
 					return;
 				switch (i) {
@@ -199,13 +199,13 @@ public class ZoomPane extends FunctionPanel {
 					return;
 				int idx = astbcbb.getSelectedIndex();
 				int midx = tc.getTimebaseIdx();
-				/** ASet状态下调时基,扩展时基大于主时基，则DetailPane主时基跟着变大更新 */
+				/** ASet state, when adjusting the timebase: if the expanded timebase is larger than the main timebase, the DetailPane main timebase grows and updates with it */
 				if (idx > midx) {
-					/** 扩展时基变大导致主时基跟着变大 */
+					/** the expanded timebase growing makes the main timebase grow with it */
 					tc.c_setTimebaseIdx(idx, false);
 				}
 
-				ac.assistSetcomputDeltabb1b2(idx, tc.getTimebaseIdx());// 原方法里有Tm>=b2的限制，才放在tc设时基后。
+				ac.assistSetcomputDeltabb1b2(idx, tc.getTimebaseIdx());// the original method has a Tm>=b2 restriction, so it is placed after tc sets the timebase.
 				repaintChartScreen();
 			};
 		});

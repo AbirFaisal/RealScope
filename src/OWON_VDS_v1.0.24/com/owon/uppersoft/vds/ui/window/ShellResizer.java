@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 //import com.sun.awt.AWTUtilities;
 
 /**
- * WndSizer，支持调整窗口大小
+ * WndSizer, supports resizing the window
  * 
  */
 public class ShellResizer implements MouseMotionListener, MouseListener {

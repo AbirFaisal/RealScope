@@ -161,7 +161,7 @@ public class PulsePane extends TriggerLoaderPane implements ItemListener,
 		cbbcoupling = new CComboBox();
 		// ip.add(cbbcoupling);
 
-		/** 先设置模型，更新语言，然后添加事件监听器 */
+		/** First set the model, update the language, then add the event listeners */
 		cbbcoupling.setModel(new DefaultComboBoxModel(TriggerDefine.COUPLING));
 
 		cbbsweep.setModel(new DefaultComboBoxModel(LObject

@@ -201,7 +201,7 @@ public class DataOutput {
 						int idx = (csp - 1) * everySheetCount;
 						int end = dataRow + length;
 						for (int row = dataRow; row < end; row++, idx++) {
-							/* 对于double，jxl直接转换为int */
+							/* For double, jxl converts directly to int */
 							double val = wf.voltAt(idx);
 							labelN = new jxl.write.Number(channelsOrder, row,
 									val);
@@ -286,17 +286,17 @@ public class DataOutput {
 			int util = rowCount / 100;
 			// setProgressMaximum(100);
 			String ss;
-			/* 每一行 */
+			/* each row */
 			for (int i = 0; i < rowCount; i++) {
 				if (pm.isCanceled()) {
 					fw.close();
 					return;
 				}
-				/* 序号标识 */
+				/* serial number label */
 				// if (sequence)
 				fw.append(String.valueOf(i + 1));
 
-				/* 每一列 */
+				/* each column */
 				owi = wfm.on_wf_Iterator();
 				while (owi.hasNext()) {
 					IExportableWF wf = wfo.setWF(owi.next());
@@ -304,7 +304,7 @@ public class DataOutput {
 						fw.append(comma);
 						continue;
 					}
-					/* 须确保每个WaveForm的数据都有rowCount个 */
+					/* must ensure every WaveForm has rowCount data entries */
 					ss = SFormatter.UIformat("%.2f", (float) wf.voltAt(i));
 					fw.append(comma + ss);
 				}
@@ -335,7 +335,7 @@ public class DataOutput {
 		DataHouse dh = Platform.getDataHouse();
 		WFO wfo = new WFO(dh.getDeepMemoryStorage(), dh.controlManager);
 
-		/* 使用所有列数中的最大值作为列数 */
+		/* use the maximum of all column counts as the column count */
 		int rowCount = 0;
 		ON_WF_Iterator owi = wfm.on_wf_Iterator();
 		while (owi.hasNext()) {
@@ -349,12 +349,12 @@ public class DataOutput {
 			FileWriter fw = new FileWriter(out);
 
 			String ln = StringPool.LINE_SEPARATOR;// length 2
-			/* 单位标识 */
+			/* unit label */
 			fw.append(unitTxt + ln);
 
 			// if (sequence)
 			fw.append(ssf.emptyblock);// length 12
-			/* 波形名(列名) */
+			/* waveform name (column name) */
 			owi = wfm.on_wf_Iterator();
 			while (owi.hasNext()) {
 				IExportableWF wf = wfo.setWF(owi.next());
@@ -380,17 +380,17 @@ public class DataOutput {
 			int util = rowCount / 100;
 			// setProgressMaximum(100);
 			String ss;
-			/* 每一行 */
+			/* each row */
 			for (int i = 0; i < rowCount; i++) {
 				if (pm.isCanceled()) {
 					fw.close();
 					return;
 				}
-				/* 序号标识 */
+				/* serial number label */
 				// if (sequence)
 				fw.append(ssf.valueToStringOnLeft(i + 1));
 
-				/* 每一列 */
+				/* each column */
 				owi = wfm.on_wf_Iterator();
 				while (owi.hasNext()) {
 					IExportableWF wf = wfo.setWF(owi.next());
@@ -399,7 +399,7 @@ public class DataOutput {
 						fw.append(ssf.emptyblock);
 						continue;
 					}
-					/* 须确保每个WaveForm的数据都有rowCount个 */
+					/* must ensure every WaveForm has rowCount data entries */
 					ss = SFormatter.UIformat("%.2f", (float) wf.voltAt(i));
 					fw.append(ssf.valueToStringOnRight(ss));
 				}

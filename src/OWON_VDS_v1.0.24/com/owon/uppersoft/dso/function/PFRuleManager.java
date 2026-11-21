@@ -26,7 +26,7 @@ import com.owon.uppersoft.vds.util.Pref;
 import com.owon.uppersoft.vds.util.format.SFormatter;
 
 /**
- * PFRuleManager，管理运行状态，结果的输出，存盘和读取；这里是配置信息存放的位置，无需释放资源
+ * PFRuleManager, manages the running state, result output, saving and loading; this is where the configuration info is stored, no resource release is needed
  * 
  */
 public class PFRuleManager {
@@ -120,7 +120,7 @@ public class PFRuleManager {
 	private int output_rule = PASS;
 
 	/**
-	 * 输出规则
+	 * Output rules
 	 * 
 	 * @param rule
 	 *            PASS or FAIL
@@ -138,7 +138,7 @@ public class PFRuleManager {
 	}
 
 	/**
-	 * 重置输出计数
+	 * Reset the output count
 	 */
 	public void resetPFCounts() {
 		pf_counts[PASS] = pf_counts[FAIL] = 0;
@@ -157,7 +157,7 @@ public class PFRuleManager {
 	}
 
 	/**
-	 * 画规则检测结果信息
+	 * Draw the rule check result info
 	 * 
 	 * @param g2d
 	 * @param pc
@@ -193,7 +193,7 @@ public class PFRuleManager {
 	}
 
 	/**
-	 * 处理输出结果
+	 * Handle the output result
 	 * 
 	 * @param result
 	 */
@@ -212,11 +212,11 @@ public class PFRuleManager {
 				/**
 				 * KNOW
 				 * 
-				 * 不停止checking，这样点运行可以继续判断通过失败，累加计数
+				 * Do not stop checking, so that clicking run can continue to judge pass/fail and accumulate the counts
 				 * 
-				 * 在Pass/Fail时开启单帧接收模式，只保存最后一帧数据，但仍是所有帧都接收，其它帧丢弃
+				 * Enable single-frame receive mode on Pass/Fail, saving only the last frame of data, but still receiving all frames and discarding the others
 				 * 
-				 * 由于停止的做法为即停，并就停下的那副可以得到下位机的深存储数据，所以这边的处理方便了
+				 * Since stopping works as an immediate stop, and the frame just stopped on can yield the device's deep memory data, the handling here is convenient
 				 * 
 				 */
 
@@ -224,14 +224,14 @@ public class PFRuleManager {
 			}
 		}
 
-		/** 25M 判断pf后输出即停发停止指令下位机有问题 */
+		/** 25M the device has a problem when the stop command is sent for stop-on-output after pf judgment */
 		ca.interComm.sync_pf(result);
 	}
 
-	/** 规则输出设置 */
+	/** Rule output settings */
 	/**
 	 * @param show
-	 *            信息显示
+	 *            info display
 	 */
 	public void setShowMsg(boolean show) {
 		show_msg = show;
@@ -243,7 +243,7 @@ public class PFRuleManager {
 
 	/**
 	 * @param r
-	 *            响铃
+	 *            beep
 	 */
 	public void setRing(boolean r) {
 		ring = r;
@@ -255,7 +255,7 @@ public class PFRuleManager {
 
 	/**
 	 * @param b
-	 *            输出即停
+	 *            stop on output
 	 */
 	public void setStopOnOutput(boolean b) {
 		stop_on_output = b;
@@ -265,19 +265,19 @@ public class PFRuleManager {
 		return stop_on_output;
 	}
 
-	/** 处理输出结果 */
+	/** Handle the output result */
 	private boolean checking = false;
 
-	/** 开始停止规则检测 */
+	/** Start/stop rule checking */
 	/**
-	 * @return 是否正在检测
+	 * @return whether checking is in progress
 	 */
 	public boolean isChecking() {
 		return checking;
 	}
 
 	/**
-	 * 开始规则检测
+	 * Start rule checking
 	 */
 	public void runCheck() {
 		checking = true;
@@ -289,7 +289,7 @@ public class PFRuleManager {
 	private ControlApps ca;
 
 	/**
-	 * 停止规则检测
+	 * Stop rule checking
 	 */
 	public void stopCheck() {
 		checking = false;

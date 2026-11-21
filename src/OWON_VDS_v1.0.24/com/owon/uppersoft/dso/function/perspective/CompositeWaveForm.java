@@ -22,7 +22,7 @@ import com.owon.uppersoft.vds.core.paint.ScreenContext;
 import com.owon.uppersoft.vds.core.rt.IDataMaxMin;
 
 /**
- * CompositeWaveForm，Composite waveforms,
+ * CompositeWaveForm, Composite waveforms,
  * independently open up array space for calculations,
  * for faster speeds and refreshes, and better plotting algorithms
  * 

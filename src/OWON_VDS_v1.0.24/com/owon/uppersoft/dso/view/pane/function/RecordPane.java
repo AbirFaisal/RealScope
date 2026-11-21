@@ -39,24 +39,24 @@ import com.owon.uppersoft.vds.util.FileUtil;
 import com.owon.uppersoft.vds.util.MyFileFilter;
 
 /**
- * <code>波形录制	模式	录制，回放，存储，关闭
- 操作	开始，停止
- 录制	
- 帧设置	终止帧，时间间隔（1ms~????s）
- 波形刷新	开启，关闭
- 回放	
- 帧设置	起始帧，终止帧，当前帧，时间间隔
- 回放模式	循环，单次
- 存储	
- 帧设置	起始帧，终止帧
- 保存	
- 调出	
+ * <code>Waveform recording	Mode	recording, playback, storage, off
+ Operation	start, stop
+ Recording	
+ Frame settings	end frame, time interval (1ms~????s)
+ Waveform refresh	on, off
+ Playback	
+ Frame settings	start frame, end frame, current frame, time interval
+ Playback mode	loop, single
+ Storage	
+ Frame settings	start frame, end frame
+ Save	
+ Recall	
 
- 文件操作	打开	波形文件
- 另存为	
+ File operations	Open	Waveform file
+ Save as	
  <code>
 
- 可能引起状态改变的情况：初试载入；主界面RT与否切换；(在可操作的前提下)点击切换录制状态；(在可操作的前提下)点击回放录制状态
+ Cases that may cause a state change: initial load; toggling RT on the main UI; (if operable) clicking to toggle the recording state; (if operable) clicking to play back the recording state
  * 
  * @author Matt
  * 
@@ -91,7 +91,7 @@ public class RecordPane extends FunctionPanel {
 			String n = evt.getPropertyName();
 			if (n.equalsIgnoreCase(ExcludeButtons.EXCLUDE)) {
 				boolean leave = canLeave();
-				// 后续考虑移入ExcludeButtons控件类中实现(状态可以选择性切换)。
+				// Consider later moving this into the ExcludeButtons control class (states can be switched selectively).
 				if (!leave) {
 					ebs.setSelected(selPage);
 					return;
@@ -110,7 +110,7 @@ public class RecordPane extends FunctionPanel {
 	private void beforePlayLeave() {
 		boolean pr = pc.isPlaying();
 		if (pr) {
-			// 释放当前载入的播放文件
+			// Release the currently loaded playback file
 			CByteArrayInputStream ba = pc.getCByteArrayInputStream();
 			if (ba != null) {
 				// if (pc.playing) {
@@ -120,7 +120,7 @@ public class RecordPane extends FunctionPanel {
 				ba.dispose();
 			}
 		}
-		// 离开play前保存currnt,在进入时载入。
+		// Save currnt before leaving play, load it on entering.
 		pc.saveCurrent();
 	}
 
@@ -153,7 +153,7 @@ public class RecordPane extends FunctionPanel {
 	private void switch2Pane() {
 		remove(rp);
 		if (selPage == PLAYPAGE) {
-			rp = createPlayPane(cm);// 先构建后Check，文件预读信息才能设置到界面上
+			rp = createPlayPane(cm);// Build first, then Check, so that the file's pre-read info can be set on the UI
 			pc.setPathNCheck(new File(pc.getFilePath()), true);
 		} else {
 			rp = createRecordPane(cm);
@@ -336,11 +336,11 @@ public class RecordPane extends FunctionPanel {
 					OpenPropertyChangeEvent oevt = (OpenPropertyChangeEvent) evt;
 					int i = oevt.newInt;
 					if (i >= 0) {
-						// 播放时更新Text帧数,在timelineslider.setValue(i);会更新
+						// Update the Text frame count during playback; timelineslider.setValue(i); will update it
 						// cnt2.setText(String.valueOf(i));
 						timelineslider.setValue(i);
 					} else {
-						// 当自动播放结束用于切换状态
+						// Used to switch state when auto play ends
 						updateRecordStatus(pc.isPlaying());
 						updatePlayStatus(pc.isPlaying());
 					}
@@ -390,7 +390,7 @@ public class RecordPane extends FunctionPanel {
 		pbtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO 暂停时，因为设置起始播放帧，播放起点将从控件上的起始帧开始播(默认为0)。
+				// TODO When paused, because the start playback frame is set, playback will start from the start frame on the control (default 0).
 
 				boolean isRuntime = cm.isRuntime();
 				if (isRuntime) {
@@ -405,7 +405,7 @@ public class RecordPane extends FunctionPanel {
 					return;
 				}
 				pc.switchPlaying();
-				// 当播放或暂停时用于切换状态
+				// Used to switch state when playing or paused
 				updateRecordStatus(pc.isPlaying());
 				updatePlayStatus(pc.isPlaying());
 			}
@@ -446,9 +446,9 @@ public class RecordPane extends FunctionPanel {
 
 		ip = fp.nrip();
 		timelineslider = new JSlider();
-		// 拖拽可重定位当前帧
+		// Dragging can relocate the current frame
 		timelineslider.setPreferredSize(new Dimension(250, 50));
-		// timelineslider.setValue(0);//构造时setpathNcheck()会设零
+		// timelineslider.setValue(0);//At construction setpathNcheck() will set it to zero
 		ip.add(timelineslider);
 		timelineslider.addMouseListener(new MouseAdapter() {
 			boolean foreplaying;
@@ -480,7 +480,7 @@ public class RecordPane extends FunctionPanel {
 				int curf = timelineslider.getValue();
 				cnt2.setText("" + curf);
 				/**
-				 * 当timelineslider拖拽到最后一帧时该帧不设置且不播放
+				 * When timelineslider is dragged to the last frame, that frame is not set and not played
 				 */
 				if (curf < 0 || curf >= pc.counter)
 					return;
@@ -496,7 +496,7 @@ public class RecordPane extends FunctionPanel {
 	boolean listening = true;
 
 	/**
-	 * 更新录制按钮文本
+	 * Update the record button text
 	 * 
 	 * @param rs
 	 * @param recording
@@ -508,7 +508,7 @@ public class RecordPane extends FunctionPanel {
 	}
 
 	/**
-	 * 更新回放按钮文本
+	 * Update the playback button text
 	 * 
 	 * @param rs
 	 * @param playing
@@ -520,7 +520,7 @@ public class RecordPane extends FunctionPanel {
 	}
 
 	/**
-	 * 在可录制前提下，更新录制状态
+	 * Update the recording state, provided recording is possible
 	 * 
 	 * @param p
 	 */
@@ -533,7 +533,7 @@ public class RecordPane extends FunctionPanel {
 	}
 
 	/**
-	 * 在可回放前提下，更新回放状态
+	 * Update the playback state, provided playback is possible
 	 * 
 	 * @param p
 	 */
@@ -547,7 +547,7 @@ public class RecordPane extends FunctionPanel {
 	}
 
 	private void loadPauseStatus() {
-		// 恢复暂停时状态
+		// Restore the state at pause
 		pc.loadSavedCurrent();
 		cnt2.setText("" + pc.getSavedCurrent());
 		listening = false;
@@ -556,7 +556,7 @@ public class RecordPane extends FunctionPanel {
 	}
 
 	/**
-	 * 更新运行停止状态，以此判断并更新所有的录制回放的状态
+	 * Update the run/stop state, and use it to determine and update all recording and playback states
 	 * 
 	 * @param rt
 	 */
@@ -584,8 +584,8 @@ public class RecordPane extends FunctionPanel {
 			if (this != null)
 				updateRuntimeStatus(rt);
 			if (!rt && selPage == PLAYPAGE && !cm.reloadManager.isReload()) {
-				// (如果多&&sel==1的判断，若在sel==0软件就停，
-				// 判断进不来，回放的文件便不是刚录制的文件。)
+				// ((If there were an extra && sel==1 check, then with sel==0 the software would stop,
+				// the check would not be entered, and the played file would not be the one just recorded.))
 				boolean p = pc.setPathNCheck(new File(pc.getFilePath()), false);
 				if (!p)
 					phcl.setText(rb.getString("M.Record.LoadInvalid") + "\n"

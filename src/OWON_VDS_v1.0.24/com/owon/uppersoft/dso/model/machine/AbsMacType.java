@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.owon.uppersoft.vds.core.machine.MachineType;
 
 /**
- * @RF 抽象类实现三个常用的成员属性
+ * @RF abstract class implementing three commonly used member attributes
  * 
  */
 public abstract class AbsMacType implements MachineType {
@@ -13,7 +13,7 @@ public abstract class AbsMacType implements MachineType {
 	public static final int FreqRef_100M = 100000000;
 	public static final int FreqRef_50M = 50000000;
 
-	/** 在除了1k的基础上，进行比较操作 */
+	/** Perform comparison on the basis of everything except 1k */
 	public static final int FreqRef_Lower_100M = FreqRef_100M;
 	public static final int FreqRef_Upper_100M = 125000000;
 
@@ -63,29 +63,29 @@ public abstract class AbsMacType implements MachineType {
 	}
 
 	/**
-	 * 接收到的频率算法：频率 = 频率值/参考值*采样率因子 （100M机型采样率因子一般是125M和100M）
+	 * Algorithm for the received frequency: frequency = frequency value / reference value * sampling rate factor (the sampling rate factor of 100M models is generally 125M and 100M)
 	 * 
-	 * 100M为界:vds3102和3104当前的采样率<=100M,则乘以因子100M; 当前的采样率>100M,则乘以因子125M 。
-	 * 125M为界:vds3102和3104当前的采样率<125M,则乘以因子100M; 当前的采样率>=125M,则乘以因子125M 。
-	 * 另外,vds2062和2064是60M机型,其他条件不变,因子100M替换为50M;因子125M替换为62.5M。
+	 * 100M as the boundary: for vds3102 and 3104, if the current sampling rate <=100M, multiply by factor 100M; if the current sampling rate >100M, multiply by factor 125M.
+	 * 125M as the boundary: for vds3102 and 3104, if the current sampling rate <125M, multiply by factor 100M; if the current sampling rate >=125M, multiply by factor 125M.
+	 * Also, vds2062 and 2064 are 60M models; other conditions are unchanged, with factor 100M replaced by 50M and factor 125M replaced by 62.5M.
 	 * 
 	 * @param base
 	 * @param ref
 	 * @param sampleRate_kHz
-	 *            当前采样率,它与时基、存储深度有关
+	 *            current sampling rate, which depends on the timebase and memory depth
 	 * @param threshold
-	 *            采样率档位分界,目前以100M为界，用来比较当前采样率
+	 *            sampling rate scale boundary, currently 100M, used to compare against the current sampling rate
 	 * @param divUpper
-	 *            vds3102和3104为125M,vds2062和2064为62.5M
+	 *            vds3102 and 3104 are 125M, vds2062 and 2064 are 62.5M
 	 * @param divLower
-	 *            vds3102和3104为100M,vds2062和2064为50M
+	 *            vds3102 and 3104 are 100M, vds2062 and 2064 are 50M
 	 * @param max
-	 *            上限为所有通道都开启后的最大采样率的1/4
+	 *            Upper limit is the maximum sampling rate with all channels enabled, times 1/4
 	 * @return
 	 */
 	protected static double doHandleFrequencyCompute(float base, float ref,
 			BigDecimal sampleRate_kHz, int threshold, int divUpper, int divLower) {
-		/** 这里作针对硬件频率计的参数按采样率区分判断 */
+		/** Here, the hardware frequency counter parameters are determined by sampling rate ranges */
 		int div = divUpper;
 		double dbv = sampleRate_kHz.doubleValue() * 1000;
 		// System.out.println("sampleRate(dbv):" + dbv + ",threadsold:"
@@ -96,7 +96,7 @@ public abstract class AbsMacType implements MachineType {
 		}
 		double v = base / (double) ref * div;
 		// System.out.println(",base:"+base+",ref:"+ref+",div"+div+",v:"+v);
-		// div一般为125K，实际要乘125M
+		// div is generally 125K, actually needs to be multiplied by 125M
 		return v;
 	}
 

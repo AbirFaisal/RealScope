@@ -118,10 +118,10 @@ public class MachineSettingPane extends FunctionPanel {
 								}
 
 								interComm.rebootMachine();
-								// 断开自动获取
+								// Disconnect auto fetch
 								Platform.getControlApps().releaseConnect();
 
-								/** 这里断开后不再自动连接网络，因为usb要改为供电线，无法确保用户已经拔掉再插上 */
+								/** After disconnecting here, the network is no longer reconnected automatically, because usb will be changed to a power cable and it cannot be ensured that the user has unplugged and replugged it */
 								// try {
 								// Thread.sleep(2000);
 								// } catch (InterruptedException e) {
@@ -160,7 +160,7 @@ public class MachineSettingPane extends FunctionPanel {
 	private void okAction() {
 		// JTextField[] iptfs, JTextField[] smtfs, JTextField[] gwtfs
 
-		// 设置IP等信息到指定型号示波器
+		// Set IP and other info on the specified model of oscilloscope
 		saveSetting();
 		cm.getSysControl().c_network();
 		// InterCommunicator interComm = Platform.getControlApps().interComm;

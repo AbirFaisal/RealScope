@@ -7,19 +7,19 @@ import com.owon.uppersoft.vds.util.BufferHandleUtil;
 import com.owon.vds.tiny.firm.FlashMirror;
 
 /**
- * Translator_Tiny，用于将指令的参数部分转化为协议规定的数值
+ * Translator_Tiny, used to convert the parameter part of a command to the value specified by the protocol
  * 
- * 内部通过TuneFunction实现参数转译
+ * Internally, parameter translation is implemented via TuneFunction
  * 
  * 
  * 
  * FactoryPartition_LE
  * 
- * 200以外
+ * 200 or beyond
  * 
  * Register
  * 
- * 1k以外
+ * 1k or beyond
  * 
  * DeviceArgPartition_LE
  */
@@ -65,7 +65,7 @@ public class DefaultPrefControl implements PrefControl, Logable {
 	public void save2FactoryPart() {
 		logln("wrDevicePref2FactorySetPref");
 
-		/** 写入了当前设置区 */
+		/** Written into the current settings area */
 		save2DevicePart();
 
 		ByteBuffer bb = flashMirror.getFactoryPartition_LE();
@@ -95,9 +95,9 @@ public class DefaultPrefControl implements PrefControl, Logable {
 
 		if (!support) {
 			/**
-			 * 对不支持的flashMirror进行覆写，防止各种读入时读取出错误的值
+			 * Overwrite unsupported flashMirror to prevent wrong values being read in various reads
 			 * 
-			 * 从flash的信息读取检测和读取无效覆写两方面防止出错
+			 * Prevents errors in two ways: detection when reading flash information and overwriting on invalid reads
 			 */
 			save2FactoryPart();
 			return false;

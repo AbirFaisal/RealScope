@@ -8,12 +8,12 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 /**
- * PFRuleUtil 规则点集的生成及界限绘制
+ * PFRuleUtil generation of rule point sets and drawing of boundaries
  * 
  */
 public class PFRuleUtil {
 	/**
-	 * 创建符合规则的界限点
+	 * Create the boundary points conforming to the rule
 	 * 
 	 * @param buf
 	 * @param adc_min
@@ -38,7 +38,7 @@ public class PFRuleUtil {
 	}
 
 	/**
-	 * 创建符合规则的界限点
+	 * Create the boundary points conforming to the rule
 	 * 
 	 * @param buf
 	 * @param adc_min
@@ -63,7 +63,7 @@ public class PFRuleUtil {
 	}
 
 	/**
-	 * 将adc点针对每个像素取最值均匀分配到数组中去
+	 * Take the extreme values of the adc points for each pixel and distribute them evenly into the array
 	 * 
 	 * @param buf
 	 * @param adc_min
@@ -79,8 +79,8 @@ public class PFRuleUtil {
 		double r, g = 0;
 		r = (double) adc_max.length / len;
 
-		// 使用adc的原始点，以垂直中心为0，上正下负
-		// 把adc点均分到各个像素，取最大最小值
+		// use the raw adc points, with the vertical center as 0, positive up and negative down
+		// distribute the adc points evenly among the pixels and take the maximum and minimum values
 		for (int i = p, j = 0, v; i < l; i++, g = g + r, j = (int) g) {
 			v = arr[i];
 			if (adc_min[j] > v) {// min
@@ -95,7 +95,7 @@ public class PFRuleUtil {
 	}
 
 	/**
-	 * 将adc点取最值均匀分配到数组中去
+	 * Take the extreme values of the adc points and distribute them evenly into the array
 	 * 
 	 * @param buf
 	 * @param adc_min
@@ -111,8 +111,8 @@ public class PFRuleUtil {
 		double r, g = 0;
 		r = (double) adc_max.length / len;
 
-		// 使用adc的原始点，以垂直中心为0，上正下负
-		// 把adc点均分到各个像素，取最大最小值
+		// use the raw adc points, with the vertical center as 0, positive up and negative down
+		// distribute the adc points evenly among the pixels and take the maximum and minimum values
 		for (int i = p, j = 0, v; i < l; i++, g = g + r, j = (int) g) {
 			v = arr[i];
 			if (adc_min[j] > v) {// min
@@ -127,7 +127,7 @@ public class PFRuleUtil {
 	}
 
 	/**
-	 * 通过adc最值填充符合规则的数据界限
+	 * Fill the data boundaries conforming to the rule from the adc extreme values
 	 * 
 	 * @param dataNum
 	 * @param adc_min
@@ -142,11 +142,11 @@ public class PFRuleUtil {
 			int R_verticalSet) {
 		int y_max, y_min, start, end;
 		for (int i = 0; i < dataNum; i++) {
-			// 计算2条线
-			y_max = adc_max[i] + R_verticalSet;// 上面那条线
-			y_min = adc_min[i] - R_verticalSet;// 下面那条线
+			// calculate the 2 lines
+			y_max = adc_max[i] + R_verticalSet;// the upper line
+			y_min = adc_min[i] - R_verticalSet;// the lower line
 
-			// 取以i点为中心往前往后距离PFhorizontalSet的范围，范围嵌入数据总范围内
+			// take the range extending PFhorizontalSet forward and backward centered on point i, clamped within the total data range
 			if (i < R_horizontalSet) {
 				start = 0;
 			} else {
@@ -159,17 +159,17 @@ public class PFRuleUtil {
 				end = i + R_horizontalSet;
 			}
 
-			// 遍历这一范围内的点，
+			// iterate over the points in this range,
 			for (int data_max, data_min, j = start; j < end; j++) {
 				data_max = adc_max[j] + R_verticalSet;
 				data_min = adc_min[j] - R_verticalSet;
 
-				// 在上线，找周围左右平移PFhorizontalSet存在的更大值，使用之。这就将上界往外拉开
+				// on the upper line, find the larger value within a shift of PFhorizontalSet to the left or right and use it. This widens the upper bound outward
 				if (y_max < data_max) {
 					y_max = data_max;
 				}
 
-				// 在下线，找周围左右平移PFhorizontalSet存在的更小值，使用之。这就将下界往外拉开
+				// on the lower line, find the smaller value within a shift of PFhorizontalSet to the left or right and use it. This widens the lower bound outward
 				if (y_min > data_min) {
 					y_min = data_min;
 				}
@@ -267,7 +267,7 @@ public class PFRuleUtil {
 			for (; i < end; i++) {
 				even = (i % 2 == 0);
 				x = pfx + i;
-				// 还可再优化，把判断奇偶的步骤合一
+				// can be optimized further by merging the odd/even check steps
 				v = yb - rule_min[i];
 				coverHalfArea_decr(v, yl, x, -2, -1, g2d, even);
 				v = yb - rule_max[i];
@@ -277,7 +277,7 @@ public class PFRuleUtil {
 			for (; i < end; i++) {
 				even = (i % 2 == 0);
 				x = pfx + i;
-				// 还可再优化，把判断奇偶的步骤合一
+				// can be optimized further by merging the odd/even check steps
 				v = yb - (rule_min[i] << 1);
 				coverHalfArea_decr(v, yl, x, -2, -1, g2d, even);
 				v = yb - (rule_max[i] << 1);

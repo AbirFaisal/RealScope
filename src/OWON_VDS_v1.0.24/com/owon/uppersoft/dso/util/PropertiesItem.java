@@ -4,12 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * PropertiesItem，软件信息等相关参数
+ * PropertiesItem, software info and other related parameters
  * 
  */
 public interface PropertiesItem {
 
-	/** 配置信息的键 */
+	/** Key of the configuration info */
 	public static final String LineVisible = "LineVisible";
 	public static final String DottedGraticulevisible = "DottedGraticulevisible";
 

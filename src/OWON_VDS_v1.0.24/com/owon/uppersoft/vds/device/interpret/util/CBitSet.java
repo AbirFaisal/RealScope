@@ -14,7 +14,7 @@ public class CBitSet extends BitSet {
 	 * @param bs
 	 * @param v
 	 * @param idx
-	 *            从要设置的低位到高位
+	 *            from the lowest bit to be set to the highest
 	 */
 	public void setN(int v, int... idx) {
 		int l = idx.length;

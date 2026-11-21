@@ -27,7 +27,7 @@ import com.owon.uppersoft.vds.ui.widget.custom.LButton;
 import com.owon.uppersoft.vds.ui.window.ComponentMover;
 
 /**
- * BottomBar，移动侧边栏底部
+ * BottomBar, bottom of the mobile sidebar
  * 
  */
 public class BottomBar extends JPanel {
@@ -85,12 +85,12 @@ public class BottomBar extends JPanel {
 		setOpaque(false);
 
 		new ComponentMover(cp.getDockDialog().getDialog(), this);
-		/** KNOW 不再提供侧边栏下方的快捷按钮 */
+		/** KNOW No longer provides the shortcut buttons below the sidebar */
 		// updateButtonItems();
 	}
 
 	public void setCustomBtnIconOriginal() {
-		// 为了保证点击快捷和后退按钮时，自定义图标的正确显示，做了以下事情
+		// To ensure custom icons display correctly when the shortcut and back buttons are clicked, the following is done
 		ImageIcon i = SwingResourceManager
 				.getIcon(BottomBar.class, Custom_Path);
 		custombt.setIcon(i);

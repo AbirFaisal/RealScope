@@ -7,11 +7,11 @@ public interface IPopDown {
 	void promptUp();
 
 	/**
-	 * 渐进式提示
+	 * Progressive prompt
 	 * 
 	 * @param jp
 	 * @param xloc
-	 *            如为Integer.MIN_VALUE，则为居中
+	 *            if Integer.MIN_VALUE, centered
 	 */
 	void prompt(JComponent jp, final Runnable r);
 

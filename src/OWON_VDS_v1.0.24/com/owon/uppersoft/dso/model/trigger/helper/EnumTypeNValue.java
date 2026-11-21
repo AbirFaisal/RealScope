@@ -37,7 +37,7 @@ public class EnumTypeNValue<T extends IenumDelegate> extends EnumNValue {
 		return getEnumLabelProvider().getPrevious(v, t.getStepIndex());
 	}
 
-	/** 以下为枚举参数类代理的方法，实际为static的获取继承自EnumLabelProvider的枚举类的方法 */
+	/** The following are methods delegated by the enum parameter class, which are actually methods that statically fetch the enum class inheriting from EnumLabelProvider */
 	public final EnumLabelProvider getEnumLabelProvider() {
 		return t.value(en);
 	}

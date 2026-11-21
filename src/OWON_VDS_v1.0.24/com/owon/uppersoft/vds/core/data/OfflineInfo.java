@@ -3,16 +3,16 @@ package com.owon.uppersoft.vds.core.data;
 import com.owon.uppersoft.vds.util.format.SFormatter;
 
 public class OfflineInfo {
-	/** 读取专用 */
-	/* 零点位置 4 字节 */
+	/** for reading only */
+	/* Zero position 4 bytes */
 	public int pos0;
-	/* 电压档位 4 字节 */
+	/* Voltage scale 4 bytes */
 	public int vbIdx;
-	/* 衰减倍率指数 4 字节 */
+	/* Attenuation ratio exponent 4 bytes */
 	public int probeMultiIdx;
-	/* 频率 4 字节 */
+	/* Frequency 4 bytes */
 	public float frequency;
-	/* 周期 4 字节 */
+	/* Period 4 bytes */
 	public float cycle;
 
 	public void logDM() {

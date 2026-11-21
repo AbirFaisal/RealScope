@@ -26,7 +26,7 @@ import com.owon.uppersoft.vds.data.LocRectangle;
 import com.owon.uppersoft.vds.data.Point;
 
 /**
- * ChartDecorater，Chart Painter
+ * ChartDecorater, Chart Painter
  * 
  */
 public class ChartDecorater implements Decorate, AreaImageHelper {
@@ -62,7 +62,7 @@ public class ChartDecorater implements Decorate, AreaImageHelper {
 				super.paintLines(g2d, co);
 
 				// g2d.setColor(Color.red);
-				/* 画4个十字印 */
+				/* draw 4 cross marks */
 				final int HpixPerDiv = 50;
 				final int hp = HpixPerDiv * 5, vp = VpixPerDiv * 2;
 				int px1 = xcenter - hp, px2 = xcenter + hp, py1 = ycenter - vp, py2 = ycenter
@@ -194,7 +194,7 @@ public class ChartDecorater implements Decorate, AreaImageHelper {
 
 	public static final void fillBackground(BufferedImage pesistbi, int w, int h) {
 		Graphics2D g2d = (Graphics2D) pesistbi.getGraphics();
-		// 普通的图像缓存绘制背景色
+		// draw the background color on the normal image cache
 		AlphaComposite composite = AlphaComposite.getInstance(
 				AlphaComposite.CLEAR, 0.0f);
 		g2d.setComposite(composite);

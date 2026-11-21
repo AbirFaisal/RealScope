@@ -19,7 +19,7 @@ import com.owon.uppersoft.vds.core.wf.rt.ChannelDataInfo;
 import com.owon.uppersoft.vds.core.wf.rt.LoadMedia;
 
 /**
- * 管理RT绘图
+ * Manage RT drawing
  * 
  * @author Matt
  * 
@@ -46,7 +46,7 @@ public class RTLocInfoManager {
 	public static final boolean OneFramePop = 1 == 0;
 
 	/**
-	 * 由于处理了反相，该方法只在载入数据时调用一次
+	 * Since invert is handled, this method is called only once when loading data
 	 * 
 	 * @param cdi
 	 * @param pc
@@ -70,21 +70,21 @@ public class RTLocInfoManager {
 
 		// System.out.println(wf.dh.controlManager.sampleControl.avgon);
 		/**
-		 * KNOW 在暂不去保证混屏和平均值同步的情况下，判断平均值采样时就不再混屏
+		 * KNOW Without guaranteeing frame mixing and average synchronization for now, frame mixing is no longer done when judging average sampling
 		 * 
-		 * 停止后由于载入的波形不会是多次的，所以自动就关闭了混画
+		 * After stopping, the loaded waveform is not multi-frame, so frame mixing is turned off automatically
 		 */
 
 		BeyondMax = cdi.BeyondMax;
 		BeyondMin = cdi.BeyondMin;
 		// System.err.println(BeyondMax + ", " + BeyondMin);
 
-		// KNOW 根据接收的波形幅数确定开辟的空间及混画幅数，而接收波形幅数在传输时指定了
+		// KNOW The space allocated and the number of frames mixed are determined by the number of waveform frames received, and the received frame count is specified at transmission
 		if (OneFramePop) {
 			restrictFrames(1, chl);
 			ByteBuffer bbuf = cdi.popAdcbuf();
 			if (bbuf != null) {
-				// 在这里对可能的慢扫产生的略过像素点进行略过
+				// Skip here the pixel points that may be skipped due to slow sweep
 				bbuf.position(bbuf.position() + skipPoints);
 
 				rtlis.get(0).resetRTIntBuf(bbuf, yb, ScreenMode_3, vbmulti);
@@ -94,7 +94,7 @@ public class RTLocInfoManager {
 			Iterator<RTLocInfo> rti = rtlis.iterator();
 			for (ByteBuffer bbuf : buflist) {
 				// System.err.println("1: "+bbuf.remaining());
-				// 在这里对可能的慢扫产生的略过像素点进行略过
+				// Skip here the pixel points that may be skipped due to slow sweep
 				bbuf.position(bbuf.position() + skipPoints);
 				// System.err.println("1: "+bbuf.remaining());
 				rti.next().resetRTIntBuf(bbuf, yb, ScreenMode_3, vbmulti);
@@ -130,7 +130,7 @@ public class RTLocInfoManager {
 					.println("RTLocInfoManager.rtliADC_Buffer().rtlis.size()==null");
 			return null;
 		}
-		/** KNOW 后采的帧靠后 */
+		/** KNOW later-acquired frames come later */
 		return rtlis.get(sz - 1).adcbuf;
 	}
 
@@ -149,7 +149,7 @@ public class RTLocInfoManager {
 	private boolean init_min_max;
 
 	public int getTrg50percentValue() {
-		/** 每次计算前重置，如果获取到了，则被置为真 */
+		/** Reset before each computation; set to true if obtained */
 		init_min_max = false;
 		for (RTLocInfo loc : rtlis) {
 			MinMax mm = loc.collect_max_min();
@@ -158,7 +158,7 @@ public class RTLocInfoManager {
 			compare_setXY(mm);
 		}
 
-		/** 未初试成功，即未获得哪怕一帧的最值，这时用Integer.MAX_VALUE代表无效值 */
+		/** Initialization not yet successful, i.e. not even one frame's extreme values have been obtained; Integer.MAX_VALUE then represents an invalid value */
 		if (!init_min_max)
 			return Integer.MAX_VALUE;
 
@@ -166,7 +166,7 @@ public class RTLocInfoManager {
 	}
 
 	/**
-	 * @return 最后一帧的中间值，如Integer.MAX_VALUE表示无帧
+	 * @return Middle value of the last frame; Integer.MAX_VALUE means no frame
 	 */
 	public int computeMiddle() {
 		int sz = rtlis.size();
@@ -182,12 +182,12 @@ public class RTLocInfoManager {
 
 	/**
 	 * @param x
-	 *            小的数值被设置
+	 *            smaller value is set
 	 * @param mousey
-	 *            大的数值被设置
+	 *            larger value is set
 	 */
 	public void compare_setXY(MinMax mm) {
-		/** 若还未获得任意一帧的最值，则这里获取并设置状态 */
+		/** If no frame's extreme values have been obtained yet, they are fetched and the state is set here */
 		if (!init_min_max) {
 			min_max.set(mm);
 			init_min_max = true;

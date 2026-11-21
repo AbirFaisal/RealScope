@@ -7,29 +7,29 @@ public abstract class BufferredSourceManager implements ICommunicateManager {
 
 	public static final int BufferSize = 20480;// 20K
 	/**
-	 * KNOW 给不同的源共用；所以一次只能使用一种方式连接；内部控制，特别设置起始位置为数组第0元素，每次使用从第0元素开始
+	 * KNOW Shared by different sources; so only one connection method can be used at a time; internally controlled, the start position is specially set to element 0 of the array, and each use starts from element 0
 	 */
 	private ByteBuffer bbuf;
 
 	public BufferredSourceManager() {
 		/**
-		 * 长度固定1024 * 10，每次发送这些数据的超时时间20000ms
+		 * Fixed length 1024 * 10, timeout for sending this data each time: 20000ms
 		 */
 		bbuf = ByteBuffer.allocate(BufferSize);
 		bbuf.order(ByteOrder.BIG_ENDIAN);
 	}
 
 	/**
-	 * KNOW 需优化，普通指令需要不大的临时缓冲区，批量指令需要一定空间的临时缓冲区，数据接收需要可反复使用的固定缓冲区
+	 * KNOW Needs optimization: ordinary commands need a small temporary buffer, batch commands need a temporary buffer of some size, and data reception needs a fixed buffer that can be reused repeatedly
 	 * 
-	 * 目前的做法，前两者共用，可考虑把前两者也分离
+	 * Current approach: the first two share one; could consider separating the first two as well
 	 * 
-	 * 第三独立存放方便处理使用，但也反复创建新数组，先实现后优化
+	 * The third is stored independently for easier handling, but it also creates new arrays repeatedly; implement first, optimize later
 	 * 
 	 * 
-	 * 代理数据源操作
+	 * Proxy data source operations
 	 * 
-	 * @return 重置后的缓冲区
+	 * @return the buffer after reset
 	 */
 	public ByteBuffer clearByteBuffer() {
 		bbuf.clear();

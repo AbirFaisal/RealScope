@@ -44,8 +44,8 @@ import com.owon.uppersoft.vds.util.FileUtil;
 import com.owon.uppersoft.vds.util.ui.ListComboBoxModel;
 
 /**
- * UtilityPane，这里面除语言之外的其它CComboBox，需要考虑到语言切换时，跟着切换语言并重新选择已选的Item；
- * 其它FunctionPanel由于不会和语言切换的CComboBox，同时显示，所以忽略了这一动过带来的影响
+ * UtilityPane: the CComboBoxes in here other than language need to follow a language switch by switching language and re-selecting the selected Item;
+ * the other FunctionPanels are never shown at the same time as the language CComboBox, so the effect of this action is ignored
  * 
  */
 public class UtilityPane extends FunctionPanel {
@@ -64,19 +64,19 @@ public class UtilityPane extends FunctionPanel {
 		mw = Platform.getMainWindow();
 		final Config conf = cm.getConfig();
 		final MachineType mt = cm.getMachine();
-		/** 语言与皮肤 */
+		/** Language and skin */
 		createInterfaceGroup(conf);
 
-		/** 读写操作 */
+		/** Read/write operations */
 		createDataIOGroup(pageDimension, cp, up);
 
-		/** 系统功能帮助 */
+		/** System function help */
 		createFunctionGroup(mt, pageDimension, cp, up);
 
-		/** 版本 */
+		/** Version */
 		createSoftGroup(conf);
 
-		/** 多功能口 */
+		/** Multi-function port */
 		createMutliIOGroup(mt);
 
 		localizeSelf();
@@ -92,7 +92,7 @@ public class UtilityPane extends FunctionPanel {
 			// 28))
 			nrip();
 
-			/** 这里理论上在tiny<->smart切换时需要更新combobox */
+			/** In theory, when switching tiny<->smart, this needs to update the combobox */
 
 			syoccb = nccb(cm.getSyncInOuts());
 			// syoccb.setPreferredSize(new Dimension(138, 31));
@@ -109,13 +109,13 @@ public class UtilityPane extends FunctionPanel {
 					if (sycidx != SysControl.SYNOUT_TrgIn) {
 						if (tc.isSingleTrg()
 								&& tc.isExtTrg(tc.getSingleTrgChannel())) {
-							/** 离开外部触发，自动把通道设到ch1 */
+							/** when leaving external trigger, automatically set the channel to ch1 */
 							tc.setSingleChannel(0);
 							mw.getToolPane().getTrgInfoPane().updateInfos(tc);
 							tc.doSubmit();
 						}
 					} else {
-						/** 但是选择外部触发的时候，并没有把单一触发通道选择到ext */
+						/** but when external trigger is selected, the single trigger channel is not set to ext */
 					}
 					mw.re_paint();
 				}
@@ -234,7 +234,7 @@ public class UtilityPane extends FunctionPanel {
 			}
 		});
 
-		// 默认进入该界面时，是可用的；因为唯一的情况下都有进度条阻塞界面不会让用户可点击
+		// By default it is enabled when entering this page; in the only case where it matters, a progress bar blocks the UI so the user cannot click
 		pau_expbtn.setEnabled(cm.isPau_expEnable());
 		pau_expbtn.addActionListener(new ActionListener() {
 			@Override
@@ -376,7 +376,7 @@ public class UtilityPane extends FunctionPanel {
 
 	@Override
 	public void localize(ResourceBundle rb) {
-		/** 父类会localize其它控件 */
+		/** the parent class localizes the other controls */
 		if (syoccb != null)
 			syoccb.repaint();
 

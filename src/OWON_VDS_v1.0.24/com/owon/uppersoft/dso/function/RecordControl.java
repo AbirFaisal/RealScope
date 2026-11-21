@@ -22,7 +22,7 @@ public class RecordControl {
 
 	private int timegap = 10;
 	private long sizePos;
-	private int counter;// 保存帧数
+	private int counter;// number of saved frames
 	private int maxframe;
 
 	public int intervalTime;
@@ -90,10 +90,10 @@ public class RecordControl {
 	}
 
 	/**
-	 * @return 是否需要继续更新控件文本
+	 * @return whether the control text still needs to be updated
 	 */
 	public boolean switchRecording(Runnable invalidPathHandler) {
-		if (!recording) {// 判断RT，开始录制，写入文件
+		if (!recording) {// check RT, start recording, write to file
 			if (filePathValid()) {
 				recording = true;
 
@@ -117,8 +117,8 @@ public class RecordControl {
 				return false;
 			}
 
-		} else {// 从录制中停止，结束写入文件
-			// 由最后一次recordOnce触发保存
+		} else {// stop from recording, finish writing the file
+			// Saving is triggered by the last recordOnce
 			lastRecord = true;
 
 			return false;
@@ -126,7 +126,7 @@ public class RecordControl {
 	}
 
 	/**
-	 * 录制时停止要数据，因录制在原线程的获取数据之后，而数据不再获取，这里快速模拟一次结束录制关闭文件
+	 * When stopping data requests during recording: since recording happens after the original thread's data acquisition and data is no longer acquired, quickly simulate here one end-of-recording and close the file
 	 */
 	public void forceStop() {
 		if (!recording)
@@ -140,13 +140,13 @@ public class RecordControl {
 	private OpenPropertyChangeEvent pce;
 
 	/**
-	 * 一次写入
+	 * Write once
 	 * 
 	 * @param raf
 	 * @param cm
 	 * @param wfm
 	 * @param cti
-	 * @return 写入的帧数
+	 * @return number of frames written
 	 */
 	public int writeOnce(RandomAccessFile raf, ControlManager cm,
 			WaveFormManager wfm, LoadMedia cti, RecordControl rc) {
@@ -164,7 +164,7 @@ public class RecordControl {
 	}
 
 	/**
-	 * 此时是在获取数据画图之后，还可以拿到多个帧
+	 * At this point it is after acquiring data and drawing, and multiple frames can still be obtained
 	 */
 	public void recordOnce(WaveFormManager wfm, LoadMedia lm) {
 		// System.err.println("recordOnce: " + keepRecord);
@@ -176,7 +176,7 @@ public class RecordControl {
 		if (!checkAppendable()) {
 			lastRecord = true;
 		}
-		if (lastRecord) {// 最后一次
+		if (lastRecord) {// last time
 			sealTail();
 			return;
 		}
@@ -184,13 +184,13 @@ public class RecordControl {
 		int c = writeOnce(raf, cm, wfm, lm, this);
 		counter += c;
 
-		/** 设置最大帧 */
+		/** Set the maximum frame */
 		if (counter >= maxframe && maxframe > 0)
 			lastRecord = true;
 		pce.newInt = counter;
 		pcl.propertyChange(pce);
 
-		/** 在获取数据线程中sleep */
+		/** In the data acquisition thread, sleep */
 		try {
 			Thread.sleep(timegap);
 		} catch (InterruptedException e) {
@@ -220,11 +220,11 @@ public class RecordControl {
 
 		pce.newInt = -1;
 		pcl.propertyChange(pce);
-		// 并fire出结束信息，改变运停按钮文本
+		// and fire the end info, changing the run/stop button text
 	}
 
 	/**
-	 * @return 是否到了文件大小限界
+	 * @return whether the file size limit has been reached
 	 */
 	private boolean checkAppendable() {
 		long size = 0;

@@ -4,7 +4,7 @@ import com.owon.uppersoft.vds.core.tune.Cending;
 import com.owon.uppersoft.vds.core.tune.ICal;
 
 /**
- * 保存需要进行调试的参数的内容，以及调试的细节方式设置
+ * Holds the content of the parameter to be tuned, and the settings for how tuning is done in detail
  * 
  */
 public class BaselineArg extends AbsArg {
@@ -16,7 +16,7 @@ public class BaselineArg extends AbsArg {
 
 	/**
 	 * @param del2Standard
-	 *            原名shouldIncrease
+	 *            formerly named shouldIncrease
 	 */
 	public void stepCrease(double del2Standard, int vbidx) {
 		int sign = 0;
@@ -25,7 +25,7 @@ public class BaselineArg extends AbsArg {
 		} else {
 			sign = (cdn == Cending.ascending ? -1 : 1);
 		}
-		/** 特殊器件在参数和数值上的比例是1:1 */
+		/** For special devices the ratio between the parameter and the value is 1:1 */
 		int step = (int) Math.abs(del2Standard);
 		computeNapply(sign, step, vbidx);
 		tries++;
@@ -33,7 +33,7 @@ public class BaselineArg extends AbsArg {
 	}
 
 	/**
-	 * 假设已知调试参数改变的增量，进行如此设置；子类可继承实现如何计算得到增量
+	 * Assuming the increment by which the tuning parameter changes is known, set it this way; subclasses can inherit and implement how the increment is computed
 	 * 
 	 * @param sign
 	 * @param step
@@ -50,7 +50,7 @@ public class BaselineArg extends AbsArg {
 		else
 			v -= step;
 
-		/** 当数值short溢出时进行重限位，并补充可尝试次数 */
+		/** When the short value overflows, re-clamp it and replenish the number of allowed attempts */
 		if (v < 0) {
 			v = Unsign_Max_ADC + v;
 			tries -= 10;
@@ -62,7 +62,7 @@ public class BaselineArg extends AbsArg {
 	}
 
 	/**
-	 * 专用于调基线
+	 * Dedicated to baseline tuning
 	 * 
 	 * @param standard
 	 * @param result

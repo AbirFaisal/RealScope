@@ -50,7 +50,7 @@ public abstract class FocusControlButton extends JButton {
 				action();
 				fa.setOn(true);
 
-				/** 详见 SharedFocusAdapter中的说明 */
+				/** See the notes in SharedFocusAdapter */
 				// dlg.repaint();
 				// dlg.requestFocus();
 
@@ -62,7 +62,7 @@ public abstract class FocusControlButton extends JButton {
 	protected abstract void action();
 
 	/**
-	 * 重置和50%是不同的实现入口，分别为sliderview和sliderdelegate
+	 * Reset and 50% have different implementation entry points, which are sliderview and sliderdelegate
 	 * 
 	 * @param sv
 	 * @param csb
@@ -85,7 +85,7 @@ public abstract class FocusControlButton extends JButton {
 	}
 
 	/**
-	 * 重置和50%是不同的实现入口，分别为sliderview和sliderdelegate
+	 * Reset and 50% have different implementation entry points, which are sliderview and sliderdelegate
 	 * 
 	 * @param sv
 	 * @param csb

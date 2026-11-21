@@ -16,7 +16,7 @@ import com.owon.uppersoft.vds.core.trigger.help.IStepSpinnerModel;
 import com.owon.uppersoft.vds.util.ui.UIUtil;
 
 /**
- * 释抑的SpinnerModel，可分级步进
+ * Holdoff SpinnerModel, with tiered stepping
  * 
  */
 public class HoldoffSpinnerModel extends AbstractSpinnerModel implements

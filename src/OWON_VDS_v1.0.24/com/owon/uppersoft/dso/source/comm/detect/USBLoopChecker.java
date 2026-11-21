@@ -52,7 +52,7 @@ public class USBLoopChecker {
 		try {
 			Process p = Runtime.getRuntime().exec(cmd, null,
 					new File(USBSourceManager.USBDrvDir));
-			/** 不调用下面的，不然会报错，本地代码jni错误 */
+			/** Do not call the one below, otherwise it reports an error (native code jni error) */
 			// p.exitValue();
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -78,7 +78,7 @@ public class USBLoopChecker {
 	}
 
 	/**
-	 * 只在无连接的情况下进入
+	 * Entered only when there is no connection
 	 * 
 	 */
 	public void checkUSBDevice() {
@@ -92,7 +92,7 @@ public class USBLoopChecker {
 
 		ids = usbsm.refreshUSBPort();
 		if (ids == null) {
-			// 用返回null来判断usb驱动调用异常
+			// A null return is used to detect an exception in the usb driver call
 			mw.updateStatus(TrgStatus.USBDrvErr);
 			return;
 		}
@@ -104,7 +104,7 @@ public class USBLoopChecker {
 			return;
 		}
 
-		// 免打扰的模式下，把可用端口数加负号传进去，需要显示的时候重置为取绝对值
+		// In do-not-disturb mode, pass the available port count in as a negative number; reset to its absolute value when it needs to be displayed
 		mw.updateStatus(noDisturb ? len : -len, len > 0 ? TrgStatus.USBFound
 				: TrgStatus.Offline);
 
@@ -112,7 +112,7 @@ public class USBLoopChecker {
 			return;
 		}
 
-		// 免打扰模式，状态只是在左上角显示更新
+		// In do-not-disturb mode, the status is only updated in the top left corner
 		if (noDisturb) {
 			return;
 		}
@@ -126,7 +126,7 @@ public class USBLoopChecker {
 		cup = new CheckUSBPortsPane(ids, uc) {
 			@Override
 			public void clickToConnect(IDevice id) {
-				/** 点击端口开始连接后，通过监听器传到这里，然后占用InfiniteDaemon线程进行连接 */
+				/** After a port is clicked to start connecting, it is passed here via the listener, then the InfiniteDaemon thread is occupied to connect */
 				dae.initLink(id);
 			}
 		};
@@ -157,7 +157,7 @@ public class USBLoopChecker {
 	}
 
 	/**
-	 * 不显示检测结果
+	 * Do not show the detection result
 	 */
 	public void ignoreCheckResult() {
 		noDisturb = true;

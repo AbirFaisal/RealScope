@@ -7,7 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * ComponentChraser，追随组件移动
+ * ComponentChraser, follows a component's movement
  * 
  */
 public class ComponentChaser extends MouseAdapter {

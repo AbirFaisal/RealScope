@@ -3,7 +3,7 @@ package com.owon.uppersoft.vds.core.measure;
 import java.util.Arrays;
 
 /**
- * MeasureT，测量类型的枚举值，不适用values()方法而使用VALUES成员
+ * MeasureT, enum values for measurement types; does not use the values() method but the VALUES member
  * 
  */
 public enum MeasureT {
@@ -35,7 +35,7 @@ public enum MeasureT {
 	static {
 		VALUES = values();
 
-		/** 由于enum对values返回数组并无顺序的标准说明，故这里加入了对枚举的排序 */
+		/** Since the enum's values() array has no standard specified order, sorting of the enum is added here */
 		Arrays.sort(VALUES);
 
 		Count = VALUES.length;

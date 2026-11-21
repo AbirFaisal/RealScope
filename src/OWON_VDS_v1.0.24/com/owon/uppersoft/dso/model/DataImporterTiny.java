@@ -42,7 +42,7 @@ public class DataImporterTiny implements IDataImporter {
 		DMInfoTiny cif = readFileLayer(ci, ba, cm, f.getAbsolutePath());
 		ba.dispose();
 		if (cif != null) {
-			// TODO 改变数据存储区使用的文件
+			// TODO change the file used by the data storage area
 			// ci.file = new File("f:\\0.bin");
 			if (ci.DMem == 'M') {
 				dh.receiveOfflineDMData(cif);
@@ -64,7 +64,7 @@ public class DataImporterTiny implements IDataImporter {
 			ControlManager cm, String fp) {
 		int byteFileHeadLen = 10;
 		int WaveNameBytes = 3;
-		/** 文件头 6 字节 */
+		/** File header 6 bytes */
 		byte[] fhb = new byte[byteFileHeadLen];
 		ba.get(fhb, 0, byteFileHeadLen); // position skip 6 bytes
 
@@ -78,10 +78,10 @@ public class DataImporterTiny implements IDataImporter {
 		if (!strFileHead.startsWith(VDS_Portable.FileHeader)) {
 			return null;
 		}
-		/** 这样参考波形就会写入正确的机型信息 */
+		/** This way the reference waveform will be written with the correct model information */
 		cm.getSoftwareControl().setMachineHeader(strFileHead);
 
-		/** 机型信息 4 字节 */
+		/** Model information 4 bytes */
 		int machID = ba.nextInt();
 		ci.machine_type = machID;
 		if (!cm.isSuitableMachineType(machID)) {
@@ -90,7 +90,7 @@ public class DataImporterTiny implements IDataImporter {
 			return null;
 		}
 
-		/** 版本信息 4 字节 */
+		/** Version information 4 bytes */
 		int intEdition = ba.nextInt();
 		ci.file_version = intEdition;
 
@@ -98,36 +98,36 @@ public class DataImporterTiny implements IDataImporter {
 			return null;
 		}
 
-		/** 文件长度 4 字节 */
+		/** File length 4 bytes */
 		int intFileSize = ba.nextInt();
 
-		/** 数据区标记0 */
+		/** Data area marker 0 */
 		byte dataMark = ba.nextByte();
-		/** 区长度 */
+		/** Area length */
 		int dataLen = ba.nextInt();
-		/** 区点数据 */
+		/** Area point data */
 		ba.skip(dataLen);
 
-		/** 波形通道区标记1 */
+		/** Waveform channel area marker 1 */
 		byte wavechannelMark = ba.nextByte();
-		/** 区长度 */
+		/** Area length */
 		int infoLen = ba.nextInt();
 		int ptr = ba.pointer();
 
-		/** 'T'/'M' 1 字节 */
+		/** 'T'/'M' 1 byte */
 		byte isTorM = ba.nextByte();
-		/** 在传输的数据点中的起始画图点位置 4字节 */
+		/** Start drawing point position within the transferred data points 4 bytes */
 		ci.DMem = isTorM;
 
-		/** 水平可画的像素点宽 4 字节 */
+		/** Horizontal drawable pixel width 4 bytes */
 		int horizonPixel = ba.nextInt();
-		/** 竖直可画的像素点宽 4 字节 */
+		/** Vertical drawable pixel width 4 bytes */
 		int verticalPixel = ba.nextInt();
 		int tbidx = ba.nextInt();
 		// tbidx = Define.machine.getTimebaseIndex("20us");//
 
 		ci.timebase = tbidx;
-		/** 水平触发位置 */
+		/** Horizontal trigger position */
 		int htp = ba.nextInt();
 		ci.horTrgPos = htp;
 
@@ -135,13 +135,13 @@ public class DataImporterTiny implements IDataImporter {
 
 		ptr = infoLen - (ba.pointer() - ptr);
 		ba.skip(ptr);
-		/** 区长度 */
+		/** Area length */
 		int wavechannelLen = ba.nextInt();
 
 		while (ba.available() >= 44) {
 			ptr = ba.pointer();
 
-			/** 波形名 3 字节 */
+			/** Waveform name 3 bytes */
 			byte[] wnb = new byte[WaveNameBytes];
 			ba.get(wnb, 0, WaveNameBytes);
 
@@ -161,7 +161,7 @@ public class DataImporterTiny implements IDataImporter {
 				return null;
 			}
 
-			/** 块大小 4 字节 */
+			/** Block size 4 bytes */
 			int intBlockSize = ba.nextInt();
 
 			cdi.setInverseType_OfflineDM(ba, intEdition);
@@ -169,7 +169,7 @@ public class DataImporterTiny implements IDataImporter {
 			int initPos = ba.nextInt();
 			ci.initPos = cdi.initPos = initPos;
 
-			/** 满屏画图点个数 4字节 */
+			/** Full-screen drawing point count 4 bytes */
 			int screenDataLen = ba.nextInt();
 
 			// ba.buf().putInt(1000);
@@ -181,35 +181,35 @@ public class DataImporterTiny implements IDataImporter {
 
 			cdi.setPullTrg_OfflineDM(ba, intEdition);
 
-			/** 传输的数据点个数 4字节 */
+			/** Transferred data point count 4 bytes */
 			int transNum = ba.nextInt();
 			// transNum = 1000000;
 			ci.datalen = cdi.datalen = transNum;
 
 			// cdi.initPos = (transNum - screenDataLen) >> 1;
 
-			/** 慢扫描备用 4 字节 */
+			/** Reserved for slow sweep 4 bytes */
 			int slowMove = ba.nextInt();
 			ci.slowMove = cdi.slowMove = slowMove;
 
-			/** 零点位置 4 字节 */
+			/** Zero point position 4 bytes */
 			int pos0 = ba.nextInt();
 			cdi.pos0 = pos0;
 
 			// System.out.println(cdi.pos0);
-			/** 电压档位 4 字节 */
+			/** Voltage scale 4 bytes */
 			int vbIdx = ba.nextInt();
 			cdi.vbIdx = vbIdx;
-			/** 衰减倍率指数 4 字节 */
+			/** Attenuation ratio exponent 4 bytes */
 			int probeMultiIdx = ba.nextInt();
 			cdi.probeMultiIdx = probeMultiIdx;
-			/** 频率 4 字节 */
+			/** Frequency 4 bytes */
 			float frequency = ba.nextFloat();
 			cdi.setFreq(frequency);
-			/** 周期 4 字节 */
+			/** Period 4 bytes */
 			float cycle = ba.nextFloat();
 
-			/** 采集点数据指针位置 4 字节 */
+			/** Acquisition point data pointer position 4 bytes */
 			int collectedDataP = ba.nextInt();
 			// collectedDataP = 10027;
 			cdi.filePointer = collectedDataP;

@@ -18,15 +18,15 @@ public class WFDrawRTUtil {
 	public static final int MaxValueIdxRev = -1;
 	public static final int LastValueIdxRev = 0;
 
-	/** TODO 以下均为相邻像素连线的情况，可优化为画竖直线 */
+	/** TODO All of the following connect adjacent pixels with lines; could be optimized to draw vertical lines */
 	public static void paint4in1(Graphics2D g2d, int p, int len, int xb,
 			int[] array, boolean linkline) {// 4k
 		int x = xb, end = p + len;
 
 		if (linkline) {
 			if ((p < end)) {
-				/** 连所有值，才能查起始值是否超出最值范围 */
-				g2d.drawLine(x, array[p // + FirstValueIdx, 为0去掉，优化
+				/** Connect all values so that it can be checked whether the starting value exceeds the extreme range */
+				g2d.drawLine(x, array[p // + FirstValueIdx, removed because it is 0, optimization
 						], x, array[p + MinValueIdx]);
 				g2d.drawLine(x, array[p + MaxValueIdx], x, array[p
 						+ LastValueIdx]);
@@ -38,15 +38,15 @@ public class WFDrawRTUtil {
 				x++;
 
 				while (p < end) {
-					/** 这里都用x就是竖直线 */
-					//不在同一个x上画直线，拉伸后会波形ns档位会断开
+					/** Using x for both here makes a vertical line */
+					//Not drawing the line on the same x makes the waveform break at the ns scale after stretching
 					g2d.drawLine(x - 1, lastv, x , array[p
-					// + FirstValueIdx, 为0去掉，优化
+					// + FirstValueIdx, removed because it is 0, optimization
 							]);
 
-					/** 连所有值，才能查起始值是否超出最值范围 */
+					/** Connect all values so that it can be checked whether the starting value exceeds the extreme range */
 					g2d.drawLine(x, array[p
-					// + FirstValueIdx, 为0去掉，优化
+					// + FirstValueIdx, removed because it is 0, optimization
 							], x, array[p + MinValueIdx]);
 					g2d.drawLine(x, array[p + MaxValueIdx], x, array[p
 							+ LastValueIdx]);
@@ -75,9 +75,9 @@ public class WFDrawRTUtil {
 	}
 
 	/**
-	 * 反向遍历画点算法，暂未使用。
+	 * Reverse traversal point drawing algorithm, not used yet.
 	 * 
-	 * TODO 以下均为相邻像素连线的情况，可优化为画竖直线
+	 * TODO All of the following connect adjacent pixels with lines; could be optimized to draw vertical lines
 	 */
 	protected static void paint4in1Rev(Graphics2D g2d, int p, int l, int xbe,
 			int[] array, boolean linkline) {// 4k
@@ -93,7 +93,7 @@ public class WFDrawRTUtil {
 			while (p < l) {
 				g2d.drawLine(x, array[l + MinValueIdxRev], x, array[l
 						+ MaxValueIdxRev]);
-				/** 这里都用x就是竖直线 */
+				/** Using x for both here makes a vertical line */
 				g2d.drawLine(x - 1, lastv, x, array[l]);
 				lastv = array[l];// + LastValueIdxRev
 
@@ -105,7 +105,7 @@ public class WFDrawRTUtil {
 	}
 
 	/**
-	 * 在同一个x上画直线，避免斜线 g2d.drawLine(x0, y0, x, y);
+	 * Draw the line on the same x to avoid slanted lines g2d.drawLine(x0, y0, x, y);
 	 */
 	public static void paintScreen1k(Graphics2D g2d, int p, int l, int xb,
 			int[] array, boolean linkline) {// 1k,999
@@ -116,7 +116,7 @@ public class WFDrawRTUtil {
 			x++;
 			while (p < l) {
 				y = array[p++];
-				g2d.drawLine(x-1, y0, x, y);//不在同一个x上画直线，拉伸后会波形ns档位会断开
+				g2d.drawLine(x-1, y0, x, y);//Not drawing the line on the same x makes the waveform break at the ns scale after stretching
 				y0 = y;
 				x++;
 			}
@@ -131,9 +131,9 @@ public class WFDrawRTUtil {
 	}
 
 	/**
-	 * 反向遍历画点算法，暂未使用。
+	 * Reverse traversal point drawing algorithm, not used yet.
 	 * 
-	 * 在同一个x上画直线，避免斜线 g2d.drawLine(x0, y0, x, y);
+	 * Draw the line on the same x to avoid slanted lines g2d.drawLine(x0, y0, x, y);
 	 */
 	protected static void paintScreen1kRev(Graphics2D g2d, int p, int l,
 			int xbe, int[] array, boolean linkline) {// 1k,999
@@ -175,9 +175,9 @@ public class WFDrawRTUtil {
 				g2d.drawLine(x, y0, x, y);
 
 				while (p < ll) {
-					/** y和y0交错使用作为当前点 */
+					/** y and y0 are used alternately as the current point */
 					y = array[p++];
-					/** 这里都用x+1就是竖直线 */
+					/** Using x+1 for both here makes a vertical line */
 					g2d.drawLine(x, y0, ++x, y);
 
 					y0 = array[p++];
@@ -185,7 +185,7 @@ public class WFDrawRTUtil {
 				}
 				if (p < l - 1) {
 					y = array[p++];
-					/** 这里都用x+1就是竖直线 */
+					/** Using x+1 for both here makes a vertical line */
 					g2d.drawLine(x, y0, ++x, y);
 				}
 			}
@@ -266,7 +266,7 @@ public class WFDrawRTUtil {
 	}
 
 	/**
-	 * 1,1,1,2;最后一个像素画2个点
+	 * 1,1,1,2; the last pixel draws 2 points
 	 * 
 	 * @param g2d
 	 * @param linkline
@@ -444,7 +444,7 @@ public class WFDrawRTUtil {
 	public static final int const2 = 2;
 
 	/**
-	 * 给自定义间距的波形使用
+	 * For waveforms with custom spacing
 	 * 
 	 * @param g2d
 	 * @param pixbuf
@@ -464,7 +464,7 @@ public class WFDrawRTUtil {
 	}
 
 	/**
-	 * 给自定义间距的波形使用
+	 * For waveforms with custom spacing
 	 * 
 	 * @param g2d
 	 * @param array
@@ -516,7 +516,7 @@ public class WFDrawRTUtil {
 	}
 
 	/**
-	 * 按DrawMode画图
+	 * Draw according to DrawMode
 	 * 
 	 * @param g2d
 	 * @param pixbuf
@@ -563,7 +563,7 @@ public class WFDrawRTUtil {
 		}
 	}
 
-	/** 实则是屏幕点的间距模式Interval */
+	/** Actually the screen point spacing mode, Interval */
 	public static final int DrawMode4_5 = 6;
 	public static final int DrawMode1p = 1;
 	public static final int DrawMode2p = 2;

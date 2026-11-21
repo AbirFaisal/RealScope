@@ -23,7 +23,7 @@ import com.owon.uppersoft.vds.data.LocRectangle;
 import com.owon.uppersoft.vds.util.Pref;
 
 public class SlopeTrigger extends AbsTrigger {
-	/** 控件为对称限位而设计 */
+	/** The control is designed for symmetric limiting */
 	public static final int ThredsholdHalfRange = GDefine.TriggerLevelDivRange
 			* GDefine.PIXELS_PER_DIV;
 
@@ -99,7 +99,7 @@ public class SlopeTrigger extends AbsTrigger {
 		loadETV(prefix, p, trgcondition);
 		condition = p.loadInt(prefix + txt + ".condition");
 
-		/** load的时候允许无限界 */
+		/** loadUnbounded values are allowed during load */
 		c_setUppestWithoutSync(p.loadInt(prefix + txt + ".uppest"));
 		c_setLowestWithoutSync(p.loadInt(prefix + txt + ".lowest"));
 
@@ -140,7 +140,7 @@ public class SlopeTrigger extends AbsTrigger {
 
 	@Override
 	public String getLabelText(boolean inverse, int voltbase, int pos0) {
-		// 在slope的时候作为条件文本
+		// used as the condition text when slope
 		String k;
 		switch (condition) {
 		case 0:
@@ -167,17 +167,17 @@ public class SlopeTrigger extends AbsTrigger {
 	}
 
 	/**
-	 * 在选择并修改的时候，内部保存该类型(上限或是下限或是无)，以备画图的时候选择作为画在上面的
+	 * When selected and modified, the type (upper limit, lower limit, or none) is saved internally, to be chosen when drawing as the one drawn on top
 	 */
 	private TrgCheckType thredsholdType = TrgCheckType.NotOver;
 
 	/**
-	 * 对指定参数进行增减
+	 * Increment or decrement the specified parameter
 	 * 
 	 * @param del
-	 *            不为0才发指令改变
+	 *            Send a command to change only if non-zero
 	 * @param type
-	 * @return 触发的事件类名
+	 * @return class name of the trigger event
 	 */
 	public boolean handelIncr(int del, TrgCheckType type) {
 		thredsholdType = type;
@@ -204,9 +204,9 @@ public class SlopeTrigger extends AbsTrigger {
 		}
 
 		/**
-		 * 先检测上限，再检测下限，
+		 * Check the upper limit first, then the lower limit,
 		 * 
-		 * 上限如果判断为真，则不再判断下限
+		 * If the upper limit evaluates to true, the lower limit is no longer checked
 		 */
 		boolean b = checkHandler.checkAroundTrgAndHandleOnTrue(v0, t0);
 		if (b) {
@@ -218,7 +218,7 @@ public class SlopeTrigger extends AbsTrigger {
 	}
 
 	/**
-	 * 画触发电平标志
+	 * Draw the trigger level marker
 	 * 
 	 */
 	public void paintChannelTrgLabel(PaintChannelTrgLabelContext pctlc) {
@@ -236,16 +236,16 @@ public class SlopeTrigger extends AbsTrigger {
 
 		int y = 0;
 
-		// 绘画框值信息
+		// draw the box value information
 		int voltbase = ci.getVoltageLabel().getValue();
 		int p0 = ci.getPos0();
 		boolean inverse = ci.isInverse();
 
 		String detailInfo = null;
-		// 阈值上下限，用限制的值，仅用在位置的绘制上
+		// threshold upper and lower limits, using the limited values, only for position drawing
 		int l = ts.c_getLowest(), u = ts.c_getUppest();
 
-		// 反相画图倒一下就行了，在3in1前面
+		// for inverted drawing just flip it, placed before 3in1
 		if (inverted) {
 			u = ChannelInfo.getLevelFromPos0(u, pos0);
 			l = ChannelInfo.getLevelFromPos0(l, pos0);
@@ -257,14 +257,14 @@ public class SlopeTrigger extends AbsTrigger {
 			u = u << 1;
 		}
 
-		/** 操作的时候默认会选定为当前通道，这样可以保证其它通道不会也跟着显示两条线 */
+		/** On operation the current channel is selected by default, which ensures other channels don't also show two lines */
 		int y1, y2;
 		boolean higtlightTb = false;
 		String txt, txt_operate;
 		int hcenter = pc.getHcenter();
 		switch (thredsholdType) {
 		case LowOver:
-			if (showDetail) {// 阈值上下限，可以用无限制的值显示，一改变这个值也被限制到有限的范围内了
+			if (showDetail) {// threshold upper/lower limits, can be shown with unbounded values, but once changed the value is also limited to a finite range
 				detailInfo = getLowestLabel(inverse, voltbase, p0);
 			}
 
@@ -275,7 +275,7 @@ public class SlopeTrigger extends AbsTrigger {
 			higtlightTb = true;
 			break;
 		case UppOver:
-			if (showDetail) {// 阈值上下限，可以用无限制的值显示，一改变这个值也被限制到有限的范围内了
+			if (showDetail) {// threshold upper/lower limits, can be shown with unbounded values, but once changed the value is also limited to a finite range
 				detailInfo = getUppestLabel(inverse, voltbase, p0);
 			}
 
@@ -286,7 +286,7 @@ public class SlopeTrigger extends AbsTrigger {
 			higtlightTb = true;
 			break;
 		default:
-			// 默认先画上限，再画下限
+			// by default draw the upper limit first, then the lower limit
 			y1 = hcenter - u;
 			txt = "T1";
 			y2 = hcenter - l;
@@ -299,10 +299,10 @@ public class SlopeTrigger extends AbsTrigger {
 		LineUtil.paintThredsholds(y1, lr, g2d, lineLevel, false, c, txt);
 		LineUtil.paintThredsholds(y2, lr, g2d, lineLevel, higtlightTb, c,
 				txt_operate);
-		y = y2;// y2为对应type的位置
+		y = y2;// y2 is the position of the corresponding type
 
 		/**
-		 * 画触发电平标志的信息框，通过y的设置来判断出哪一个需要画框
+		 * Draw the info box of the trigger level marker; which one needs a box is determined by the setting of y
 		 */
 		if (detailInfo != null && showDetail) {
 			LineUtil.paintTrgLevelDetail(g2d, lr, y, detailInfo, c);

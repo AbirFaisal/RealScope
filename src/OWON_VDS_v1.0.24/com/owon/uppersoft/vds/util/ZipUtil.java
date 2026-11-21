@@ -11,14 +11,14 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 /**
- * ZipUtil，对于编码问题尚未解决(都使用英文)，可考虑Apache Ant的org.apache.tools.zip.*，
+ * ZipUtil, encoding issues are not yet resolved (English is used throughout); consider Apache Ant's org.apache.tools.zip.*,
  * 
  */
 public class ZipUtil {
 	public static final int BufferSize = 2 << 10;
 
 	/**
-	 * 解压zipFile压缩包中的文件，强制覆盖到dest文件夹下
+	 * Extract the files in the zipFile archive, forcibly overwriting into the dest folder
 	 * 
 	 * @param zipFile
 	 * @param destName
@@ -29,7 +29,7 @@ public class ZipUtil {
 	}
 
 	/**
-	 * 解压zipFile压缩包中的文件，强制覆盖到dest文件夹下
+	 * Extract the files in the zipFile archive, forcibly overwriting into the dest folder
 	 * 
 	 * @param zipFile
 	 * @param dest
@@ -45,10 +45,10 @@ public class ZipUtil {
 
 			while (zfe.hasMoreElements()) {
 				ZipEntry ze = zfe.nextElement();
-				/* 文件名编码尚未处理 */
+				/* File name encoding not yet handled */
 				String name = ze.getName();
 				File file = new File(dest, name);
-				/* 删除可能已存在的文件 */
+				/* Delete a file that may already exist */
 				FileUtil.deleteFile(file);
 				if (ze.isDirectory()) {
 					file.mkdirs();
@@ -65,7 +65,7 @@ public class ZipUtil {
 					is.close();
 				}
 			}
-			/* 关闭ZipFile */
+			/* Close ZipFile */
 			zf.close();
 		} catch (ZipException e) {
 			e.printStackTrace();

@@ -3,17 +3,17 @@ package com.owon.uppersoft.vds.ui.slider;
 public interface SliderDisposeDelegate {
 
 	/**
-	 * 操作结束
+	 * Operation ended
 	 */
 	//void actionOff();
 
 	/**
-	 * 关闭释放
+	 * Close and release
 	 */
 	void onDispose();
 
 	/**
-	 * "50%"的瞬间设置，不会触发actionOff()，但处理的时候含有了endSync的部分
+	 * "50%" instantaneous setting, does not trigger actionOff(), but the handling includes the endSync part
 	 */
 	//void on50percent();
 

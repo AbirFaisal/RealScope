@@ -1,7 +1,7 @@
 package com.owon.uppersoft.vds.core.usb;
 
 /**
- * IUSBProtocol，USB连接通讯参数
+ * IUSBProtocol, USB connection communication parameters
  */
 public interface IUSBProtocol {
 	static final short IdVender = (short) 0x5345;

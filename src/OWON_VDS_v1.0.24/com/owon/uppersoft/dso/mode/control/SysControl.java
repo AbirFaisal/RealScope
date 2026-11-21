@@ -65,7 +65,7 @@ public class SysControl implements IOrgan, IPatchable {
 		}
 		this.sync_output = p.loadInt("NetWork.Sync_out");
 
-		/** 开机时不要保持TrigIn的状态 */
+		/** Do not keep the TrigIn state at power-on */
 		if (sync_output == 0) {
 			this.sync_output = 1;
 		}
@@ -85,7 +85,7 @@ public class SysControl implements IOrgan, IPatchable {
 	}
 
 	public void selfSubmit(Submitable sbm) {
-		/** 在网络设置时，会将设置的值保存，所以再批量设置的时候再设置一下也是可以的 */
+		/** The set values are saved during network setup, so setting them again during batch setup is also fine */
 		sbm.c_sync_output(sync_output);
 	}
 

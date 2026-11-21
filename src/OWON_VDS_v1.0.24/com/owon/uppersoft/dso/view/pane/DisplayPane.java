@@ -40,7 +40,7 @@ import com.owon.uppersoft.vds.ui.widget.custom.CComboBox;
 import com.owon.uppersoft.vds.ui.widget.custom.ExcludeButtons;
 
 /**
- * 显示 类型 点，矢量 余辉 1秒，2秒，5秒，无限，关闭 xy显示 开启，关闭 硬件频率计 开启，关闭
+ * Display: Type: dots, vectors; Persistence: 1 s, 2 s, 5 s, infinite, off; XY display: on, off; Hardware frequency counter: on, off
  * 
  * @author Matt
  * 
@@ -171,7 +171,7 @@ public class DisplayPane extends FunctionPanel {
 					int sel = (Integer) evt.getNewValue();
 					boolean link = sel == 0;
 					cm.displayControl.linelink = link;
-					// 如果数据来得慢也能及时刷新
+					// Refreshes in time even if data arrives slowly
 					Platform.getMainWindow().updateShow();
 				}
 			}
@@ -205,7 +205,7 @@ public class DisplayPane extends FunctionPanel {
 
 	private void addDebugBtn() {
 		gp = ncgp();
-		/** 进入本页面再输入密码才有效 */
+		/** The password only takes effect when entered after entering this page */
 
 		boolean open = cm.sc.isPWDOpen();
 		gp.setVisible(open);

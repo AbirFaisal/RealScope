@@ -13,7 +13,7 @@ import com.owon.uppersoft.vds.data.Point;
 import com.owon.uppersoft.vds.data.RGB;
 
 /**
- * PropertiesUtil，对Properties中的值和基本类型的转换
+ * PropertiesUtil, conversion between values in Properties and primitive types
  * 
  */
 public class Pref extends Properties {
@@ -31,7 +31,7 @@ public class Pref extends Properties {
 	public static final String Variant = "Variant";
 
 	/**
-	 * 装载boolean，非1为false，1为true
+	 * Load a boolean: non-1 is false, 1 is true
 	 * 
 	 * @param p
 	 * @param key
@@ -43,7 +43,7 @@ public class Pref extends Properties {
 	}
 
 	/**
-	 * 持久化boolean，true则设为1，false设为0
+	 * Persist a boolean: true is set to 1, false is set to 0
 	 * 
 	 * @param p
 	 * @param key
@@ -55,7 +55,7 @@ public class Pref extends Properties {
 	}
 
 	/**
-	 * 装载Locale
+	 * Load a Locale
 	 * 
 	 * @param p
 	 * @return
@@ -72,7 +72,7 @@ public class Pref extends Properties {
 	}
 
 	/**
-	 * 持久化Locale
+	 * Persist a Locale
 	 * 
 	 * @param p
 	 * @param locale
@@ -84,7 +84,7 @@ public class Pref extends Properties {
 	}
 
 	/**
-	 * 装载文件历史列表
+	 * Load the file history list
 	 * 
 	 * @param p
 	 * @param key
@@ -109,7 +109,7 @@ public class Pref extends Properties {
 	}
 
 	/**
-	 * 持久化文件历史列表
+	 * Persist the file history list
 	 * 
 	 * @param p
 	 * @param key
@@ -125,7 +125,7 @@ public class Pref extends Properties {
 	}
 
 	/**
-	 * 装载整型值列表
+	 * Load a list of integer values
 	 * 
 	 * @param p
 	 * @param key
@@ -143,7 +143,7 @@ public class Pref extends Properties {
 	}
 
 	/**
-	 * 持久化整形值列表
+	 * Persist a list of integer values
 	 * 
 	 * @param p
 	 * @param key
@@ -160,7 +160,7 @@ public class Pref extends Properties {
 	}
 
 	/**
-	 * 装载字符列表
+	 * Load a list of strings
 	 * 
 	 * @param p
 	 * @param key
@@ -178,7 +178,7 @@ public class Pref extends Properties {
 	}
 
 	/**
-	 * 装载字符列表
+	 * Load a list of strings
 	 * 
 	 * @param p
 	 * @param key
@@ -198,7 +198,7 @@ public class Pref extends Properties {
 	}
 
 	/**
-	 * 持久化字符列表
+	 * Persist a list of strings
 	 * 
 	 * @param p
 	 * @param key
@@ -215,12 +215,12 @@ public class Pref extends Properties {
 	}
 
 	/**
-	 * 装载RGB，会改变传入rgb的值
+	 * Load RGB; changes the value of the passed-in rgb
 	 * 
 	 * @param p
 	 * @param key
 	 * @param rgb
-	 *            默认rgb，为空则自行创建默认
+	 *            default rgb; if null, a default is created
 	 * @return
 	 */
 	public RGB loadRGB(String key, RGB rgb) {
@@ -229,7 +229,7 @@ public class Pref extends Properties {
 	}
 
 	/**
-	 * 持久化RGB
+	 * Persist RGB
 	 * 
 	 * @param p
 	 * @param key
@@ -240,7 +240,7 @@ public class Pref extends Properties {
 	}
 
 	/**
-	 * 装载int
+	 * Load int
 	 * 
 	 * @param p
 	 * @param key
@@ -265,7 +265,7 @@ public class Pref extends Properties {
 	}
 
 	/**
-	 * 持久化int
+	 * Persist int
 	 * 
 	 * @param p
 	 * @param key
@@ -277,7 +277,7 @@ public class Pref extends Properties {
 
 	/**
 	 * @param name
-	 * @return 获取名字对应的Locale
+	 * @return Get the name's corresponding Locale
 	 */
 	public static final Locale forLocale(String name) {
 		String[] strs = name.split("_");
@@ -296,7 +296,7 @@ public class Pref extends Properties {
 
 	/**
 	 * @param names
-	 * @return 批量获取名字对应的Locale
+	 * @return Batch get the names' corresponding Locale
 	 */
 	public static final List<Locale> forNames(String[] names) {
 		List<Locale> tls = new LinkedList<Locale>();
@@ -312,7 +312,7 @@ public class Pref extends Properties {
 	 * @param p
 	 * @param key
 	 * @param pt
-	 *            可能包含默认值，如为null，将创建默认(0, 0)
+	 *            May contain default values; if null, will create default (0, 0)
 	 * @return
 	 */
 	public Point loadPoint(String key, Point pt) {
@@ -341,7 +341,7 @@ public class Pref extends Properties {
 	 * @param p
 	 * @param key
 	 * @param length
-	 *            >0时用于判断所需的数组大小
+	 *            >0: used to determine the required array size
 	 * @return
 	 */
 	public int[] loadInts(String key, int length) {

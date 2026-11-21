@@ -84,9 +84,9 @@ public class SmallTimebasePreHandler {
 		logln("locateTrg");
 
 		/**
-		 * 单一触发：触发的通道拉多少，其它通道也拉多少
+		 * Single trigger: whatever amount the trigger channel is aligned by, the other channels are aligned by the same amount
 		 * 
-		 * 交替触发：各拉各的
+		 * Alternate trigger: each channel is aligned on its own
 		 */
 
 		if (tc.isSingleTrg()) {
@@ -111,12 +111,12 @@ public class SmallTimebasePreHandler {
 					// ArrayLogger.outArray2Logable(vl, dmbuf.array(),
 					// dmbuf.position()
 					// + (dmbuf.remaining() >> 1) - 20, 40);
-					/** 50个点无用，除非有不插值却要拉触发的情况，比如dm==1k或其它 */
+					/** 50The 50 points are useless, unless there is a case of no interpolation but trigger locating is needed, e.g. dm==1k or others */
 					shiftChannelRTBuffer(ci, fullscreen, plugHelper, cdi, shift);
 				}
 			}
 		} else {
-			/** 目前先在交替的情况下测试 */
+			/** For now, test only in the alternate case */
 			logln("alternate trg: chls = " + channelsNumber);
 			for (int chl = 0; chl < channelsNumber; chl++) {
 				TriggerSet ts = tc.getAlternateTriggerSet(chl);

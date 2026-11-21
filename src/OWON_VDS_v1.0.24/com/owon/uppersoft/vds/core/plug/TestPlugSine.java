@@ -16,7 +16,7 @@ import com.owon.uppersoft.vds.core.paint.Background;
 import com.owon.uppersoft.vds.core.paint.ColorProvider;
 
 /**
- * 在界面上测试正弦插值的效果
+ * Test the effect of sine interpolation on the UI
  * 
  * @author Matt
  * 
@@ -50,7 +50,7 @@ public class TestPlugSine {
 
 		beg = 0;
 		y0 = 140;
-		// 连线
+		// Connecting lines
 		y1 = y0 - bb[beg++];
 		for (int i = beg; i < len; i++) {
 			y2 = y0 - bb[i];
@@ -60,7 +60,7 @@ public class TestPlugSine {
 			y1 = y2;
 		}
 
-		// 点
+		// Points
 		beg = 0;
 		y0 = 290;
 		x1 = px0;
@@ -73,7 +73,7 @@ public class TestPlugSine {
 			x1 += gap;
 		}
 
-		// 原始点
+		// Original points
 		beg = 0;
 		// PlugValueUtil_X.PlugArgs_dbl.length;
 		y0 = 410;

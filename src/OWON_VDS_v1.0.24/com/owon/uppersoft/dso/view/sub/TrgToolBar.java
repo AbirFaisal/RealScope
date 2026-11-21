@@ -55,7 +55,7 @@ public class TrgToolBar extends JPanel implements Localizable {
 	public void setTrgInfPaneEnable(boolean b) {
 		trgbtn.setEnabled(b);
 		forcebtn.setEnabled(b);
-		// Labels设置Enable(b)时,直接各个地方调用isFFTon,设完直接repaint(),这个以后得改。
+		// Labels set Enable(b), isFFTon is called in various places directly, then repaint() right after; to be changed later.
 		repaint();
 	}
 

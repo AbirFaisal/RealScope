@@ -23,17 +23,17 @@ import com.owon.uppersoft.vds.util.StringPool;
 /**
  * MachineInfo
  * 
- * 采样率使用的特点：
- * 从最低时基(最大采样率是极限)开始，持续使用最大采样率(一般不变)，满屏点数随时基增大，直至达到存储深度，这是与缩放时的满屏数变化一致的；
- * 接下来降采样率，同时可以满足整个存储深度画满屏的要求
+ * Characteristics of sampling rate usage:
+ * Starting from the lowest timebase (the max sample rate is the limit), the max sample rate keeps being used (generally unchanged) while the full-screen point count grows with the timebase until the memory depth is reached; this is consistent with how the full-screen count changes when zooming;
+ * After that the sample rate is lowered, which also satisfies filling the full screen with the entire memory depth
  * 
- * 满屏数特点： 乘以2.5(时基缩小的2->5)后都是整数，
+ * Full-screen count characteristic: all integers after multiplying by 2.5 (timebase step 2->5),
  * 
- * 备注：
+ * Notes:
  * 
- * 停止情况下触发位置的特点：和其对应的采样点保持一致，位置同步
+ * Trigger position characteristic when stopped: consistent with its corresponding sample point, position synchronized
  * 
- * 低时基点数少，停止后需要考虑插值(正弦，线性)
+ * At low timebases there are few points; after stop, interpolation must be considered (sine, linear)
  * 
  * MachineInfo
  * 
@@ -230,9 +230,9 @@ public abstract class MachineInfo {
 	public static SampleRate computeChannelMaxSampleRate_ChannelsMerge(
 			SampleRate adcClockSampleRate, int sampling_configuration) {
 		/**
-		 * 通道合并的情况分别是1, 2, 4，正好是1<<0, 1<<1, 1<<2，
+		 * The channel-merge cases are 1, 2, 4, exactly 1<<0, 1<<1, 1<<2,
 		 * 
-		 * 即1 << sampling_configuration
+		 * i.e. 1 << sampling_configuration
 		 */
 		return SampleRate.getSampleRateByDiv1000(adcClockSampleRate
 				.getBDValue_Hz().divide(
@@ -248,7 +248,7 @@ public abstract class MachineInfo {
 	public BigDecimal[] BDFFTTimeBases;
 
 	/**
-	 * 不使用读入文本了，而是直接计算得到采样率，所以本方法暂时无用
+	 * No longer reads from text; the sample rate is computed directly, so this method is currently unused
 	 * 
 	 * @param item
 	 * @param tbNum
@@ -268,7 +268,7 @@ public abstract class MachineInfo {
 		int itemend = item.indexOf('_');
 		item = item.substring(itemend + 1);
 		int j = getInStringArray(DEEP, item);
-		if (j < 0 || channel_numbers + '0' < stv) {// 无效的存储深度值或通道数，如10M或4ch
+		if (j < 0 || channel_numbers + '0' < stv) {// Invalid memory depth value or channel count, e.g. 10M or 4ch
 			// System.err.println(tmp);
 			i = 0;
 			len = tbNum;
@@ -295,7 +295,7 @@ public abstract class MachineInfo {
 		i = 0;
 		SampleRate sr;
 
-		/** 某时基下采样率的算法是，从最大采样率 */
+		/** Algorithm for the sample rate at a given timebase: starting from the max sample rate */
 
 		while (i < len) {
 			line = nextTrimLine(br);
@@ -310,15 +310,15 @@ public abstract class MachineInfo {
 	protected SampleRate[] channelMaxSampleRate;
 
 	/**
-	 * 采样率算法：
+	 * Sample rate algorithm:
 	 * 
-	 * timebase * 20格* maxSampleRate 然后统一单位到点数以后同对应的DEEPValue作比较，
+	 * timebase * 20 divisions * maxSampleRate, then after unifying units to a point count, compare with the corresponding DEEPValue,
 	 * 
-	 * 如果<=DEEPValue，则可取maxSampleRate，
+	 * if <= DEEPValue, maxSampleRate can be used,
 	 * 
-	 * 反之，用DEEPValue / (timebase * 20格)得到对应的采样率，
+	 * otherwise, use DEEPValue / (timebase * 20 divisions) to get the corresponding sample rate,
 	 * 
-	 * 不一开始使用这个公式是因为受到实际maxSampleRate的限制，不一定总是有效
+	 * This formula is not used from the start because it is limited by the actual maxSampleRate and is not always valid
 	 */
 	protected void fillSampleRates() {
 		int tb = TIMEBASE.length;
@@ -347,7 +347,7 @@ public abstract class MachineInfo {
 						// System.err.print(value + "_\t");
 					} else {
 						// System.err.print(value + "_\t");
-						// 判断
+						// Check
 						if (value.longValue() <= dm) {
 							v = cur_max;
 							SampleRates[m * dmn + k][j] = v;
@@ -387,7 +387,7 @@ public abstract class MachineInfo {
 
 	public String SlowMoveTimebase;
 
-	// 电压档位数值表，0元素是衰减为1的情况，单位为mV
+	// Voltage scale value table, element 0 is for attenuation of 1, unit mV
 	public String[] ProbeTexts;
 	public Integer[] ProbeMulties;
 	public int[][] intVOLTAGE;
@@ -401,11 +401,11 @@ public abstract class MachineInfo {
 	}
 
 	/**
-	 * 从电压档位a到电压档位b，需要进行的缩放比率，a一般使用停止载入时的绝对电压档位
+	 * Scaling ratio needed from voltage scale a to voltage scale b; a generally uses the absolute voltage scale at the time loading was stopped
 	 * 
 	 * @param vb1
 	 * @param vb2
-	 * @return >1代表拉伸，<1代表压缩
+	 * @return >1 means stretch, <1 means compress
 	 */
 	public double getVoltagesRatio(int vb1, int vb2) {
 		int[] intVOLTAGEs = intVOLTAGE[0];
@@ -436,9 +436,9 @@ public abstract class MachineInfo {
 	protected int[][] FullScreenData;
 
 	/**
-	 * Channel_4代表实际是4个通道都开启时的最大采样率
+	 * Channel_4 means the max sample rate when all 4 channels are enabled
 	 * 
-	 * 前三个有效类型的值为数组的索引值，不要修改
+	 * The values of the first three valid types are the array indices, do not modify
 	 */
 	private static final int SampleType_1CH = 0, SampleType_2CH = 1,
 			SampleType_4CH = 2, Channel_NONE = -1;
@@ -472,7 +472,7 @@ public abstract class MachineInfo {
 		final int relayThred = Pos0Range_RelayThredshold_IntVoltage << 1;
 		final int relayMultiply = Pos0Range_RelayThredshold_ExtraDivdior;
 		/**
-		 * vb<=100mV的时候 1V/vb, else 50V/vb得到范围(正的和负的各自的格数)
+		 * vb<=100mV, then 1V/vb, else 50V/vb gives the range (number of divisions for positive and negative each)
 		 */
 		int d = Pos0Range_RelayThredshold_Dividor;
 		if (currentVolt > relayThred) {
@@ -488,7 +488,7 @@ public abstract class MachineInfo {
 		final int relayThred = Pos0Range_RelayThredshold_IntVoltage;
 		final int relayMultiply = Pos0Range_RelayThredshold_ExtraDivdior;
 		/**
-		 * vb<=100mV的时候 1V/vb, else 50V/vb得到范围(正的和负的各自的格数)
+		 * vb<=100mV, then 1V/vb, else 50V/vb gives the range (number of divisions for positive and negative each)
 		 */
 		int d = Pos0Range_RelayThredshold_Dividor;
 		if (currentVolt > relayThred) {
@@ -505,13 +505,13 @@ public abstract class MachineInfo {
 	}
 
 	/**
-	 * 从时基a到时基b，需要进行的缩放比率，a一般使用停止载入时的绝对时基
+	 * Scaling ratio needed from timebase a to timebase b; a generally uses the absolute timebase at the time loading was stopped
 	 * 
 	 * bdTIMEBASE[a].divide(bdTIMEBASE[b]);
 	 * 
 	 * @param a
 	 * @param b
-	 * @return >1代表拉伸，<1代表压缩
+	 * @return >1 means stretch, <1 means compress
 	 */
 	public BigDecimal ratio(int a, int b) {
 		return bdTIMEBASE[a].divide(bdTIMEBASE[b]);

@@ -39,7 +39,7 @@ import com.owon.uppersoft.vds.ui.widget.custom.LButton;
 import com.owon.uppersoft.vds.ui.window.ComponentMover;
 
 /**
- * TitlePane，标题栏
+ * TitlePane, title bar
  * 
  */
 public class TitlePane extends JPanel implements Localizable, ITitleStatus,
@@ -78,7 +78,7 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 	//private ImageIcon si;
 
 	/**
-	 * @return 存储视图
+	 * @return Storage view
 	 */
 	public StorageView getStorageView() {
 		return view;
@@ -121,7 +121,7 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 		StaticPref sp = cm.getConfig().getStaticPref();
 
 		Icon i = sp.getLogoIcon(sp);
-		/** 从配置中取logo地址，获取成功则使用 */
+		/** Take the logo address from the configuration; use it if obtained successfully */
 		if (i != null) {
 			iconlbl.setIcon(i);
 			iconlbl.setPreferredSize(new Dimension(i.getIconWidth(), i
@@ -165,7 +165,7 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 
 	// btnOption.setEnabled(false);
 
-	// /** 当RS按钮Unable则"Pause&Export"不能点 */
+	// /** When the RS button is Unable, "Pause&Export" cannot be clicked */
 	// controlManager.pcs.firePropertyChange(
 	// PropertiesItem.RSSTATUS_CHANGE, null, false);
 	// }
@@ -208,7 +208,7 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 	}
 
 	/**
-	 * 返回是否run
+	 * Returns whether runrun
 	 */
 	public boolean switchRS() {
 		if (run) {
@@ -222,7 +222,7 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 			if (keepPlay)
 				return false;
 
-			// 当录制结束设置loadPos0返回给RT状态使用
+			// When recording ends, set loadPos0 to return it for use by the RT state
 			if (dh.isParaAsync())
 				cm.initDetail(SubmitorFactory.reInit());
 			askRun(true);
@@ -232,7 +232,7 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 	}
 
 	/**
-	 * 返回是否run
+	 * Returns whether runrun
 	 */
 	public void switchSingle_Run() {
 		if (run) {
@@ -242,7 +242,7 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 			if (keepPlay)
 				return;
 
-			// 当录制结束设置loadPos0返回给RT状态使用
+			// When recording ends, set loadPos0 to return it for use by the RT state
 			if (dh.isParaAsync())
 				cm.initDetail(SubmitorFactory.reInit());
 			askRun(true);
@@ -299,7 +299,7 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 
 
 
-		/** 单次触发的快捷操作 */
+		/** Shortcut operation for single trigger */
 		btnSingle = new LButton("Single");
 		//i = SwingResourceManager.getIcon(TitlePane.class, SinglePath);
 		//btnSingle.setIcon(i);
@@ -419,7 +419,7 @@ public class TitlePane extends JPanel implements Localizable, ITitleStatus,
 	}
 
 	public void updateBtnSingle() {
-		// b为false时必定设灰,b为true时,按钮不一定可用,当不为单触的情况也设灰
+		// bWhen b is false it is always grayed out; when b is true the button is not necessarily usable, and it is also grayed out when not in single trigger
 		if (!cm.getTriggerControl().isSingleTrg()) {
 			btnSingle.setEnabled(false);
 			return;

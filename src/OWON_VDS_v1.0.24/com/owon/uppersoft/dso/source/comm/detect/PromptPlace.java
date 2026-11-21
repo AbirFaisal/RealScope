@@ -39,7 +39,7 @@ public class PromptPlace extends JPanel implements PropertyChangeListener {
 		add(lbl);
 		add(infoarea);
 
-		// 开始连接
+		// Start connecting
 		infoarea.setText(I18nProvider.bundle().getString("Label.connect"));
 
 		setPreferredSize(new Dimension(350, 150));

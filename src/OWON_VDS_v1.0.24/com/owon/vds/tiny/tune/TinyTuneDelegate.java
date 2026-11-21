@@ -11,17 +11,17 @@ public interface TinyTuneDelegate {
 	void selfCalibration();
 
 	/**
-	 * 回复厂家设置并同步
+	 * Restore the factory settings and synchronize
 	 */
 	void resumeFactoryNSync();
 
 	/**
-	 * 将参数写入并同步
+	 * Write the parameters and synchronize
 	 */
 	void writeDeviceNSync();
 
 	/**
-	 * 将所有信息写入厂家设置并同步
+	 * Write all information to the factory settings and synchronize
 	 */
 	void writeFactoryNSync();
 

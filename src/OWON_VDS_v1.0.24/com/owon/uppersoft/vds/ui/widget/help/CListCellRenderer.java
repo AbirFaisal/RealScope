@@ -6,7 +6,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.SwingConstants;
 
 /**
- * CListCellRenderer，自定义ComboBox的Render，使用自定义字体，前后别景色，防锯齿
+ * CListCellRenderer, custom Render for ComboBox, using a custom font, foreground and background colors, anti-aliasing
  * 
  * @author Matt
  * 

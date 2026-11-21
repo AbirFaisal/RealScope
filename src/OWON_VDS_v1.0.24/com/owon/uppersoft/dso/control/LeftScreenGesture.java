@@ -17,7 +17,7 @@ import com.owon.uppersoft.vds.core.paint.ScreenContext;
 //import com.owon.uppersoft.vds.data.Point;
 
 /**
- * 处理左侧的鼠标事件
+ * Handle mouse events on the left side
  * 
  * @author Matt
  * 
@@ -34,9 +34,9 @@ public class LeftScreenGesture {
 	public void mousePressed(ViewChart vc, WaveFormManager wfm) {
 		if (rollOverChannel >= 0) {
 			/**
-			 * 必须同时满足两者， 只针对左侧，
+			 * Both must be satisfied at the same time, only for the left side,
 			 * 
-			 * 同时只有当出现了新的有效值才会覆盖前值，这样才是鼠标选中的前置效果要求的条件
+			 * and the previous value is overwritten only when a new valid value appears, which is the condition required by the precondition effect of mouse selection
 			 */
 			ccsm.setScreenSelectWFidx(rollOverChannel);
 			ccsm.setRight(false);
@@ -81,7 +81,7 @@ public class LeftScreenGesture {
 			cwf.onShowPos0 = true;
 			int yv = compute(cwf.getYloc(), dy, x, y, loc0, ScreenMode_3);
 			cwf.setYlocIncrement(yv, ScreenMode_3, hc);
-			// yv = mcctr.limitPos0Edge(yv);// 限制零点位置
+			// yv = mcctr.limitPos0Edge(yv);// limit zero-point position
 			cs.rebuffer();
 		} else {
 			WaveForm wf = wfm.getWaveForm(selectWFidx);
@@ -91,7 +91,7 @@ public class LeftScreenGesture {
 			int yv = compute(pos0, dy, x, y, loc0, ScreenMode_3);
 			wfm.setZeroYLoc(wf, yv, commit);
 			mcctr.computeYValues(ci.getPos0(), ci.getVoltValue());
-			// yv = mcctr.limitPos0Edge(yv);// 限制零点位置
+			// yv = mcctr.limitPos0Edge(yv);// limit zero-point position
 
 			mw.getToolPane().getInfoPane().updatePos0(ci.getNumber());
 			mw.update_Pos0();
@@ -106,7 +106,7 @@ public class LeftScreenGesture {
 			loc0.x = x;
 			loc0.y = y;
 		} else {
-			/** 采用鼠标所在位置的近似值进行设置 */
+			/** Set using the approximate value at the mouse position */
 			yv = pos0 + (dy >> 1);// (pc.hcenter - y) >> 1;
 			int rem = dy % 2;
 			loc0.x = x;

@@ -161,13 +161,13 @@ public class LineUtil {
 			Rectangle2D r2 = g2d.getFontMetrics().getStringBounds(detail, g2d);
 			int w = (int) r2.getWidth() + 6, h = (int) r2.getHeight();
 			int ww = w >> 1;
-			// 限界
+			// Clamp to bounds
 			if (x < r.x + ww) {
 				x = r.x + ww;
 			} else if (x > r.x + r.width - ww) {
 				x = r.x + r.width - ww;
 			}
-			// 定位
+			// Positioning
 			x -= ww;
 			y += 3;
 			g2d.setColor(Color.BLACK);
@@ -217,7 +217,7 @@ public class LineUtil {
 	}
 
 	/**
-	 * TrgLevel的高宽，Arrow边缘的宽
+	 * TrgLevelHeight and width of TrgLevel, and width of the Arrow edge
 	 */
 	public static final int TrgLevelWidth = 18, TrgLevelHeight = 12,
 			HalfTrgLevelHeight = TrgLevelHeight >> 1, ArrowEdgeWidth = 4;
@@ -295,7 +295,7 @@ public class LineUtil {
 	}
 
 	/**
-	 * 触发电平标签(含是否高亮)，是否出现箭头框，是否画线
+	 * Trigger level label (including whether highlighted), whether the arrow box appears, whether to draw the line
 	 * 
 	 * @param y
 	 * @param lr
@@ -314,7 +314,7 @@ public class LineUtil {
 		int tlw = TrgLevelWidth, tlh = TrgLevelHeight, htlh = HalfTrgLevelHeight, arrw = ArrowEdgeWidth;
 
 		int ny, temp = y, num;
-		drawArrow = select || drawArrow;// 补上，在拖拽时箭头就不会奇怪消失
+		drawArrow = select || drawArrow;// Added so that the arrow does not disappear oddly while dragging
 
 		Color tmp = g2d.getColor();
 		paintTrgLevelRightTriangel(g2d, y, y0, y1, x1, c);
@@ -399,7 +399,7 @@ public class LineUtil {
 	}
 
 	/**
-	 * 画触发电平标志的信息框
+	 * Draw the info box of the trigger level marker
 	 * 
 	 * @param g2d
 	 * @param r
@@ -412,8 +412,8 @@ public class LineUtil {
 		Rectangle2D infoRec = g2d.getFontMetrics().getStringBounds(info, g2d);
 		int infow = (int) infoRec.getWidth() + (gap << 1), infoh = (int) infoRec
 				.getHeight();
-		int x = r.x1 - infow - 25 - gap;// "T"箭头框间隔25
-		// 限制值、框边界
+		int x = r.x1 - infow - 25 - gap;// "T" arrow box spacing 25
+		// Limit values, box boundary
 		if (trgpos <= r.y0 + infoh)
 			trgpos = r.y0 + infoh;
 		else if (trgpos >= r.y1)
@@ -427,7 +427,7 @@ public class LineUtil {
 	}
 
 	/**
-	 * 阈值上下限标签，是否画线，是否高亮
+	 * Threshold upper/lower limit label, whether to draw the line, whether to highlight
 	 * 
 	 * @param y
 	 * @param lr

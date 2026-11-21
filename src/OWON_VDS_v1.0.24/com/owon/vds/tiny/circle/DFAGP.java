@@ -18,7 +18,7 @@ public class DFAGP implements AGPControl {
 
 		boolean b = sc.openPort(sPort);
 		if (!b) {
-			// 串口被占用
+			// Serial port is in use
 			System.out.println("serial busy");
 			return;
 		}
@@ -34,7 +34,7 @@ public class DFAGP implements AGPControl {
 	@Override
 	public void genWFwithVB(int vbidx) {
 		System.out.println("genWFwithVB " + vbidx);
-		// int vbbase = vp.getVoltage(0, vbidx);// mv 探头倍率x1
+		// int vbbase = vp.getVoltage(0, vbidx);// mv probe ratio x1
 
 		sendComand.changeVmp(vbidx);
 		// gen: ac, quare, low, up, freq(1us)

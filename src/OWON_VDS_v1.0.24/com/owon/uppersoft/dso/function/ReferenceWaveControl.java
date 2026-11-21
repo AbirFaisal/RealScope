@@ -20,7 +20,7 @@ import com.owon.uppersoft.vds.core.paint.ScreenContext;
 import com.owon.uppersoft.vds.util.Pref;
 
 /**
- * ReferenceWaveControl，是不同于WaveForm实现的另一种屏幕波形效果
+ * ReferenceWaveControl, another kind of on-screen waveform effect different from the WaveForm implementation
  * 
  */
 public class ReferenceWaveControl {
@@ -81,7 +81,7 @@ public class ReferenceWaveControl {
 		removefromRAMList(dest);
 		refwf.setObjIndex(dest);
 		referwfRAM.add(refwf);
-		// 限制显示个数
+		// limit the number displayed
 		if (referwfRAM.size() > showLimit) {
 			referwfRAM.removeFirst();
 		}
@@ -100,8 +100,8 @@ public class ReferenceWaveControl {
 	}
 
 	public boolean isObjShowing(int showIdx) {
-		// 多一个判断，用于：如果id相同的rwf已经存在rwflist，就return
-		// 不要再删除然后重新添加进内存
+		// One extra check, used so that if an rwf with the same id already exists in rwflist, return
+		// do not delete it and add it into memory again
 		for (IReferenceWaveForm rwf : referwfRAM) {
 			if (rwf.getObjIndex() == showIdx)
 				return true;
@@ -145,7 +145,7 @@ public class ReferenceWaveControl {
 		return null;
 	}
 
-	/** 界面不会更新的参考波形清理 */
+	/** Cleanup of reference waveforms whose UI will not be updated */
 	public void clearAllshow() {
 		referwfRAM.clear();
 	}

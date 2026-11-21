@@ -22,35 +22,35 @@ import com.owon.uppersoft.vds.util.PrimaryTypeUtil;
 
 /**
  * 
- * KNOW 参考CompressInfoUnit的算法思路，补充：
+ * KNOW refer to the algorithm notes of CompressInfoUnit, supplement:
  * 
- * frct(a:b)用于保存在不同时基下的(中心点和前一采样点间距:拉伸率)，切换的过程保证这一比率不变来定中心点
- * 
- * 
- * 特点：数据量少，取点快，切换时基的时候定中心点是关键
- * 
- * 先用虚索引点确定数据边界及x偏移，再插值
- * 
- * 插值：
- * 
- * 插值只在接受深存储文件的时候根据满屏个数<=200的情况插正弦值一次，
- * 
- * 可能的满屏数为200、100、50、40、25、20、10，
- * 
- * 拉伸率即5、10、20、25、40、50、100，
- * 
- * 插值后点像素间距为1/2、1、2、2.5、4、5、10，
- * 
- * 画图为压缩、1比1、拉伸画、拉伸画，
- * 
- * 在此基础上对拉伸画再线性插值到1比1
+ * frct(a:b) saves (distance between the center point and the previous sample point : stretch ratio) at different timebases; the switch keeps this ratio unchanged to fix the center point
  * 
  * 
+ * Characteristics: small data volume, fast point picking, fixing the center point is the key when switching timebase
+ * 
+ * First determine the data boundary and x offset with virtual index points, then interpolate
+ * 
+ * Interpolation:
+ * 
+ * Interpolation is done only once, when receiving the deep memory file, inserting sine values when the full-screen count is <=200,
+ * 
+ * the possible full-screen counts are 200, 100, 50, 40, 25, 20, 10,
+ * 
+ * i.e. stretch ratios of 5, 10, 20, 25, 40, 50, 100,
+ * 
+ * the pixel spacing of points after interpolation is 1/2, 1, 2, 2.5, 4, 5, 10,
+ * 
+ * drawing is compressed, 1 to 1, stretched, stretched,
+ * 
+ * on this basis the stretched drawing is further linearly interpolated to 1 to 1
  * 
  * 
- * 处理可以透明地看待Pluger，只在最后获得画图数据点的时候使用其插值后的点
  * 
- * 慢扫的时候没有拉触发和插值
+ * 
+ * Processing can treat Pluger transparently, using its interpolated points only at the end when getting the drawing data points
+ * 
+ * There is no trigger pull and no interpolation in slow sweep
  * 
  */
 public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
@@ -58,15 +58,15 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 
 	public static final int DEFINE_AREA_WIDTH = GDefine.AREA_WIDTH;
 
-	/** re为0时先画3，否则画2 */
+	/** re is 0: draw 3 first, otherwise draw 2 */
 	public final int re = 0;
 
-	/** 起始画图点离左边界的距离 */
+	/** Distance from the starting drawing point to the left boundary */
 	private int xbloc;
 
-	/** 参照点的索引值 */
+	/** Index of the reference point */
 	private int cpidx;
-	/** 中心点为0值时参照点的位置-...+ */
+	/** Position of the reference point when the center point is 0 -...+ */
 	private int cpoff;
 
 	private LocInfo li;
@@ -139,7 +139,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 	int tbidx;
 
 	/**
-	 * 水平触发所在位置
+	 * Position of the horizontal trigger
 	 * 
 	 * @param hortrgidx
 	 * @return
@@ -148,7 +148,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 		int del = hortrgidx - cpidx;
 		int v = diluteR.multiplyByInt(del) + cpoff;
 
-		// 2.5 MISS 这里可能出现浮点数丢失
+		// 2.5 MISS floating point values may be lost here
 		switch (del % diluteR.getDivisor()) {
 		case 1:
 			v += 3;
@@ -187,7 +187,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 	}
 
 	/**
-	 * 用于记忆每一个时基档位的cpoff，在没有作平移的情况下不会修改，如果未被设置才去填充
+	 * Used to remember the cpoff of each timebase scale; not modified when no panning is done; filled only if not yet set
 	 */
 	private void resetSPIOFF() {
 		spi_offs = new int[li.getMachineInfo().TIMEBASE.length];
@@ -196,7 +196,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 
 	private void prepare() {
 		if (i_adcbuf == null) {
-			int capacity = 15000;// 拉触发和插值的情况下最多(20+50*2)*5*10 = 6000
+			int capacity = 15000;// with trigger pull and interpolation, at most (20+50*2)*5*10 = 6000
 
 			i_adcbuf = IntBuffer.allocate(capacity);
 			array = i_adcbuf.array();
@@ -223,12 +223,12 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 		prepare();
 		this.tbidx = tbidx;
 
-		/** 载入深存储时为无需插值的时基，则后续也不进行插值 */
+		/** When deep memory is loaded at a timebase that needs no interpolation, no interpolation is done afterward either */
 		int pixs = li.pixs;
 		screendatalen = li.screendatalen;
 		pg.initPlugInfo(cdi, mt);
-		/** 理论满屏数 <= 屏幕像素宽度，拉伸 */
-		/** 拉伸率 */
+		/** Theoretical full-screen count <= screen pixel width, stretch */
+		/** Stretch ratio */
 		// System.out.println("cpidx: " + cpidx);
 		// reDilute();
 		if (pg.isPlug()) {
@@ -242,7 +242,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 			pg.processPlugForInit(datalen, screendatalen, filePointer,
 					shouldReverse, loadPos0, handlebuf, cba, li.halfpixs);
 
-			/** 这里使用满屏点数，假定插值对Dilute不可见 */
+			/** The full-screen point count is used here, assuming interpolation is invisible to Dilute */
 			diluteR.set(pixs, screendatalen);
 			computeCenterPointStuff(cpoff);
 			// spi_offs[tbidx] = getCenterPointOffset();
@@ -291,14 +291,14 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 	}
 
 	/**
-	 * 算法特点：采用虚点和像素一一对应 -...+
+	 * Algorithm characteristics: virtual points and pixels map one-to-one  -...+
 	 * 
 	 * @param m
 	 */
 	public void computeMove(int m) {
 		resetSPIOFF();
 		/**
-		 * 参照点距离中心点的新位置
+		 * New position of the reference point relative to the center point
 		 */
 		int nxo = cpoff + m;
 		computeCenterPointStuff(nxo);
@@ -333,7 +333,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 			boolean shouldReverse = li.shouldReverse;
 			int loadPos0 = li.loadPos0;
 
-			// 不进行插值，当初始档位不是拉伸的情况下
+			// No interpolation, when the initial scale is not stretched
 			retrieveBuf(iPos, 0, len, handlebuf, filePointer, cba);
 			restrictForReverse(handlebuf, shouldReverse, loadPos0);
 		}
@@ -341,7 +341,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 		int pos = handlebuf.position();
 		int limit = handlebuf.limit();
 
-		/** pos limit先设置limit，防止pos超过原来的limit报错 */
+		/** pos limit: set limit first, to prevent an error when pos exceeds the old limit */
 		i_adcbuf.limit(limit);
 		i_adcbuf.position(pos);
 
@@ -358,7 +358,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 	}
 
 	public void retrieveBuf(byte[] barr, int iPos, int beg, int len) {
-		/** len:真实adc点数加左右拉触发点100; beg:深存储数据中htp对应位置 */
+		/** len: real adc point count plus 100 trigger pull points on each side; beg: position corresponding to htp in the deep memory data */
 		CByteArrayInputStream cba = li.getDeepMemoryStorage();
 		cba.reset(li.filePointer + iPos);
 		cba.get(barr, beg, len);
@@ -431,27 +431,27 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 	public int i0, i1;
 
 	/**
-	 * 确定cpidx, rate, cpoff；计算xbloc
+	 * Determine cpidx, rate, cpoff; compute xbloc
 	 */
 	private void reDilute() {
 		// System.err.println("reDilute");
 		// PaintContext pc = Platform.getMainWindow().getChartScreen()
 		// .getPaintContext();
-		/** 屏幕的起始和中点 */
+		/** Start and midpoint of the screen */
 		final int pw = DEFINE_AREA_WIDTH, p0 = 0, wc = PaintContext.hwidth;
 
-		/** 数据的起始索引 */
-		/** i0，i1为无边界的点索引，不受具体0值和存储深度限制，x1为不可画的右边界 */
+		/** Start index of the data */
+		/** i0, i1 are unbounded point indices, not limited by the specific zero value and memory depth; x1 is the undrawable right boundary */
 		final int cpidx = this.cpidx;
 		// System.err.println("cpidx: " + cpidx);
 		i1 = i0 = cpidx;
 		loadcp();
-		/** cpidx的x坐标，起始于最左边，-...+ */
+		/** cpidx x coordinate, starting from the far left, -...+ */
 		final int cpx = wc + cpoff;
 		// ...
 
 		if (cpx < pw) {
-			// i1扩展到屏幕右边界
+			// i1 extends to the right screen boundary
 			int range = pw - cpx;
 			int num = diluteR.divideDirectByInt(range);
 			i1 = cpidx + num;
@@ -460,7 +460,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 			i1 += diluteR.getDivisor();
 		}
 		if (cpx > p0) {
-			// i0扩展到屏幕左边界，初始载入时，也因此xbloc得到设置
+			// i0 extends to the left screen boundary; on initial load xbloc is also set as a result
 			int range = cpx - p0;
 			int num = diluteR.divideDirectByInt(range);
 			int rem = diluteR.modeByIntOffset(range);
@@ -478,23 +478,23 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 	}
 
 	/**
-	 * 可以给initLoad使用，替代reDilute，支持慢扫和拉触发的插值
+	 * Can be used by initLoad in place of reDilute, supports interpolation for slow sweep and trigger pull
 	 */
 	private void restrictAfterDilute() {
 		// System.err.println("restrictAfterDilute");
 		// System.err.println("i(0,1):" + i0 + ", " + i1);
-		// i1 += 10;// 屏尾多补一些
+		// i1 += 10;// pad a bit more at the screen end
 
 		int datalen = li.datalen;
 		int data0 = databeg;
 
-		// 再限制回数据边界
+		// limit back to the data boundary again
 		if (i1 > datalen)
 			i1 = datalen;
 
-		// 再限制回数据边界
+		// limit back to the data boundary again
 		if (i0 < data0) {
-			/** MISS 这里可能出现浮点数丢失 */
+			/** MISS floating point values may be lost here */
 			addXBloc(diluteR.multiplyByInt(data0 - i0));
 			i0 = data0;
 		}
@@ -502,7 +502,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 
 		int len = i1 - i0;
 		// System.out.println("i0: " + i0 + ", i1:" + i1 + ", len:" + len);
-		/** i0的底限和i1的顶限，合起来就限制了完全超出屏幕外的情况 */
+		/** i0 lower limit and i1 upper limit, taken together, limit the case of being completely off-screen */
 		if (len > 0) {
 			if (i0 + len < datalen)
 				len++;
@@ -517,18 +517,18 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 	}
 
 	/**
-	 * 为反相作调整
+	 * Adjustments for inversion
 	 * 
 	 * @param pos
 	 * @param limit
 	 */
 	public static final void restrictForReverse(IntBuffer i_adcbuf,
 			boolean reverse, int loadPos0) {
-		/** 交给画图屏幕，处理反相问题 */
+		/** Hand over to the drawing screen, to handle the inversion issue */
 		reverse = false;
 
-		/** 在adc数据取出绘图前进行必要的反相处理 */
-		/** 内部也在这里把intArray转成byteArray，可同时进行两项处理 */
+		/** Do the necessary inversion processing before the adc data is taken out for drawing */
+		/** Internally this also converts intArray to byteArray here, so both can be done at once */
 		if (reverse) {
 			int pos = i_adcbuf.position();
 			int limit = i_adcbuf.limit();
@@ -543,7 +543,7 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 
 	public boolean BeyondMax = false, BeyondMin = false;
 
-	/** KNOW 限制adc数据点不越边界，从i_adcbuf存入b_adcbuf */
+	/** KNOW limit adc data points not to cross the boundary, store from i_adcbuf into b_adcbuf */
 	private void lastHandle(IntBuffer i_adcbuf) {
 		int pos = i_adcbuf.position();
 		int limit = i_adcbuf.limit();
@@ -579,11 +579,11 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 	}
 
 	private void tbTranslate_(BigDecimal pre, BigDecimal nex, int tb) {
-		// rate, cpoff两个变化
+		// rate, cpoff both change
 		MultiplyorAndDivisor md = MultiplyorAndDivisor.getFrom1_2_5TypeDivison(
 				nex, pre);
 
-		/** 反比关系，但仍会出现小数值丢失 */
+		/** Inversely proportional, but decimal value loss can still occur */
 		/** * preRate:nextRate=nextTb:preTb */
 		MultiplyorAndDivisor nextRate = diluteR.divide_MD(md);
 		/** * nextSdlen:preSdlen=nextTb:preTb */
@@ -592,20 +592,20 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 
 		cpoff = this.cpoff;
 
-		/** 保存当前档位的cpoff */
+		/** Save the current scale's cpoff */
 		spi_offs[tbidx] = cpoff;
 
 		// System.err.println("cur:" + tbidx + " tb:" + tb);
 		if (spi_offs[tb] == invalidOff) {
-			/** 若要切换的那个档位未设置，则根据本档位计算得出 */
+			/** If the scale to switch to is not set, compute it from this scale */
 			// System.err.println("invalid: " + cpoff);
-			/** MISS 这里可能出现浮点数丢失 */
+			/** MISS floating point values may be lost here */
 			cpoff = (int) nextRate.multiplyByDouble(diluteR
 					.divideByDouble(cpoff));
 
 			// System.err.println("to: " + cpoff);
 		} else {
-			/** 若要切换的那个档位已设置，则直接使用 */
+			/** If the scale to switch to is already set, use it directly */
 			cpoff = spi_offs[tb];
 			// System.err.println("valid: " + cpoff);
 		}
@@ -615,39 +615,39 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 		diluteR = nextRate;
 	}
 
-	/** 拉伸到拉伸 */
+	/** Stretch to stretch */
 	public void tbTranslate(BigDecimal pre, BigDecimal nex, int tbidx) {
 		tbTranslate_(pre, nex, tbidx);
 
 		reDilute();
 	}
 
-	/** 拉伸到压缩 */
+	/** Stretch to compress */
 	public void tbTranslate2C(BigDecimal pre, BigDecimal nex,
 			CompressInfoUnit ciu, int tbidx) {
 		// rate / nex1_1rate= nex1_1/ pre
 		// nex1_1rate == 1
 
 		BigDecimal nex1_1 = diluteR.multiplyByBD(pre);
-		/** 先切换到D1:1的压缩情况，然后再切换到C */
+		/** First switch to the D1:1 compression case, then switch to C */
 		tbTranslate_(pre, nex1_1, tbidx);
 
 		release();
 
-		// cpoff无须传递出去
+		// cpoff need not be passed out
 		ciu.fakeIn(cpidx, 1, li, 0);
 		ciu.tbTranslate(nex1_1, nex, tbidx);
 	}
 
 	public void fakeIn(int cpidx, int tbidx) {
-		/** fake in的时候要看一开始载入的是否的Dilute */
+		/** fake in case: check whether the one loaded at the start is Dilute */
 		prepare();
 
 		screendatalen = li.pixs;
 		this.cpidx = cpidx;
 		diluteR = new MultiplyorAndDivisor(1, 1);
 
-		/** 若要切换的那个档位未设置，则赋值0 */
+		/** If the scale to switch to is not set, assign 0 */
 		if (spi_offs[tbidx] == invalidOff) {
 // setCenterPointOffset(spi_offs[tbidx]);
 			cpoff = 0;
@@ -657,11 +657,11 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 
 	public void drawView(Graphics g, int xoff, int hh, int wlen, int hortrgidx) {
 		Graphics2D g2d = (Graphics2D) g;
-		int et = StorageView.edgetall;// 括弧高
+		int et = StorageView.edgetall;// bracket height
 		int x0, x1, y0, y1;
 		double r = diluteR.getDoubleValue();
 
-		/** 横线拉到满，括弧相应缩小 */
+		/** The horizontal line is stretched to full, and the bracket shrinks accordingly */
 		/** ?? (i0 / (double) li.datalen) - xbloc / (li.datalen * r) */
 		x0 = (int) (wlen
 				* ((i0 / (double) li.datalen) - xbloc / (li.datalen * r)) + xoff);
@@ -670,13 +670,13 @@ public abstract class DiluteInfoUnit implements InfoUnit, IDataMaxMin,
 		g2d.setColor(Color.LIGHT_GRAY);
 
 		// System.err.println(x0 + ", " + x1);
-		/** 括弧 */
-		g2d.drawLine(x0, hh - et, x0, hh + et);// 左括弧
+		/** Bracket */
+		g2d.drawLine(x0, hh - et, x0, hh + et);// left bracket
 		if (x1 != x0) {
-			g2d.drawLine(x1, hh - et, x1, hh + et);// 右括弧
+			g2d.drawLine(x1, hh - et, x1, hh + et);// right bracket
 		}
 
-		/** 横线 */
+		/** Horizontal line */
 		g2d.drawLine(xoff, hh, xoff + wlen, hh);
 
 		/** T */

@@ -10,7 +10,7 @@ import com.owon.uppersoft.vds.ui.dialog.ProgressObserver;
 import com.owon.vds.calibration.stuff.ArgCreator;
 
 /**
- * 基线校正管理器
+ * Baseline calibration manager
  * 
  */
 public class BaselineCalManager extends AutomaticWorkManager {

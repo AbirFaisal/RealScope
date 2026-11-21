@@ -22,13 +22,13 @@ public class PaintOne_Tiny implements IPaintOne {
 					|| pk_detect_type == PKDetectDrawUtil.PK_DETECT_TYPE_2500_2_5p
 					|| pk_detect_type == PKDetectDrawUtil.PK_DETECT_TYPE_1250_4_5p) {
 				/**
-				 * 只在这里出现多帧的情况
+				 * multiple frames occur only here
 				 * 
-				 * 保持2500在峰值检测时的普通画法，验证效果，再考虑是否针对峰值检测研究更遵循采样方式的画法
+				 * keep the ordinary drawing method for 2500 during peak detect, verify the effect, then consider whether to research a drawing method for peak detect that follows the sampling method more closely
 				 * 
-				 * 对应真实adc采集满屏2500个点的情况，5对峰值放在4个像素点上
+				 * corresponds to the case where the real adc acquires 2500 points for the full screen, with 5 pairs of peaks placed on 4 pixels
 				 * 
-				 * 对1250个点即采集满屏250个点的情况，因其达不到峰值检测的要求，故可不考虑
+				 * for the case of 1250 points, i.e. 250 points acquired for the full screen, it does not meet the requirements of peak detect, so it can be ignored
 				 */
 				WFDrawRTUtil.paintDrawMode(g2d, pixbuf, drawMode, xb, linkline);
 			} else {
@@ -39,7 +39,7 @@ public class PaintOne_Tiny implements IPaintOne {
 		} else if (statusType == 'M') {
 			WFDrawRTUtil.paintByGap(g2d, pixbuf, xb, linkline, gap);
 		} else {
-			/** 只在这里出现多帧的情况 */
+			/** multiple frames occur only here */
 			WFDrawRTUtil.paintDrawMode(g2d, pixbuf, drawMode, xb, linkline);
 		}
 	}
@@ -57,20 +57,20 @@ public class PaintOne_Tiny implements IPaintOne {
 			WFDrawRTUtil.paintByGap(g2d, pixbuf, xb, linkline, wftsc
 					.getDiluteGap());
 		} else if (pkdetect) {
-			/** 峰值检测，遇上正常触发，存在bug，假停展开后波形错误 */
+			/** peak detect combined with normal trigger has a bug: the waveform is wrong after expanding in a fake stop */
 			// System.err.println("2.pkdetect");
 			if (pk_detect_type == PKDetectDrawUtil.PK_DETECT_TYPE_NO
 			// || pk_detect_type == PKDetectDrawUtil.PK_DETECT_TYPE_2500_2_5p
 			// || pk_detect_type == PKDetectDrawUtil.PK_DETECT_TYPE_1250_4_5p
 			) {
 				/**
-				 * 只在这里出现多帧的情况
+				 * multiple frames occur only here
 				 * 
-				 * 保持2500在峰值检测时的普通画法，验证效果，再考虑是否针对峰值检测研究更遵循采样方式的画法
+				 * keep the ordinary drawing method for 2500 during peak detect, verify the effect, then consider whether to research a drawing method for peak detect that follows the sampling method more closely
 				 * 
-				 * 对应真实adc采集满屏2500个点的情况，5对峰值放在4个像素点上
+				 * corresponds to the case where the real adc acquires 2500 points for the full screen, with 5 pairs of peaks placed on 4 pixels
 				 * 
-				 * 对1250个点即采集满屏250个点的情况，因其达不到峰值检测的要求，故可不考虑
+				 * for the case of 1250 points, i.e. 250 points acquired for the full screen, it does not meet the requirements of peak detect, so it can be ignored
 				 */
 				WFDrawRTUtil.paintDrawMode(g2d, pixbuf, drawMode, xb, linkline);
 			} else {
@@ -78,14 +78,14 @@ public class PaintOne_Tiny implements IPaintOne {
 						pk_detect_type, linkline);
 			}
 		} else if (wftsc.isZoom()) {
-			// 正常、单次展开的画图
+			// drawing for normal and single expansion
 			// System.err.println("3.isZoom");
 			WFDrawRTUtil.paintByGap(g2d, pixbuf, xb, linkline, wftsc
 					.getZoomGap());
 		} else {
 			// System.err.println("4.drawMode: " + drawMode);
 			// vl.logByteBuffer(pixbuf);
-			/** 只在这里出现多帧的情况 */
+			/** multiple frames occur only here */
 			WFDrawRTUtil.paintDrawMode(g2d, pixbuf, drawMode, xb, linkline);
 		}
 

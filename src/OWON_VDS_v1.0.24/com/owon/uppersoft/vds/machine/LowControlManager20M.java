@@ -11,7 +11,7 @@ public class LowControlManager20M extends LowControlManger {
 	}
 
 	public int getHTPWithoutCompress(int htp, IntObject io) {
-		/** 可能和居中有一像素偏差 */
+		/** may be off by one pixel from the center */
 		htp++;
 
 		int tb = cm.getTimeControl().getTimebaseIdx();
@@ -20,13 +20,13 @@ public class LowControlManager20M extends LowControlManger {
 				getDeepMemoryControl().getDeepIdx())[tb];
 		if (tb >= VDS1022.TB_5kFullScreen) {
 			int screenDMDataLen = cm.getDeepMemoryControl().getDeepDataLen();
-			/** 这里用5k在拉动触发电平到一点距离以后才没有偏差 */
+			/** 5k is used here so that there is no deviation only after the trigger level is dragged some distance */
 			return (int) (htp * screenDMDataLen / (double) GDefine.AREA_WIDTH);
 		} else if (tb >= VDS1022.TB_1_4kFullScreen) {
 			int compress = fullscreen / GDefine.AREA_WIDTH;
 			return htp * compress;
 		} else {
-			/** 使用浮点，应对FULLSCREEN_400的情况，处理仍不完善 */
+			/** use floating point to handle the FULLSCREEN_400 case; the handling is still incomplete */
 			double pointGap = GDefine.AREA_WIDTH / (double) fullscreen;
 			io.value = (htp % (int) pointGap);
 			cm.pcs.firePropertyChange(PropertiesItem.APPEND_TXTLINE, null,

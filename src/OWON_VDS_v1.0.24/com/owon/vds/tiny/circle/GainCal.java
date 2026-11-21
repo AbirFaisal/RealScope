@@ -151,10 +151,10 @@ public class GainCal implements Logable, IWFCalRoutine2 {
 	}
 
 	protected void nextGain() {
-		/** 本次更新adc计算结果有进展 */
+		/** Progress in the adc calculation result of this update */
 		int vb = arg.vb + 1;
 		if (vb >= voltageBaseValue) {
-			/** 校正任务终结 */
+			/** Calibration task finished */
 			arg = null;
 		} else {
 			initNextGain(vb);
@@ -162,7 +162,7 @@ public class GainCal implements Logable, IWFCalRoutine2 {
 	}
 
 	private void argTuneAgain(int amp) {
-		// 可优化
+		// Can be optimized
 		// if (average <= -125)
 		// del = -201;
 		// else if (average >= 125)

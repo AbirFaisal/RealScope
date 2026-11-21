@@ -90,7 +90,7 @@ public class DiluteInfoUnitTiny2 implements InfoUnit, IDataMaxMin,
 
 	private void prepare() {
 		if (i_adcbuf == null) {
-			int capacity = 50000;// 拉触发和插值的情况下最多(20+50*2)*5*10 = 6000
+			int capacity = 50000;// when trigger pull and interpolating, at most (20+50*2)*5*10 = 6000
 
 			i_adcbuf = IntBuffer.allocate(capacity);
 			array = i_adcbuf.array();
@@ -114,28 +114,28 @@ public class DiluteInfoUnitTiny2 implements InfoUnit, IDataMaxMin,
 		prepare();
 		this.tbidx = tbidx;
 
-		/** 载入深存储时为无需插值的时基，则后续也不进行插值 */
+		/** When loading deep memory, if the timebase does not need interpolation, no interpolation is done afterwards either */
 		int pixs = li.pixs;
 		screendatalen = li.screendatalen;
 		pg.initPlugInfo(cdi, mt);
-		/** 理论满屏数 <= 屏幕像素宽度，拉伸 */
-		/** 拉伸率 */
+		/** Theoretical full-screen count <= screen pixel width: stretch */
+		/** Stretch ratio */
 		// System.out.println("cpidx: " + cpidx);
 		if (!pg.isPlug()) {
 			System.err.println("err DiluteInfoUnitTiny initLoad !pg.isPlug()");
 			return;
 		}
-		/** 走initLoad的只会是要插值拉触发的情况 */
+		/** Only the case of interpolating for trigger pull goes through initLoad */
 		IntBuffer handlebuf = IntBuffer.wrap(i_adcbuf.array());
 
 		pg.processPlugForInit(handlebuf);
 
-		/** 这里使用满屏点数，假定插值对Dilute不可见 */
+		/** The full-screen point count is used here, assuming interpolation is invisible to Dilute */
 		diluteR.set(pixs, screendatalen);
 		// cpi.computeCenterPointStuff(diluteR);
 		// pg.setPlug(false);
 
-		/** 可以不用此方法而用下面注释的方法，但是此方法可以看到拉触发信息转换到内部的坐标体系是否正确 */
+		/** This method could be replaced by the commented-out one below, but this method lets us see whether the trigger-drag info is converted correctly into the internal coordinate system */
 		// reDilute();
 		int pos = handlebuf.position();
 		int limit = handlebuf.limit();
@@ -149,13 +149,13 @@ public class DiluteInfoUnitTiny2 implements InfoUnit, IDataMaxMin,
 	}
 
 	/**
-	 * 算法特点：采用虚点和像素一一对应 -...+
+	 * Algorithm feature: virtual points and pixels correspond one to one -...+
 	 * 
 	 * @param m
 	 */
 	public void computeMove(int m) {
 		/**
-		 * 参照点距离中心点的新位置
+		 * New position of the reference point relative to the center point
 		 */
 		cpi.addCenterPointOffset(m);
 		cpi.computeCenterPointStuff(diluteR);
@@ -184,13 +184,13 @@ public class DiluteInfoUnitTiny2 implements InfoUnit, IDataMaxMin,
 			pg.translate2ScreenDatalen(screendatalen, handlebuf, cpi);
 		} else {
 			pg.setGap(li.pixs / (double) screendatalen);
-			// 不进行插值，当初始档位不是拉伸的情况下
+			// No interpolation, when the initial scale is not a stretch
 			retrieveBuf(iPos, 0, len, handlebuf);
 		}
 		pos = handlebuf.position();
 		limit = handlebuf.limit();
 
-		/** pos limit先设置limit，防止pos超过原来的limit报错 */
+		/** pos limitset limit first, to prevent pos exceeding the original limit and raising an error */
 		i_adcbuf.limit(limit);
 		i_adcbuf.position(pos);
 		lastHandle(i_adcbuf);
@@ -209,7 +209,7 @@ public class DiluteInfoUnitTiny2 implements InfoUnit, IDataMaxMin,
 	}
 
 	public void retrieveBuf(ByteBuffer buffer, int iPos) {
-		/** len:真实adc点数加左右拉触发点100; beg:深存储数据中htp对应位置 */
+		/** len:real adc point count plus 100 trigger-drag points on each side; beg: position corresponding to htp in the deep memory data */
 		CByteArrayInputStream cba = getDeepMemoryStorage();
 		cba.reset(li.filePointer + iPos);
 		cba.get(buffer);
@@ -288,7 +288,7 @@ public class DiluteInfoUnitTiny2 implements InfoUnit, IDataMaxMin,
 	public int i0, i1;
 
 	/**
-	 * 确定cpidx, rate, cpoff；计算xbloc
+	 * Determine cpidx, rate, cpoff; compute xbloc
 	 */
 	private void reDilute() {
 		MultiplyorAndDivisor md = diluteR;
@@ -297,11 +297,11 @@ public class DiluteInfoUnitTiny2 implements InfoUnit, IDataMaxMin,
 		i1 = p.y;
 		// vl.logln("xbloc: " + cpi.getXBloc());
 		/**
-		 * 可以给initLoad使用，替代reDilute，支持慢扫和拉触发的插值
+		 * Can be used by initLoad, replacing reDilute, supporting interpolation for slow sweep and trigger pull
 		 */
 		int len = i1 - i0;
 		// vl.logln("i0: " + i0 + ", i1:" + i1 + ", len:" + len);
-		/** i0的底限和i1的顶限，合起来就限制了完全超出屏幕外的情况 */
+		/** i0's lower limit and i1's upper limit, together limit the case entirely outside the screen */
 
 		rebuf(i0, len, i_adcbuf);
 	}
@@ -309,7 +309,7 @@ public class DiluteInfoUnitTiny2 implements InfoUnit, IDataMaxMin,
 	private VLog vl = new VLog();
 	public boolean BeyondMax = false, BeyondMin = false;
 
-	/** KNOW 限制adc数据点不越边界，从i_adcbuf存入b_adcbuf */
+	/** KNOW limit adc data points within bounds, storing from i_adcbuf into b_adcbuf */
 	private void lastHandle(IntBuffer i_adcbuf) {
 		int pos = i_adcbuf.position();
 		int limit = i_adcbuf.limit();
@@ -349,7 +349,7 @@ public class DiluteInfoUnitTiny2 implements InfoUnit, IDataMaxMin,
 		MultiplyorAndDivisor md = MultiplyorAndDivisor.getFrom1_2_5TypeDivison(
 				nex, pre);
 
-		/** 反比关系，但仍会出现小数值丢失 */
+		/** Inverse relationship, but fractional values are still lost */
 		/** * preRate:nextRate=nextTb:preTb */
 		MultiplyorAndDivisor nextRate = diluteR.divide_MD(md);
 		/** * nextSdlen:preSdlen=nextTb:preTb */
@@ -363,23 +363,23 @@ public class DiluteInfoUnitTiny2 implements InfoUnit, IDataMaxMin,
 		diluteR = nextRate;
 	}
 
-	/** 拉伸到拉伸 */
+	/** Stretch to stretch */
 	public void tbTranslate(BigDecimal pre, BigDecimal nex, int tbidx) {
 		tbTranslate_(pre, nex, tbidx);
 
-		/** 在这里关闭插值可在其它的插值时基缩放看到不插值的效果 */
+		/** Turning off interpolation here lets you see the non-interpolated effect when zooming other interpolating timebases */
 		// pg.setPlug(false);
 		reDilute();
 	}
 
-	/** 拉伸到压缩 */
+	/** Stretch to compression */
 	public void tbTranslate2C(BigDecimal pre, BigDecimal nex,
 			CompressInfoUnit ciu, int tbidx) {
 		// rate / nex1_1rate= nex1_1/ pre
 		// nex1_1rate == 1
 
 		BigDecimal nex1_1 = diluteR.multiplyByBD(pre);
-		/** 先切换到D1:1的压缩情况，然后再切换到C */
+		/** first switch to the D1:1 compression case, then switch to C */
 		tbTranslate_(pre, nex1_1, tbidx);
 		if (pg.isPlug()) {
 			pg.translate2ScreenDatalenWithoutLoad(screendatalen, cpi);
@@ -396,7 +396,7 @@ public class DiluteInfoUnitTiny2 implements InfoUnit, IDataMaxMin,
 				cpindex++;
 			System.out.println(cpindex + " () " + cpoff);
 		}
-		// cpoff无须传递出去
+		// cpoff need not be passed out
 		ciu.fakeIn(cpindex, 1, li, cpoff);
 		ciu.tbTranslate(nex1_1, nex, tbidx);
 	}
@@ -407,14 +407,14 @@ public class DiluteInfoUnitTiny2 implements InfoUnit, IDataMaxMin,
 	}
 
 	public void fakeIn(int cpidx, int tbidx) {
-		/** fake in的时候要看一开始载入的是否的Dilute */
+		/** fake in time, check whether what was initially loaded is Dilute */
 		prepare();
 
 		screendatalen = li.pixs;
 		cpi.setCenterPointIndex(cpidx);
 		diluteR = new MultiplyorAndDivisor(1, 1);
 
-		/** 若要切换的那个档位未设置，则赋值0 */
+		/** if the scale to switch to is not set, assign 0 */
 		// if (spi_offs[tbidx] == invalidOff)
 		// cpi.setCenterPointOffset(0);// setCenterPointOffset(spi_offs[tbidx]);
 		cpi.setXBloc(0);
@@ -424,11 +424,11 @@ public class DiluteInfoUnitTiny2 implements InfoUnit, IDataMaxMin,
 
 	public void drawView(Graphics g, int xoff, int hh, int wlen, int hortrgidx) {
 		Graphics2D g2d = (Graphics2D) g;
-		int et = StorageView.edgetall;// 括弧高
+		int et = StorageView.edgetall;// bracket height
 		int x0, x1, y0, y1;
 		double r = diluteR.getDoubleValue();
 
-		/** 横线拉到满，括弧相应缩小 */
+		/** Horizontal line stretched to full, brackets shrink accordingly */
 		/** ?? (i0 / (double) li.datalen) - xbloc / (li.datalen * r) */
 		x0 = (int) (wlen
 				* ((i0 / (double) li.datalen) - getXoffset() / (li.datalen * r)) + xoff);
@@ -436,13 +436,13 @@ public class DiluteInfoUnitTiny2 implements InfoUnit, IDataMaxMin,
 
 		g2d.setColor(Color.LIGHT_GRAY);
 
-		/** 括弧 */
-		g2d.drawLine(x0, hh - et, x0, hh + et);// 左括弧
+		/** Brackets */
+		g2d.drawLine(x0, hh - et, x0, hh + et);// left bracket
 		if (x1 != x0) {
-			g2d.drawLine(x1, hh - et, x1, hh + et);// 右括弧
+			g2d.drawLine(x1, hh - et, x1, hh + et);// right bracket
 		}
 
-		/** 横线 */
+		/** Horizontal line */
 		g2d.drawLine(xoff, hh, xoff + wlen, hh);
 
 		/** T */

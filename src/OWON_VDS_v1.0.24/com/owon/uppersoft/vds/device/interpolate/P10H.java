@@ -6,7 +6,7 @@ import com.owon.uppersoft.vds.core.plug.Plug10;
 import com.owon.uppersoft.vds.core.wf.rt.PlugInfo;
 
 /**
- * 使用在最小时基5ns可能因为拉触发遍历界限太小，对大周期波形锁不住，可调整LocateTrgHelper.MAX_PLUGED_LENGTH至较大数值
+ * Used at the minimum timebase of 5ns; because the trigger-pull traversal limit is too small, large-period waveforms may not lock; LocateTrgHelper.MAX_PLUGED_LENGTH can be adjusted to a larger value
  * 
  */
 public class P10H extends TinyPlugHelper {
@@ -20,7 +20,7 @@ public class P10H extends TinyPlugHelper {
 		ByteBuffer p_adc = null;
 
 		switch (fullscreen) {
-		case 400:// 200ns, vds1022从本档位开始拉触发
+		case 400:// 200ns, vds1022 starts trigger pull from this scale
 			p_adc = lineplug(bf, 5);
 
 			pi.linearPlugRate = 5;
@@ -67,7 +67,7 @@ public class P10H extends TinyPlugHelper {
 	public double getPlugRate(int fullscreen) {
 		int sinplugrate = 10;
 		switch (fullscreen) {
-		case 400:// 200ns, vds1022从本档位开始拉触发
+		case 400:// 200ns, vds1022 starts trigger pull from this scale
 			return 5;
 		case 200:// 100ns
 			return sinplugrate;
@@ -99,7 +99,7 @@ public class P10H extends TinyPlugHelper {
 		Plug10.sine_interpolate(dest, src, pluglen, 0, 0);
 		bb.position(0);
 		bb.limit(datalen);
-		/** 这里不限界adc，因为插值的时候需要在int基础上限界了 */
+		/** adc is not clamped here because clamping needs to be done on an int basis during interpolation */
 		// trimADCByteBuffer(bb);
 		return bb;
 	}

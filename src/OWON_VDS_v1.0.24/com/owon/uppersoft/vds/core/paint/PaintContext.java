@@ -7,7 +7,7 @@ import java.awt.Rectangle;
 import com.owon.uppersoft.vds.core.GDefine;
 
 /**
- * PaintContext，绘制上下文
+ * PaintContext, paint context
  * 
  */
 public abstract class PaintContext extends ScreenContext {
@@ -18,7 +18,7 @@ public abstract class PaintContext extends ScreenContext {
 	public int widthtrange = DEFINE_AREA_WIDTH;
 	public int heightrange;
 
-	/** 半屏幕的高宽 */
+	/** Height and width of half the screen */
 	public static final int hwidth = DEFINE_AREA_WIDTH >> 1;
 
 	private int hheight;
@@ -81,12 +81,12 @@ public abstract class PaintContext extends ScreenContext {
 					heightrange);
 		}
 
-		/** 中心点的概念即下一个半空间的起始点 */
+		/** The concept of the center point is the starting point of the next half space */
 		setHcenter(insets.top + hheight);
 		setWcenter(insets.left + hwidth);
 	}
 
-	/** 适当时机设置DataHouse */
+	/** Appropriate time to set DataHouse */
 	private ILazy dh;
 
 	public void setLazy(ILazy dh) {

@@ -18,7 +18,7 @@ public class PrinterPreviewControl {
 	}
 
 	/** i18nkey */
-	/** 配置文件key */
+	/** Config file key */
 	public static final String PRINT_IS_PAINT_W_F_B_G = "Print.isPaintWFBG";
 	public static final String PRINT_IS_VERTICAL = "Print.isVertical";
 	public static final String PRINT_DOWN_EDGE_LENGTH = "Print.downEdgeLength";

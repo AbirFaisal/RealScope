@@ -5,7 +5,7 @@ import java.awt.Container;
 import com.owon.uppersoft.vds.core.aspect.Localizable;
 
 /**
- * LContainer，可设置语言的容器
+ * LContainer, a container whose language can be set
  * 
  * @author Matt
  * 

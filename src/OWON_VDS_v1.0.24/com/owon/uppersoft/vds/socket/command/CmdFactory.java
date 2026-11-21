@@ -92,7 +92,7 @@ public class CmdFactory {
 		return trgck;
 	}
 
-	/** 一级指令树: */
+	/** First-level command tree: */
 	public static final String COMMon = "*";
 	public static final String CHANnel = "CHANnel";
 	public static final String MEASure = "MEASure";

@@ -21,7 +21,7 @@ public class MachineInfo_Tiny extends AbstractMachineInfo {
 
 	protected int[] seperateFreq;
 
-	// 改为基于TinyMachine实现倍频数值
+	// changed to implement the multiplier values based on TinyMachine
 	// protected int[] multiFreq;
 
 	public MachineInfo_Tiny(InputStream is) {
@@ -129,7 +129,7 @@ public class MachineInfo_Tiny extends AbstractMachineInfo {
 		// if (j <= fftup) {
 		// fftSeperateFreq[j] = 1;
 		// } else if (j > fftup) {
-		// /** 用算法实现2,4,8的迭代*10 */
+		// /** implement the 2,4,8 iteration with an algorithm *10 */
 		// int k = j - fftup - 1;
 		// fftSeperateFreq[j] = SeparatePattern[k % spl]
 		// * ((int) Math.pow(10, k / spl));

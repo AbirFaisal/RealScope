@@ -38,7 +38,7 @@ import com.owon.uppersoft.vds.data.LocRectangle;
 import com.owon.uppersoft.vds.util.LocalizeCenter;
 
 /**
- * WaveFormManager，Management waveform
+ * WaveFormManager, Management waveform
  */
 public abstract class WaveFormManager implements Decorate, MeasureWFSupport,
 		Localizable {

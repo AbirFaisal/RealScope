@@ -15,7 +15,7 @@ public interface VTPatchable {
 //	void doSubmit();
 
 	void submiteVoltsense(int chl, VoltsensableTrigger vt);
-	/** 最后一个参数用于指明改变的是哪一个值，只在改变一个值时调用本方法 */
+	/** The last parameter indicates which value changed; this method is only called when a single value changes */
 	void submiteUpper_Lower(int chl, SlopeTrigger st, TrgCheckType trg_slope_type);
 
 	void submitHoldOff(int chl, AbsTrigger at);

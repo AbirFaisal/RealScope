@@ -32,7 +32,7 @@ import com.owon.vds.tiny.tune.TinyTuneFunction;
  * the problem of terminal mobile phone debugging, let us choose to make changes based on a basis,
  * convenient for debugging and porting, but this requires the original project The changes are controllable and do not affect the original release cycle; you need to constantly find a more comprehensive understanding and clear framework, and then reconstruct the corresponding sub-modules
  *
- * 模型一如已经想过的更改，然后从最末端开始，从ui控制和扩展插件开始
+ * The model is changed as already thought through, then start from the very end, beginning with ui control and extension plugins
  */
 public class WorkBenchTiny implements WorkBench {
 

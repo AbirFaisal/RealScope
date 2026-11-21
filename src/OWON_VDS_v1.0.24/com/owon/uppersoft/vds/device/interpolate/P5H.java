@@ -13,7 +13,7 @@ public class P5H extends TinyPlugHelper {
 		ByteBuffer p_adc = null;
 
 		switch (fullscreen) {
-		case 400:// 200ns, vds1022从本档位开始拉触发
+		case 400:// 200ns, vds1022 starts trigger pull from this scale
 			p_adc = lineplug2_5(bf);
 
 			pi.linearPlugRate = 2.5;
@@ -56,13 +56,13 @@ public class P5H extends TinyPlugHelper {
 			break;
 		}
 		/**
-		 * 开启下方注释即可在不拉触发时看到数据中央的内容
+		 * Enable the comment below to see the content in the center of the data when trigger pull is not applied
 		 * 
-		 * 获得可用的全部adc数据段，接下来拉触发
+		 * Get the whole usable adc data segment, then do the trigger pull next
 		 * 
-		 * 单一触发：触发的通道拉多少，其它通道也拉多少
+		 * Single trigger: the other channels are pulled by the same amount as the trigger channel
 		 * 
-		 * 交替触发：各拉各的
+		 * Alternate trigger: each is pulled independently
 		 */
 		return (p_adc);
 	}
@@ -70,7 +70,7 @@ public class P5H extends TinyPlugHelper {
 	public double getPlugRate(int fullscreen) {
 		int sinplugrate = 5;
 		switch (fullscreen) {
-		case 400:// 200ns, vds1022从本档位开始拉触发
+		case 400:// 200ns, vds1022 starts trigger pull from this scale
 			return 2.5;
 		case 200:// 100ns
 			return sinplugrate;
@@ -105,7 +105,7 @@ public class P5H extends TinyPlugHelper {
 		Plug5.sine_interpolate(dest, src, pluglen);
 		bb2.position(0);
 		bb2.limit(datalen);
-		/** 这里不限界adc，因为插值的时候需要在int基础上限界了 */
+		/** adc is not clamped here because clamping needs to be done on an int basis during interpolation */
 		// trimADCByteBuffer(bb2);
 		// DBG.configArray(bb2.array(), bb2.position(), bb2.limit());
 		return bb2;

@@ -7,35 +7,35 @@ import com.owon.uppersoft.vds.core.paint.IPaintOne;
 public interface MachineType {
 
 	/**
-	 * 存盘文件的id
+	 * Saved file's id
 	 * 
 	 * @return
 	 */
 	int saveID();
 
 	/**
-	 * 机型名
+	 * Model name
 	 * 
 	 * @return
 	 */
 	String name();
 
 	/**
-	 * 系列名
+	 * Series name
 	 * 
 	 * @return
 	 */
 	String series();
 
 	/**
-	 * 是否支持带宽限制
+	 * Whether bandwidth limit is supported
 	 * 
 	 * @return
 	 */
 	boolean bandLimit();
 
 	/**
-	 * 根据base，ref以及当前采样率的kHz，计算出浮点型的硬件频率计数
+	 * Based on base, ref and the current sample rate in kHz, compute the floating-point hardware frequency count
 	 * 
 	 * @param base
 	 * @param ref
@@ -45,23 +45,23 @@ public interface MachineType {
 	double doHandleFrequencyCompute(int base, int ref, BigDecimal sampleRate_kHz);
 
 	/**
-	 * 测量时计算出来的频率限界值，一般为带宽的1.2倍，负值可理解为不限制
+	 * Frequency limit computed during measurement, generally 1.2 times the bandwidth; a negative value can be understood as unlimited
 	 * 
 	 * @return
 	 */
 	double getLimitFrequency();
 
 	/**
-	 * 所有通道开启时的最大采样率
+	 * Max sample rate when all channels are enabled
 	 * 
 	 * @return
 	 */
 	int getMaxSampleRateWhenChannelsOn();
 
 	/**
-	 * 所有通道开启时的硬件频率计数上限
+	 * Upper limit of the hardware frequency count when all channels are enabled
 	 * 
-	 * @return 单位Hz
+	 * @return unit Hz
 	 */
 	int getMaxFreqWhenChannelsOn();
 

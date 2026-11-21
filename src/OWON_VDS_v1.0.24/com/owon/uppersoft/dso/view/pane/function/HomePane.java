@@ -64,7 +64,7 @@ public class HomePane extends FunctionPanel {
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				/** 也可把处理放在Pressed或Clicked中，寻找更好的体验 */
+				/** The handling could also be placed in Pressed or Clicked, to look for a better experience */
 				JList jl = (JList) e.getSource();
 				int idx = jl.locationToIndex(e.getPoint());
 				cp.applyContent(hp.getContentID(), ((IContentPage) jl

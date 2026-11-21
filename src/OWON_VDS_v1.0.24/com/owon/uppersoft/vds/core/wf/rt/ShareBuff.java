@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 public class ShareBuff {
-	/** KNOW 用于RT存放接收的所有数据，包括混屏情况下的多次波形，提供给RT的相关运算，在下次接收后被刷新 */
+	/** KNOW Used by RT to hold all received data, including multiple waveforms in mixed-screen mode, provided for RT calculations, and refreshed after the next reception */
 	private int pShareBuf = 0;
 	private byte[] shareBuf = null;
 
@@ -17,18 +17,18 @@ public class ShareBuff {
 	}
 
 	/**
-	 * 重设共享内存大小为chlnum*chllen
+	 * Reset the shared memory size to chlnum*chllen
 	 * 
 	 * @param chlnum
 	 * @param chllen
 	 */
 	public byte[] resetRTBuffer(int chlnum, int chllen, int frmCount) {
-		// 如果只保存screendatalen，则不需要chllen这么大
+		// If only screendatalen is saved, chllen does not need to be this large
 		return resetRTBuffer(chlnum * chllen * frmCount);
 	}
 
 	/**
-	 * 重设共享内存大小为chlnum*chllen
+	 * Reset the shared memory size to chlnum*chllen
 	 * 
 	 * @param chlnum
 	 * @param chllen
@@ -48,7 +48,7 @@ public class ShareBuff {
 	}
 
 	/**
-	 * 拷贝到内部共享内存
+	 * Copy into the internal shared memory
 	 * 
 	 * @param arr2nd
 	 * @param start
@@ -57,7 +57,7 @@ public class ShareBuff {
 	 */
 	public ByteBuffer copy2Buffer(byte[] arr2nd, int start, int len) {
 		System.arraycopy(arr2nd, start, shareBuf, pShareBuf, len);
-		// KNOW 补齐缺的一点
+		// KNOW Pad the one missing point
 		// if (false && (len == 1999 || len == 999)) {
 		// shareBuf[pShareBuf + len] = shareBuf[pShareBuf + len - 1];
 		// len++;
@@ -69,7 +69,7 @@ public class ShareBuff {
 	}
 
 	/**
-	 * 拷贝到内部共享内存，只复制提供数组的initPos开始，limlen长的数据
+	 * Copy into the internal shared memory, copying only the data of length limlen starting at initPos of the provided array
 	 * 
 	 * @param arr2nd
 	 * @param start
@@ -79,7 +79,7 @@ public class ShareBuff {
 	public ByteBuffer copy2Buffer(byte[] arr2nd, int start, int len,
 			int initPos, int limlen) {
 		System.arraycopy(arr2nd, start + initPos, shareBuf, pShareBuf, limlen);
-		// KNOW 补齐缺的一点
+		// KNOW Pad the one missing point
 		// if (false && (len == 1999 || len == 999)) {
 		// shareBuf[pShareBuf + limlen] = shareBuf[pShareBuf + limlen - 1];
 		// limlen++;
@@ -99,7 +99,7 @@ public class ShareBuff {
 	}
 
 	/**
-	 * 重设共享内存大小，暂无使用
+	 * Reset the shared memory size, currently unused
 	 * 
 	 * @param len
 	 */

@@ -9,7 +9,7 @@ import ch.ntb.usb.Usb_Interface_Descriptor;
 import com.owon.uppersoft.vds.util.format.SFormatter;
 
 /**
- * ComparableDevice，可比较的设备
+ * ComparableDevice, a comparable device
  */
 public class ComparableDevice implements IDevice, Comparable<ComparableDevice> {
 

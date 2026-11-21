@@ -4,13 +4,13 @@ import com.owon.uppersoft.dso.model.trigger.AbsTrigger;
 import com.owon.uppersoft.vds.core.trigger.help.EnumNValue;
 
 /**
- * 代理对枚举类的方法调用，并将自身作为泛型的可变参数类，提供给EnumTypeNValue
+ * Delegates method calls to the enum class, and provides itself as the generic variable-parameter class to EnumTypeNValue
  * 
  */
 public interface IenumDelegate {
 
 	/**
-	 * 使用v中的内容设置etv
+	 * Use the contents of v to set etv
 	 * 
 	 * @param v
 	 * @param etv
@@ -18,7 +18,7 @@ public interface IenumDelegate {
 	void fromInt(int v, EnumNValue etv);
 
 	/**
-	 * 返回对应的EnumLabelProvider(也是枚举)实例
+	 * Return the corresponding EnumLabelProvider (also an enum) instance
 	 * 
 	 * @param idx
 	 * @return
@@ -26,7 +26,7 @@ public interface IenumDelegate {
 	EnumLabelProvider value(int idx);
 
 	/**
-	 * 从AbsTrigger中取出由本代理类作为泛型参数类的EnumTypeNValue<? extends IenumDelegate>变量
+	 * Take from AbsTrigger the EnumTypeNValue<? extends IenumDelegate> variable that has this delegate class as its generic parameter class
 	 * 
 	 * @param at
 	 * @return
@@ -34,19 +34,19 @@ public interface IenumDelegate {
 	EnumNValue getObject(AbsTrigger at);
 
 	/**
-	 * 设置一种新的步进速率
+	 * Set a new step rate
 	 * 
 	 * @param idx
 	 */
 	void nextStep(int idx);
 
 	/**
-	 * @return 步进值
+	 * @return step value
 	 */
 	int getStepIndex();
 
 	/**
-	 * 配置文件中的参数项名字
+	 * name of the parameter item in the configuration file
 	 * 
 	 * @return
 	 */

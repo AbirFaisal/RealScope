@@ -4,7 +4,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * IntermediateMouseAdapter，中间适配，可以关闭事件监听
+ * IntermediateMouseAdapter, intermediate adapter, can turn off event listening
  * 
  */
 public class IntermediateMouseAdapter extends MouseAdapter {
@@ -20,7 +20,7 @@ public class IntermediateMouseAdapter extends MouseAdapter {
 
 	public void enableGesture(boolean b) {
 		on = b;
-		/** 当点击后随即被禁用，可以视为未点击成功，不支持拖拽 */
+		/** Once clicked it is immediately disabled and can be regarded as an unsuccessful click; dragging is not supported */
 		pressed = false;
 	}
 

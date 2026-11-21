@@ -29,7 +29,7 @@ public class SymmetrySliderView implements ISliderView {
 
 		this.defaultValue = defaultValue;
 
-		/** KNOW 这里可能需要对max, defaultValue, v三者进行关系限界判断 */
+		/** KNOW A bounds check on the relationship among max, defaultValue and v may be needed here */
 
 		this.max = max;
 		vRange = vertical ? sz.height : sz.width;
@@ -48,7 +48,7 @@ public class SymmetrySliderView implements ISliderView {
 	private int value;
 
 	/**
-	 * 供内部改变值时调用，可以fire监听事件
+	 * Called when the value is changed internally; can fire listener events
 	 * 
 	 * @param v
 	 */
@@ -80,7 +80,7 @@ public class SymmetrySliderView implements ISliderView {
 
 	@Override
 	public void adjustAdd(int del) {
-		int tmp = del >> 2;// 降低对称(垂直)Slider的滑动速度到1/4
+		int tmp = del >> 2;// Reduce the sliding speed of the symmetric (vertical) Slider to 1/4
 		if (Math.abs(tmp) < critical1)
 			tmp = tmp / 2;
 		if (tmp == 0)

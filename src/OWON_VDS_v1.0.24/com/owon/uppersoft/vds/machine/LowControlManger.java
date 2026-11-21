@@ -17,7 +17,7 @@ import com.owon.uppersoft.vds.source.comm.ext.IntObject;
 import com.owon.uppersoft.vds.source.front.PreHandler;
 
 /**
- * LowControlManger，用于从后台系统中获取对应的参数，这些参数是已有保存的设置，不直接通过Submitor调用传递，需要自行获取
+ * LowControlManger: used to obtain the corresponding parameters from the backend system; these parameters are already-saved settings that are not passed directly through Submitor calls and must be obtained separately
  * 
  */
 public abstract class LowControlManger {
@@ -31,9 +31,9 @@ public abstract class LowControlManger {
 	}
 
 	/**
-	 * 之前机型的做法是在达不到更高采样率的档位下，使用更少的满屏点进行插值，达到符合的频谱档位下的点数；
+	 * earlier models, at scales that cannot reach a higher sampling rate, interpolated using fewer full-screen points to reach the point count required for the corresponding spectrum scale;
 	 * 
-	 * 而在tiny中，仅简单地从存储深度中取用满足fft所需的2048个点，不插值做fft，故而频谱档位没有提高；
+	 * whereas in tiny, the 2048 points required for fft are simply taken from the memory depth and fft is done without interpolation, so the spectrum scale is not improved;
 	 * 
 	 * @param tb
 	 * @return
@@ -109,21 +109,21 @@ public abstract class LowControlManger {
 		CBitSet bs = new CBitSet(8);
 		bs.clear();
 
-		// [7] 通道开关
+		// [7] channel on/off
 		bs.set1(ci.isOn(), 7);
 
-		// [56] 耦合方式
+		// [56] coupling mode
 		int cplidx = Tiny_Coupling[ci.getCouplingIdx()];
 		// System.err.println("cplidx: "+cplidx);
 		bs.setN(cplidx, 5, 6);
 
-		// [4] 无
+		// [4] none
 		bs.set1(0, 4);
 
-		// [23] 带宽限制
+		// [23] bandwidth limit
 		bs.setN(0, 2, 3);
 
-		// 1 输入衰减
+		// 1 input attenuation
 
 		int vbIdx = vb;
 		if (vbIdx >= 0 && vbIdx <= DelayAttenuationVBIndex) {
@@ -134,7 +134,7 @@ public abstract class LowControlManger {
 			bs.set1(1, 1);
 		}
 
-		// [0] 无
+		// [0] none
 		bs.set1(0, 0);
 		return (byte) bs.getValue();
 	}
@@ -167,7 +167,7 @@ public abstract class LowControlManger {
 	private int remainHtp = 0;
 
 	/**
-	 * 在时基需要插值拉触发的档位，在插值和拉触发之后，由于htp移动对应的采样点相对屏幕还是有偏差，这里需要增加信息辅助拉触发
+	 * at timebase scales that need interpolation and trigger locating, after interpolation and trigger locating the sampling points corresponding to the htp movement are still offset relative to the screen, so extra information is needed here to assist trigger locating
 	 * 
 	 * @return
 	 */
@@ -198,7 +198,7 @@ public abstract class LowControlManger {
 		WaveFormInfoControl wfic = cm.getWaveFormInfoControl();
 		for (int i = 0; i < chls; i++) {
 			// if (wfic.isWFOn(i))
-			// 各种情况下各通道都发1，解决在单通道开启的情况下，正常模式的强制触发无效的问题
+			// send 1 for every channel in all cases, to fix forced trigger being ineffective in normal mode when only a single channel is on
 			v = v | (1 << i);
 		}
 		return v;
@@ -207,7 +207,7 @@ public abstract class LowControlManger {
 
 	public boolean alsoSupportPeakDetect() {
 		return cm.isPeakDetectWork();
-		// 可不加后续的限制，因为principle / coreContorl.isPeakDetectWork()的实现已经更改为只根据采样率判断
+		// the subsequent restriction can be omitted, because the implementation of principle / coreContorl.isPeakDetectWork() has been changed to judge by sampling rate only
 		// int tb = getTimeControl().getTimebaseIdx();
 		// && (tb >= PreHandler.TB_1_4kFullScreen && tb <
 		// PreHandler.TB_10kFullScreen);

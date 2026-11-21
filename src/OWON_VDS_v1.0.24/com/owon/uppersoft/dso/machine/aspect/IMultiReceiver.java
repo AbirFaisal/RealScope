@@ -8,28 +8,28 @@ import com.owon.uppersoft.vds.core.wf.rt.ChannelsTransportInfo;
 public interface IMultiReceiver {
 
 	/**
-	 * 离线载入数据
+	 * Load data offline
 	 * 
 	 * @param oci
 	 */
 	void receiveOfflineData(OfflineChannelsInfo oci, DataHouse dh, int status);
 
 	/**
-	 * 离线载入数据
+	 * Load data offline
 	 * 
 	 * @param ci
 	 */
 	void receiveOfflineDMData(DMInfo ci, DataHouse dh);
 
 	/**
-	 * 运行时载入数据
+	 * Load data while running
 	 * 
 	 * @param cti
 	 */
 	void receiveRTData(ChannelsTransportInfo cti, DataHouse dh);
 
 	/**
-	 * 运行时载入数据
+	 * Load data while running
 	 * 
 	 * @param ci
 	 */

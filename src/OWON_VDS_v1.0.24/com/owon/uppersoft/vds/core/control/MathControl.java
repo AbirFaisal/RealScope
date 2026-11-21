@@ -26,7 +26,7 @@ public class MathControl {
 	public int probeIndex = 0;
 
 	/**
-	 * KNOW 在重新打开或是重启打开后，自动判断运算波形的电压档位为两个波形中较大档位的小一档，此后随用户调节
+	 * KNOW After reopening or restart-opening, the voltage scale of the math waveform is automatically set to one step smaller than the larger scale of the two waveforms, and thereafter follows user adjustment
 	 */
 	private int mathvbidx = -1;
 
@@ -48,7 +48,7 @@ public class MathControl {
 	}
 
 	public void refreshMathVoltBase(int vb1, int vb2) {
-		// 8;//当要自动调整CHM档位前统一切换到此档位
+		// 8;//when about to auto-adjust the CHM scale, first switch uniformly to this scale
 		setMathvbidx(judgeVBidx(vb1, vb2));
 		// System.out.println(mathvbidx);
 	}
@@ -137,7 +137,7 @@ public class MathControl {
 	}
 
 	public void setMathvbidx(int mathvbidx) {
-		this.mathvbidx = mathvbidx + 24;//电压档位最小值是50mv，数学计算的50mv档位的位置需要加24
+		this.mathvbidx = mathvbidx + 24;//the minimum voltage scale is 50mv; the position of the 50mv scale for math computation needs to add 24
 	}
 
 }

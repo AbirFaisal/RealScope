@@ -1,7 +1,7 @@
 package com.owon.uppersoft.vds.util;
 
 /**
- * StringPool，文本串池，存放通用的文本串
+ * StringPool, string pool, stores common strings
  */
 public interface StringPool {
 	public static final String DOCFileFormatExtension ="docs";

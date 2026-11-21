@@ -8,7 +8,7 @@ import com.owon.uppersoft.vds.data.Range;
 import com.owon.uppersoft.vds.util.format.SFormatter;
 
 /**
- * VirtualPointMode，虚拟点的模式
+ * VirtualPointMode, virtual point mode
  * 
  */
 public abstract class VirtualPoint {
@@ -32,7 +32,7 @@ public abstract class VirtualPoint {
 	}
 
 	/**
-	 * 工厂方法创建实例
+	 * Factory method to create an instance
 	 * 
 	 * @param scr
 	 * @param pix
@@ -44,7 +44,7 @@ public abstract class VirtualPoint {
 			return null;
 		}
 		if (scr % pix == 0) {
-			/** 压缩率为整数 */
+			/** compression ratio is an integer */
 			return new VP1_4(scr / pix);
 		}
 
@@ -84,7 +84,7 @@ public abstract class VirtualPoint {
 	}
 
 	/**
-	 * 用于压缩率很大算不出满屏数的情况下，工厂方法创建实例
+	 * Used when the compression ratio is so large that the full-screen count cannot be computed; factory method to create an instance
 	 * 
 	 * @param rate
 	 * @return
@@ -120,7 +120,7 @@ public abstract class VirtualPoint {
 	}
 
 	/**
-	 * @return 压缩率
+	 * @return compression ratio
 	 */
 	public BigDecimal getRate() {
 		return rate;
@@ -135,14 +135,14 @@ public abstract class VirtualPoint {
 	}
 
 	/**
-	 * @return 压缩率
+	 * @return compression ratio
 	 */
 	public double getCompressRate() {
 		return rate.doubleValue();
 	}
 
 	/**
-	 * 是否满屏压缩
+	 * Whether it is full-screen compression
 	 * 
 	 * @param li
 	 * @return
@@ -152,7 +152,7 @@ public abstract class VirtualPoint {
 	}
 
 	/**
-	 * 正好满足压缩点数的压缩
+	 * Compression that exactly satisfies the compression point count
 	 * 
 	 * @param cba
 	 * @param arr
@@ -164,7 +164,7 @@ public abstract class VirtualPoint {
 			byte[] arr, int abeg, int tbeg);
 
 	/**
-	 * 压缩成保存的数据点，在头尾，不满足压缩点个数的情况
+	 * Compress into the saved data points, at the head and tail, where the compression point count is not satisfied
 	 * 
 	 * @param cba
 	 * @param arr
@@ -178,9 +178,9 @@ public abstract class VirtualPoint {
 			byte[] arr, int abeg, int tbeg, int num, boolean head);
 
 	/**
-	 * 根据正负方向补上剩余像素对应的数据点余量
+	 * Fill in the leftover data points corresponding to the remaining pixels, according to the positive or negative direction
 	 * 
-	 * -...+: neg指向-
+	 * -...+: neg points to -
 	 * 
 	 * @param neg
 	 * @param re
@@ -192,7 +192,7 @@ public abstract class VirtualPoint {
 
 	/**
 	 * @param offset
-	 * @return 虚拟点偏移
+	 * @return virtual point offset
 	 */
 	public int getOffsetBetween(int offset) {
 		return offset / sample * pixel;
@@ -201,8 +201,8 @@ public abstract class VirtualPoint {
 	/**
 	 * 
 	 * @param cpoff
-	 *            像素偏移
-	 * @return 像素偏移对应到的实际数据点偏移
+	 *            pixel offset
+	 * @return actual data point offset corresponding to the pixel offset
 	 */
 	public int getDilute2End(int cpoff) {
 		boolean neg = cpoff < 0;
@@ -220,7 +220,7 @@ public abstract class VirtualPoint {
 	}
 
 	/**
-	 * 根据ap.x提供的x段点数，倒转array中的数据区为正序
+	 * Based on the x-segment point count provided by ap.x, reverse the data area in array into forward order
 	 * 
 	 * @param ap
 	 * @param array
@@ -229,12 +229,12 @@ public abstract class VirtualPoint {
 		int n = point;
 		int x1 = ap.left / n;
 
-		// 改回正序
+		// restore forward order
 		if (x1 > 1) {
 			int i = 0, x0 = 0, j = ap.left - n;
 			x1--;
 			byte[] tmp = new byte[10];
-			// 奇偶皆可
+			// either odd or even works
 			while (x0 < x1) {
 				System.arraycopy(array, i, tmp, 0, n);
 				System.arraycopy(array, j, array, i, n);
@@ -248,7 +248,7 @@ public abstract class VirtualPoint {
 	}
 
 	/**
-	 * 由xyrangeoffset定位的x、y段分隔点的像素位置计算得到x段最左边的像素位置
+	 * Compute the leftmost pixel position of the x segment from the pixel position of the x/y segment split point located by xyrangeoffset
 	 * 
 	 * @param xyrangeoffset
 	 * @param ap

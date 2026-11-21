@@ -67,7 +67,7 @@ public class PackUtil2 {
 		buf[i++] = (byte) prebyte;
 
 		EndianUtil.writeIntL(buf, i, value);
-		/** value 按小尾序放入buf数组后4位 */
+		/** value is put into the last 4 bytes of the buf array in little-endian order */
 		// buf[i++] = (byte) value;
 		// buf[i++] = (byte) (value >> 8);
 		// buf[i++] = (byte) (value >> 16);

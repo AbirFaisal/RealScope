@@ -3,7 +3,7 @@ package com.owon.uppersoft.vds.util.format;
 import com.owon.uppersoft.vds.util.StringPool;
 
 /**
- * SimpleStringFormatter，字符格式
+ * SimpleStringFormatter, string format
  * 
  */
 public class SimpleStringFormatter {
@@ -34,7 +34,7 @@ public class SimpleStringFormatter {
 	}
 
 	/**
-	 * 将值转化为字符串，靠右
+	 * Convert the value to a string, right-aligned
 	 * 
 	 * @param value
 	 * @return
@@ -45,7 +45,7 @@ public class SimpleStringFormatter {
 	}
 
 	/**
-	 * 将值转化为字符串，靠右
+	 * Convert the value to a string, right-aligned
 	 * 
 	 * @param value
 	 * @return
@@ -55,7 +55,7 @@ public class SimpleStringFormatter {
 	}
 
 	/**
-	 * 将值转化为字符串，靠右
+	 * Convert the value to a string, right-aligned
 	 * 
 	 * @param value
 	 * @return
@@ -74,7 +74,7 @@ public class SimpleStringFormatter {
 	}
 
 	/**
-	 * 将值转化为字符串，靠左
+	 * Convert the value to a string, left-aligned
 	 * 
 	 * @param value
 	 * @return
@@ -85,7 +85,7 @@ public class SimpleStringFormatter {
 	}
 
 	/**
-	 * 将值转化为字符串，靠左
+	 * Convert the value to a string, left-aligned
 	 * 
 	 * @param value
 	 * @return
@@ -95,7 +95,7 @@ public class SimpleStringFormatter {
 	}
 
 	/**
-	 * 将值转化为字符串，靠左
+	 * Convert the value to a string, left-aligned
 	 * 
 	 * @param value
 	 * @return

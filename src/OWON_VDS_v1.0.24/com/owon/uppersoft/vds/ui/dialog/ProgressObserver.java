@@ -7,7 +7,7 @@ public interface ProgressObserver {
 
 	void setMaximum(int max);
 
-	// 在smart中用到
+	// Used in smart
 	void setValue(int v);
 
 	void increaseValue(int del);

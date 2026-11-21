@@ -18,84 +18,84 @@ import com.owon.uppersoft.vds.util.PrimaryTypeUtil;
 /**
  * KNOW
  * 
- * CompressInfoUnit算法思路(已遗弃)：
+ * CompressInfoUnit algorithm notes (abandoned):
  * 
- * 对结果集的分析4种情况：2.5(特殊)；压缩不在一屏需要分段压缩；压缩率在一屏一次压缩；压缩在一点
- * 
- * 
- * 
- * 方面1：为支持中心点缩放，需要知道中心点在存储深度中的位置信息，
- * 
- * 这里使用直接持有，只在压缩时计算屏幕左右边界及实际画图像素
- * 
- * 
- * 方面2：总会出现到数据头或是数据尾而造成的屏边空白，需要限位，往往先计算后限位
- * 
- * 但是先计算在大存储深度可能由于数值过大int溢出
- * 
- * 
- * 方面3：始终需要在采样点和像素点之间切换，以保证画图和压缩取点
- * 
- * 
- * 方面4：由方面2，方面3，考虑使用两个假设，
- * 
- * 一是不限数组边界，也就是数组索引看作可以为负，可以超过存储深度，只在压缩的最后一步限制，
- * 
- * 这样节省了缩放和平移中需要考虑的内容
- * 
- * 二是在实际数组索引点基础上建立虚点(理想的虚拟像素点)，即压缩后的虚数组的索引点，同样是不限数组边界的，
- * 
- * 压缩后的数值变小了不会溢出，而且压缩后的虚点索引可以对应到像素点(或虚拟的)上，方便计算缩进即水平触发位置
- * 
- * 
- * 方面5：2.5的情况采用了方面5的压缩率，每两个像素对应一个虚点索引，是对方面4的变通，
- * 
- * 这样产生了可能的平移偏差，无法始终对应到中心点，需要处理
- * 
- * 
- * 方面6：起始点不一定是压缩率的整数倍，中心点也就不一定是。而画图效果希望达到在进入该时基后，
- * 
- * 既和运行时一致(也就是从起始点开始压缩)，
- * 
- * 又在水平移动后保持一致(也就是从哪一点开始按倍压缩这个点就始终对应得上)，
- * 
- * 又基于方面5的设计，考虑截断头尾多余数据，在压缩环节补进数组，在画图环节补进缩进和余点画图处理
- * 
- * (或者对头尾多余数据，进行不足情况下的压缩)
- * 
- * 
- * 方面7：载入衔接，就是初始读入这种状态预先设定了压缩的内容，
- * 
- * 初始读入考虑头尾余点，画图缩进，设置所有状态为有效值，顺利进入平移和缩放
- * 
- * 
- * 方面8：时基切换衔接，考虑到可能从伸缩状态的另一者切换而来，需要类似载入衔接那样设置好所有状态的有效值
- * 
- * 
- * 方面9：每次压缩直接从文件读入，在平移和缩放后确定中心点对应的像素值，扩充到左右边界，重新压缩即可，
- * 
- * 没有实现增量压缩和临时文件缓存整个压缩点集的优化，性能尚可接收
- * 
- * 
- * 方面10：起始点大多为整数倍，未实测也未考虑慢扫
- * 
- * 
- * 特点：数据量大，情况多，虚点、边界、2.5等情况复杂，切换逻辑多
+ * Analysis of the 4 result-set cases: 2.5 (special); compression spans more than one screen and needs segmented compression; compression ratio fits one screen, compressed once; compression into one point
  * 
  * 
  * 
+ * Aspect 1: to support center-point zoom, the position of the center point in the memory depth must be known,
  * 
- * CompressInfoUnit算法思路(更新版)：
- * 
- * 抽象出虚拟像素簇，管理 实际像素点偏移 + 实际像素点压缩 + 实际像素点画图
- * 
- * 使用scpi(即屏幕相对中心的某点对应的数据点索引值)，及辅助的cpoff(scpi同屏幕中心点的偏移)，在时基切换的时候作为参数传递给不同的虚拟像素簇
- * 
- * 当压缩拉伸间切换时，总是将其在内部转换至1:1的情况下的屏幕中心点的scpi传入即可
+ * held directly here; screen left/right boundaries and actual drawing pixels are computed only at compression time
  * 
  * 
+ * Aspect 2: blank screen edges always appear when reaching the data head or tail, so limiting is needed, and usually computing comes before limiting
  * 
- * 后来考虑可以这样改进：一次就在该档位下得到左右可完整压缩的虚拟点个数及对应的实际点边界
+ * but computing first may overflow int for large memory depths
+ * 
+ * 
+ * Aspect 3: switching between sample points and pixel points is always needed, to ensure drawing and compression point picking
+ * 
+ * 
+ * Aspect 4: from aspects 2 and 3, consider using two assumptions,
+ * 
+ * first, array bounds are not limited, i.e. an array index is treated as possibly negative or beyond the memory depth, and is limited only in the last step of compression,
+ * 
+ * which saves what has to be considered in zooming and panning
+ * 
+ * second, build virtual points (ideal virtual pixel points) on top of the actual array index points, i.e. the index points of the compressed virtual array, likewise without array bounds,
+ * 
+ * the compressed values become smaller and do not overflow, and the compressed virtual point index can map to pixel points (or virtual ones), which makes it convenient to compute the indent, i.e. the horizontal trigger position
+ * 
+ * 
+ * Aspect 5: the 2.5 case uses the compression ratio of aspect 5, each two pixels correspond to one virtual point index, a workaround for aspect 4,
+ * 
+ * this produces possible panning deviation, it cannot always map to the center point, and needs handling
+ * 
+ * 
+ * Aspect 6: the start point is not necessarily an integer multiple of the compression ratio, so the center point is not necessarily one either. The drawing effect should, after entering this timebase,
+ * 
+ * be consistent with run time (i.e. compress from the start point),
+ * 
+ * and also stay consistent after horizontal moves (i.e. whichever point compression by the ratio starts from, that point always maps correctly),
+ * 
+ * and, based on the design of aspect 5, consider truncating extra head and tail data, filling it into the array in the compression step, and into the indent and remainder-point drawing in the drawing step
+ * 
+ * (or compress the extra head and tail data when insufficient)
+ * 
+ * 
+ * Aspect 7: load handoff, i.e. the initial read state has the compression content preset,
+ * 
+ * the initial read considers head/tail remainder points and drawing indent, and sets all states to valid values, to smoothly enter panning and zooming
+ * 
+ * 
+ * Aspect 8: timebase switch handoff; considering a switch may come from the other of the stretch/compress states, all states need valid values set like in load handoff
+ * 
+ * 
+ * Aspect 9: each compression reads directly from the file; after panning and zooming, determine the pixel value corresponding to the center point, extend to the left/right boundaries, and compress again,
+ * 
+ * incremental compression and temp file caching of the whole compressed point set were not implemented as optimizations; performance is acceptable
+ * 
+ * 
+ * Aspect 10: start points are mostly integer multiples; not measured, and slow sweep not considered
+ * 
+ * 
+ * Characteristics: large data volume, many cases, complex cases such as virtual points, boundaries and 2.5, and much switching logic
+ * 
+ * 
+ * 
+ * 
+ * CompressInfoUnit algorithm notes (updated version):
+ * 
+ * Abstract out a virtual pixel cluster, managing actual pixel point offset + actual pixel point compression + actual pixel point drawing
+ * 
+ * Use scpi (the data point index corresponding to a point relative to the screen center), and the auxiliary cpoff (offset of scpi from the screen center point), passed as parameters to different virtual pixel clusters on timebase switch
+ * 
+ * When switching between compress and stretch, always convert internally and pass in the scpi of the screen center point for the 1:1 case
+ * 
+ * 
+ * 
+ * Later considered it can be improved like this: at one go, get at this scale the number of virtual points that can be fully compressed on the left and right, and the corresponding actual point boundaries
  * 
  * @author Matt
  * 
@@ -111,15 +111,15 @@ public class CompressInfoUnit implements InfoUnit {
 	private VirtualPointHandler vph;
 	private VirtualPoint vp;
 	/**
-	 * Screen Center Point Index，存储深度中真实数据点索引值，这个数据点是离屏幕中心很接近的
+	 * Screen Center Point Index, the index of the real data point in memory depth; this data point is very close to the screen center
 	 */
 	private int scpi;
 	/**
-	 * cpoff为scpi与中心的像素差，-...+ (-1, 0, 1)，只在平移过程中会出现非零情况
+	 * cpoff is the pixel difference between scpi and the center, -...+ (-1, 0, 1), nonzero only during panning
 	 */
 	private int cpoff;
 	/**
-	 * 屏左起第一个画图点的x坐标
+	 * x coordinate of the first drawing point from the left of the screen
 	 */
 	private int xoffset;
 
@@ -135,12 +135,12 @@ public class CompressInfoUnit implements InfoUnit {
 		halfpixs = li.halfpixs;
 		datalen = li.datalen;
 		filePointer = li.filePointer;
-		// 屏幕起始像素所在的数据点位置
+		// position of the data point at the screen start pixel
 		initPos = li.initPos;
 		screendatalen = li.screendatalen;
 
 		if (li.wasSlowMove) {
-			// 优化传输的情况下仍可用
+			// still usable when transfer is optimized
 			databeg = datalen - li.slowmove;
 		} else {
 			databeg = 0;
@@ -172,22 +172,22 @@ public class CompressInfoUnit implements InfoUnit {
 	public void initLoad(LocInfo lci, DMDataInfo di) {
 		prepare(lci);
 
-		// 在1k的情况下，使用拉触发偏移参数
+		// In the 1k case, use the trigger pull offset parameter
 		initPos += di.pi.pluggedTrgOffset;
 
 		/**
 		 * 
-		 * 满屏数对半分，确定中心点，没法对半分的，也得对半分，这样才能时基缩放
+		 * Split the full-screen count in half to determine the center point; if it cannot be split evenly, split it anyway, so the timebase can zoom
 		 * 
-		 * 在慢扫时，如果是完整dm数据，则只需要更改scrbeg；否则在仅传有效数据的情况下，
+		 * In slow sweep, if the data is full dm data, only scrbeg needs to change; otherwise when only valid data is transferred,
 		 * 
-		 * initPos可能不是屏幕起始点对应的数据点数，需要考虑screendatalen-slowmove，
+		 * initPos may not be the data point count corresponding to the screen start, so screendatalen-slowmove must be considered,
 		 * 
-		 * 或者调整initPos, screendatalen
+		 * or adjust initPos, screendatalen
 		 * 
-		 * 慢扫时，传完整数据
+		 * In slow sweep, transfer the full data
 		 * 
-		 * scpi一开始指向屏幕正中，平移过程中仍然使用最接近屏幕中心的数据点位置
+		 * scpi initially points at the exact screen center; during panning the data point position closest to the screen center is still used
 		 */
 		scpi = initPos + (screendatalen >> 1);
 		vp = VirtualPoint.getInstance(screendatalen, pixs);
@@ -195,7 +195,7 @@ public class CompressInfoUnit implements InfoUnit {
 			logln("VirtualPoint.getInstance(screendatalen, pixs).sample == 0!!!");
 		cpoff = 0;
 		bufcpoff = 0;
-		// 对压缩到一屏的情况另外处理
+		// Handle the case of compressing into one screen separately
 		computeXOffset();
 	}
 
@@ -208,13 +208,13 @@ public class CompressInfoUnit implements InfoUnit {
 	}
 
 	/**
-	 * 水平触发所在位置
+	 * Position of the horizontal trigger
 	 * 
 	 * @param hortrgidx
 	 * @return +...-
 	 */
 	private int getHorTrgPos(int hortrgidx) {
-		// 这里由于压缩到一屏下的平移，cpoff被改变了，所以会出错
+		// here, because of panning under compression to one screen, cpoff was changed, so errors occur
 		int v = -cpoff - vp.getOffsetBetween(scpi - hortrgidx) + bufcpoff;
 		// System.out.println(String.format("%d,%d,%d,%d", scpi, cpoff,
 		// hortrgidx,
@@ -248,7 +248,7 @@ public class CompressInfoUnit implements InfoUnit {
 	}
 
 	/**
-	 * 算法特定： 和像素一一对应，没有屏幕外需画的点，注意在起始点而非结束点画线，增量压缩 -...+
+	 * Algorithm specific: maps one-to-one to pixels, no points to draw off-screen, note that lines are drawn at the start point rather than the end point, incremental compression  -...+
 	 * 
 	 * @param m
 	 */
@@ -266,13 +266,13 @@ public class CompressInfoUnit implements InfoUnit {
 			int pn = vp.pixel;
 			int spl = vp.sample;
 
-			// -...+，正的情况下scpi在变小
+			// -...+, when positive scpi gets smaller
 			scpi = scpi - m / pn * spl;
 			int rem = m % pn;
 			cpoff += rem;
 
 			// System.out.println(String.format("%d, %d", scpi, cpoff));
-			// 再次裁剪cpoff中可压缩的点
+			// trim the compressible points in cpoff again
 			int num, tc = cpoff;
 			if (cpoff > 0) {
 				num = tc / pn;
@@ -307,14 +307,14 @@ public class CompressInfoUnit implements InfoUnit {
 	}
 
 	/**
-	 * 压缩到一屏情况下平移产生的缓冲cpoff余量
+	 * Buffered cpoff margin produced by panning when compressed to one screen
 	 */
 	private int bufcpoff = 0;
 
 	/**
-	 * 算法的前提：画压缩像素始终是从整数倍压缩率的位置开始画起
+	 * Precondition of the algorithm: drawing compressed pixels always starts from a position at an integer multiple of the compression ratio
 	 * 
-	 * 因为可能是中间过程，所以不包含任何重新压缩或填充的过程
+	 * Since this may be an intermediate step, it contains no recompression or filling process
 	 * 
 	 * @param pre
 	 * @param nex
@@ -334,7 +334,7 @@ public class CompressInfoUnit implements InfoUnit {
 
 		if (!PrimaryTypeUtil.canHoldAsInt(dbnexfsl)) {
 			/**
-			 * 满屏数太大，无法用int容纳，此时必然是1:4压缩了，则直接使用其它方式构造vp
+			 * The full-screen count is too large to fit in an int; it must be 1:4 compression then, so use another way to directly construct vp
 			 */
 			vp = VirtualPoint.getInstance(nexrate);
 		} else {
@@ -356,9 +356,9 @@ public class CompressInfoUnit implements InfoUnit {
 			IDiluteInfoUnit diu, int tbidx) {
 		BigDecimal nex1_1 = null;
 		nex1_1 = pre.divide(vp.getRate());
-		/** 先切换到C1:1的压缩情况，然后再切换到D */
+		/** First switch to the C1:1 compression case, then switch to D */
 		tbTranslate_(pre, nex1_1);
-		// TODO 这里即使中转还是会对1:1进行压缩，需要优化
+		// TODO even via this relay, 1:1 is still compressed; needs optimization
 
 		release();
 
@@ -393,19 +393,19 @@ public class CompressInfoUnit implements InfoUnit {
 		Graphics2D g2d = (Graphics2D) g;
 		int et = StorageView.edgetall, et2 = et << 1;
 		int dl = datalen;// hp = halfpixs,
-		/** 存储深度所有点画到了ratelen个像素上 */
+		/** All points of the memory depth are drawn onto ratelen pixels */
 		if (vp == null)
 			logln("ERR:CompressInfoUnit,VirtualPoint==null");
 		int ratelen = (dl / vp.sample);
 		int x0, x1, v, wratelen, wx0, y0, y1;
 
 		g2d.setColor(Color.LIGHT_GRAY);
-		/** 显示方式改为窗口移动而不是T位置移动 */
+		/** The display mode is changed to window movement instead of T position movement */
 		if (isCompress1Screen()) {
-			/** 括弧拉到满，横线相应缩小 */
-			/** 总览区横线长 */
+			/** The bracket is stretched to full, and the horizontal line shrinks accordingly */
+			/** Length of the overview area horizontal line */
 			wratelen = (int) ((double) ratelen * wlen / pixs);
-			/** wx0:横线的起始位置; wlen:括弧的长; */
+			/** wx0: start position of the horizontal line; wlen: length of the bracket; */
 			wx0 = xoff + ((wlen - wratelen) >> 1);
 			g2d.drawLine(wx0, hh, wratelen + wx0, hh);
 
@@ -417,7 +417,7 @@ public class CompressInfoUnit implements InfoUnit {
 				v = xoff + wlen;
 
 			int aw = GDefine.AREA_WIDTH;
-			/** 括弧 */
+			/** Bracket */
 			x0 = v
 					- (int) (((aw >> 1) - Platform.getDataHouse().controlManager
 							.getTimeControl().getHorizontalTriggerPosition())
@@ -436,7 +436,7 @@ public class CompressInfoUnit implements InfoUnit {
 			g2d.drawLine(v - 1, y1 + 2, v - 1, y1);
 			g2d.drawLine(v + 1, y1 + 2, v + 1, y1);
 		} else {
-			/** 横线拉到满，括弧相应缩小 */
+			/** The horizontal line is stretched to full, and the bracket shrinks accordingly */
 			int xw = (int) ((double) (pixs) * wlen / ratelen);
 			x0 = (int) ((double) scpi * wlen / dl - (xw >> 1) + xoff);
 			x1 = x0 + xw;
@@ -445,11 +445,11 @@ public class CompressInfoUnit implements InfoUnit {
 			// dl,
 			// ratelen, pixs, xoff));
 
-			/** 括弧 */
+			/** Bracket */
 			g2d.drawLine(x0, hh - et, x0, hh + et);
 			g2d.drawLine(x1, hh - et, x1, hh + et);
 
-			/** 横线 */
+			/** Horizontal line */
 			x0 = xoff;
 			x1 = xoff + wlen;
 			g2d.drawLine(x0, hh, x1, hh);

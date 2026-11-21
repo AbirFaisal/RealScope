@@ -120,7 +120,7 @@ public class RadioButtonGroup extends JPanel {
 	}
 
 	public void setSelected(int s) {
-		/** 可查找并关掉外部由RADIO_fire出去的调用 */
+		/** Can find and turn off calls fired outside via RADIO_fire */
 		if (s >= 0 && s < radioButtons.length && sel != s) {
 			radioButtons[s].setSelected(true);
 			sel = s;

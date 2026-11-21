@@ -18,7 +18,7 @@ import com.owon.uppersoft.vds.core.trigger.help.EnumNValue;
 import com.owon.uppersoft.vds.util.format.SFormatter;
 
 /**
- * TrgCondition，它只是处理数量级或者叫单位部分，具体值不在内部存放，具体值仅在同一单位下是同一数量级
+ * TrgCondition, it only handles the order of magnitude, or unit part; the concrete value is not stored internally, and concrete values are of the same order of magnitude only within the same unit
  * 
  */
 public enum TrgCondition implements EnumLabelProvider {
@@ -70,7 +70,7 @@ public enum TrgCondition implements EnumLabelProvider {
 		return min;
 	}
 
-	/** 可跟随机型改动而改变内部设置 */
+	/** The internal settings may change with the model */
 	private void setMinistep(int ministep) {
 		this.ministep = ministep;
 	}
@@ -119,7 +119,7 @@ public enum TrgCondition implements EnumLabelProvider {
 		return VALUES[idx];
 	}
 
-	// 加上step可能升级
+	// adding step may move up a level
 	private static final int[] steps = { 1, 10, 100 };
 	public static final int STEP_LENGTH = steps.length;
 
@@ -135,7 +135,7 @@ public enum TrgCondition implements EnumLabelProvider {
 
 	/**
 	 * @param bi
-	 *            以10ns为单位
+	 *            in units of 10ns
 	 * @param etv
 	 */
 	public static void fromInt(int v, EnumNValue etv) {
@@ -163,7 +163,7 @@ public enum TrgCondition implements EnumLabelProvider {
 				return;
 		}
 
-		/** 另一种写法，用于排错 */
+		/** Another way of writing it, for debugging */
 		// if (v < 100) {// 3~99
 		// hs = stg_xx0ns;
 		// hov = v;
@@ -193,14 +193,14 @@ public enum TrgCondition implements EnumLabelProvider {
 		// hov = v / 100000000;
 		// }
 
-		/** 在获取值时根据最小值作限制 */
+		/** Limit by the minimum value when getting the value */
 		if (hov < hs.min)
 			hov = hs.min;
 		etv.set(hs.ordinal(), hov);
 	}
 
 	/**
-	 * 到10ns为单位的数值
+	 * Converted to a value in units of 10ns
 	 * 
 	 * @param hs
 	 * @param vpart
@@ -209,7 +209,7 @@ public enum TrgCondition implements EnumLabelProvider {
 	public static int ToInt(TrgCondition hs, int vpart) {
 		int r = hs.div_10ns * vpart;
 		// System.err.println("static: "+r);
-		/** 另一种写法，用于排错 */
+		/** Another way of writing it, for debugging */
 		// switch (hs) {
 		// default:
 		// case stg_xx0ns:

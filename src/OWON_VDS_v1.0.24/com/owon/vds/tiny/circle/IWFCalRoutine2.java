@@ -18,7 +18,7 @@ public interface IWFCalRoutine2 {
 	void forVB(int vb);
 
 	/**
-	 * Perform a calibration attempt based on waveform data values：
+	 * Perform a calibration attempt based on waveform data values:
 	 * 
 	 * First verify that the waveform data value meets the target, and if so,
 	 * progress to the next item; otherwise, adjust the parameter value and
@@ -31,9 +31,9 @@ public interface IWFCalRoutine2 {
 	int routOut();
 
 	/**
-	 * 用于判断是否还有校正项目
+	 * Used to determine whether there are more calibration items
 	 * 
-	 * @return 负值为校正终结，正值为校正类型id
+	 * @return negative means calibration finished, positive is the calibration type id
 	 */
 	int getRoutCalType();
 

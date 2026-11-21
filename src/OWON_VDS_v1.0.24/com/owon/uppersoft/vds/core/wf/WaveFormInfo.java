@@ -16,7 +16,7 @@ import com.owon.uppersoft.vds.core.wf.dm.DMInfo;
 import com.owon.uppersoft.vds.util.Pref;
 
 /**
- * WaveFormInfo，通道相关信息，无论通道是否打开都保存着唯一的一份，可用于波形判断是否相同
+ * WaveFormInfo, channel-related info; exactly one copy is kept whether or not the channel is on, and can be used to judge whether waveforms are the same
  */
 public abstract class WaveFormInfo {
 	public AverageContainer ac = new AverageContainer();
@@ -47,7 +47,7 @@ public abstract class WaveFormInfo {
 	}
 
 	/**
-	 * DM时通过数据buffer填充画图buffer的内容 // int hcenter, boolean screenMode_3
+	 * DM: fill the drawing buffer from the data buffer // int hcenter, boolean screenMode_3
 	 * 
 	 * @param wf
 	 * @param pc
@@ -57,7 +57,7 @@ public abstract class WaveFormInfo {
 		int hcenter = pc.getHcenter();
 		boolean screenMode_3 = pc.isScreenMode_3();
 
-		/** 使用载入时的零点位置和变化后的零点位置之差以告知波形被移动了 */
+		/** Use the difference between the zero point position at load time and the changed zero point position to indicate that the waveform has been moved */
 		int yb;
 		if (screenMode_3) {
 			yb = hcenter + delpos0;

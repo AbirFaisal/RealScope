@@ -22,7 +22,7 @@ public class VirtualPointHandler implements IDataMaxMin {
 		ByteBuffer org = aa.buf();
 		org.limit(filePointer + dataend);
 		org.position(filePointer);
-		// 通过slice创建ByteBuffer共享数组的子视图
+		// Create a sub-view of the shared array of the ByteBuffer through slice
 		this.buf = org.slice();
 	}
 
@@ -37,37 +37,37 @@ public class VirtualPointHandler implements IDataMaxMin {
 	}
 
 	/**
-	 * 这里需要考虑虚拟点存储是否要反转的问题，因为在从adc到pix的时候针对存储点进行简单的反转
+	 * Here we need to consider whether virtual point storage should be reversed, because a simple reversal is applied to the stored points when going from adc to pix
 	 * 
-	 * 压缩的过程中不会对由scpi和scrctr确定的波形屏幕位置造成移动
+	 * The compression process does not shift the waveform screen position determined by scpi and scrctr
 	 * 
-	 * scpi未必指向屏幕正中，scrctr则指向scpi所在的起始像素位置
+	 * scpi does not necessarily point to the screen center; scrctr points to the starting pixel position where scpi is located
 	 * 
-	 * 针对压缩到一屏甚至是一点的情况
+	 * For the case of compressing to one screen or even one point
 	 * 
 	 * @param vp
-	 *            x:左边数据短的位置，倒装; y:右边数据短的位置，正装
+	 *            x:left side, short data position, reversed order; y: right side, short data position, forward order
 	 * @param scrbeg
-	 *            画图起始像素
+	 *            pixel where drawing starts
 	 * @param scrend
-	 *            画图结束像素
+	 *            pixel where drawing ends
 	 * @param scr4scpi
-	 *            scpi对应的像素点
+	 *            scpi corresponding pixel point
 	 * @param scpi
 	 *            Screen Center Point Index
 	 * @param array
-	 *            保存数组
+	 *            save array
 	 * @param databeg
 	 * @param dataend
 	 * @param ap
-	 *            x:左边数据个数；y:右边数据个数
-	 * @return x和y部分界点对应到屏幕上的像素位置，是x部分的最后一个点的位置
+	 *            x:left data count; y: right data count
+	 * @return x and y part boundary point's pixel position on the screen, which is the position of the last point of the x part
 	 */
 	private int doCompressExecute_fs(VirtualPoint vp, int scrbeg, int scrend,
 			int scrctr, int scpi, byte[] array, int databeg, int dataend,
 			Range ap) {
-		// 一开始设置为无效的值，返回后加到cpoff
-		/** x和y部分界点对应到屏幕上的像素位置，是x部分的最后一个点的位置 */
+		// initially set to an invalid value; after returning, it is added to cpoff
+		/** x and y part boundary point's pixel position on the screen, which is the position of the last point of the x part */
 		int xyrangeoffset = scrbeg - (scrend - scrbeg);
 
 		ap.left = ap.right = -1;
@@ -81,7 +81,7 @@ public class VirtualPointHandler implements IDataMaxMin {
 
 		int del = Math.abs(off) % spl;
 
-		// 兼容si往左往右到达databeg
+		// compatible with si going left or right to reach databeg
 		if (off > 0) {
 			if (del > 0)
 				pi -= pn;
@@ -91,7 +91,7 @@ public class VirtualPointHandler implements IDataMaxMin {
 
 		xyrangeoffset = pi;
 
-		// 兼容压缩在小于一个像素点上
+		// compatible with compression into less than one pixel
 		if (del > len)
 			del = len;
 
@@ -105,7 +105,7 @@ public class VirtualPointHandler implements IDataMaxMin {
 
 		while (si < dataend) {
 			if (si + spl > dataend) {
-				// 发现越界，改为dataend - 1 - si
+				// out of bounds found, change to dataend - 1 - si
 				j += for1_tail(array, si, j, vp, dataend - 1 - si);
 				break;
 			} else if (si + spl == dataend) {
@@ -121,49 +121,49 @@ public class VirtualPointHandler implements IDataMaxMin {
 	}
 
 	/**
-	 * 这里需要考虑虚拟点存储是否要反转的问题，因为在从adc到pix的时候针对存储点进行简单的反转
+	 * Here we need to consider whether virtual point storage should be reversed, because a simple reversal is applied to the stored points when going from adc to pix
 	 * 
-	 * scpi未必指向屏幕正中，scrctr则指向scpi所在的起始像素位置
+	 * scpi does not necessarily point to the screen center; scrctr points to the starting pixel position where scpi is located
 	 * 
 	 * @param vp
-	 *            x:左边数据短的位置，倒装; y:右边数据短的位置，正装
+	 *            x:left side, short data position, reversed order; y: right side, short data position, forward order
 	 * @param scrbeg
-	 *            画图起始像素
+	 *            pixel where drawing starts
 	 * @param scrend
-	 *            画图结束像素
+	 *            pixel where drawing ends
 	 * @param scr4scpi
-	 *            scpi对应的像素点
+	 *            scpi corresponding pixel point
 	 * @param scpi
 	 *            Screen Center Point Index
 	 * @param array
-	 *            保存数组
+	 *            save array
 	 * @param databeg
 	 * @param dataend
 	 * @param ap
-	 *            x:左边数据个数；y:右边数据个数
-	 * @return x和y部分界点对应到屏幕上的像素位置，是x部分的最后一个点的位置
+	 *            x:left data count; y: right data count
+	 * @return x and y part boundary point's pixel position on the screen, which is the position of the last point of the x part
 	 */
 	private int doCompressExecute(VirtualPoint vp, int scrbeg, int scrend,
 			int scrctr, int scpi, byte[] array, int databeg, int dataend,
 			Range ap) {
-		// 一开始设置为无效的值，返回后加到cpoff
-		/** x和y部分界点对应到屏幕上的像素位置，是x部分的最后一个点的位置 */
+		// initially set to an invalid value; after returning, it is added to cpoff
+		/** x and y part boundary point's pixel position on the screen, which is the position of the last point of the x part */
 		int xyrangeoffset = scrbeg - (scrend - scrbeg);
 
 		ap.left = ap.right = -1;
 		int spl = vp.sample, pn = vp.pixel;
 		int si = scpi, j, pi = scrctr;
 
-		// 最先判断的两种情况是scpi上不存在满足范围的数据点
-		// TODO 包含慢扫
+		// The first two cases checked are those where scpi has no data points within range
+		// TODO include slow sweep
 		if (si < databeg) {
-			// 数据点在scpi右侧
-			// 虽然scpi不存在满足范围的数据点，但是scpi所对应的scrctr上，可能是可以压缩得到可画像素点的
+			// data point is to the right of scpi
+			// Although scpi has no data points within range, the scrctr corresponding to scpi may still yield drawable pixel points by compression
 			j = 0;
 			while (pi <= scrend) {
 				si += spl;
 				pi += pn;
-				// 碰到可用数据点时处理并跳出
+				// when a usable data point is encountered, process it and break out
 				if (si > databeg) {
 					xyrangeoffset = pi - pn;
 					// if (pi <= pixs)
@@ -183,7 +183,7 @@ public class VirtualPointHandler implements IDataMaxMin {
 			ap.right = j;
 			return xyrangeoffset;
 		} else if (si >= dataend) {
-			// 数据点在scpi左侧
+			// data point is to the left of scpi
 			j = 0;
 			while (pi >= scrbeg) {
 				pi -= pn;
@@ -216,11 +216,11 @@ public class VirtualPointHandler implements IDataMaxMin {
 			return xyrangeoffset;
 		}
 
-		// scpi上存在满足范围的数据点
+		// scpi has data points that satisfy the range
 		si = scpi;
 		j = 0;
 		pi = scrctr;
-		// 虽然scpi存在满足范围的数据点，但是scpi所对应的scrctr上，可能达不到用于压缩所需的数据点个数
+		// Although scpi has data points within range, the scrctr corresponding to scpi may not reach the data point count needed for compression
 		int del = dataend - si;
 		if (del < spl) {
 			j += for1_tail(array, si, j, vp, del);
@@ -229,7 +229,7 @@ public class VirtualPointHandler implements IDataMaxMin {
 		}
 		pi -= pn;
 		si -= spl;
-		// 先往scpi左侧，在数组x部，存放的数据从xyrangeoffset像素点向左画
+		// First go to the left of scpi, in the x part of the array; the stored data is drawn leftward from the xyrangeoffset pixel
 		while (pi >= scrbeg) {
 			if (si < databeg) {
 				del = databeg - si;
@@ -251,7 +251,7 @@ public class VirtualPointHandler implements IDataMaxMin {
 
 		si = scpi + spl;
 		pi = scrctr + pn;
-		// 往scpi右侧，在数组y部，存放的数据从xyrangeoffset像素点向右画
+		// Go to the right of scpi, in the y part of the array; the stored data is drawn rightward from the xyrangeoffset pixel
 		while (pi <= scrend) {
 			if (si == dataend) {
 				break;
@@ -274,31 +274,31 @@ public class VirtualPointHandler implements IDataMaxMin {
 	}
 
 	/**
-	 * scpi未必指向屏幕正中，scrctr则指向scpi所在的起始像素位置
+	 * scpi does not necessarily point to the screen center; scrctr points to the starting pixel position where scpi is located
 	 * 
 	 * @param vp
-	 *            x:左边数据短的位置，倒装; y:右边数据短的位置，正装
+	 *            x:left side, short data position, reversed order; y: right side, short data position, forward order
 	 * @param scrbeg
-	 *            画图起始像素
+	 *            pixel where drawing starts
 	 * @param scrend
-	 *            画图结束像素
+	 *            pixel where drawing ends
 	 * @param scr4scpi
-	 *            scpi对应的像素点
+	 *            scpi corresponding pixel point
 	 * @param scpi
 	 *            Screen Center Point Index
 	 * @param adcbuf
-	 *            保存缓冲区
+	 *            save buffer
 	 * @param databeg
 	 * @param dataend
 	 * @param ap
-	 *            x:左边数据个数；y:右边数据个数；经过处理，ap被保存了新的分段信息
+	 *            x:left data count; y: right data count; after processing, ap has new segmentation info saved
 	 * @param isCompress1Screen
 	 * @param inverseType
-	 *            反相类型
+	 *            invert type
 	 * @param loadPos0
-	 *            零点位置
-	 * @return x轴左侧起始画图点的像素位置，(为ap的x和y两部分的分界点对应到屏幕上的像素位置，因为x部分是从右向左对应了索引从小到大的，
-	 *         所以是x部分的最后一个点的屏幕位置)
+	 *            zero position
+	 * @return x-axis left start drawing point pixel position, (the pixel position on screen of the boundary between the x and y parts of ap; since the x part maps indexes increasing from right to left,
+	 *         so it is the screen position of the last point of the x part)
 	 */
 	public int compressExecute(VirtualPoint vp, int scrbeg, int scrend,
 			int scr4scpi, int scpi, ByteBuffer adcbuf, int databeg,
@@ -315,9 +315,9 @@ public class VirtualPointHandler implements IDataMaxMin {
 		}
 
 		/**
-		 * KNOW 由于已经是压缩到屏幕上的像素，数据量小，反序消耗的时间可以接受
+		 * KNOW Since these are already pixels compressed onto the screen, the data volume is small, so the time cost of reversing is acceptable
 		 * 
-		 * 在这里处理过后，xy两段就融合为一了
+		 * After processing here, the x and y segments merge into one
 		 */
 		vp.back2NormalXOrder(ap, array);
 
@@ -335,7 +335,7 @@ public class VirtualPointHandler implements IDataMaxMin {
 	public boolean BeyondMax = false, BeyondMin = false;
 
 	/**
-	 * 为反相作调整，同时限制屏幕点的范围
+	 * Adjust for invert, and also limit the range of screen points
 	 * 
 	 * @param position
 	 * @param limit
@@ -345,10 +345,10 @@ public class VirtualPointHandler implements IDataMaxMin {
 	 */
 	private void restrictForReverse(int position, int limit,
 			boolean shouldReverse, int loadPos0, byte[] array) {
-		/** 交给画图屏幕，处理反相问题 */
+		/** Hand over to the drawing screen to handle the invert issue */
 		shouldReverse = false;
 		final byte max = (byte) Max_8bit, min = (byte) Min_8bit;
-		/** 在adc数据取出绘图前进行必要的反相处理 */
+		/** Perform the necessary invert processing before adc data is taken out for drawing */
 		if (shouldReverse) {
 			int elm;
 			BeyondMax = BeyondMin = false;
@@ -392,7 +392,7 @@ public class VirtualPointHandler implements IDataMaxMin {
 	 * @param si
 	 * @param j
 	 * @param v
-	 * @return 数组被填充的字节数
+	 * @return number of bytes the array was filled with
 	 */
 	private int for1(byte[] array, int si, int j, VirtualPoint v) {
 		buf.position(si);
@@ -407,7 +407,7 @@ public class VirtualPointHandler implements IDataMaxMin {
 	 * @param si
 	 * @param j
 	 * @param v
-	 * @return 数组被填充的字节数
+	 * @return number of bytes the array was filled with
 	 */
 	private int for1_tail(byte[] array, int si, int j, VirtualPoint v, int del) {
 		buf.position(si);
@@ -422,7 +422,7 @@ public class VirtualPointHandler implements IDataMaxMin {
 	 * @param si
 	 * @param j
 	 * @param v
-	 * @return 数组被填充的字节数
+	 * @return number of bytes the array was filled with
 	 */
 	private int for1_head(byte[] array, int si, int j, VirtualPoint v, int del) {
 		buf.position(si);

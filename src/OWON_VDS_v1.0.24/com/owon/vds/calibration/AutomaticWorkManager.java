@@ -13,7 +13,7 @@ import com.owon.vds.calibration.stuff.ArgCreator;
 import com.owon.vds.tiny.firm.pref.PrefControl;
 
 /**
- * tiny专用的AutoCalManager
+ * tiny-specific AutoCalManager
  * 
  */
 public abstract class AutomaticWorkManager {
@@ -50,7 +50,7 @@ public abstract class AutomaticWorkManager {
 	private SelCalSetting scs;
 	private PrefControl pc;
 
-	// 子类在调用父类方法后加上sd.shutdown();
+	// After calling the superclass method, subclasses add sd.shutdown();
 	public void onFinished(ProgressObserver sd) {
 		// System.err.println("Calibration done, runner.run");
 		if (cm.isExit())
@@ -63,7 +63,7 @@ public abstract class AutomaticWorkManager {
 
 		resumeSelCalSetting(scs);
 
-		// 使用新的参数将当前的示波器设置应用一次
+		// Apply the current oscilloscope settings once using the new parameters
 		cm.initDetail(sbm);
 		sbm.apply();
 		dh.getWaveFormManager().resumeDraw();

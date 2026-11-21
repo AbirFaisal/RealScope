@@ -84,7 +84,7 @@ public class SlopePane extends TriggerLoaderPane implements ItemListener,
 		}
 
 		listening = true;
-		/** 构造时会计算一次摆率，显示出来 */
+		/** The slew rate is computed once on construction and displayed */
 		updateShakeRate();
 	}
 
@@ -130,7 +130,7 @@ public class SlopePane extends TriggerLoaderPane implements ItemListener,
 				.getWaveForm(getChannel()).wfi.ci;
 		ResourceBundle rb = I18nProvider.bundle();
 
-		// 根据反相情况，更改上下限文本
+		// change the upper/lower limit text according to the inversion state
 		if (ci.isInverse()) {
 			lowlbl.setText(rb.getString("M.Trg.ThredsholdUp") + ": ");
 			uplbl.setText(rb.getString("M.Trg.ThredsholdLow") + ": ");
@@ -143,7 +143,7 @@ public class SlopePane extends TriggerLoaderPane implements ItemListener,
 	}
 
 	/**
-	 * 上下限电压差值 dvolt,时间值 secs, 摆率 srv
+	 * voltage difference between upper and lower limits dvolt, time value secs, slew rate srv
 	 */
 	public void updateShakeRate() {
 		ChannelInfo ci = Platform.getDataHouse().getWaveFormManager()
@@ -151,7 +151,7 @@ public class SlopePane extends TriggerLoaderPane implements ItemListener,
 		int voltbase = ci.getVoltageLabel().getValue();
 		SlopeTrigger st = getTrigger();
 		/** dvolt */
-		/** KNOW 没减去POS0，因为将取上下限差值，算得电压差值 */
+		/** KNOW POS0 is not subtracted, because the difference of the upper and lower limits is taken to get the voltage difference */
 		Thredshold ts = st.getThredshold();
 		double dvolt = (ts.c_getUppest() - ts.c_getLowest())
 				* (double) voltbase / GDefine.PIXELS_PER_DIV;
@@ -189,7 +189,7 @@ public class SlopePane extends TriggerLoaderPane implements ItemListener,
 		final WaveForm wf = wfm.getWaveForm(chl);
 		final ChannelInfo ci = wf.wfi.ci;
 		int defV = ci.getPos0byRange(hr);
-		// 附加反相
+		// append inversion
 		v = ci.getInverseValue(v);
 
 		SymmetrySliderBar.createSymmetrySliderFrame(Platform.getMainWindow()
@@ -202,7 +202,7 @@ public class SlopePane extends TriggerLoaderPane implements ItemListener,
 						v = hr - v;
 						SlopeTrigger st = getTrigger();
 
-						// 过滤反相
+						// filter inversion
 						v = ci.getInverseValue(v);
 						VTPatchable vtp = trgc.getVTPatchable();
 						boolean changed = st.c_setUppestOrLowest(type, v);
@@ -244,7 +244,7 @@ public class SlopePane extends TriggerLoaderPane implements ItemListener,
 	private void updateLowUpOnChange(SlopeTrigger st) {
 		uptxt.setText(getUppestLabel(st));
 		lowtxt.setText(getLowestLabel(st));
-		/** 摆率 */
+		/** Slew rate */
 		updateShakeRate();
 		Platform.getMainWindow().getChartScreen().re_paint();
 	}
@@ -283,7 +283,7 @@ public class SlopePane extends TriggerLoaderPane implements ItemListener,
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				/** 摆率 */
+				/** Slew rate */
 				updateShakeRate();
 			}
 
@@ -302,7 +302,7 @@ public class SlopePane extends TriggerLoaderPane implements ItemListener,
 		uptxt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		uptxt.addMouseListener(new MouseAdapter() {
 
-			/** 阈值目前没有双击到50%的功能 */
+			/** The threshold currently has no double-click-to-50% function */
 			@Override
 			public void mousePressed(MouseEvent e) {
 				int v = getTrigger().c_getUppest();
@@ -351,7 +351,7 @@ public class SlopePane extends TriggerLoaderPane implements ItemListener,
 
 		nrip().add(hovup);
 
-		/** 先设置模型，更新语言，然后添加事件监听器 */
+		/** First set the model, update the language, then add the event listeners */
 		addListeners();
 	}
 

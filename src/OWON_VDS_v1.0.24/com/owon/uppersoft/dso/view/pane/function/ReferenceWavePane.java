@@ -61,7 +61,7 @@ public class ReferenceWavePane extends FunctionPanel {
 			String nstr = pstr.substring(0, offs) + str + pstr.substring(offs);
 			boolean insert = true;
 			final int limit = 14;
-			// 如果插入字符串str后，文档超长，则插入失败
+			// if inserting string str would make the document too long, the insertion fails
 			if (nstr.length() > limit) {
 				insert = false;
 				ResourceBundle rb = I18nProvider.bundle();
@@ -155,9 +155,9 @@ public class ReferenceWavePane extends FunctionPanel {
 
 				ScreenContext pc = cm.paintContext;
 				rwf.resetRTIntBuf(pc.getHcenter(), pc.isScreenMode_3());
-				/** 波形将显示在界面上 */
+				/** the waveform will be shown on the UI */
 				rwc.addtoRAMList(rwf, saveId);
-				/** 波形将以内部文件形式保存下来 */
+				/** the waveform will be saved as an internal file */
 				refwavfile = createRefFile(rwc.getReferfileROM()[saveId]
 						.getPath());
 				rwf.persistRefFile(cm, refwavfile, Platform.getControlApps()
@@ -250,7 +250,7 @@ public class ReferenceWavePane extends FunctionPanel {
 	}
 
 	private void updateUselbl() {
-		/** 判断显示序号对应的硬盘存储位置是否被占用，并提醒 */
+		/** Check whether the disk storage slot for the display index is occupied, and warn */
 		String s = I18nProvider.bundle().getString(
 				"M.Utility.ReferenceWave.NoObject");
 		int idx = showccb.getSelectedIndex();
@@ -263,7 +263,7 @@ public class ReferenceWavePane extends FunctionPanel {
 	}
 
 	private void updateShowccb() {
-		/** 判断显示序号对应对象是否加入内存的显示队列，是则勾选界面显示下拉框 */
+		/** Check whether the object for the display index has been added to the in-memory display queue; if so, tick the UI dropdown */
 		int selIdx = showccb.getSelectedIndex();
 		boolean sel = rwc.isObjShowing(selIdx);
 		showcb.setSelected(sel);
@@ -275,9 +275,9 @@ public class ReferenceWavePane extends FunctionPanel {
 		TimeConfProvider tcp = cc.getTimeConfProvider();
 		VoltageProvider vp = cc.getVoltageProvider();
 
-		/** 更新screen的多条参考信息 */
+		/** Update the multiple reference infos of the screen */
 		rwc.updateAllInfo(tcp, vp, mc);
-		/** 更新DockDialog的单条参考信息 */
+		/** Update the single reference info of the DockDialog */
 		boolean show = showcb.isSelected();
 		infogp.setVisible(show);
 		if (show) {
@@ -319,7 +319,7 @@ public class ReferenceWavePane extends FunctionPanel {
 			rwf.resetRTIntBuf(pc.getHcenter(), pc.isScreenMode_3());
 			rwc.addtoRAMList(rwf, showIdx);
 		} else {
-			// TODO 目标没有文件
+			// TODO the target has no file
 		}
 	}
 

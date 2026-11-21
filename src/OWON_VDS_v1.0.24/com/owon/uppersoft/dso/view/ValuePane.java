@@ -79,7 +79,7 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 	private String getMeasureType(int mtidx, ResourceBundle rb) {
 		String mt = MsgKeyPrefix + MeasureT.VALUES[mtidx];
 		String type = rb.getString(mt);
-		// 限定字符
+		// Restrict characters
 		type = SFormatter.getRestrictSubString(type, 12);
 		return type;
 	}
@@ -100,7 +100,7 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 			g2d.drawImage(addbtnImg, 15, 0, null);
 		}
 
-		/** 列标题显示 */
+		/** Column title display */
 		g.drawString("", cox, coy);
 		ResourceBundle rb = I18nProvider.bundle();
 		for (Integer mtidx : measMod.MTlinked) {
@@ -110,9 +110,9 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 			else
 				cox += COLGAP;
 			if (isCHon)
-				g.drawString(type, cox, coy);// MeasureT列名
+				g.drawString(type, cox, coy);// MeasureT column name
 		}
-		/** 延迟标题 */
+		/** Delay title */
 		if (measMod.getOthLinkedCount() > 0) {
 			int x;
 			if (isCHon)
@@ -122,7 +122,7 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 			g.drawString(rb.getString("AutoMeasure.Delay"), x, coy);
 		}
 
-		/** 测量值 */
+		/** Measurement value */
 		g.setColor(Color.white);
 		coy += ROWGAP;
 
@@ -155,7 +155,7 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 			}
 		}
 
-		/** 延迟的值 */
+		/** Delay value */
 		if (measMod.getOthLinkedCount() > 0) {
 			int x, y;
 			if (isCHon)
@@ -221,14 +221,14 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 	public void mouseDragged(MouseEvent e) {
 		if (measMod.isCHlinkEmpty() || measMod.isMTlinkEmpty())
 			return;
-		/* 设置列删除状态 */
+		/* Set the column deletion state */
 		int py = e.getY();
 		boolean isOut = py < 0 || py > getHeight();
 		if (dragDelete != isOut) {
 			dragDelete = isOut;
 			repaint();
 		}
-		/* 列交换效果1 */
+		/* Column swap effect 11 */
 		int tar = getPointColumn(e.getX());
 		if (tar != dragTarget) {
 			cm.measMod.moveMtElem(selCol, tar);
@@ -236,7 +236,7 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 			// System.out.println("selCol:" + selCol + "target:" + dragTarget);
 			repaint();
 		}
-		/* 列拖拽效果2 */
+		/* Column drag effect 22 */
 		moveGlassPaneAmongValuePane(e);
 	}
 
@@ -256,17 +256,17 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 			return;
 		int x = e.getX();
 		selCol = getPointColumn(x);
-		repaint();// 选中效果1
-		initGlassPane();// 选中效果2
+		repaint();// Selection effect 11
+		initGlassPane();// Selection effect 22
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		/* 移动 */
+		/* Move */
 		// int x = e.getX();
 		// int insCol = getPointColumn(x);
 		// controlManager.measMod.moveMTlinkedElem(selCol, insCol);
-		/* 删除 */
+		/* Delete */
 		if (dragDelete) {
 			cm.measMod.removeSelCol(selCol);
 			cm.pcs.firePropertyChange(
@@ -314,7 +314,7 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 	}
 
 	private void releaseSelect() {
-		/* 关闭选中效果 */
+		/* Turn off the selection effect */
 		releaseGlassPane();
 		selCol = dragTarget = -1;
 	}
@@ -324,7 +324,7 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 
 	private void initGlassPane() {
 		gp = Platform.getMainWindow().getGlassPane();
-		// 选中效果2
+		// Selection effect 22
 		if (isSelFrameOn && selCol >= 0) {
 			Point l = getselColScreenLocation(selCol);
 			final int w = COLGAP, h = getHeight();// controlManager.measMod.getRowCount()
@@ -335,13 +335,13 @@ public class ValuePane extends JPanel implements PropertyChangeListener,
 	}
 
 	private void moveGlassPaneAmongValuePane(MouseEvent e) {
-		// 拖拽效果2
+		// Drag effect 22
 		if (isSelFrameOn) {
 			if (seljf == null)
 				return;
 			int x = e.getX() - (seljf.getWidth() >> 1);
 			int y = seljf.getY();
-			// 拖拽过程效果，TODO 需优化bl的获取
+			// Drag process effect, TODO needs optimization of how bl is obtained
 			int bl = 0// Platform.getMainWindow().getFrame().getLocation().x
 			+ HalfCOLGAP;
 			int br = bl + measMod.getColumnCount() * COLGAP - seljf.getWidth();

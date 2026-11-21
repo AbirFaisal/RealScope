@@ -15,7 +15,7 @@ public class SampleControl implements IPatchable, IOrgan, ISampleControl {
 			new LObject("M.Sample.Average") };
 	public final String[] SAMPleMode = { "SAMPle", "PEAK", "AVERage" };
 
-	// 平均值采集，开关，限值，存值
+	// average-value acquisition: on/off, limit, stored value
 	public static int MinAverageSampleTimes = 1, MaxAverageSampleTimes = 128;
 
 	@Override

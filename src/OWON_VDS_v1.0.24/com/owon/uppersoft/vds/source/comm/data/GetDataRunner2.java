@@ -68,11 +68,11 @@ public class GetDataRunner2 extends AbsGetDataRunner {
 	 * @param dh
 	 * @param ism
 	 * @param ph
-	 *            为空则不处理
+	 *            if null, it is not processed
 	 * @param dataReceiveListener
-	 *            为空则不处理
+	 *            if null, it is not processed
 	 * @param tm
-	 *            为空则不处理
+	 *            if null, it is not processed
 	 */
 	public GetDataRunner2(DataHouse dh, final ICommunicateManager ism,
 			AbsPreHandler ph, DataReceiveHandler dataReceiveListener,
@@ -115,7 +115,7 @@ public class GetDataRunner2 extends AbsGetDataRunner {
 		if (si.checkStatusForGetDataT(ci, ism)) {
 
 			if (ci.fetchUntilData) {
-				// 在单次触发且有触发的情况下，持续尝试读取数据，跳过每次的EBUSY情况，直到读到数据
+				// in the case of single trigger with a trigger present, keep trying to read data, skipping each EBUSY, until data is read
 				do {
 					routineGetData(GETDATA_ADD);
 				} while (ci.getFrameCount() <= 0);
@@ -123,17 +123,17 @@ public class GetDataRunner2 extends AbsGetDataRunner {
 			} else
 				routineGetData(GETDATA_ADD);
 
-			// 获取多种数据存入 ci(单纯拿数据)，接收复合指令数据 return 数据中的通道信息（下位机根据收到的指令 返回相应数据）
+			// fetch multiple kinds of data into ci (pure data fetch), receive the composite command data, return the channel info in the data (the device returns the corresponding data according to the received command)
 			boolean ffton = cm.getFFTControl().isFFTon();
 			if (ci.status == ChannelsTransportInfo.Status_RT_OK
 					&& ci.getFrameCount() > 0) {
 				vl.logln("ok");
 				handleGroundNInverse(ci);
 				if (ffton) {
-					/** 在fft时，保持和原来一样的时基档位(分频系数)，则时域波形的画图不变，频域fft计算取出2048个点 */
+					/** during fft, keeping the timebase scale (divider coefficient) the same as before leaves the time-domain waveform drawing unchanged, and the frequency-domain fft calculation takes out 2048 points */
 					if (ph != null)
 						ph.preLoadReceiveData(ci);
-					// 避免在100ms以上档位fft碰上慢扫的一些限制
+					// avoid some slow sweep limitations when fft is used at scales of 100ms and above
 					ci.slowMove = 0;
 				} else {
 					if (ph != null)
@@ -143,7 +143,7 @@ public class GetDataRunner2 extends AbsGetDataRunner {
 
 				dh.receiveRTData(ci);
 
-				/** 反馈中间值给硬件频率计 */
+				/** feed the intermediate value back to the hardware frequency counter */
 				vf.syncChannelsMiddle(ism, dh.getWaveFormManager()
 						.on_wf_Iterator());
 				if (dataReceiveListener != null)
@@ -152,7 +152,7 @@ public class GetDataRunner2 extends AbsGetDataRunner {
 			} else {
 				vl.logln("bad");
 			}
-			// 载入波形datahouse 画图用的
+			// load the waveform into datahouse, used for drawing
 		}
 		return ci;
 	}
@@ -238,7 +238,7 @@ public class GetDataRunner2 extends AbsGetDataRunner {
 			si.onDataReceive(ci);
 
 			ci.reset('T');
-			/** 待到真的有通道数据时，再清空上一幅，这样在深存储的时候才始终有上次的内容 */
+			/** clear the previous frame only when there is actually channel data, so that the previous content is always available in deep memory */
 			ci.gatherEnoughChannelDataInfos(chlnum);
 
 			ci.setDataComplete(1);
@@ -310,7 +310,7 @@ public class GetDataRunner2 extends AbsGetDataRunner {
 
 	protected void acceptChannelDataT2(ChannelDataInfo_Tiny cdi, int idx,
 			ByteBuffer alldmbuf, ByteBuffer trgbuf) throws USBException {
-		/** 这里对alldmbuf中取值必须使用get(index)，不破坏当前的position位置 */
+		/** values from alldmbuf must be read here with get(index), so the current position is not disturbed */
 		int ptr = 0;
 		int v = alldmbuf.get(ptr);
 		ptr++;
@@ -318,7 +318,7 @@ public class GetDataRunner2 extends AbsGetDataRunner {
 
 		cdi.chl = v;
 		vl.logln("cdi.chl: " + v);
-		/** 更新有效的触发状态 */
+		/** update the valid trigger status */
 		boolean trg_d = cdi.trg_d = ((ci.channel_trg_status >>> v & 1) != 0);
 
 		int time_sum = alldmbuf.getInt(ptr);
@@ -338,7 +338,7 @@ public class GetDataRunner2 extends AbsGetDataRunner {
 			// 10ns * time_sum / peroid_num * 10E8
 			vl.logln("freq: " + freq);
 		}
-		/** 当有触发时硬件频率计数值才有效 */
+		/** the hardware frequency counter value is valid only when there is a trigger */
 		cdi.setFreq(freq);
 
 		ptr += 4;
@@ -351,7 +351,7 @@ public class GetDataRunner2 extends AbsGetDataRunner {
 		// vl.logByteBuffer(bb);
 		// cdi.setUniqueAdcbuf(alldmbuf);
 		cdi.resetPi();
-		/** 原本把raw也放在uniquebuf里，后来改动为不影响原来的，只是多保存在rawbuf里 */
+		/** originally raw was also put in uniquebuf; later changed so as not to affect the original, and it is just additionally saved in rawbuf */
 		cdi.setAllDMBuffer(alldmbuf);
 
 		echo_vl.logln("screen center data:");

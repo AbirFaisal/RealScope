@@ -6,7 +6,7 @@ import com.owon.uppersoft.vds.core.comm.IRuntime;
 
 public class DefaultRuntime implements IRuntime {
 	private boolean exit = false;
-	/** 自动获取状态 */
+	/** Automatically get state */
 	public static final int RT_STOP = 0;
 	public static final int RT_AUTOGET = 1;
 	private int rtStatus = RT_STOP;
@@ -26,7 +26,7 @@ public class DefaultRuntime implements IRuntime {
 		return exit;
 	}
 
-	/** 先实现运行状态下的 */
+	/** Implement the running-state case first */
 	public boolean isRuntime() {
 		return isKeepGet() && !exit;
 	}
@@ -47,7 +47,7 @@ public class DefaultRuntime implements IRuntime {
 			rtStatus = RT_STOP;
 		}
 
-		/** 判断真正停下，否则不允许操作时基combobox或滚轮快捷 */
+		/** Determine that it has really stopped, otherwise do not allow timebase combobox or mouse wheel shortcut operations */
 		boolean recentStop = !b;
 		this.recentRunThenStop = recentStop;
 		cm.changeKeepget(b);

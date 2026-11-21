@@ -9,7 +9,7 @@ import com.owon.uppersoft.vds.device.interpolate.dynamic.SineTables;
 
 /**
  * 
- * 最右边为在插值后屏幕内1k点基础上增加的点数=（50+50）*插值倍数
+ * the rightmost is the number of points added on top of the 1k points within the screen after interpolation = (50+50) * interpolation factor
  * 
  * 5ns 25(100MS/s) 40 4000
  * 
@@ -41,7 +41,7 @@ public class DynamicPlugHelper50M extends TinyPlugHelper {
 		ByteBuffer bb = bbs[chl];
 		if (bb == null) {
 			bb = ByteBuffer.allocate(6000);
-			// dm: (25+50+50)*40+1000预留; trg:100*100
+			// dm: (25+50+50)*40+1000reserved; trg:100*100
 		}
 
 		// Arrays.fill(bb.array(), (byte)0);
@@ -63,7 +63,7 @@ public class DynamicPlugHelper50M extends TinyPlugHelper {
 		// log(arr[i] + ", ");}
 		// logln("");
 		// logln(l - p);
-		/** 还有问题，判断是否线性的处理先关闭 */
+		/** there are still problems; the linearity check is disabled for now */
 		// int percentage = DynamicPlugUtil.arith_interp_mode(arr,
 		// p, l);
 		// logln("percentage: " + percentage);
@@ -84,7 +84,7 @@ public class DynamicPlugHelper50M extends TinyPlugHelper {
 			return doLineJob(fullscreen, plugrate, rtbuf, pi);
 		}
 		DynamicPlugUtil.sinc_interps(arr, p, l, out, plugrate, sincTable);
-		// 100ns时，5倍插值效果
+		// 100nseffect of 5x interpolation at 100ns
 		// Plug5.sine_interpolate(out, arr, len);
 		p_adc = ByteBuffer.wrap(out, 0, uselen);
 		pi.sinePlugRate = plugrate;
@@ -104,7 +104,7 @@ public class DynamicPlugHelper50M extends TinyPlugHelper {
 	public double getPlugRate(int fullscreen) {
 		// return GDefine.AREA_WIDTH / (double)fullscreen;
 		switch (fullscreen) {
-		case 500:// 100ns, vds2052从本档位开始拉触发
+		case 500:// 100ns, vds2052vds2052 starts trigger locating from this scale
 			return 2;
 		case 250:// 50ns
 			return 4;

@@ -18,7 +18,7 @@ import com.owon.uppersoft.vds.core.GDefine;
 import com.owon.uppersoft.vds.core.aspect.Localizable;
 
 /**
- * StorageView，存储试图
+ * StorageView, storage view
  * 
  */
 public class StorageView extends JPanel implements Localizable {
@@ -58,7 +58,7 @@ public class StorageView extends JPanel implements Localizable {
 		// super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		int w = getWidth(), h = getHeight(), hh = h >> 1, hw = w >> 1;
-		/** wlen 代表存储深度的线长度 */
+		/** wlen wlen is the line length representing the storage depth */
 		int wlen = w - gap2, wb = w - xb2, hb = h - yb2;
 
 		Shape tmp = g2d.getClip();
@@ -75,22 +75,22 @@ public class StorageView extends JPanel implements Localizable {
 		boolean dmDraw = dh.isDMLoad() && dh.isDataComplete();
 
 		if (dmDraw && !cm.isKeepGet()) {
-			// TODO 匹配机型后重载DM文件会报空,因dmDraw设true时,virtualPoint还没建对象
-			// KNOW DM初始画图不对
+			// TODO After matching the model, reloading a DM file reports null, because the object of virtualPoint has not been created yet when dmDraw is set to true
+			// KNOW DM initial drawing is wrong
 			cm.getWaveFormInfoControl().getWaveFormInfoForDM()
 					.drawView_dm(g, gap, hh, wlen, tc.getHorTrgIdx());
 		} else {
-			/** 运行时T位置随移动而改变，括弧随时基而改变 */
+			/** While running, the T position changes with movement, and the brackets change with the timebase */
 			g2d.setColor(Color.LIGHT_GRAY);
 			int dl = dmc.getDeepDataLen();
-			/** v_fsl 代表屏幕内波形长度，运行状态下即两括号之间的距离 */
+			/** v_fsl v_fsl is the waveform length within the screen, i.e. the distance between the two brackets when running */
 			int v_fsl = tc.getRTfullScreenNumber() * wlen / dl;
 			// System.err.println(controlManager.timeControl.rtfls + ", " + wlen + ", "
 			// + dl);
 
 			/**
-			 * xo:左括号相对于原点在左端坐标系的值，用于画左括号。
-			 * 波形全长扣去屏幕内波形长，差值的一半即是屏幕左界以外波形长，因总览区波形跳过gap距离开始画，故还需加gap才是左括号xo值
+			 * xo:value of the left bracket relative to the origin in the left-end coordinate system, used to draw the left bracket.
+			 * Half of the difference between the full waveform length and the on-screen waveform length is the waveform length beyond the left edge of the screen; since the overview waveform starts drawing after skipping the gap distance, gap must also be added to get the xo value of the left bracket
 			 */
 			int x0 = ((wlen - v_fsl) >> 1) + gap;
 			if (cm.getCoreControl().isRunMode_slowMove()) {
@@ -98,30 +98,30 @@ public class StorageView extends JPanel implements Localizable {
 			}
 			int x1 = x0 + v_fsl;
 
-			/** 括弧 */
+			/** Brackets */
 			g2d.drawLine(x0, hh - edgetall, x0, hh + edgetall);
 			g2d.drawLine(x1, hh - edgetall, x1, hh + edgetall);
 
-			/** 横线 */
+			/** Horizontal line */
 			g2d.drawLine(gap, hh, gap + wlen, hh);
 
 			/** T */
 			int hti = tc.getHorizontalTriggerPosition();
 			// System.err.println(hti + ", " + (wlen>>1));
 			/**
-			 * tp:总览图的水平触发位置，原点(0,0)在左端，用于画图。 hti * v_fsl /
-			 * Define.def.AREA_WIDTH:水平触发位置，原点在中央，画图须转成左端坐标系
+			 * tp:horizontal trigger position of the overview, with the origin (0,0) at the left end, used for drawing. hti * v_fsl /
+			 * Define.def.AREA_WIDTH:horizontal trigger position, with the origin at the center; must be converted to the left-end coordinate system for drawing
 			 */
 			int tp = (int) (gap + (wlen >> 1) - (double) hti
 					* (v_fsl > 0 ? v_fsl : 1) / GDefine.AREA_WIDTH);
 
-			/** 限制总览图的水平触发位置在 波形全长wlen范围内 */
+			/** Limit the horizontal trigger position of the overview to within the full waveform length wlen */
 			if (tp <= gap)
 				tp = gap;
 			else if (tp >= gap + wlen)
 				tp = gap + wlen;
 			g2d.setColor(Color.MAGENTA);
-			/** 画出总览图的水平触发位置 */
+			/** Draw the horizontal trigger position of the overview */
 			int y0 = hh - edgetall, y1 = hh - (edgetall << 1);
 			g2d.drawLine(tp, y0, tp, y1);
 			g2d.drawLine(tp - 1, y1 + 2, tp - 1, y1);

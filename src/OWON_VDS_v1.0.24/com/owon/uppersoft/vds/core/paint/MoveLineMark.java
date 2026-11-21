@@ -14,8 +14,8 @@ import com.owon.uppersoft.vds.core.GDefine;
 import com.owon.uppersoft.vds.core.aspect.Decorate;
 
 /**
- * MoveLineMark，移动的线形光标。 鼠标事件监听器各自监听界面事件，故在明显不需监听的情况下条件跳转来避免多余处理。
- * 光标分水平和垂直，处理代码被统一化了，需分离处理的时候，只需拷贝代码，同时将判断方法替换掉就可以了。
+ * MoveLineMark, a movable line cursor. Mouse event listeners each listen to UI events, so conditional jumps avoid redundant processing where listening is clearly unnecessary.
+ * Cursors are horizontal or vertical, and the handling code has been unified; to handle them separately, just copy the code and replace the judging method.
  * 
  * @deprecated
  */

@@ -48,7 +48,7 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 		return channelMode;
 	}
 
-	/** TODO 考虑是否单一触发也每个通道都有各自的TriggerSet */
+	/** TODO consider whether in single trigger each channel should also have its own TriggerSet */
 	public TriggerSet singleTriggerSet;
 
 	// public int curTrgStatus;
@@ -106,7 +106,7 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 	public TriggerSet getTriggerSetOrNull(int idx) {
 		if (isSingleTrg()) {
 			if (singleTriggerSet.getChannel() != idx) {
-				/** 单触时，判断保护，检测是否是同一通道 */
+				/** In single trigger, protection check, detect whether it is the same channel */
 				// System.err.println("TriggerContro >getTriggerSet
 				// >(singleTrgChannel != idx)");
 				return null;
@@ -141,7 +141,7 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 
 	public TriggerControl(int channelsNumber, TriggerExtendDelegate ted) {
 		this.ted = ted;
-		/** 内部使用channelsNumber的值指代ext的序号，在控件上方便对应，指令中另行设置 */
+		/** Internally the value of channelsNumber is used to refer to the ext index, for easy correspondence in the controls; it is set separately in the commands */
 		EXTTRG_CHANNEL = channelsNumber;
 
 		trgchs = new TriggerSet[channelsNumber];
@@ -152,7 +152,7 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 		int channelsNumber = getChannelsNumber();
 		boolean video = false;
 
-		/** 载入的时候也限制了只有一个视频 */
+		/** Only one video is also enforced on load */
 		for (int i = 0; i < channelsNumber; i++) {
 			String pre = "CH" + (i + 1) + ".";
 			int mode = p.loadInt(pre + "trgMode");
@@ -176,7 +176,7 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 		channelMode = p.loadInt("triggerChannelMode");
 
 		if (!isAlternativeSupport()) {
-			// 触发模式强制设置
+			// force the trigger mode setting
 			channelMode = TriggerDefine.TrgModeSingleIndex;
 		}
 
@@ -309,12 +309,12 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 
 		ts.setChannel(sel);
 
-		/** 这里可能出现由原来的ext切换过来的时候找不到对应的触发电平 */
+		/** When switching from the original ext, the corresponding trigger level may not be found here */
 		if (!isExtTrg(oldchl)) {
 			ted.handleSingleTrgChannelLevelTransport(oldchl, sel, ts, this);
 		} else {
 			ts.edge.c_setVoltsenseWithoutSync(oldVoltsenses[sel]);
-			// 切triggerOut
+			// switch to triggerOut
 			// ted.handleSingleTrgChannelReturnFromExt();
 		}
 	}
@@ -324,7 +324,7 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 	}
 
 	/**
-	 * 判断是否单一触发
+	 * Determine whether it is single trigger
 	 * 
 	 * @return
 	 */
@@ -348,17 +348,17 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 	}
 
 	/**
-	 * 尝试单次触发
+	 * Try single-shot trigger
 	 */
 	public void trySweepOnce() {
-		// 忽略非单触的情况
+		// ignore the non-single-trigger case
 		if (!isSingleTrg())
 			return;
 
-		// 忽略已经单次的情况
+		// ignore the case that is already single-shot
 		// if (singleTriggerSet.isSweepOnce())
 		// return;
-		// 设置单次，发送指令
+		// set single-shot, send the command
 		singleTriggerSet.trySweepOnce(this);
 		doSubmit();
 
@@ -366,7 +366,7 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 	}
 
 	/**
-	 * 在单一触发情况下，判断是否单次触发
+	 * In single trigger, determine whether it is single-shot trigger
 	 * 
 	 * @return
 	 */
@@ -376,7 +376,7 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 	}
 
 	/**
-	 * 在单一触发情况下，判断是否正常触发
+	 * In single trigger, determine whether it is normal trigger
 	 * 
 	 * @return
 	 */
@@ -386,7 +386,7 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 	}
 
 	/**
-	 * 在单一触发情况下，判断是否自动触发
+	 * In single trigger, determine whether it is auto trigger
 	 * 
 	 * @return
 	 */
@@ -398,7 +398,7 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 	public boolean resumeAuto() {
 		if (isSweepOnce()) {
 			singleTriggerSet.resumeAuto(this);
-			// 因为当前是在停止的情况，所以直接添加指令任务
+			// Because the current state is stopped, add the command task directly
 			doSubmit();
 			return true;
 		}
@@ -412,7 +412,7 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 	public void nextSingleChannel() {
 		int turns = getChannelsNumber();
 		if (singleTriggerSet.isCurrentTrigger_Edge() && ted.isExtTrgSupport()) {
-			turns += 1;// + 1可切换到外边触发
+			turns += 1;// + 1 can switch to external trigger
 		}
 
 		int singleTrgChannel = singleTriggerSet.getChannel();
@@ -424,13 +424,13 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 	}
 
 	/**
-	 * KNOW 改为更简单的发送内容似乎不容易，因为协议设计得不够好，
+	 * KNOW changing to simpler send content does not seem easy, because the protocol is not designed well enough,
 	 * 
-	 * 也不清楚下位机是否能够通过简化的内容得到足够的信息了，而且性能的影响其实不见得很大
+	 * and it is unclear whether the device can get enough information from simplified content, and the performance impact is actually not necessarily large
 	 */
 
 	/**
-	 * 不全发送
+	 * Do not send everything
 	 * 
 	 * @return
 	 */
@@ -447,7 +447,7 @@ public class TriggerControl implements IOrgan, TriggerInfoForChannel {
 	public void behaveWhenSwitch2SlowMove() {
 		if (isSingleTrg())
 			singleTriggerSet.resumeAuto(this);
-		// 因为当前是在停止的情况，所以直接添加指令任务
+		// Because the current state is stopped, add the command task directly
 		doSubmit();
 	}
 

@@ -14,7 +14,7 @@ public class TimebaseScpiProvider {
 		this.cm = ctrm;
 	}
 
-	/** :TIMebase命令子系统 */
+	/** :TIMebase command subsystem */
 	public String getTIMebaseSCALe() {
 		return cm.getCoreControl().getTimeControl().getTimebaseLabel();
 	}
@@ -54,7 +54,7 @@ public class TimebaseScpiProvider {
 		if (!cm.getZoomAssctr().isonAssistSet())
 			cm.pcs.firePropertyChange(ITimeControl.onHTPChanged, null, null);
 		cm.mcctr.computeXValues();
-		// Zoom下更新zhtp
+		// Zoom mode: update zhtp
 		cm.getZoomAssctr().updateZoomHtp();
 		if (v >= Integer.MAX_VALUE || v <= Integer.MIN_VALUE)
 			return ScpiPool.Success + ", " + v;

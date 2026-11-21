@@ -5,8 +5,8 @@ import com.owon.uppersoft.dso.view.pane.dock.ContentPane;
 import com.owon.uppersoft.vds.ui.widget.custom.LContainer;
 
 /**
- * 波形计算 双波形计算 因数1 ch1,ch2,ch3,ch4 符号 加，减，乘，除 因数2 ch1,ch2,ch3,ch4 FFT 信源
- * ch1,ch2,ch3,ch4 窗口 hamming,rectangle,blackman,hanning 格式 Vrms,dB 缩放
+ * Waveform math  dual-waveform math  factor 1 ch1,ch2,ch3,ch4  operator add, subtract, multiply, divide  factor 2 ch1,ch2,ch3,ch4  FFT source
+ * ch1,ch2,ch3,ch4 window hamming,rectangle,blackman,hanning  format Vrms,dB  zoom
  * X1,X2,X5,X10
  * 
  * @author Matt

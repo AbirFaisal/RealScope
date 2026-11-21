@@ -45,7 +45,7 @@ public class Submitor2_50M extends Submitor2 {
 
 	@Override
 	public void c_tb_htp(int tb, int htp) {
-		// 50M的采样标志位
+		// 50Msampling flag bit for 50M
 		sendCMD(getDeviceAddressTable().SAMPLE_50M_FLAG,
 				tb == VDS2052.TB_50MSAMPLE ? 1 : 0);
 		sendCMD(getDeviceAddressTable().READBACK_HTRG_OFFSET,

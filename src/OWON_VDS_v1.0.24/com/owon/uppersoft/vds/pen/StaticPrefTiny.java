@@ -24,9 +24,9 @@ public class StaticPrefTiny extends StaticPref {
 	@Override
 	public String getOEMLogoPath() {
 		/**
-		 * 处理OEM:sainsmart
+		 * handle OEM:sainsmartOEM:sainsmart
 		 * 
-		 * logo，VPO1025，www.sainsmart.com，程序图标
+		 * logo, VPO1025, www.sainsmart.com, application icon
 		 * 
 		 * */
 		String mfid = getManufacturerId();

@@ -23,19 +23,19 @@ public class IPFormattedDocument extends PlainDocument {
 	}
 
 	private boolean check(String nstr) {
-		int v = 0;// 首先保证插入该字符串后，是整数；如果不是，则不进行插入操作
+		int v = 0;// First ensure the result after inserting the string is an integer; if not, do not perform the insertion
 		try {
 			v = Integer.parseInt(nstr);
 		} catch (NumberFormatException e) {
 			return false;
 		}
 
-		// 如果插入字符串str后，文档超长，则插入失败
+		// If the document becomes too long after inserting the string str, the insertion fails
 		if (nstr.length() > 3) {
 			k.nextFocus(JTF);
 			// else if((strAfterInsert.length() >3))
 			return false;
-		} else if (v > 255) {// 如果插入后数据超出范围，插入失败，弹出警告
+		} else if (v > 255) {// If the data is out of range after insertion, the insertion fails and a warning pops up
 			JOptionPane.showConfirmDialog(null, v + " "
 					+ rb.getString("Error.OutOfRangeIP"), rb
 					.getString("M.Utility.MachineNet.TipsTitle"),
@@ -48,7 +48,7 @@ public class IPFormattedDocument extends PlainDocument {
 		}
 	}
 
-	/** 另外还有两种情况，即remove或replace，但是不重写他们的方法，因为他们在控件中的使用涉及其它复杂的逻辑 */
+	/** There are also two other cases, remove and replace, but their methods are not overridden because their use in the control involves other complex logic */
 	@Override
 	public void insertString(int offset, String str, AttributeSet a)
 			throws BadLocationException {

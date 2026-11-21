@@ -24,7 +24,7 @@ public class PlugPullContext implements Logable {
 		return bufferId;
 	}
 
-	/** 未加工 */
+	/** Unprocessed */
 	private ByteBuffer raw_adc;
 
 	public ByteBuffer getRaw_adc() {
@@ -35,7 +35,7 @@ public class PlugPullContext implements Logable {
 		this.raw_adc = raw_adc;
 	}
 
-	/** 插值后 */
+	/** After interpolation */
 	private ByteBuffer pluged_adc;
 
 	public ByteBuffer getPluged_adc() {
@@ -54,7 +54,7 @@ public class PlugPullContext implements Logable {
 				basePos, baseLimit));
 	}
 
-	/** 拉触发后 */
+	/** After trigger pull */
 	private int skip, demand;
 	private int basePos, baseLimit;
 

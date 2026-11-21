@@ -29,16 +29,16 @@ public class ArrangeChannelsJob implements Runnable, Logable {
 		arrangeChannels(tbi);
 	}
 
-	/** 支持单通道到4通道 */
+	/** Supports single channel up to 4 channels */
 	private int[][] pos0Array = { { 0 }, { 50, -50 }, { 50, 0, -50 },
 			{ 75, 25, -25, -75 } };
 	private double[] ampsArray = { 0.8, 0.4, 0.4, 0.25 };
 
 	private void arrangeChannels(int tbi) {
-		/** 将wf升序排列，但是后面的迭代可能不能保证 */
+		/** Sort wf in ascending order, but later iterations may not preserve it */
 		Iterator<WFAutoRoutine> wfri = next_wfrlist.iterator();
 
-		/** 开启的通道数 */
+		/** Number of channels turned on */
 		int chlnum = next_wfrlist.size();
 
 		if (chlnum < 0 || chlnum > 4) {

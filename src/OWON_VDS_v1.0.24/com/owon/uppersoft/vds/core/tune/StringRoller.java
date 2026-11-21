@@ -1,7 +1,7 @@
 package com.owon.uppersoft.vds.core.tune;
 
 /**
- * 键名中的"_"分隔部分字符提取器
+ * Extractor for the parts of a key name separated by "_"
  * 
  */
 public class StringRoller {
@@ -38,7 +38,7 @@ public class StringRoller {
 	}
 
 	/**
-	 * 也可调用2次nextWord()来实现
+	 * Can also be achieved by calling nextWord() twice
 	 */
 	public void next2Words() {
 		if (ptr < 0)
@@ -63,7 +63,7 @@ public class StringRoller {
 	}
 
 	/**
-	 * 调用os[i]的equals方法，可扩展以实现对current的等价判断
+	 * Calls the equals method of os[i]; can be extended to implement equivalence judgment for current
 	 * 
 	 * @param os
 	 * @return

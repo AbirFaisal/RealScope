@@ -1,11 +1,11 @@
 package com.owon.uppersoft.vds.data;
 
 /**
- * 求最大公约数，辗转相除
+ * Find the greatest common divisor, Euclidean algorithm
  * 
  */
 public class GcdTest {
-	// 循环实现
+	// Loop implementation
 	public static final int gcd1(int a, int b) {
 		if (b == 0) {
 			if (a == 0)
@@ -14,20 +14,20 @@ public class GcdTest {
 		}
 		int k = 0;
 		do {
-			// 得到余数
+			// Get the remainder
 			k = a % b;
-			// 根据辗转相除法,把被除数赋给除数
+			// Per the Euclidean algorithm, assign the dividend to the divisor
 			a = b;
-			// 余数赋给被除数
+			// Assign the remainder to the dividend
 			b = k;
 		} while (k != 0);
-		// 返回被除数
+		// Return the dividend
 		return a;
 	}
 
-	// 逆归实现
+	// Recursive implementation
 	public static final int gcd2(int a, int b) {
-		// 直到满足此条件逆归退出
+		// Recursion exits once this condition is met
 		if (b == 0) {
 			return a;
 		}

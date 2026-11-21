@@ -17,7 +17,7 @@ import com.owon.uppersoft.vds.ui.resource.FontCenter;
 import com.owon.uppersoft.vds.ui.resource.ImagePaintUtil;
 
 /**
- * HomePageListCellRenderer，HomePage列表的单元格绘图
+ * HomePageListCellRenderer, cell drawing for the HomePage list
  * 
  * @author Matt
  * 

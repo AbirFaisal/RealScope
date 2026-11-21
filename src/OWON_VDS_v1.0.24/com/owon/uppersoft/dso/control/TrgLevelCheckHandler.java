@@ -4,7 +4,7 @@ import com.owon.uppersoft.dso.model.trigger.TrgCheckType;
 import com.owon.uppersoft.dso.wf.WaveForm;
 
 /**
- * 进行判断，然后handle，但是handle的方法默认在判断中调用
+ * Do the check and then handle, but the handle method is called inside the check by default
  * 
  * @author Matt
  * 
@@ -12,14 +12,14 @@ import com.owon.uppersoft.dso.wf.WaveForm;
 public interface TrgLevelCheckHandler {
 
 	/**
-	 * 设置判断对应的波形
+	 * Set the waveform that the check corresponds to
 	 * 
 	 * @param wf
 	 */
 	void setWaveForm(WaveForm wf);
 
 	/**
-	 * 判断给点的值，并进行一次handle，如果trueType为NotOver，则不判断直接处理为NotOver
+	 * Check the given value and handle once; if trueType is NotOver, skip the check and treat it directly as NotOver
 	 * 
 	 * @param targetv
 	 * @param trueType
@@ -29,7 +29,7 @@ public interface TrgLevelCheckHandler {
 	boolean checkAroundTrgAndHandle(int targetv, TrgCheckType trueType, TrgCheckType falseType);
 
 	/**
-	 * 判断给点的值，并只在为真时handle，如果trueType为NotOver，则直接判断为假
+	 * Check the given value and handle only when true; if trueType is NotOver, directly judge it as false
 	 * 
 	 * @param targetv
 	 * @return

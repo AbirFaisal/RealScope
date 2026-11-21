@@ -61,14 +61,14 @@ public class AbsArg implements Logable {
 	}
 
 	/**
-	 * 尝试修改次数
+	 * Number of modification attempts
 	 */
 	protected int tries;
 
 	protected int fitTimes;
 
 	/**
-	 * @return 是否判定为调试通过
+	 * @return whether it is judged that tuning passed
 	 */
 	public boolean increaseFitTimes() {
 		++fitTimes;
@@ -77,7 +77,7 @@ public class AbsArg implements Logable {
 	}
 
 	/**
-	 * @return 是否符合相等次数
+	 * @return whether the equal-count condition is met
 	 */
 	public boolean isFitTimesPass() {
 		return fitTimes >= 2;
@@ -88,7 +88,7 @@ public class AbsArg implements Logable {
 	}
 
 	/**
-	 * @return 是否超次不再调试
+	 * @return whether the attempt count is exceeded and tuning stops
 	 */
 	public boolean isTriesEnough() {
 		return tries > 25;

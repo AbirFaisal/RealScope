@@ -9,7 +9,7 @@ import com.owon.uppersoft.vds.core.aspect.Localizable;
 import com.owon.uppersoft.vds.ui.resource.FontCenter;
 
 /**
- * 带冒号结束的起始文本，SufColonLabel
+ * Starting text ending with a colon, SufColonLabel
  * 
  */
 public class CLabel extends JLabel implements Localizable {

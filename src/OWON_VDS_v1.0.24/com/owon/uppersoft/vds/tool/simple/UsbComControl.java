@@ -240,7 +240,7 @@ public class UsbComControl implements IDeviceCreator {
 		int value = Integer.parseInt(tf_Int.getText(), 16);
 
 		buf[i++] = fo;
-		/** value 按小尾序放入buf数组后4位 */
+		/** value Put into the last 4 bytes of the buf array in little-endian order */
 		buf[i++] = (byte) value;
 		buf[i++] = (byte) (value >> 8);
 		buf[i++] = (byte) (value >> 16);
@@ -260,7 +260,7 @@ public class UsbComControl implements IDeviceCreator {
 
 	}
 
-	// /** @deprecated 发指令要一帧数据 */
+	// /** @deprecated Sending a command requires one frame of data */
 	// private void sendNAcceptOneFrame(JTextField tf_add, JTextField tf_bytes,
 	// JTextField tf_value) {
 	//
@@ -273,10 +273,10 @@ public class UsbComControl implements IDeviceCreator {
 	// acceptOneFrame(null);// ch1
 	// }
 	private static final int ReceiveSize = 5100;
-	private byte[] adcbuf = new byte[10000];// 接收adc数据
+	private byte[] adcbuf = new byte[10000];// Receive adc data
 	private byte[] usbbuf = new byte[ReceiveSize];
 
-	/** 接收一帧数据 */
+	/** Receive one frame of data */
 	protected void acceptOneFrame(int chlnum) {
 		int p = 0;
 		int rn;

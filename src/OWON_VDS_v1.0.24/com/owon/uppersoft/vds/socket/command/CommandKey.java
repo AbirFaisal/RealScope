@@ -63,7 +63,7 @@ public class CommandKey {
 			setPrecmd(CmdFactory.COMMon);
 			subcmd = ":" + line.substring(1);
 		} else if (line.startsWith(":")) {
-			String[] splits = line.split(":",3);//分割3-1次，分成3组
+			String[] splits = line.split(":",3);//split 3-1 times, into 3 groups
 			setPrecmd(splits[1]);
 			subcmd = line.substring(precmd.length() + 1);
 		} else

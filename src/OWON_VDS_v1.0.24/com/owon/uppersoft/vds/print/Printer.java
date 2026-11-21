@@ -13,16 +13,16 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 
 /*
- * 实际打印机打印程序。
+ * Actual printer printing program.
  */
 public class Printer implements Printable {
 
-	// A4纸张的实际宽长为21厘米，29.7厘米。
-	// 每英寸=2.54厘米。
+	// A4 paper has an actual width and length of 21 cm and 29.7 cm.
+	// 1 inch = 2.54 cm.
 	public static final int A4PageWidth = 595;// 595=21/2.54*72
 	public static final int A4PageHeight = 842;// 842=29.7/2.54*72
 
-	// 页边距默认为20毫米,Java Print API中打印的默认dpi为72  57=20/25.4*72
+	// the default page margin is 20 mm, the default dpi for printing in the Java Print API is 7272  57=20/25.4*72
 	public int A4EdgeLeftSpace = 57;
 	public int A4EdgeRightSpace = 57;
 	public int A4EdgeUpSpace = 57;
@@ -50,9 +50,9 @@ public class Printer implements Printable {
 			pf.setOrientation(PageFormat.LANDSCAPE);// horizontal
 		}
 
-		// 设置为实际纸张大小
+		// set to the actual paper size
 		p.setSize(A4PageWidth, A4PageHeight);
-		// 实际纸张可成像区域，即实际纸张长宽扣除页边距。
+		// the actual imageable area of the paper, i.e. the actual paper length and width minus the margins.
 		p.setImageableArea(A4EdgeLeftSpace, A4EdgeUpSpace, A4PageWidth
 				- A4EdgeLeftSpace - A4EdgeRightSpace, A4PageHeight
 				- A4EdgeUpSpace - A4EdgeDownSpace);
@@ -74,7 +74,7 @@ public class Printer implements Printable {
 
 	}
 
-	// 设置红色虚线
+	// set red dashed line
 	float[] dash2 = { 6.0f, 4.0f, 2.0f, 4.0f, 2.0f, 4.0f };
 	BasicStroke bs = new BasicStroke(2.0f, BasicStroke.CAP_BUTT,
 			BasicStroke.JOIN_MITER, 10.0f, dash2, 0.0f);
@@ -88,12 +88,12 @@ public class Printer implements Printable {
 		g2d.setStroke(bs);
 		g2d.setPaint(Color.red);
 
-		// 画红色虚线矩形框
+		// draw a red dashed rectangle
 		g2d.drawRect(0, 0, (int) pageFormat.getImageableWidth() - 2,
 				(int) pageFormat.getImageableHeight() - 2);
-		//绘画波形背景
+		//draw the waveform background
 		ppf.drawChartViewBG(g2d, (int)pageFormat.getImageableWidth() - 2);
-		// 绘画波形
+		// draw the waveform
 		g2d.setStroke(new BasicStroke());
 		ppf.printChartView(g2d, (int) pageFormat.getImageableWidth() - 2,
 				(int) pageFormat.getImageableHeight() - 2);//Graphics2D

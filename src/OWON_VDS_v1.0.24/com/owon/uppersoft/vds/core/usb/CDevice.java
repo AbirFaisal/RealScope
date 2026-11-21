@@ -1,6 +1,6 @@
 /* 
  * Java libusb wrapper
- * Copyright (c) 2005-2006 Andreas Schl鋚fer <spandi at users.sourceforge.net>
+ * Copyright (c) 2005-2006 Andreas Schläfer <spandi at users.sourceforge.net>
  *
  * http://libusbjava.sourceforge.net
  * This library is covered by the LGPL, read LGPL.txt for details.

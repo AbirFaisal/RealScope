@@ -7,7 +7,7 @@ import com.owon.uppersoft.dso.view.pane.dock.ContentPane;
 import com.owon.uppersoft.vds.ui.widget.custom.LContainer;
 
 /**
- * 采样 采集模式 采样，峰值检测，平均值（4次，16次，64次，128次）
+ * Sampling  acquisition mode  sampling, peak detect, average (4, 16, 64, 128 times)
  * 
  * @author Matt
  * 

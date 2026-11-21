@@ -22,23 +22,23 @@ public class PersistentPropertyChangeListener implements PropertyChangeListener 
 		if (n.equalsIgnoreCase(PropertiesItem.KEEPGET)) {
 			boolean keepget = (Boolean) evt.getNewValue();
 			if (keepget) {
-				/** KNOW 在恢复到运行时，刷新状态以配合总览区画图 */
+				/** KNOW KNOW When resuming to running, refresh the state to coordinate with the overview area drawing */
 				// dh.setStatus(RT_Normal);
-				// 因为其它原因必须注释：正常或单次触发时没有新波形进来还画dm必须保持为RT_DM
+				// Must stay commented out for other reasons: in normal or single trigger with no new waveform coming in, drawing dm must remain RT_DM
 				int idx = cm.displayControl.getPersistenceIndex();
 				pd.fadeThdOn_Off_UI(idx);
-				/** 如果启动运行后仍占用dm.bin文件，则释放它 */
+				/** If the dm.bin file is still occupied after starting to run, release it */
 				// if(cba!=null)
 				// cba.dispose();
 			} else {
-				/** KNOW 在停下后，并不设置改变，等波形载入自然会变化 */
+				/** KNOW KNOW After stopping, no change is set; it will change naturally when a waveform is loaded */
 				// sta = RT_DM;
 				// pd.fadeThdOn_Off_UI(0);
 			}
 		} else if (n.equalsIgnoreCase(PropertiesItem.FFT_ON)) {
 			pd.fadeThdOn_Off_UI(cm.displayControl.setPersistenceIndex(0));
 		} else if (n.equalsIgnoreCase(PropertiesItem.FFT_OFF)) {
-			/** 这里不在关闭fft的时候再恢复余辉原本的状态了 */
+			/** Here, when fft is turned off, the original persistence state is no longer restored */
 		} else if (n.equalsIgnoreCase(PersistentDisplay.PERSISTENCE_RESET)) {
 			pd.resetPersistence();
 		}

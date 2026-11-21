@@ -24,7 +24,7 @@ public class RuleDetail {
 		int chl = Integer.valueOf(tst.nextToken().trim());
 		if (chl >= channelNumber) {
 			return null;
-			// 为避免出错，直接改掉chl
+			// to avoid errors, change chl directlychl
 			// chl = channelNumber - 1;
 		}
 		double hor = Double.valueOf(tst.nextToken().trim());
@@ -43,7 +43,7 @@ public class RuleDetail {
 		int chl = Integer.valueOf(tst.nextToken().trim());
 		if (chl >= channelNumber) {
 			// return null;
-			// 为避免出错，直接改掉chl
+			// to avoid errors, change chl directlychl
 			chl = channelNumber - 1;
 		}
 		double hor = Double.valueOf(tst.nextToken().trim());

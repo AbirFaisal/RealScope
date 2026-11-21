@@ -26,7 +26,7 @@ public interface Principle {
 	void openTuneDialog(Window wnd, PropertyChangeSupport pcs);
 
 	/**
-	 * 这样可以自定tune初始化的时机
+	 * This allows customizing when tune is initialized
 	 * 
 	 * @param p
 	 */

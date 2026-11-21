@@ -27,7 +27,7 @@ public class ValueFeeder {
 	}
 
 	private TimeMeasure tm = new TimeMeasure();
-	/** 单例数组优化频繁使用 */
+	/** singleton array, optimized for frequent use */
 	private byte[] RESPONSE_BUF = new byte[TinyCommunicationProtocol.RESPONSE_LEN];
 
 	protected void syncChannelsMiddle(ICommunicateManager ism,

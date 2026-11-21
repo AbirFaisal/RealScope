@@ -20,13 +20,13 @@ public class ClockTimeAdjuster implements TinyCommunicationProtocol,
 	}
 
 	protected Arg_En getArg_En(int arg, int en) {
-		// 多出来的虚拟档位换算到协议
+		// convert the extra virtual scales to the protocol
 		// if (en == 6) {
 		// arg *= 10;
 		// en = 5;
 		// }
 
-		// arg是以ns为单位的，协议要求把值除以10，所以en-1
+		// arg is in units of ns, the protocol requires the value to be divided by 10, so en-1
 		en -= 1;
 
 		return new Arg_En(arg, en);
@@ -34,7 +34,7 @@ public class ClockTimeAdjuster implements TinyCommunicationProtocol,
 
 	@Override
 	public void c_trg_holdoffArg(int chl, int arg, int en) {
-		// 这里只是简单拷贝，等值传递，后续可添加方法，实现arg和en的转化
+		// this is just a simple copy, passing the value as is; a method can be added later to convert between arg and en
 		Arg_En ae = getArg_En(arg, en);
 		arg = ae.arg;
 		en = ae.en;
@@ -66,7 +66,7 @@ public class ClockTimeAdjuster implements TinyCommunicationProtocol,
 
 	@Override
 	public void c_trg_condtionArg(int chl, int cdt, int arg, int en) {
-		// 这里只是简单拷贝，等值传递，后续可添加方法，实现arg和en的转化
+		// this is just a simple copy, passing the value as is; a method can be added later to convert between arg and en
 		Arg_En ae = getArg_En(arg, en);
 		arg = ae.arg;
 		en = ae.en;

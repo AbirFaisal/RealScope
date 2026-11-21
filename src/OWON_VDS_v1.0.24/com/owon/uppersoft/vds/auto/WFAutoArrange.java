@@ -121,7 +121,7 @@ public class WFAutoArrange {
 	private int chlAmpMax, chlAmpMin;
 
 	/**
-	 * 旨在将波形拉到屏幕内并且是比较容易锁住触发的位置
+	 * Aims to bring the waveform within the screen and to a position where it is easy to lock the trigger
 	 * 
 	 * @return
 	 */
@@ -134,7 +134,7 @@ public class WFAutoArrange {
 		vl.logln("vb: " + cc.getVoltageProvider().getVoltageLabel(vb)
 				+ ", amp:" + amp);
 
-		/** 操作电压档位，只拉小波形，不拉大波形 */
+		/** Operate on the voltage scale: only stretch small waveforms, do not stretch large ones */
 		if (amp < chlAmpMin) {
 			return toPosLevel();
 		} else if (amp >= chlAmpMax) {
@@ -143,11 +143,11 @@ public class WFAutoArrange {
 				setVoltBaseIndex(vb + 1);
 				return false;
 			} else {
-				// 电压幅度太大，不再尝试
+				// Voltage amplitude too large, stop trying
 				return toPosLevel();
 			}
 		} else {
-			// 下一阶段
+			// Next stage
 			return toPosLevel();
 		}
 	}

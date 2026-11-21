@@ -16,9 +16,9 @@ public class CommandTable {
 			"FPGA_DOWNLOAD_ADD", 0x4000, 4, 1);
 
 	public AddValueAttachCommand write_flash = new AddValueAttachCommand(
-			"write_flash", 0x1a0, 1, 1);// 写flash
+			"write_flash", 0x1a0, 1, 1);// Write flash
 	public AddValueAttachCommand read_flash = new AddValueAttachCommand(
-			"read_flash", 0x1b0, 1, 1);// 读flash
+			"read_flash", 0x1b0, 1, 1);// Read flash
 
 	public AddressAttachCommand write_trigger = new AddressAttachCommand(
 			"TRG_ADD", 0x24, 2);

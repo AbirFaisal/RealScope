@@ -58,7 +58,7 @@ public class MultiPropertiesTransverter {
 	private String trimBrackets(String line) {
 		int leftidx = line.indexOf('(');
 		int rightidx = line.indexOf('=', leftidx);
-		// 在“=”右边的“()”不裁剪
+		// Do not trim the "()" to the right of the "="
 		if (leftidx > rightidx)
 			return line;
 
@@ -70,43 +70,43 @@ public class MultiPropertiesTransverter {
 
 	public static final String ISO_8859_1 = "ISO-8859-1";
 
-	/** 将字符编码转换成ISO-8859-1 */
+	/** Convert the character encoding to ISO-8859-1 */
 	public String toISO_8859_1(String str) throws UnsupportedEncodingException {
 		return changeCharset(str, ISO_8859_1);
 	}
 
 	/**
-	 * 字符串编码转换的实现方法
+	 * Implementation of string encoding conversion
 	 * 
 	 * @param str
-	 *            待转换的字符串
+	 *            string to be converted
 	 * @param newCharset
-	 *            目标编码
+	 *            target encoding
 	 */
 	public String changeCharset(String str, String newCharset)
 			throws UnsupportedEncodingException {
 		if (str != null) {
-			// 用默认字符编码解码字符串。与系统相关，中文windows默认为GB2312
+			// decode the string using the default character encoding. System dependent; Chinese Windows defaults to GB2312
 			byte[] bs = str.getBytes();
-			return new String(bs, newCharset); // 用新的字符编码生成字符串
+			return new String(bs, newCharset); // create the string using the new character encoding
 		}
 		return null;
 	}
 
 	/**
-	 * 字符串编码转换的实现方法
+	 * Implementation of string encoding conversion
 	 * 
 	 * @param str
-	 *            待转换的字符串
+	 *            string to be converted
 	 * @param oldCharset
-	 *            源字符集
+	 *            source charset
 	 * @param newCharset
-	 *            目标字符集
+	 *            target charset
 	 */
 	public String changeCharset(String str, String oldCharset, String newCharset)
 			throws UnsupportedEncodingException {
 		if (str != null) {
-			// 用源字符编码解码字符串
+			// decode the string using the source character encoding
 			byte[] bs = str.getBytes(oldCharset);
 			return new String(bs, newCharset);
 		}

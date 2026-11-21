@@ -6,7 +6,7 @@ import com.owon.uppersoft.vds.core.trigger.help.EnumNValue;
 import com.owon.uppersoft.vds.util.format.SFormatter;
 
 /**
- * 释抑不同的步进效果
+ * Different stepping behaviors of holdoff
  * 
  */
 public enum HoldoffStage implements EnumLabelProvider {
@@ -52,7 +52,7 @@ public enum HoldoffStage implements EnumLabelProvider {
 		return VALUES[idx];
 	}
 
-	// 加上step可能升级
+	// adding step may move up a level
 	private static final int[] steps = { 1, 10, 100 };
 	public static final int STEP_LENGTH = steps.length;
 
@@ -66,7 +66,7 @@ public enum HoldoffStage implements EnumLabelProvider {
 
 	/**
 	 * @param bi
-	 *            以100ns为单位
+	 *            in units of 100ns
 	 * @param etv
 	 */
 	public static void fromInt(int v, EnumNValue etv) {
@@ -100,7 +100,7 @@ public enum HoldoffStage implements EnumLabelProvider {
 		// return;
 		// }
 
-		/** 另一种写法，用于排错 */
+		/** Another way of writing it, for debugging */
 		// if (v < 1000) {//1~999
 		// hs = stg_xx_xus;
 		// hov = v;
@@ -127,7 +127,7 @@ public enum HoldoffStage implements EnumLabelProvider {
 	}
 
 	/**
-	 * 到100ns为单位的数值
+	 * Converted to a value in units of 100ns
 	 * 
 	 * @param hs
 	 * @param vpart
@@ -136,7 +136,7 @@ public enum HoldoffStage implements EnumLabelProvider {
 	public static int ToInt(HoldoffStage hs, int vpart) {
 		int r = hs.div_100ns * vpart;
 
-		/** 另一种写法，用于排错 */
+		/** Another way of writing it, for debugging */
 		// switch (hs) {
 		// default:
 		// case stg_xx_xus:

@@ -16,7 +16,7 @@ import com.owon.uppersoft.vds.util.Pref;
 import com.owon.uppersoft.vds.util.StringPool;
 
 /**
- * StaticPref，静态配置信息
+ * StaticPref, static configuration info
  * 
  */
 public class StaticPref {
@@ -175,14 +175,14 @@ public class StaticPref {
 		return website;
 	}
 
-	/** 产品信息 */
+	/** Product info */
 	public static final String Neutral_String = "neutral";
 	public static final String OWON_String = "OWON";
 
 	public static final String LogoPath = ImageDirectory + "logo.png";
 
 	/**
-	 * 在子类中添加规则
+	 * Add rules in subclasses
 	 * 
 	 * @return
 	 */

@@ -19,7 +19,7 @@ import com.owon.uppersoft.vds.core.usb.IDeviceCreator;
 import com.owon.uppersoft.vds.core.usb.IUSBProtocol;
 
 /**
- * 管理USB数据源的状态和开启，提供USB数据源
+ * Manages the state and opening of the USB data source, provides the USB data source
  * 
  */
 public class USBSourceManager implements ICommunicateManager, IDeviceCreator,
@@ -38,7 +38,7 @@ public class USBSourceManager implements ICommunicateManager, IDeviceCreator,
 		return FailureRetryTimes;
 	}
 
-	/** 以下方法在usb打开连接的时候才有效 */
+	/** The methods below are only valid when the usb connection is open */
 	@Override
 	public int acceptResponse(byte[] arr, int len) {
 		if (isConnected())
@@ -63,7 +63,7 @@ public class USBSourceManager implements ICommunicateManager, IDeviceCreator,
 	}
 
 	/**
-	 * 分离初始化的动作
+	 * Separates the initialization action
 	 */
 	public boolean init_check_usbdrv() {
 		try {
@@ -84,9 +84,9 @@ public class USBSourceManager implements ICommunicateManager, IDeviceCreator,
 	}
 
 	/**
-	 * 在默认已经初始化的前提下，进行直接扫描刷新
+	 * Scan and refresh directly, assuming initialization is already done
 	 * 
-	 * @return USB中可用的端口的列表，长度为0说明无可用
+	 * @return USBList of usable ports in USB; length 0 means none are available
 	 */
 	public List<IDevice> refreshUSBPort_Direct() {
 		try {
@@ -101,7 +101,7 @@ public class USBSourceManager implements ICommunicateManager, IDeviceCreator,
 
 	/**
 	 * 
-	 * @return USB中可用的端口的列表，长度为0说明无可用，为null说明驱动调用失败
+	 * @return USBList of usable ports in USB; length 0 means none are available, null means the driver call failed
 	 */
 	public List<IDevice> refreshUSBPort() {
 		try {
@@ -115,11 +115,11 @@ public class USBSourceManager implements ICommunicateManager, IDeviceCreator,
 	}
 
 	/**
-	 * KNOW 尽量替换为dh.controlManager.sourceManager.connectUSB(IDevice id);
+	 * KNOW Try to replace with dh.controlManager.sourceManager.connectUSB(IDevice id);
 	 * 
 	 * @param id
-	 *            设备对象
-	 * @return USB数据源，为空说明配置错误
+	 *            Device object
+	 * @return USBUSB data source; empty means a configuration error
 	 */
 	public USBSource _getUSBSource(IDevice id) {
 		if (id == null)
@@ -164,7 +164,7 @@ public class USBSourceManager implements ICommunicateManager, IDeviceCreator,
 	}
 
 	/**
-	 * 未完成
+	 * Not finished
 	 * 
 	 * @return
 	 */
@@ -216,10 +216,10 @@ public class USBSourceManager implements ICommunicateManager, IDeviceCreator,
 	}
 
 	/**
-	 * 释放USB数据源
+	 * Release the USB data source
 	 * 
 	 * @param us
-	 *            USB数据源
+	 *            USBUSB data source
 	 */
 	public void releaseUSBSource(USBSource us) {
 		CDevice dev = us.getCDevice();

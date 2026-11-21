@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.owon.uppersoft.vds.core.machine.MachineType;
 
 public class FreqInfo {
-	/** 可考虑抽象 */
+	/** Could be abstracted */
 	private int freq_base, freq_ref;
 	private float freq;
 
@@ -19,11 +19,11 @@ public class FreqInfo {
 	}
 
 	/**
-	 * KNOW 接收到的频率算法：频率 = 频率值/参考值*125M
+	 * KNOW Received frequency algorithm: frequency = frequency value/reference value*125M
 	 * 
 	 * @param base
 	 * @param ref
-	 * @return 单位Hz
+	 * @return unit Hz
 	 */
 	public void computeFreq(BigDecimal currentSampleRateBD_kHz,
 			MachineType machine) {

@@ -30,9 +30,9 @@ import com.owon.uppersoft.vds.core.wf.rt.ChannelDataInfo;
 import com.owon.uppersoft.vds.core.wf.rt.LoadMedia;
 
 /**
- * WaveForm，波形，就提供的点进行绘制
+ * WaveForm, waveform, draws from the points provided
  * 
- * RT时获取插值后的数据点1k~4k，DM时获取原始的采样点25~10M
+ * RT: gets the interpolated data points 1k~4k; DM: gets the original sample points 25~10M
  * 
  */
 public class WaveForm implements IView, WF, IRefSource {
@@ -96,7 +96,7 @@ public class WaveForm implements IView, WF, IRefSource {
 	}
 
 	/**
-	 * 数据：adc - pos0
+	 * Data: adc - pos0
 	 * 
 	 * @return
 	 */
@@ -129,7 +129,7 @@ public class WaveForm implements IView, WF, IRefSource {
 	}
 
 	/**
-	 * 参考波形需要提供额外的从xb多少开始画的信息
+	 * The reference waveform needs to provide extra info on which xb to start drawing from
 	 * 
 	 * @param adcbuf
 	 */
@@ -138,9 +138,9 @@ public class WaveForm implements IView, WF, IRefSource {
 	}
 
 	/**
-	 * 目前是最终画点的像素数组，需要真的运行时和深存储进行修改
+	 * Currently the final pixel array for drawing; needs to be modified at real run time and for deep memory
 	 * 
-	 * 供录制和PF使用
+	 * for use by recording and PF
 	 * 
 	 * @return
 	 */
@@ -172,7 +172,7 @@ public class WaveForm implements IView, WF, IRefSource {
 		rtlim.restrictFrames(1, getChannelNumber());
 	}
 
-	/** KNOW 通过这一变量保存载入时的零点位置，所谓载入时，有读入DM的情况，以及回放录制波形时最初的状态 */
+	/** KNOW this variable saves the zero point position at load time; load time means reading DM in, and the initial state when playing back a recorded waveform */
 	private int loadPos0;
 
 	public void prepareRTNormalPaint(ChannelDataInfo cdi, LoadMedia cti, int yb) {
@@ -180,9 +180,9 @@ public class WaveForm implements IView, WF, IRefSource {
 		ChannelInfo ci = wfi.ci;
 		this.basevbidx = ci.getVoltbaseIndex();
 
-		/** bBuf存放原始数据，intBuf存放包含了零点信息的实际像素点 */
-		/** yb用dmli.loadPos0同当前pos0的变化传入，即为载入录制的普通波形时的效果 */
-		/** 由于处理了反相，该方法只在载入数据时调用一次 */
+		/** bBuf holds the original data, intBuf holds the actual pixel points that include the zero point info */
+		/** yb is passed in with dmli.loadPos0 and the current pos0 change, which gives the effect of loading a recorded normal waveform */
+		/** since inversion is handled, this method is called only once when loading data */
 
 		rtlim.resetRTIntBuf(cdi, pc, dh.getWaveFormManager().getSkipPoints(),
 				yb, cti, vbmulti);
@@ -230,7 +230,7 @@ public class WaveForm implements IView, WF, IRefSource {
 				vbidx);
 	}
 
-	// TODO 检查basevbidx可能有问题
+	// TODO check that basevbidx may be problematic
 	public int basevbidx = 0;
 	private BigDecimal vbmulti = BigDecimal.valueOf(1);
 
@@ -241,7 +241,7 @@ public class WaveForm implements IView, WF, IRefSource {
 
 	// RT->STOP, RT->DM, OFFDM, OFFPLAY
 	/**
-	 * 作为当前adc数据采集时对应的零点位置
+	 * as the zero point position corresponding to the current adc data acquisition
 	 */
 	public void saveFirstLoadPos0() {
 		loadPos0 = wfi.ci.getPos0();
@@ -268,19 +268,19 @@ public class WaveForm implements IView, WF, IRefSource {
 
 	private void resetNormalIntBuf(ScreenContext pc) {
 		// System.out.println(getFirstLoadPos0() + ", " + getVbmulti());
-		/** 使用载入时的零点位置和变化后的零点位置之差以告知波形被移动了 */
+		/** use the difference between the zero point position at load time and the changed zero point position to tell that the waveform was moved */
 		rtlim.resetIntBuf(vbmulti, getYb(pc), pc.isScreenMode_3());
 	}
 
 	@Override
 	public void adjustView(ScreenContext pc, Rectangle bound) {
-		/** RT时直接等下一幅，后续可以再作加锁方式的各种支持 */
+		/** RT: just wait for the next frame; various kinds of lock-based support can be added later */
 		if (!pc.allowLazyRepaint())
 			resetNormalIntBuf(pc);
 	}
 
 	/**
-	 * @return 深存储载入时的默认零点位置
+	 * @return default zero point position when deep memory is loaded
 	 */
 	public int getFirstLoadPos0() {
 		return loadPos0;
@@ -294,7 +294,7 @@ public class WaveForm implements IView, WF, IRefSource {
 
 	private void paintItem(Graphics2D g2d, ScreenContext pc, Rectangle r,
 			ControlManager cm, boolean onFront, int yb) {
-		/** 以下为同下位机连接的情况下，获取实时数据绘图，快速刷新 */
+		/** Below is the case of being connected to the device: get real-time data for drawing, fast refresh */
 		if (!isOn())
 			return;
 		ChannelInfo ci = wfi.ci;
@@ -302,11 +302,11 @@ public class WaveForm implements IView, WF, IRefSource {
 
 		int y = r.y;
 		int bottom = r.y + r.height;
-		/** 画左边的标尺 ,依次画顶 底 中 */
+		/** Draw the left ruler, drawing top, bottom, middle in turn */
 		LineUtil.paintChannelLabel(yb, y, bottom, g2d,
 				String.valueOf(ci.getNumber() + 1), 2, onFront);
 
-		/** 画左边的标尺的右侧零点位置显示 */
+		/** Draw the zero point display on the right side of the left ruler */
 		if (onShowPos0) {
 			LineUtil.paintOnShowPos0(g2d, pc, dh.divUnits, ci.getPos0(), yb, r);
 		}
@@ -314,7 +314,7 @@ public class WaveForm implements IView, WF, IRefSource {
 
 	@Override
 	public void paintView(Graphics2D g2d, ScreenContext pc, Rectangle r) {
-		/** 以下为同下位机连接的情况下，获取实时数据绘图，快速刷新 */
+		/** Below is the case of being connected to the device: get real-time data for drawing, fast refresh */
 		if (!isOn())
 			return;
 
@@ -325,8 +325,8 @@ public class WaveForm implements IView, WF, IRefSource {
 		g2d.setColor(getColor());
 
 		/**
-		 * 余辉画图时使用固定的Rectangle会更容易解决，但是继承结构暂不方便打破，
-		 * 所以改为直接在WaveForm内部使用固定的Rectangle，这样改动最小
+		 * For persistence drawing a fixed Rectangle would be easier, but the inheritance structure cannot be broken conveniently for now,
+		 * so a fixed Rectangle is used directly inside WaveForm, which makes the smallest change
 		 */
 		int xb = r.x;
 		// if (xb != 12)
@@ -334,9 +334,9 @@ public class WaveForm implements IView, WF, IRefSource {
 		Shape tmp = g2d.getClip();
 		g2d.setClip(r);
 		/**
-		 * 画图方式的区分基于档位和存储深度分治，在导入数据及位移缩放操作的时候处理，绘图处只是对应到特定的画图模式上
+		 * The drawing methods are divided by scale and memory depth, handled when importing data and on shift/zoom operations; the drawing site just maps to a specific drawing mode
 		 * 
-		 * M情况下的慢扫留待后续处理
+		 * M case: slow sweep is left for later handling
 		 */
 		WFTimeScopeControl wftsc = dh.getWaveFormManager()
 				.getWFTimeScopeControl();
@@ -360,14 +360,14 @@ public class WaveForm implements IView, WF, IRefSource {
 	}
 
 	/**
-	 * 在触发电平等上双击的情况下触发的操作
+	 * Operation triggered when double-clicking on the trigger level etc.
 	 */
 	public void doubleClickOnLevel() {
 		setTrg50Percent(cm.getTriggerControl());
 	}
 
 	/**
-	 * 设置触发电平为波形数据峰峰值的50%位置，这里只是在设置下一次数据进入时进行计算
+	 * Set the trigger level to the 50% position of the waveform peak-to-peak value; here it only sets the calculation to be done when the next data comes in
 	 */
 	public void setTrg50Percent(TriggerControl trgc) {
 		if (!cm.is50percentAvailable())
@@ -376,7 +376,7 @@ public class WaveForm implements IView, WF, IRefSource {
 		if (ts == null || !ts.isVoltsenseSupport())
 			return;
 
-		/** 进行了Trg50%的计算，如果获得有效值则设置，无论与否，关闭下次Trg50%的计算 */
+		/** The Trg50% calculation was done; if a valid value is obtained it is set, and either way the next Trg50% calculation is turned off */
 		int v = rtlim.getTrg50percentValue();
 		if (v == Integer.MAX_VALUE)
 			return;
@@ -389,18 +389,18 @@ public class WaveForm implements IView, WF, IRefSource {
 				null);
 		cm.pcs.firePropertyChange(PropertiesItem.UPDATE_VOLTSENSE, -1,
 				getChannelNumber());
-		/** KNOW 先设置，再结束，总会执行一次发送 */
+		/** KNOW set first, then finish, a send is always executed once */
 	}
 
 	/**
-	 * 设置触发电平为波形数据峰峰值的50%位置，这里只是在设置下一次数据进入时进行计算
+	 * Set the trigger level to the 50% position of the waveform peak-to-peak value; here it only sets the calculation to be done when the next data comes in
 	 */
 	public void setTrgEdgeMiddle(TriggerControl trgctl) {
 		TriggerSet ts = trgctl.getTriggerSetOrNull(wfi.ci.getNumber());
 		if (ts == null || !ts.isCurrentTrigger_Edge())
 			return;
 
-		/** 进行了Trg50%的计算，如果获得有效值则设置，无论与否，关闭下次Trg50%的计算 */
+		/** The Trg50% calculation was done; if a valid value is obtained it is set, and either way the next Trg50% calculation is turned off */
 		int v = rtlim.getTrg50percentValue();
 		if (v == Integer.MAX_VALUE)
 			return;
@@ -409,7 +409,7 @@ public class WaveForm implements IView, WF, IRefSource {
 		int last = vt.c_getVoltsense();
 		// System.err.println(last+" | "+v);
 
-		/** 偏差在1小格 */
+		/** deviation within 1 small division */
 		if (Math.abs(last - v) < 5)
 			return;
 
@@ -420,17 +420,17 @@ public class WaveForm implements IView, WF, IRefSource {
 				null);
 		cm.pcs.firePropertyChange(PropertiesItem.UPDATE_VOLTSENSE, -1,
 				getChannelNumber());
-		/** KNOW 先设置，再结束，总会执行一次发送 */
+		/** KNOW set first, then finish, a send is always executed once */
 	}
 
 	/**
-	 * 设置触发电平为波形数据峰峰值的50%位置，这里只是在设置下一次数据进入时进行计算
+	 * Set the trigger level to the 50% position of the waveform peak-to-peak value; here it only sets the calculation to be done when the next data comes in
 	 */
 	public int getTrg50Percent() {
 		if (!cm.is50percentAvailable())
 			return Integer.MAX_VALUE;
 
-		/** 进行了Trg50%的计算，如果获得有效值则设置，无论与否，关闭下次Trg50%的计算 */
+		/** The Trg50% calculation was done; if a valid value is obtained it is set, and either way the next Trg50% calculation is turned off */
 		int v = rtlim.getTrg50percentValue();
 		return v;
 	}

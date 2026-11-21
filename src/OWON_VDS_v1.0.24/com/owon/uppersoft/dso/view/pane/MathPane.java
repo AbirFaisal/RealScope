@@ -34,15 +34,15 @@ import com.owon.uppersoft.vds.util.format.SFormatter;
 
 /**
  * <code>
- 波形计算	双波形计算	
- 因数1	ch1,ch2,ch3,ch4
- 符号	加，减，乘，除
- 因数2	ch1,ch2,ch3,ch4
+ Waveform math	Dual-waveform math	
+ Operand 1	ch1,ch2,ch3,ch4
+ Operator	add, subtract, multiply, divide
+ Operand 2	ch1,ch2,ch3,ch4
  FFT	
- 信源	ch1,ch2,ch3,ch4
- 窗口	hamming,rectangle,blackman,hanning
- 格式	Vrms,dB
- 缩放	X1,X2,X5,X10
+ Source	ch1,ch2,ch3,ch4
+ Window	hamming,rectangle,blackman,hanning
+ Format	Vrms,dB
+ Zoom	X1,X2,X5,X10
  <code>
  * 
  */
@@ -92,7 +92,7 @@ public class MathPane extends FunctionPanel {
 				if (ItemEvent.SELECTED != e.getStateChange())
 					return;
 
-				resetPersistence();// 清理余辉
+				resetPersistence();// Clear persistence
 				mc.setMathvbidx(mvb.getSelectedIndex());
 				updateMathCompute();
 			}
@@ -105,7 +105,7 @@ public class MathPane extends FunctionPanel {
 			attcbb.addItemListener(new ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent e) {
-					resetPersistence();// 清理余辉
+					resetPersistence();// Clear persistence
 					// mc.probeIndex = attcbb.getSelectedIndex();
 					updateMathCompute();
 				}
@@ -130,7 +130,7 @@ public class MathPane extends FunctionPanel {
 					return;
 
 				boolean b = mc.mathon = mathcb.isSelected();
-				// KNOW 开关的切换过程始终在这里，反复被切换，在从无效变成有效的过程中，先计算有效值，再更新档位
+				// KNOW The switch toggling always goes through here and is toggled repeatedly; when going from invalid to valid, compute the effective value first, then update the scale
 				if (!b) {
 					mc.setMathvbidx(-1);
 					getMainWindow().updateShow();
@@ -159,7 +159,7 @@ public class MathPane extends FunctionPanel {
 				if (ItemEvent.SELECTED != e.getStateChange())
 					return;
 
-				resetPersistence();// 清理余辉
+				resetPersistence();// Clear persistence
 				mc.m1 = mtx1.getSelectedIndex();
 				updateMathCompute();
 				refreshMathVoltBase();
@@ -188,7 +188,7 @@ public class MathPane extends FunctionPanel {
 				if (ItemEvent.SELECTED != e.getStateChange())
 					return;
 
-				resetPersistence();// 清理余辉
+				resetPersistence();// Clear persistence
 				mc.m2 = mtx2.getSelectedIndex();
 				updateMathCompute();
 				refreshMathVoltBase();
@@ -278,7 +278,7 @@ public class MathPane extends FunctionPanel {
 
 				fftcb.setEnabled(false);
 				changeFFT(fftcb.isSelected());
-				/** fft切换的位置加延时减缓指令的发送 */
+				/** fftAdd a delay at the fft switching point to slow the sending of commands */
 				try {
 					Thread.sleep(50);
 				} catch (InterruptedException e1) {
@@ -312,8 +312,8 @@ public class MathPane extends FunctionPanel {
 				int idx = ftch.getSelectedIndex();
 
 				/**
-				 * TODO 这里唯一的问题是，mc.fftchl中的已选项和前台不一致，当ftch为"---"的时候，
-				 * 后台其实选择的是一个已有通道，而该通道将无法关闭
+				 * TODO The only problem here is that the selected item in mc.fftchl is inconsistent with the front end; when ftch is "---",
+				 * in the back end an existing channel is actually selected, and that channel can then not be turned off
 				 */
 				if (SupportOffChannel) {
 					int invalidchlidx = lastchlidx;
@@ -418,7 +418,7 @@ public class MathPane extends FunctionPanel {
 
 	protected void updateFFT() {
 		/**
-		 * 在运行时直接适用到下一幅，停止的话需要刷新
+		 * Takes effect directly on the next frame while running; needs a refresh when stopped
 		 */
 		if (cm.isKeepGet())
 			return;
@@ -437,11 +437,11 @@ public class MathPane extends FunctionPanel {
 			listening = false;
 			fttb.setSelectedIndex(fftc.getFFTTimebaseIndex());
 			cm.pcs.firePropertyChange(PropertiesItem.TURN_ON_MARKBULLETIN,
-					null, false);//切fft将关闭光标测量,与fft测量重复
+					null, false);//Switching to fft will turn off cursor measurement, as it duplicates fft measurement
 			listening = true;
 		}
 		getMainWindow().getToolPane().getButtonPane().switch_3in1_fft(b);
-		// 在运行时直接适用到下一幅，停止的话需要刷新
+		// Takes effect directly on the next frame while running; needs a refresh when stopped
 		if (!cm.sourceManager.isConnected() && b) {
 			updateFFT();
 		}
@@ -508,7 +508,7 @@ public class MathPane extends FunctionPanel {
 	}
 
 	/**
-	 * 在运行时直接适用到下一幅，停止的话需要刷新
+	 * Takes effect directly on the next frame while running; needs a refresh when stopped
 	 */
 	protected void updateMathCompute() {
 		if (cm.isKeepGet())
@@ -564,7 +564,7 @@ public class MathPane extends FunctionPanel {
 		if (n.equals(PropertiesItem.CHANNEL_OPTION)) {
 			updateMathRemindLbl(wfm, false);
 		} else if (n.equals(PropertiesItem.START_AUTOSET)) {
-			/** fft有关闭没有再打开，因为自动设置不会进入fft */
+			/** fftfft is closed and not reopened, since auto setting does not enter fftfft */
 			changeFFT(false);
 			fftcb.setSelected(false);
 		} else if (n.equals(PropertiesItem.MACHINETYPE_CHANGE)) {

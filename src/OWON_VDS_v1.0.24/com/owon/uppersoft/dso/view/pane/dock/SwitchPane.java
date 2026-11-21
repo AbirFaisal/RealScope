@@ -9,7 +9,7 @@ import com.owon.uppersoft.dso.page.IContentPage;
 import com.owon.uppersoft.vds.ui.layout.LayoutManagerAdapter;
 
 /**
- * 通过增加动画帧的间隔时间，减少帧次数，来达到在不同性能设备上的一直表现
+ * Increase the interval between animation frames and reduce the frame count, to achieve consistent behavior on devices of different performance
  * 
  */
 public class SwitchPane extends JPanel {
@@ -21,7 +21,7 @@ public class SwitchPane extends JPanel {
 	 * Create the panel
 	 */
 	public SwitchPane() {
-		/** 防亮背景色闪屏 */
+		/** Prevent flicker of the bright background color */
 		// setBackground(Color.black);
 		setLayout(new LayoutManagerAdapter() {
 			@Override
@@ -40,9 +40,9 @@ public class SwitchPane extends JPanel {
 	}
 
 	/**
-	 * 设置下一页面，适配窗口大小
+	 * Set the next page, fit the window size
 	 * 
-	 * 完成切换动作
+	 * Complete the switching action
 	 * 
 	 * @param c
 	 */
@@ -71,7 +71,7 @@ public class SwitchPane extends JPanel {
 	}
 
 	/**
-	 * 移除前者
+	 * Remove the former
 	 */
 	protected void removePrevious() {
 		Container tmp = curr;
@@ -85,9 +85,9 @@ public class SwitchPane extends JPanel {
 	boolean b = true;
 
 	/**
-	 * 切换到下一页面
+	 * Switch to the next page
 	 * 
-	 * TODO 由于快速点击多次快捷按钮会产生多个线程竞争UI资源，这里还可以再优化
+	 * TODO Since quickly clicking the shortcut button several times creates multiple threads competing for UI resources, this can be optimized further
 	 */
 	protected void flipContainers(final int toward) {
 		Thread t = new Thread() {

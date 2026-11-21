@@ -14,24 +14,24 @@ public class PWDValidator {
 
 	/**
 	 * @param cd
-	 * @return 是否改变了密码状态
+	 * @return whether the password state changed
 	 */
 	public boolean input(int cd) {
 		cd = cd - KeyEvent.VK_NUMPAD0 + '0';
 		// System.err.println(bb.position());
 		int b = bb.get();
-		// 输入有误重置比较上下文
+		// Input is wrong, reset the comparison context
 		if (b != cd) {
 			bb.rewind();
 			return false;
 		}
 		if (!bb.hasRemaining()) {
-			// 输入正确，打开权限，重置比较上下文
+			// Input is correct, enable permissions and reset the comparison context
 			open = !open;
 			bb.rewind();
 			return true;
 		} else {
-			// 输入正确，未完继续
+			// Input is correct but not yet complete, continue
 			return false;
 		}
 	}

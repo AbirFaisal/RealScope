@@ -51,7 +51,7 @@ public class ArrangeTimeJob implements Runnable, Logable {
 		jr.queryVideoTrgd(new DefaultCMDResponser() {
 			@Override
 			protected void handleResponse(int res) {
-				/** 仅在这里设置状态，不在这里执行任务 */
+				/** Only set the state here, do not execute the task here */
 				io.value = res;
 			}
 		});
@@ -71,7 +71,7 @@ public class ArrangeTimeJob implements Runnable, Logable {
 					sleepThread0(50);
 				}
 				// System.err.println("video flag: " + v);
-				/** 目前只有chl1可为视频 */
+				/** Currently only chl1 can be video */
 				final int trg_chl_flag = io.value & 1;
 
 				toArrange(trg_chl_flag);
@@ -86,7 +86,7 @@ public class ArrangeTimeJob implements Runnable, Logable {
 			public void run() {
 				final int singleTrg = TriggerDefine.TrgModeSingleIndex;
 				if (trg_chl_flag != 0) {
-					/** 针对单触且通道1才支持视频的前提下 */
+					/** Given that only single trigger and channel 1 support video */
 					int chl = 0;
 					TriggerControl tc = cc.getTriggerControl();
 					tc.c_setChannelMode(singleTrg);
@@ -98,7 +98,7 @@ public class ArrangeTimeJob implements Runnable, Logable {
 
 					tc.selfSubmit();
 
-					/** 根据一个通道为视频来设置时基 */
+					/** Set the timebase according to a channel being video */
 					MachineInfo mi = cc.getMachineInfo();
 
 					int tbi = mi.getTimebaseIndex("50us");

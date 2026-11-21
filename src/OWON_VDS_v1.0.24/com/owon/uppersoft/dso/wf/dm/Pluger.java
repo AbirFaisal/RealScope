@@ -15,7 +15,7 @@ import com.owon.uppersoft.vds.util.BufferHandleUtil;
 
 public class Pluger {
 
-	private static byte[] bufarr = new byte[1000];// 多拿1/2
+	private static byte[] bufarr = new byte[1000];// take an extra 1/2
 
 	private DiluteInfoUnitTiny diu;
 
@@ -30,7 +30,7 @@ public class Pluger {
 	 * @param screendatalen
 	 * @param handlebuf
 	 * @param sinePlugRate
-	 * @return 线性插值的倍速
+	 * @return linear interpolation multiplier
 	 */
 	private MultiplyorAndDivisor linearPlug(int screendatalen,
 			IntBuffer handlebuf, int sinePlugRate, int iPos) {
@@ -66,7 +66,7 @@ public class Pluger {
 		// System.err.println(screendatalen);
 		boolean original = shouldPlugAsOriginal(screendatalen);
 		if (original) {
-			/** 这里按初始载入的插值倍数插值，借用非插值的方式画图 */
+			/** Here interpolate by the interpolation factor of the initial load, borrowing the non-interpolated way of drawing */
 			doprocessPlug(iPos, len, datalen, this.screendatalen, filePointer,
 					shouldReverse, loadPos0, handlebuf, cba);
 			gap = this.screendatalen / (double) screendatalen;
@@ -78,7 +78,7 @@ public class Pluger {
 	}
 
 	/**
-	 * 非初始化载入时的插值
+	 * Interpolation when not at initial load
 	 * 
 	 * @param iPos
 	 * @param len
@@ -95,11 +95,11 @@ public class Pluger {
 			int loadPos0, IntBuffer handlebuf, CByteArrayInputStream cba) {
 		int sine_plug_r;
 		// System.err.println("doprocessPlug: "+screendatalen);
-		// 进行插值
+		// Perform interpolation
 		// MultiplyorAndDivisor linear_plug_r;
 		if (screendatalen != 400) {//
 			sine_plug_r = CenterPointInfo.DEFINE_AREA_WIDTH / screendatalen;
-			// 可正弦插值，使用已经处理的extendRange计算正弦插值
+			// Sine interpolation is possible; compute the sine interpolation using the already processed extendRange
 			sinePlug(iPos, len, handlebuf, datalen, DefaultExtendRange,
 					sine_plug_r);
 			BufferHandleUtil.restrictForReverse(handlebuf, shouldReverse,
@@ -107,7 +107,7 @@ public class Pluger {
 			// linear_plug_r = new MultiplyorAndDivisor(1, 1);
 		} else {
 			sine_plug_r = 1;
-			// 不可正弦插值
+			// Sine interpolation is not possible
 			diu.retrieveBuf(iPos, 0, len, handlebuf, filePointer, cba);
 			BufferHandleUtil.restrictForReverse(handlebuf, shouldReverse,
 					loadPos0);
@@ -126,7 +126,7 @@ public class Pluger {
 	}
 
 	/**
-	 * 初始化载入时的插值
+	 * Interpolation at initial load
 	 * 
 	 * @param datalen
 	 * @param screendatalen
@@ -136,7 +136,7 @@ public class Pluger {
 	 * @param handlebuf
 	 * @param cba
 	 * @param halfpixs
-	 * @return 插值后的满屏点数
+	 * @return full-screen point count after interpolation
 	 */
 	private int doprocessPlugForInit(final int iPos, final int len,
 			int filePointer, boolean shouldReverse, int loadPos0,
@@ -144,18 +144,18 @@ public class Pluger {
 		int sine_plug_r;
 
 		MultiplyorAndDivisor linear_plug_r;
-		// 进行插值
+		// Perform interpolation
 		if (sinePlugRate > 1) {
 			sine_plug_r = sinePlugRate;
 			linear_plug_r = new MultiplyorAndDivisor(1, 1);
-			// 可正弦插值，使用已经处理的extendRange计算正弦插值
+			// Sine interpolation is possible; compute the sine interpolation using the already processed extendRange
 			sinePlugForInit(iPos, len, handlebuf, sine_plug_r);
 
 			BufferHandleUtil.restrictForReverse(handlebuf, shouldReverse,
 					loadPos0);
 		} else {
 			sine_plug_r = 1;
-			// 不可正弦插值
+			// Sine interpolation is not possible
 			diu.retrieveBuf(iPos, 0, len, handlebuf, filePointer, cba);
 
 			BufferHandleUtil.restrictForReverse(handlebuf, shouldReverse,
@@ -191,7 +191,7 @@ public class Pluger {
 
 		doSinePlug(pPos, pLen, bufarr, handlearr, plugrate);
 
-		/** 偏移还是从extra对应的位置开始，长度为插plugrate之后的长度 */
+		/** The offset still starts from the position corresponding to extra; the length is the length after interpolating by plugrate */
 		handlebuf.position(0);
 		handlebuf.limit(len * plugrate);
 	}
@@ -202,9 +202,9 @@ public class Pluger {
 		int pPos = pos, pLen = len;
 		int ex = 0;
 
-		/** 前后各多拿是为了拉触发，可把extendRange赋值0来得到已经多拿以后的情况 */
+		/** Extra points are taken at both the front and back for trigger pull; setting extendRange to 0 gives the situation after the extra points have already been taken */
 		if (extendRange > 0) {
-			/** 三个正值间比较最小者 */
+			/** Smallest among the three positive values */
 			ex = Math.min(Math.min(pPos, extendRange), datalen - (pPos + pLen));
 			if (ex < 0)
 				ex = 0;
@@ -217,7 +217,7 @@ public class Pluger {
 
 		doSinePlug(pPos, pLen, bufarr, array, plugrate);
 
-		/** 偏移还是从extra对应的位置开始，长度为插plugrate之后的长度 */
+		/** The offset still starts from the position corresponding to extra; the length is the length after interpolating by plugrate */
 		int iPos, iLimit;
 		iPos = ex * plugrate;
 		iLimit = iPos + orglen * plugrate;
@@ -253,7 +253,7 @@ public class Pluger {
 	}
 
 	/**
-	 * 是否采用载入时的插值倍率插值，如果为否，则表示为载入时插值
+	 * Whether to interpolate with the interpolation factor from load time; if no, it means interpolation at load time
 	 * 
 	 * @param screendatalen
 	 * @return
@@ -279,14 +279,14 @@ public class Pluger {
 	}
 
 	/**
-	 * 提取插值信息，返回取出拉触发多拿数据以外，正确的屏幕起始位置
+	 * Extract interpolation info and return the correct screen start position, excluding the extra data taken for trigger pull
 	 * 
 	 * @param cdi
 	 * @param li
-	 * @return 没有多拿数据情况下的起始位置
+	 * @return start position when there is no extra data
 	 */
 	public int initPlugInfo(DMDataInfo cdi, MachineType mt) {
-		/** 载入深存储时为无需插值的时基，则后续也不进行插值 */
+		/** When loading deep memory, if the timebase does not need interpolation, no interpolation is done afterwards either */
 		if (!plug) {
 			logln("screendatalen >= 1k err in Pluger.java");
 			return -1;

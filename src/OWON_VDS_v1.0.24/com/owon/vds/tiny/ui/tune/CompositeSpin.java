@@ -89,7 +89,7 @@ public class CompositeSpin extends JPanel {
 
 						// DBG.errprintln("10");
 						if (aac.isListening())
-							spinValueChange();// 每次改动都应用一次
+							spinValueChange();// Apply on every change
 						return;
 					}
 					if (n.intValue() == -1) {
@@ -100,7 +100,7 @@ public class CompositeSpin extends JPanel {
 						turnonInternal();
 
 						if (aac.isListening())
-							spinValueChange();// 每次改动都应用一次
+							spinValueChange();// Apply on every change
 						return;
 					}
 
@@ -108,7 +108,7 @@ public class CompositeSpin extends JPanel {
 						return;
 					// DBG.errprintln(j);
 					if (aac.isListening())
-						spinValueChange();// 每次改动都应用一次
+						spinValueChange();// Apply on every change
 				}
 			});
 

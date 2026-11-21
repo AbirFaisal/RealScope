@@ -77,8 +77,8 @@ public class AboutDialog implements Localizable {
 		Window owner = mw.getFrame();
 		pre = cf.getStaticPref();
 		initialize(owner, cm);
-		new ComponentMover(frame, frame);// 拖拽特定区域移动窗口
-		frame.setUndecorated(true);// 去除边框
+		new ComponentMover(frame, frame);// drag a specific area to move the window
+		frame.setUndecorated(true);// remove border
 
 		frame.setResizable(false);
 		frame.setVisible(true);
@@ -185,7 +185,7 @@ public class AboutDialog implements Localizable {
 
 		sc = cm.getSoftwareControl();
 		Dimension lbsz = new Dimension(fw / 2, 25);
-		/** 软件版本信息 */
+		/** software version info */
 		version = new JLabel();
 		version.setFont(ft);
 		version.setPreferredSize(lbsz);
@@ -198,7 +198,7 @@ public class AboutDialog implements Localizable {
 		vslbl.setForeground(Color.WHITE);
 		leftPane.add(vslbl);
 
-		/** 机器信息 */
+		/** machine info */
 		// machine = new JLabel();
 		// machine.setFont(ft);
 		// machine.setPreferredSize(lbsz);

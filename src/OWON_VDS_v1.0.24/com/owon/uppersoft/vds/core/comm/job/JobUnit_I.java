@@ -18,7 +18,7 @@ public class JobUnit_I implements JobUnit {
 	 * arr
 	 * 
 	 * @param arr
-	 *            发送的数组
+	 *            array to send
 	 */
 	public JobUnit_I(byte[] arr) {// String name,
 		// this.name = name;
@@ -30,9 +30,9 @@ public class JobUnit_I implements JobUnit {
 	 * arr & re_arr
 	 * 
 	 * @param arr
-	 *            发送的数组
+	 *            array to send
 	 * @param re_arr
-	 *            接收返回信息的数组
+	 *            array to receive the returned information
 	 */
 	public JobUnit_I(byte[] arr, byte[] re_arr) {// String name,
 		// this.name = name;
@@ -71,9 +71,9 @@ public class JobUnit_I implements JobUnit {
 	}
 
 	/**
-	 * 在继承中重写
+	 * Override in subclasses
 	 * 
-	 * 在任务通用行为之后执行一些动作
+	 * Perform some actions after the task's common behavior
 	 * 
 	 * @param cm
 	 * @param sm

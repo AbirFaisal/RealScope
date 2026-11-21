@@ -54,7 +54,7 @@ public class FFTUtil {
 	}
 
 	/**
-	 * 插值算法，通常只在原始数据上计算一次
+	 * Interpolation algorithm, usually computed only once on the raw data
 	 * 
 	 * @param src
 	 * @param dest
@@ -78,7 +78,7 @@ public class FFTUtil {
 		// System.out.println("start: " + start + "; end: " + end);
 
 		/*
-		 * src起码4个点才适用，下面将scrlen个点进行1->step的扩充
+		 * src needs at least 4 points to apply; below, scrlen points are expanded 1->step
 		 */
 		dest[0] = src[start] - pos0;
 		int i, k, lasti = 0, f, s;
@@ -103,7 +103,7 @@ public class FFTUtil {
 	}
 
 	/**
-	 * 插值算法，通常只在原始数据上计算一次
+	 * Interpolation algorithm, usually computed only once on the raw data
 	 * 
 	 * @param src
 	 * @param dest
@@ -127,7 +127,7 @@ public class FFTUtil {
 		// System.out.println("start: " + start + "; end: " + end);
 
 		/*
-		 * src起码4个点才适用，下面将scrlen个点进行1->step的扩充
+		 * src needs at least 4 points to apply; below, scrlen points are expanded 1->step
 		 */
 		dest[0] = src[start] - pos0;
 		int i, k, lasti = 0, f, s;

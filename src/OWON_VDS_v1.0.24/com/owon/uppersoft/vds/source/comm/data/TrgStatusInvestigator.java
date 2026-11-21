@@ -18,7 +18,7 @@ import com.owon.uppersoft.vds.util.format.EndianUtil;
 import com.owon.vds.firm.protocol.AddressAttachCommand;
 
 /**
- * 获取触发状态、配合触发模式设置获取波形、更新显示状态
+ * Get the trigger status, get the waveform according to the trigger mode setting, and update the display status
  * 
  */
 public class TrgStatusInvestigator {
@@ -41,7 +41,7 @@ public class TrgStatusInvestigator {
 		el.on = false;
 	}
 
-	/** 单例数组优化频繁使用 */
+	/** singleton array, optimized for frequent use */
 	private byte[] RESPONSE_BUF = new byte[TinyCommunicationProtocol.RESPONSE_LEN];
 
 	protected int getTrgStatus(ChannelsTransportInfo_Tiny ci,
@@ -66,7 +66,7 @@ public class TrgStatusInvestigator {
 		trg_status = EndianUtil.nextIntL(rep, 1);
 		el.logln("trg_d: " + trg_status);
 
-		/** 触发状态会根据通道的关闭置零对应的位 */
+		/** the trigger status zeroes the corresponding bits according to channel closure */
 		WaveFormInfo[] wfinfo = wfic.getWaveFormInfos();
 		int chllen = wfinfo.length;
 		for (int i = 0; i < chllen; i++) {
@@ -81,7 +81,7 @@ public class TrgStatusInvestigator {
 	/**
 	 * @param ci
 	 * @param ism
-	 * @return -1代表出错，大于0代表完成
+	 * @return -1 means error, greater than 0 means completed
 	 */
 	protected int getDataFinishedStatus(ChannelsTransportInfo_Tiny ci,
 			ICommunicateManager ism) {
@@ -116,22 +116,22 @@ public class TrgStatusInvestigator {
 
 	public boolean checkStatusForGetDataT(ChannelsTransportInfo_Tiny ci,
 			ICommunicateManager ism) {
-		/** 使用此时机作为触发状态的读取，决定是否获取数据 */
+		/** use this timing to read the trigger status and decide whether to fetch data */
 		ci.channel_trg_status = 0;
 		// checkSingleOnce = CHEKC_SINGLE_NONE;
 
 		TriggerControl tc = cm.getCoreControl().getTriggerControl();
-		/** 指令发送完毕，扫频的控制由上位机进行 */
+		/** commands are all sent; sweep control is done by the host */
 		int trg_status = getTrgStatus(ci, ism);
 		if (trg_status < 0)
 			return false;
 
 		int datafinished = getDataFinishedStatus(ci, ism);
-		// 笔式暂时读不到，所以注释；出于兼容旧机型的考虑，可以注释之，否则还是限制完成标志更恰当
+		// the pen model cannot read it for now, so it is commented out; for compatibility with older models it can be commented out, otherwise restricting by the completion flag is more appropriate
 		if (datafinished < 0)
 			return false;
 
-		// 还有强制触发等..
+		// also force trigger, etc..
 
 		int ciTrgStatus;
 
@@ -140,15 +140,15 @@ public class TrgStatusInvestigator {
 			ciTrgStatus = TrgStatus.Scan.ordinal();
 		} else if (tc.isSingleTrg()) {
 
-			// 针对双通道特定的代码
+			// code specific to dual channel
 			// int chl = tc.getSingleTrgChannel();
 			// trg_status &= (1 << chl);
 
 			if (tc.isSweepAuto()) {
-				// mcu先判断完成标志，如果为真则发数据；发数据后fpga会清空完成标志
-				// 反之再判断触发状态，无则强制触发，最后返回EBUSY
+				// mcuthe mcu first checks the completion flag and sends data if it is true; after sending data the fpga clears the completion flag
+				// otherwise it checks the trigger status, forces a trigger if there is none, and finally returns EBUSYEBUSY
 
-				/** 这里外部触发也可能触发到，而触发状态反应不出来，所以只有其非零就认为有触发 */
+				/** external trigger may also fire here while the trigger status does not reflect it, so any non-zero value is taken to mean there is a trigger */
 				if (trg_status != 0) {
 					// (& lcm.getTrgChannles())
 					ciTrgStatus = TrgStatus.Trg_d.ordinal();
@@ -156,31 +156,31 @@ public class TrgStatusInvestigator {
 					ciTrgStatus = TrgStatus.Auto.ordinal();
 				}
 			} else if (tc.isSweepOnce()) {
-				// 单次触发，发强制时触发的指令触发状态不会被设置
+				// single trigger: when the force-trigger command is sent, the trigger status is not set
 				ciTrgStatus = TrgStatus.Ready.ordinal();
 				// System.out.println("trg_status: " + trg_status + ", "
 				// + datafinished);
 				if (trg_status == 0) {
 					if (datafinished > 0) {
-						// 无触发判断完成标志，真则为强制触发，可以拿数据
-						ciTrgStatus = TrgStatus.Stop.ordinal();// 有触发就Stop
-						// checkSingleOnce = CHEKC_SINGLE_ONCE;// 如有数据即有触发就Stop
+						// with no trigger, check the completion flag; if true it is a forced trigger and data can be fetched
+						ciTrgStatus = TrgStatus.Stop.ordinal();// Stop if there is a triggerStop
+						// checkSingleOnce = CHEKC_SINGLE_ONCE;// Stop if there is data, i.e. a triggerStop
 
 						onSweepOutAsOnce();
 					} else {
 						ci.status = ChannelsTransportInfo_Tiny.Status_RT_OK;
 						ci.setFrameCount(0);
-						/** 使当前状态可以刷新 */
+						/** allow the current status to be refreshed */
 						ci.channel_trg_status = trg_status;
 						ci.triggerStatus = ciTrgStatus;
 						dealTrgStatus(ci);
 						return false;
 					}
 				} else {
-					// 有触发则跳过完成标志去拿数据
-					ciTrgStatus = TrgStatus.Stop.ordinal();// 有触发就Stop
+					// if triggered, skip the completion flag and fetch data
+					ciTrgStatus = TrgStatus.Stop.ordinal();// Stop if there is a triggerStop
 
-					// 在大于10ms的情况下，cpu搬移数据要比较久，可能出现ebusy的情况，需要持续读取直到有数据
+					// above 10ms, the cpu takes a relatively long time to move data and ebusy may occur, so reading must continue until there is data
 					ci.fetchUntilData = true;
 				}
 			} else {
@@ -188,21 +188,21 @@ public class TrgStatusInvestigator {
 				// Normal
 				if (trg_status == 0) {
 					if (datafinished > 0) {
-						// 无触发判断完成标志，真则为强制触发，可以拿数据
-						ciTrgStatus = TrgStatus.Trg_d.ordinal();// 总是Ready
-						// checkSingleOnce = CHEKC_SINGLE_NORMAL;// 总是Ready
+						// with no trigger, check the completion flag; if true it is a forced trigger and data can be fetched
+						ciTrgStatus = TrgStatus.Trg_d.ordinal();// always ReadyReady
+						// checkSingleOnce = CHEKC_SINGLE_NORMAL;// always ReadyReady
 					} else {
 						ci.status = ChannelsTransportInfo_Tiny.Status_RT_OK;
 						ci.setFrameCount(0);
-						/** 使当前状态可以刷新 */
+						/** allow the current status to be refreshed */
 						ci.channel_trg_status = trg_status;
 						ci.triggerStatus = ciTrgStatus;
 						dealTrgStatus(ci);
 						return false;
 					}
 				} else {
-					// 有触发则跳过完成标志去拿数据
-					ciTrgStatus = TrgStatus.Trg_d.ordinal();// 总是Ready
+					// if triggered, skip the completion flag and fetch data
+					ciTrgStatus = TrgStatus.Trg_d.ordinal();// always ReadyReady
 				}
 
 			}
@@ -244,7 +244,7 @@ public class TrgStatusInvestigator {
 	}
 
 	public void onDataReceive(ChannelsTransportInfo_Tiny ci) {
-		/** 恢复点单次触发的状态 */
+		/** restore the state after clicking single trigger */
 		// if (checkSingleOnce == CHEKC_SINGLE_ONCE) {
 		// ci.triggerStatus = TrgStatus.Stop.ordinal();
 		// setClickForce(false);

@@ -13,19 +13,19 @@ public class LineDrawTool {
 	}
 
 	/**
-	 * 在给定的维度值loc1上，从中间向两边画虚线
+	 * Draw a dashed line at the given dimension value loc1, from the middle toward both sides
 	 * 
 	 * @param g2d
 	 * @param vertical
-	 *            是否垂直
+	 *            whether vertical
 	 * @param center
-	 *            中间的维度坐标
+	 *            dimension coordinate of the middle
 	 * @param start
-	 *            起始的维度坐标
+	 *            starting dimension coordinate
 	 * @param end
-	 *            终止的维度坐标
+	 *            ending dimension coordinate
 	 * @param loc1
-	 *            另一维度的坐标
+	 *            coordinate in the other dimension
 	 */
 	public static final void drawSashLine(Graphics2D g2d, boolean vertical,
 			int center, int start, int end, int loc1, int gap) {
@@ -62,17 +62,17 @@ public class LineDrawTool {
 	}
 
 	/**
-	 * 在给定的维度值loc1上画实线
+	 * Draw a solid line at the given dimension value loc1
 	 * 
 	 * @param g2d
 	 * @param vertical
-	 *            是否垂直
+	 *            whether vertical
 	 * @param start
-	 *            起始的维度坐标
+	 *            starting dimension coordinate
 	 * @param end
-	 *            终止的维度坐标
+	 *            ending dimension coordinate
 	 * @param loc1
-	 *            另一维度的坐标
+	 *            coordinate in the other dimension
 	 */
 	public static final void drawLine(Graphics2D g2d, boolean vertical,
 			int start, int end, int loc1) {
@@ -84,19 +84,19 @@ public class LineDrawTool {
 	}
 
 	/**
-	 * 在给定的维度值loc1上，从中间向两边画虚线
+	 * Draw a dashed line at the given dimension value loc1, from the middle toward both sides
 	 * 
 	 * @param g2d
 	 * @param vertical
-	 *            是否垂直
+	 *            whether vertical
 	 * @param center
-	 *            中间的维度坐标
+	 *            dimension coordinate of the middle
 	 * @param start
-	 *            起始的维度坐标
+	 *            starting dimension coordinate
 	 * @param end
-	 *            终止的维度坐标
+	 *            ending dimension coordinate
 	 * @param loc1
-	 *            另一维度的坐标
+	 *            coordinate in the other dimension
 	 */
 	public static final void drawNormalSashLine(Graphics2D g2d,
 			boolean vertical, int start, int end, int loc1) {

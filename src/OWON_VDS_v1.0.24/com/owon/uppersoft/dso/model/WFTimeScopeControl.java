@@ -10,7 +10,7 @@ import com.owon.uppersoft.vds.core.wf.peak.PKDetectDrawUtil;
 import com.owon.uppersoft.vds.core.wf.rt.ChannelsTransportInfo;
 
 /**
- * WFTimeScopeControl，通道时基统一改变的控制
+ * WFTimeScopeControl, control for changing the timebase of all channels uniformly
  * 
  */
 public abstract class WFTimeScopeControl implements WFTimeScopeContext {
@@ -35,17 +35,17 @@ public abstract class WFTimeScopeControl implements WFTimeScopeContext {
 		BigDecimal rate = nvb.divide(ovb);
 		nowgap = BigDecimal.valueOf(orggap).divide(rate).doubleValue();
 
-		// 将中心点到数据起始点的距离，作为时基切换改变的值，然后转换为起始点的位置
+		// take the distance from the center point to the data start point as the value changed by the timebase switch, then convert it to the position of the start point
 		int hp = GDefine.AREA_WIDTH >> 1;
 		int oxbeg = hp - xboff;
 		BigDecimal nxbeg = BigDecimal.valueOf(oxbeg).divide(nvb.divide(lvb));
 		this.xboff = hp - (int) nxbeg.doubleValue();
 
-		// 注意慢扫
+		// note slow sweep
 	}
 
 	/**
-	 * -...+，与网格左边界的距离
+	 * -...+, distance from the left boundary of the grid
 	 */
 	private int xboff = 0;
 
@@ -59,7 +59,7 @@ public abstract class WFTimeScopeControl implements WFTimeScopeContext {
 	}
 
 	/**
-	 * 在这里对慢扫需要略过的像素点相应地偏移画图起始位置
+	 * Here, offset the drawing start position accordingly for the pixels that need to be skipped during slow sweep
 	 * 
 	 * @param xb
 	 * @param dm
@@ -78,7 +78,7 @@ public abstract class WFTimeScopeControl implements WFTimeScopeContext {
 	}
 
 	/**
-	 * 由慢扫时需要略过的像素点，换算偏移的画图起始位置
+	 * Convert the pixels that need to be skipped during slow sweep into an offset of the drawing start position
 	 */
 	public int getSlowMoveOffset(int drawMode) {
 		int offset = 0;
@@ -123,7 +123,7 @@ public abstract class WFTimeScopeControl implements WFTimeScopeContext {
 	}
 
 	/**
-	 * 各种深存储载入时的pk信息
+	 * pk information when various deep memories are loaded
 	 */
 	private boolean PK_Detect;
 
@@ -177,7 +177,7 @@ public abstract class WFTimeScopeControl implements WFTimeScopeContext {
 	}
 
 	/**
-	 * 仅用于RT的按波形点数进行区分的画图模式
+	 * Drawing mode used only in RT, distinguished by waveform point count
 	 */
 	private int drawMode = -1;
 
@@ -186,7 +186,7 @@ public abstract class WFTimeScopeControl implements WFTimeScopeContext {
 	}
 
 	/**
-	 * RT时通过满屏数确定，这里的满屏数还可以通过计算得出
+	 * RTIn RT it is determined by the full-screen count; the full-screen count here can also be obtained by calculation
 	 * 
 	 * @param screendatalen
 	 */

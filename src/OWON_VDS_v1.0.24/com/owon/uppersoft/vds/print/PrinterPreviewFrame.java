@@ -95,7 +95,7 @@ public class PrinterPreviewFrame implements Localizable {
 	private JMenuItem customizeMenuItem;// Default Size
 	private JMenuItem realPageMenuItem; // face Size
 	private JMenuItem wholePageMenuItem;
-	private JCheckBoxMenuItem hvtransformMenuItem;// horizontal、vertical
+	private JCheckBoxMenuItem hvtransformMenuItem;// horizontal, vertical
 													// transform !!!!
 													// checkMenuItem
 
@@ -106,7 +106,7 @@ public class PrinterPreviewFrame implements Localizable {
 	double dpiScale;
 	int dpi;
 	double scale = 1;
-	double defaultEdgeSpace = 20;// 默认页边距为20毫米
+	double defaultEdgeSpace = 20;// default page margin is 20 mm
 	public static final double inchPerMM = 25.4;
 	public static final int A4PaperXPixels = 2480;
 	public static final int A4PaperYPixels = 3508;
@@ -159,7 +159,7 @@ public class PrinterPreviewFrame implements Localizable {
 		jMenuBarOne = new JMenuBar();
 		/*
 		 * 
-		 * 创建几个JMenu对象
+		 * create several JMenu objects
 		 */
 
 		fileMenu = new JMenu();
@@ -377,25 +377,25 @@ public class PrinterPreviewFrame implements Localizable {
 			super.paintComponent(g);
 			Graphics2D g2d = (Graphics2D) g;
 
-			// 画最外圈的黑色矩形框
+			// draw the outermost black rectangle
 			g2d.drawRect((getWidth() - (int) (A4PageWidth * scale)) / 2, 0,
 					(int) (A4PageWidth * scale), (int) (A4PageHeight * scale));
 
-			// 画最打印纸张背景色
+			// draw the background color of the printing paper
 			g2d.setColor(A4PageBackground);
 			g2d.fillRect(
 					(scrollPanel.getPanel().getSize().width - (int) (A4PageWidth * scale)) / 2 + 1,
 					0 + 1, (int) (A4PageWidth * scale) - 1,
 					(int) (A4PageHeight * scale) - 1);
 
-			// 设置红色虚线
+			// set red dashed line
 			float[] dash2 = { 6.0f, 4.0f, 2.0f, 4.0f, 2.0f, 4.0f };
 			BasicStroke bs = new BasicStroke(2.0f, BasicStroke.CAP_BUTT,
 					BasicStroke.JOIN_MITER, 10.0f, dash2, 0.0f);
 			g2d.setStroke(bs);
 			g2d.setColor(Color.red);
 
-			// 画虚线
+			// draw the dashed line
 			int x = (int) (scrollPanel.getPanel().getSize().width / 2 - scale
 					* A4PageWidth / 2 + scale
 					* (ppc.leftEdgeLength / inchPerMM * dpi));
@@ -408,11 +408,11 @@ public class PrinterPreviewFrame implements Localizable {
 							/ inchPerMM * dpi));
 			g2d.drawRect(x, y, width, height);
 
-			// 移动原点到波形图区域
+			// move the origin to the waveform area
 			g2d.translate(x, y);
-			// 绘画波形背景
+			// draw the waveform background
 			drawChartViewBG(g2d, width);
-			// 绘画波形
+			// draw the waveform
 			float stroke;
 			// if (scale < 0.5)
 			// stroke = 4.0f;

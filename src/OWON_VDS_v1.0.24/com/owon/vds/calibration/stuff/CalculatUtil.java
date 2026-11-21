@@ -48,7 +48,7 @@ public class CalculatUtil {
 		// byte[] arr = bb.array();
 		
 		// ArrayLogger.outArray2Logable(new VLog(), arr, p, l - p);
-		// 计算时已移到了竖直中心
+		// Already shifted to the vertical center during calculation
 		vvc.getVtopVbase(bb, 0);
 		return new TopBaseCalResult(vvc.Vtop, vvc.Vbase);
 	}

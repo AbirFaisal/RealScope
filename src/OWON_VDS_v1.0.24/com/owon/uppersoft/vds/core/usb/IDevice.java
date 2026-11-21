@@ -3,7 +3,7 @@ package com.owon.uppersoft.vds.core.usb;
 import ch.ntb.usb.Usb_Device;
 
 /**
- * IDevice，设备接口
+ * IDevice, device interface
  */
 public interface IDevice {
 
@@ -17,7 +17,7 @@ public interface IDevice {
 	 */
 	String getSerialNumber();
 
-	/** 可用于对本类的toString方法追加覆盖的文本 */
+	/** Text that can be used to append to or override the toString method of this class */
 	void setText(String txt);
 	
 	/**

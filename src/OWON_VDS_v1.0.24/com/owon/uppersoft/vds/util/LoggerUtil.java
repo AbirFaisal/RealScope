@@ -23,8 +23,8 @@ public class LoggerUtil {
 	public static final String ErrDir = "err.txt";
 
 	/**
-	 * 在发布后开启，开发时关闭，只是将System.in,
-	 * System.out的打印内容输出到文件，而非所有debug信息，只用于辅助查找发布后出现的意外问题
+	 * Enabled after release, disabled during development; it only sends System.in,
+	 * System.out printed output to a file, not all debug information; used only to help locate unexpected problems after release
 	 */
 	public static final void redirect2FileLog(File logDir) {
 		String errPath = ErrDir;
@@ -51,7 +51,7 @@ public class LoggerUtil {
 	}
 
 	/**
-	 * 使用文件作为输出方式，用在无法开启eclipse的内部调试中，给测试人员使用
+	 * Uses a file as the output method, for cases where eclipse internal debugging cannot be started, for use by testers
 	 * 
 	 * @param className
 	 * @param level
@@ -79,7 +79,7 @@ public class LoggerUtil {
 	}
 
 	/**
-	 * eclipse的内部调试中，打印信息重定向到System.out
+	 * eclipse internal debugging: print output is redirected to System.out
 	 * 
 	 * @param className
 	 * @param level

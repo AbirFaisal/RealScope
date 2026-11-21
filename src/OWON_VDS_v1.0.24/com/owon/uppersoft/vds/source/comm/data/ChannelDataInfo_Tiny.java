@@ -50,7 +50,7 @@ public class ChannelDataInfo_Tiny extends ChannelDataInfo {
 		setFreq(-1);
 	}
 
-	/** 需要拉触发时才用的触发周围数据buf */
+	/** data around the trigger (used only when trigger locating is needed): buf */
 	private ByteBuffer trglocbuf;
 
 	public void setTrgLocBuffer(ByteBuffer trgb) {

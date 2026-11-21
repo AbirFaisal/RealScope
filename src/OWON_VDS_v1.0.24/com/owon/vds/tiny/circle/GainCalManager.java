@@ -12,7 +12,7 @@ import com.owon.vds.calibration.AutomaticWorkManager;
 import com.owon.vds.calibration.stuff.ArgCreator;
 
 /**
- * tiny专用的AutoCalManager
+ * tiny-specific AutoCalManager
  * 
  */
 public class GainCalManager extends AutomaticWorkManager {
@@ -32,8 +32,8 @@ public class GainCalManager extends AutomaticWorkManager {
 
 	/**
 	 * <code>
-	 * 1. 自校正+闭环+自校正, 注意开关agp
-	 * 2. 自动保存txt，并写入厂家设置
+	 * 1. Self-calibration + closed loop + self-calibration, note to toggle agp
+	 * 2. Automatically save the txt and write it into the factory settings
 	 * 
 	 * </code>
 	 * 
@@ -41,7 +41,7 @@ public class GainCalManager extends AutomaticWorkManager {
 	@Override
 	protected void getReadyForCalibration(final ProgressObserver sd,
 			ArgCreator ac, PropertyChangeSupport pcs, Runnable finishedJob) {
-		// 增益校正
+		// Gain calibration
 		gainCalRunner = new CalRunner2(ac, sd, finishedJob, pcs, agp) {
 			@Override
 			protected int computeMaximum(int chlnum, int vbnum) {
@@ -59,14 +59,14 @@ public class GainCalManager extends AutomaticWorkManager {
 
 	public void cancel(Runnable afterCancel) {
 		if (gainCalRunner != null) {
-			// 可取消闭环校正
+			// Closed-loop calibration can be canceled
 			gainCalRunner.cancel(afterCancel);
 			gainCalRunner = null;
 		}
 	}
 
 	public void onFinished(ProgressObserver sd) {
-		// 在收尾工作之前，加入自校正后续的其它任务
+		// Before the wrap-up work, add the other tasks that follow self-calibration
 		super.onFinished(sd);
 
 		sd.shutdown();

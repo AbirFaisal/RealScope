@@ -21,7 +21,7 @@ public class USBDaemonHelper {
 		uc = new USBLoopChecker(cm, cm.sourceManager.getUSBSourceManager(), mw,
 				dmn);
 
-		/** 如果程序中存在usb相关才调用 */
+		/** Called only if there is usb-related functionality in the program */
 		if (cm.reloadManager.isReload())
 			setNoDisturb(true);
 	}
@@ -38,7 +38,7 @@ public class USBDaemonHelper {
 	public void onClickStatus(int status_icon_xloc, int btn) {
 		int x = status_icon_xloc;
 
-		// 其它的弹出方式
+		// Other popup modes
 		// JPanel jp = new JPanel();
 		// jp.setPreferredSize(new Dimension(100, 100));
 		// cs.promptDown(jp, status_icon_xloc);
@@ -49,11 +49,11 @@ public class USBDaemonHelper {
 			ctxMenu.showContextMenu_RightClick(uch, x, rb);
 			return;
 		}
-		// 已连接状态
+		// Connected state
 		if (cm.sourceManager.isConnected()) {
 			ctxMenu.showContextMenu_Online(uch, x, rb);
 		} else {
-			// 免打扰状态 & 未连接状态
+			// Do-not-disturb state & disconnected state
 			// if (noDisturb);
 			ctxMenu.showContextMenu_Offline(uch, x, rb);
 		}

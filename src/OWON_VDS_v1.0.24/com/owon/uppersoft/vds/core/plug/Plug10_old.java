@@ -4,9 +4,9 @@ import java.nio.IntBuffer;
 import java.util.ArrayDeque;
 
 /**
- * 正弦插值，算出9个点，就把1点插成了10个
+ * Sine interpolation: compute 9 points, turning 1 point into 10
  * 
- * 补充：除了线性插值，也可在间隔上直接用0插值，效果相似，只要调整增益即可
+ * Addendum: besides linear interpolation, interpolating directly with 0 on the gaps also works with similar effect; just adjust the gain
  * 
  * @author Matt
  * 
@@ -16,7 +16,7 @@ public class Plug10_old {
 	public static int PlugRate = 10;
 	public static double[] PlugArgs_dbl
 	/**
-	 * 81个 参数以数组中心点对称排往两端，中间元素可能为空
+	 * 81 parameters, arranged symmetrically outward from the array center point; middle elements may be empty
 	 */
 	= { -0.0000, -0.0020, -0.0038, -0.0053, -0.0063, -0.0068, -0.0066, -0.0058,
 			-0.0044, -0.0024, 0, 0.0109, 0.0212, 0.0299, 0.0362, 0.0395,
@@ -31,7 +31,7 @@ public class Plug10_old {
 			-0.0020, -0.0000 };
 
 	/**
-	 * 20个参数的情况
+	 * 20 parameters case
 	 * 
 	 * -0.0000, -0.0176, -0.0341, -0.0485, -0.0597, -0.0666, -0.0681, -0.0632,
 	 * -0.0509, -0.0301, 0, 0.1050, 0.2173, 0.3337, 0.4512, 0.5664, 0.6763,
@@ -41,7 +41,7 @@ public class Plug10_old {
 	 */
 
 	/**
-	 * 81个
+	 * 81 parameters
 	 */
 	public static int[] PlugArgs_int = { 0x0000, 0xFFE0, 0xFFC2, 0xFFAA,
 			0xFF99, 0xFF91, 0xFF93, 0xFFA1, 0xFFB8, 0xFFD9, 0x0000, 0x00B3,
@@ -77,8 +77,8 @@ public class Plug10_old {
 	}
 
 	/**
-	 * out[len]; in[PlugArgs_int.length + (len - 1)]<-len/10个adc点线性插值，然后自第PlugArgs_int.length -
-	 * 1个元素填充起
+	 * out[len]; in[PlugArgs_int.length + (len - 1)]<-len/10 adc points linearly interpolated, then filled starting from element number PlugArgs_int.length -
+	 * 1
 	 * 
 	 * @param out
 	 * @param in
@@ -107,10 +107,10 @@ public class Plug10_old {
 	}
 
 	/**
-	 * KNOW 因为依赖前期数据计算得到，插值的效果只有后一段可用
+	 * KNOW Since it relies on earlier data for computation, only the later part of the interpolation result is usable
 	 * 
-	 * out[len]; in[PlugArgs_int.length + (len - 1)]<-len/10个adc点线性插值，然后自第PlugArgs_int.length -
-	 * 1个元素填充起
+	 * out[len]; in[PlugArgs_int.length + (len - 1)]<-len/10 adc points linearly interpolated, then filled starting from element number PlugArgs_int.length -
+	 * 1
 	 * 
 	 * @param out
 	 * @param in
@@ -154,22 +154,22 @@ public class Plug10_old {
 		/**
 		 * KNOW
 		 * 
-		 * 得到的点如何以原始点为基础在屏幕上排布？从第一个点开始，填满空隙
+		 * How are the obtained points arranged on screen based on the original points? Starting from the first point, fill the gaps
 		 * 
-		 * 由于插值算法的变化，可以考虑改变插值倍率，始终得到1k个点进行正弦变换
+		 * Because the interpolation algorithm changed, consider changing the interpolation factor so that 1k points are always obtained for the sine transform
 		 */
 		// diu.retrieveBuf(bufarr, iPos, 0, len);
-		/** KNOW 备选：使用拉伸率作为动态插值倍数，始终得到屏幕范围数量的点 */
+		/** KNOW Alternative: use the stretch ratio as the dynamic interpolation factor, always getting a number of points equal to the screen range */
 		int pr = PlugRate;// rate;
 
 		int palen = len * pr;
 		int aglen = PlugArgs_int.length;
 
 		/**
-		 * KNOW 注意adc数据要从系数个数少一个点的位置开始填充，插值后数据从第45点开始使用，插值后数据/159000，
-		 * 这些只是暂时测试正弦波效果较好的估计值
+		 * KNOW Note that adc data must be filled starting from one point fewer than the number of coefficients; after interpolation the data is used from point 45, interpolated data / 159000,
+		 * these are only estimated values that temporarily give good results for sine waves
 		 */
-		// 改为使用插0值方式
+		// Changed to interpolating with 0 values
 		VDSource.genSimulatePlugZero(plugbufarr, aglen - 1, bufarr, 0, len, pr);
 		// System.arraycopy(plugbufarr, aglen, array, 0, j);
 		fill_int(array, plugbufarr, palen, PlugArgs_int);

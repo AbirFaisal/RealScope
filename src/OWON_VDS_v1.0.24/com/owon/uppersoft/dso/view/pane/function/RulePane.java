@@ -32,16 +32,16 @@ import com.owon.uppersoft.vds.ui.widget.help.ToggleListener;
 /**
  * 
  * <code>
- * 通过失败	开启，关闭	
- 操作	开始，停止
- 输出	通过，失败，响玲
- 输出即停（开启，关闭）
- 信息显示（开启，关闭）
+ * Pass/fail: on, off	
+ Operation: start, stop
+ Output: pass, fail, beep
+ Stop on output (on, off)
+ Info display (on, off)
 
- 规则	信源（ch1,ch2,ch3,ch4）
- 水平设置（x格）
- 垂直设置（x格）
- 创建规则
+ Rule: source (ch1,ch2,ch3,ch4)
+ Horizontal setting (x divisions)
+ Vertical setting (x divisions)
+ Create rule
  <code>
  * 
  * @author Matt
@@ -62,7 +62,7 @@ public class RulePane extends FunctionPanel {
 
 	private void disableRule() {
 		boolean ea = rstbn.isSelected();
-		/** 仅当disable且还在run的时候，才让run按钮状态反一次来停止 */
+		/** Only when disabled and still running, flip the run button state once to stop */
 		if (ea)
 			rstbn.setSelected(run_al.toggle(null, ea));
 		pfrc.disableRule();
@@ -115,7 +115,7 @@ public class RulePane extends FunctionPanel {
 				return !select;
 			}
 		};
-		/** 文本和对应的状态是反的，点击才能切换过去 */
+		/** The text and its state are opposite; a click is needed to switch over */
 		abtbn = ntbtn("M.Rule.disable", "M.Rule.enable", able_al, 125, 28,
 				pfrc.isRuleEnable());
 		rstbn = ntbtn("M.Rule.stop", "M.Rule.run", run_al, 125, 28,
@@ -192,7 +192,7 @@ public class RulePane extends FunctionPanel {
 						"M.Rule.new"));
 		ruleccb.setModel(acbm);
 		ruleccb.setSelectedIndex(0);
-		ruleccb.setPreferredSize(new Dimension(250, 28));// 记录
+		ruleccb.setPreferredSize(new Dimension(250, 28));// record
 		savebtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -216,7 +216,7 @@ public class RulePane extends FunctionPanel {
 		removebtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// KNOW 调用信息中只包含通道、水平垂直格数
+				// KNOW the call info contains only the channel and the horizontal/vertical division counts
 				int idx = ruleccb.getSelectedIndex();
 				int ic = ruleccb.getItemCount();
 				if (idx == ic - 1) {
@@ -229,7 +229,7 @@ public class RulePane extends FunctionPanel {
 		usebtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// KNOW 调用信息中只包含通道、水平垂直格数
+				// KNOW the call info contains only the channel and the horizontal/vertical division counts
 				int idx = ruleccb.getSelectedIndex();
 
 				if (idx == ruleccb.getItemCount() - 1) {
@@ -238,7 +238,7 @@ public class RulePane extends FunctionPanel {
 
 				fillDetail((RuleDetail) acbm.getElementAt(idx));
 
-				// 附加可能的使能动作
+				// append possible enable action
 				config_enable();
 			}
 		});
@@ -309,7 +309,7 @@ public class RulePane extends FunctionPanel {
 	}
 
 	/**
-	 * 保存并附加可能的使能重置
+	 * Save and append possible enable reset
 	 */
 	private void config_enable() {
 		int chl = chlccb.getSelectedIndex();
@@ -321,11 +321,11 @@ public class RulePane extends FunctionPanel {
 		double ver = (Double) verspin.getValue();
 
 		/**
-		 * 附加可能的使能，前提是使能被打开了，更前提，是运行时，所以这里不需要额外判断是否运行
+		 * Append possible enable; this requires that enable is turned on, and further that the scope is running, so no extra running check is needed here
 		 * 
-		 * 所以调用本方法的两个按钮，不需要判断是否连接到示波器
+		 * so the two buttons that call this method do not need to check whether a scope is connected
 		 * 
-		 * 按“使用”就重置了规则，但是规则要画出来还需要有新的波形，在停止的情况下没有新的波形，所以就不显示画出的规则
+		 * Pressing "use" resets the rule, but drawing the rule needs a new waveform; when stopped there is no new waveform, so the drawn rule is not shown
 		 */
 		ruleManager.resetPFCounts();
 		pfrc.configRule(chl, hor, ver);
@@ -333,12 +333,12 @@ public class RulePane extends FunctionPanel {
 
 	/**
 	 * @param chl
-	 * @return 通道是否可以使用
+	 * @return whether the channel can be used
 	 */
 	private boolean checkChannelAvailable(int chl) {
 		boolean b = true;
 
-		// 用cbb的最后一项判断容易出问题：单通道机型没有math
+		// Using the last item of the cbb for the check is error-prone: single-channel models have no math
 		if (chlccb.getModel().getElementAt(chl).toString().equals(MATH_ITEM)) {
 			if (!wfm.getCompositeWaveForm().isOn()) {
 				// Math
@@ -358,7 +358,7 @@ public class RulePane extends FunctionPanel {
 	}
 
 	/**
-	 * @return 是否连接并可以运行示波器
+	 * @return whether the scope is connected and can run
 	 */
 	private boolean checkConnect() {
 		boolean b = Platform.getDataHouse().controlManager.sourceManager

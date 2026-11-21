@@ -125,7 +125,7 @@ public abstract class CalibrationRunner implements Logable {
 				if (isExit())
 					return;
 
-				/** 校正终结的通道 */
+				/** Channel whose calibration has finished */
 				IWFCalRoutine wfr = wfri.next();
 				if (wfr.getRoutCalType() < 0)
 					continue;
@@ -135,7 +135,7 @@ public abstract class CalibrationRunner implements Logable {
 					break;
 				}
 
-				/** 校正 */
+				/** Calibration */
 				int v = wfr.routOut();
 				if (v > 0) {
 					progress += v;

@@ -65,16 +65,16 @@ public class DynamicPlugUtil {
 		int i;
 		byte[] ch_ad;
 		int ch_middle_value;
-		int win_low, win_high; // 中间值窗口，上下限
+		int win_low, win_high; // middle value window, upper and lower limits
 		short status_flag1, status_flag2;
 		short edgeSelect;
 		int start_counter1, start_counter2;
-		int mix1 = 0, mix2 = 0;// 和
+		int mix1 = 0, mix2 = 0;// sum
 
 		max2 = 0;
 		min2 = 0;
 
-		int percentage;// 百分比
+		int percentage;// percentage
 		ch_ad = in;
 		max1 = ch_ad[inbeg];
 		min1 = ch_ad[inbeg];
@@ -89,7 +89,7 @@ public class DynamicPlugUtil {
 		baw = Math.abs(max1 - min1);
 		ch_middle_value = max1 - baw / 2;
 
-		win_low = ch_middle_value - 7; // 窗口门限，参考FPGA 原来的门限值
+		win_low = ch_middle_value - 7; // window threshold, based on the original FPGA threshold values
 		win_high = ch_middle_value + 7;
 		status_flag1 = -1;
 		start_counter1 = 0;
@@ -97,7 +97,7 @@ public class DynamicPlugUtil {
 		status_flag2 = -1;
 		start_counter2 = 0;
 		edgeSelect = 0;
-		for (i = inbeg; i < inend; i++) // 峰值，深存储都是一个数据+
+		for (i = inbeg; i < inend; i++) // peak detect, deep memory: one data value at a time +
 		{
 			if (win_high <= ch_ad[i]) {
 				if (status_flag2 == -1) {

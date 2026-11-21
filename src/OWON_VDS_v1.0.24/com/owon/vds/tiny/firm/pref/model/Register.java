@@ -12,7 +12,7 @@ import com.owon.uppersoft.vds.data.LocaleObject;
 import com.owon.uppersoft.vds.util.Pref;
 
 public class Register {
-	/** 确保一个字节存储一个语言开关，总共用掉的字节数不能多于REG_LOCALE_LEN */
+	/** Ensure one byte stores one language switch; the total number of bytes used must not exceed REG_LOCALE_LEN */
 	public static final int REG_LOCALE_LEN = 100;
 	private static final String[] localeTypes = { "zh_CN", "zh_TW", "en", "fr",
 			"es", "ru", "de", "pl", "pt_BR", "it", "ja", "ko_KR" };
@@ -83,7 +83,7 @@ public class Register {
 		version = getString(bb);
 		serialNumber = getString(bb);
 
-		/** 记录语言开关起始位置 */
+		/** Record the start position of the language switches */
 		int ptr = bb.position();
 		int i = 0;
 		int size = localeSelection.size();
@@ -92,7 +92,7 @@ public class Register {
 			i++;
 		}
 
-		/** 强制到第REG_LOCALE_LEN位读取相位细调参数 */
+		/** Force the read of the phase fine-tune parameter at byte REG_LOCALE_LEN */
 		bb.position(ptr + REG_LOCALE_LEN);
 		pf.setRdValue(bb.getShort());
 	}
@@ -113,7 +113,7 @@ public class Register {
 			return;
 		}
 
-		/** 记录语言开关起始位置 */
+		/** Record the start position of the language switches */
 		int ptr = bb.position();
 		int i = 0;
 		int size = localeSelection.size();
@@ -122,7 +122,7 @@ public class Register {
 			i++;
 		}
 
-		/** 强制到第REG_LOCALE_LEN位写入相位细调参数 */
+		/** Force the write of the phase fine-tune parameter at byte REG_LOCALE_LEN */
 		bb.position(ptr + REG_LOCALE_LEN);
 		bb.putShort(pf.getWrValue());
 	}
@@ -139,7 +139,7 @@ public class Register {
 
 	/**
 	 * @param lan
-	 *            用pt_BR在定制机的patch时
+	 *            When patching a custom model using pt_BR
 	 */
 	public void enableLanguage(String lan) {
 		int len = localeLists.size();

@@ -10,11 +10,11 @@ import com.owon.uppersoft.dso.util.DBG;
 import com.owon.uppersoft.vds.data.RGB;
 
 /**
- * Define，预定义参数
+ * Define, predefined parameters
  * 
  */
 public class Define {
-	/** def被广泛使用，必须先被初始化，初始化只能通过prepare方法 */
+	/** def is widely used and must be initialized first; initialization can only be done through the prepare method */
 	public static Define def = new Define();
 
 	public static void prepare(int i) {
@@ -45,38 +45,38 @@ public class Define {
 	public Style style;
 
 //	/**
-//	 * 首页，标题栏字体
+//	 * home page, title bar font
 //	 */
 //	public Font titlefont = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
 //	/**
-//	 * 首页，标题栏字体
+//	 * home page, title bar font
 //	 */
 //	public Font bigtitlefont = new Font(Font.SANS_SERIF, Font.PLAIN, 18);
 //	/**
-//	 * ComboBox字体
+//	 * ComboBox font
 //	 */
 //	public Font combofont = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
 //	/**
-//	 * label字体
+//	 * label font
 //	 */
 //	public Font labelfont = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
 	/**
-	 * 数值显示字体
+	 * value display font
 	 */
 	public Font alphafont = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
 
 	/**
-	 * 公共状态显示字体
+	 * public status display font
 	 */
 	public Font commonStatusfont = new Font(Font.SANS_SERIF, Font.PLAIN, 17);
 
 	/**
-	 * 状态数值显示字体
+	 * status value display font
 	 */
 	public Font statusCounterfont = new Font(Font.SANS_SERIF, Font.BOLD, 11);
 
 	/**
-	 * 快照显示字体
+	 * snapshot display font
 	 */
 	public Font snapshotfont = new Font(Font.SANS_SERIF, Font.BOLD, 18);
 
@@ -169,7 +169,7 @@ public class Define {
 	public Stroke Stroke2 = new BasicStroke(2);
 	public Stroke Stroke3 = new BasicStroke(3);
 
-	/* 备用 */
+	/* reserved */
 	public float[] GRADIENT_FRACTIONS_BG = { 0.1f, 0.9f };
 	public Color[] COGP_GRADIENT_BG = { Color.LIGHT_GRAY, Color.WHITE };
 

@@ -4,16 +4,16 @@ import com.owon.uppersoft.dso.model.trigger.AbsTrigger;
 
 public interface TriggerProvider {
 	/**
-	 * 保存触发模式设置
+	 * Save the trigger mode setting
 	 * 
-	 * @return 该触发模式
+	 * @return that trigger mode
 	 */
 	AbsTrigger submitTrigger();
 
 	AbsTrigger getTrigger();
 
 	/**
-	 * 调用该方法来传递修改，并发出指令，触发类设置如果对程序进行的操作， 此方法调用之处还需注意相应的修改
+	 * Call this method to pass on the modification and send the command; if the trigger class settings perform operations on the program, corresponding changes are also needed where this method is called
 	 */
 	void bodySend();
 

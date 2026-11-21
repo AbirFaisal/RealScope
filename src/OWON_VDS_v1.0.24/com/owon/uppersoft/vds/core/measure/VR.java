@@ -3,7 +3,7 @@ package com.owon.uppersoft.vds.core.measure;
 import com.owon.uppersoft.vds.util.format.UnitConversionUtil;
 
 /**
- * VR，ValueResult
+ * VR, ValueResult
  * 
  */
 public class VR {
@@ -145,7 +145,7 @@ public class VR {
 		vrs[idx].v = value;
 
 		if (isvideo) {
-			/** 如果视频触发,不论上升下降时间都不显示 */
+			/** For video trigger, rise and fall times are not shown regardless */
 			vrs[idx].vu = "?";
 			return;
 		}

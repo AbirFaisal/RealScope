@@ -9,7 +9,7 @@ import javax.swing.event.PopupMenuListener;
 import com.owon.uppersoft.vds.ui.widget.custom.CComboBox;
 
 /**
- * OwnedComboBox，弹出式的ComboBox
+ * OwnedComboBox, pop-up ComboBox
  * 
  * @author Matt
  * 

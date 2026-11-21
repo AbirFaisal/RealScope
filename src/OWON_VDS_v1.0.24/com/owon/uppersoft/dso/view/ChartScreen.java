@@ -234,14 +234,14 @@ public class ChartScreen extends JPanel implements Localizable,
 	}
 
 	/**
-	 * @return 绘制上下文
+	 * @return Drawing context
 	 */
 	public PaintContext getPaintContext() {
 		return pc;
 	}
 
 	/**
-	 * @return 主绘图区
+	 * @return Main drawing area
 	 */
 	public ViewChart getChart() {
 		return chart;
@@ -257,10 +257,10 @@ public class ChartScreen extends JPanel implements Localizable,
 	public BufferedImage getChartScreenBufferedImage() {
 		// Rectangle r=cs.getPaintContext().currentLocInfo;
 		/**
-		 * 该保存图片大小为整个主屏，切3in1情况包括三个窗口
+		 * The saved image size is the whole main screen; in the 3in1 case it includes three windows
 		 * 
-		 * 若只需保存当前波形显示窗口(切3in1最下方窗口)，
-		 * 大小由cs.getWidth(),cs.getHeight()分别改为r.width,r.height
+		 * If only the current waveform display window needs saving (the bottom window in 3in1),
+		 * change the size from cs.getWidth(),cs.getHeight() to r.width,r.height respectivelyr.width,r.height
 		 */
 		// System.out.println(getWidth() + "," + getHeight());
 		int tph = Platform.getMainWindow().getTitlePane().getHeight();
@@ -276,10 +276,10 @@ public class ChartScreen extends JPanel implements Localizable,
 
 		g2.setStroke(new BasicStroke(0.8f, BasicStroke.CAP_SQUARE,
 				BasicStroke.JOIN_ROUND));
-		// 打印ToolPane各信息
+		// Print the info of ToolPane
 		g2.translate(0, csh);
 		Platform.getMainWindow().getToolPane().paintComponents(g2);
-		// 打印chartScreen
+		// Print chartScreenchartScreen
 		g2.translate(0, -csh);
 		printView(g2, csw, csh);
 

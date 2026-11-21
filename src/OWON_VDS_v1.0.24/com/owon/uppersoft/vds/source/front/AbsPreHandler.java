@@ -84,7 +84,7 @@ public abstract class AbsPreHandler {
 			int fullscreen) {
 		vl.logln("handelData_noplug");
 
-		/** 可优化为使用最大长度的固定buffer，针对不同满屏点数通用 */
+		/** can be optimized to use a fixed buffer of maximum length, common to different full-screen point counts */
 		ByteBuffer rtbuf = allocate(cdi.chl, fullscreen);
 		byte[] rt_arr = rtbuf.array();
 
@@ -161,11 +161,11 @@ public abstract class AbsPreHandler {
 		// vl.logln(cdi.slowMove + "");
 
 		/**
-		 * 这里防止切换到非慢扫但正在解析的慢扫数据也被认成了非慢扫而导致画图出错
+		 * this prevents slow sweep data that is still being parsed after switching to non-slow-sweep from being taken as non-slow-sweep, which would cause drawing errors
 		 * 
-		 * 处理的方法是捕捉慢扫移动数的不规则数值，过滤掉这样的波形帧
+		 * the way to handle it is to catch irregular values of the slow sweep shift count and filter out such waveform frames
 		 * 
-		 * 如果不是不规则数值，则和非慢扫没差别
+		 * if the value is not irregular, it is no different from non-slow-sweep
 		 */
 		if (isSlowMove || cdi.slowMove < dmlen) {
 			dmslow = cdi.slowMove;

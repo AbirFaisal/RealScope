@@ -124,7 +124,7 @@ public class VideoPane extends TriggerLoaderPane implements ItemListener,
 				vup.comboBox, vup.spinner);
 		nrip().add(vup);
 
-		/** 先设置模型，更新语言，然后添加事件监听器 */
+		/** First set the model, update the language, then add the event listeners */
 		cbbsync.setModel(new DefaultComboBoxModel(VideoTrigger.SYNC));
 		cbbmodule.setModel(new DefaultComboBoxModel(VideoTrigger.MODULE));
 

@@ -32,7 +32,7 @@ import com.owon.vds.firm.protocol.AddValueAttachCommand;
 import com.owon.vds.firm.protocol.AddressAttachCommand;
 
 /**
- * Submitor2，提供可支持的指令api
+ * Submitor2: provides the supported command api
  * 
  */
 public class Submitor2 extends AbsSubmitor implements
@@ -58,7 +58,7 @@ public class Submitor2 extends AbsSubmitor implements
 		sd = new Sendable(this, this);// new VLog()
 
 		cta = createClockTimeAdjuster(lcm);
-		VBrelay = VB_500mV;// 500mV的索引值
+		VBrelay = VB_500mV;// 500mV index value
 	}
 
 	private int insideVB = -1;
@@ -96,12 +96,12 @@ public class Submitor2 extends AbsSubmitor implements
 	public void c_chl(final P_Channel mode, final int chl, final int... arr) {
 		switch (mode) {
 		case ONOFF:
-			/** 信道开关 */
+			/** channel on/off */
 			wrChannel_onoff(chl);
 			break;
 		case VB: {
 			int vb = arr[0];
-			// 由于电压档位改变可能引起通道前端衰减变化，所以也需要同步通道设置
+			// since a voltage scale change may change the channel front-end attenuation, the channel settings also need to be synchronized
 			wrChannel(chl, vb);
 			wrVoltbase(chl, vb);
 			//
@@ -134,7 +134,7 @@ public class Submitor2 extends AbsSubmitor implements
 
 		afterWrVoltbase(vb);
 
-		/** 在引起继电器切换的电压档位调节时作延时 */
+		/** delay when adjusting the voltage scale causes a relay switch */
 		if (oldvb >= 0 && (oldvb >= VBrelay && vb < VBrelay)
 				|| (oldvb < VBrelay && vb >= VBrelay)) {
 			addJobUnit(new JobUnit_LightWeight() {
@@ -218,7 +218,7 @@ public class Submitor2 extends AbsSubmitor implements
 
 	@Override
 	public void apply_trgSweep(int sweepIndex) {
-		/** 指令发送完毕，扫频的控制由上位机进行，这里预留，实际的判断可以放到gdr */
+		/** commands are all sent; sweep control is done by the host, reserved here; the actual check can be placed in gdrgdr */
 		switch (sweepIndex) {
 		case TriggerDefine.TrigSweepAutoIndex:
 			break;
@@ -248,7 +248,7 @@ public class Submitor2 extends AbsSubmitor implements
 
 	@Override
 	public void c_fft(boolean ffton, int fftchl) {
-		/** 通道开关及分频系数其它地方设置，这里只改变采集深度 */
+		/** channel on/off and divider coefficient are set elsewhere; here only the acquisition depth is changed */
 		// c_dm(lcm.getDeepMemoryIndex());
 		syncPK();
 	}
@@ -269,7 +269,7 @@ public class Submitor2 extends AbsSubmitor implements
 		// System.err.println(v);
 		beforeTrg = half - v;
 
-		/** 预触发数据超出存储的做法，预触发设置为0，过触发设置为预触发的绝对值加上存储深度 */
+		/** when pre-trigger data exceeds the memory: pre-trigger is set to 0, and post-trigger is set to the absolute value of the pre-trigger plus the memory depth */
 		if (beforeTrg < 0) {
 			afterTrg = dmlen - beforeTrg;
 			beforeTrg = 0;
@@ -277,9 +277,9 @@ public class Submitor2 extends AbsSubmitor implements
 			afterTrg = half + v;
 		}
 		// System.err.println(beforeTrg+", "+afterTrg);
-		/** 触发前数据 */
+		/** pre-trigger data */
 		pre_trg_add(beforeTrg);
-		/** 触发后数据 */
+		/** post-trigger data */
 		suf_trg_add(afterTrg);
 		final int iov = io.value;
 		sendCMD(table.EMPTY_ADD, 1, new DefaultCMDResponser() {
@@ -454,7 +454,7 @@ public class Submitor2 extends AbsSubmitor implements
 
 	@Override
 	public void forceTrg() {
-		// /** 不能在指令发送后再改变强制状态，因为停止后的指令会累积到下次运行时，那时已经运行起来了难以改变；故而要及时更改强制状态 */
+		// /** the forced state cannot be changed after the command is sent, because commands issued after stopping accumulate until the next run, by which time it is already running and hard to change; so the forced state must be changed promptly */
 		// GetDataRunner2 gdr2 = (GetDataRunner2)
 		// lcm.getControlApps().getDaemon()
 		// .getGetDataRunner();
@@ -469,7 +469,7 @@ public class Submitor2 extends AbsSubmitor implements
 
 	@Override
 	public void sendRun() {
-		// /** 恢复到运行未强制的状态 */
+		// /** restore to the running, non-forced state */
 		// GetDataRunner2 gdr2 = (GetDataRunner2)
 		// lcm.getControlApps().getDaemon()
 		// .getGetDataRunner();
@@ -496,12 +496,12 @@ public class Submitor2 extends AbsSubmitor implements
 	private void checkStop() {
 		JobUnit_I jui = sd.prepareCMD(table.CHECK_STOP_ADD, 1,
 				"loop-check stop?", new CheckStopPCL());
-		// 暂时用默认的pcl，可以打印应答
+		// use the default pcl for now, which can print the response
 		jui.doJob(lcm.getSourceManager());
 	}
 
 	/**
-	 * 如何停止；如何单次、正常触发，如何相应停下，如何恢复运行
+	 * how to stop; how to do single and normal trigger, how to stop accordingly, how to resume running
 	 */
 	private final class CheckStopPCL extends DefaultCMDResponser {
 		@Override
@@ -518,7 +518,7 @@ public class Submitor2 extends AbsSubmitor implements
 	protected void onCheckOutAsStop() {
 		InfiniteDaemon id = lcm.getControlApps().getDaemon();
 
-		/** 主动改变触发状态为stop */
+		/** actively change the trigger status to stopstop */
 		TrgStatus ts = TrgStatus.Stop;
 		id.getChannelsTransportInfo().triggerStatus = ts.ordinal();
 		Platform.getMainWindow().updateStatus(ts);

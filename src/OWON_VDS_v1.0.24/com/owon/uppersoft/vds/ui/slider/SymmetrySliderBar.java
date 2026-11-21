@@ -18,7 +18,7 @@ import com.owon.uppersoft.vds.ui.resource.SwingResourceManager;
 //import com.sun.awt.AWTUtilities;
 
 /**
- * SymmetryCSliderBar，The special scroll bar at the center of the slider,
+ * SymmetryCSliderBar, The special scroll bar at the center of the slider,
  * the speed at which the positive and negative offset control values change
  *
  * @author Matt
@@ -394,13 +394,13 @@ public class SymmetrySliderBar extends JPanel implements MouseListener, MouseMot
 	}
 
 	/**
-	 * 对称控件
+	 * Symmetric control
 	 *
 	 * @param wd
 	 * @param x
 	 * @param y
-	 * @param halfRange    对称View中的半长
-	 * @param defaultValue 默认值
+	 * @param halfRange    half length in the symmetric View
+	 * @param defaultValue default value
 	 * @param value
 	 * @param vertical
 	 * @param co
@@ -503,9 +503,9 @@ public class SymmetrySliderBar extends JPanel implements MouseListener, MouseMot
 	}
 
 	// /**
-	// * 从一种坐标上的数值(以垂直中心，上正下负)到另一种坐标上的数值(从顶端为0，向下递增)
+	// * From a value in one coordinate system (relative to the vertical center, positive up and negative down) to a value in another (0 at the top, increasing downward)
 	// *
-	// * 供通道零点转换使用
+	// * For channel zero-point conversion
 	// *
 	// * @param halfRange
 	// * @param ci

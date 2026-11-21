@@ -27,7 +27,7 @@ public class Server extends Thread {
 	private boolean isExit = false;
 
 	/** Necessary definition */
-	protected ByteBuffer clientBuffer = ByteBuffer.allocate(1024);// 相当于reciveBuffer,接受客户端指令
+	protected ByteBuffer clientBuffer = ByteBuffer.allocate(1024);// equivalent to reciveBuffer, receives client commands
 	// protected CharsetDecoder decoder;
 	protected Selector selector;
 	ServerSocketChannel server;
@@ -61,18 +61,18 @@ public class Server extends Thread {
 		
 	}
 
-	// 获取Selector
+	// get the SelectorSelector
 	protected Selector getSelector(int port) throws IOException {
 		// ServerSocketChannel
 		server = ServerSocketChannel.open();
-		Selector sel = Selector.open();// 静态方法，创建一个selector实例
+		Selector sel = Selector.open();// static method, creates a selector instance
 		server.socket().bind(new InetSocketAddress(port));
 		server.configureBlocking(false);
 		server.register(sel, SelectionKey.OP_ACCEPT);
 		return sel;
 	}
 
-	// 监听端口
+	// listen on the port
 	public void listen() {
 		try {
 			while (!isExit) {
@@ -99,14 +99,14 @@ public class Server extends Thread {
 			SocketChannel client = server.accept();
 			// Set non-blocking mode
 			client.configureBlocking(false);
-			// 注册到selector，等待连接
+			// register with the selector, wait for connections
 			client.register(selector, SelectionKey.OP_READ);
 		} else if (key.isReadable()) {
 			SocketChannel client = (SocketChannel) key.channel();
 			int count = -1;
 			try {
 				/** The read function must catch the exception and close the SocketChannel when the client is abnormally disconnected, otherwise the server can no longer connect. */
-				count = client.read(clientBuffer);// 读取客户端发送来的数据到缓冲区中
+				count = client.read(clientBuffer);// read the data sent by the client into the buffer
 			} catch (Exception e) {
 				client.close();
 			}
@@ -120,7 +120,7 @@ public class Server extends Thread {
 				if (dbgView != null)
 					dbgView.addReadText(cmd);
 
-				cmd += "\r";// 做结束符
+				cmd += "\r";// used as the terminator
 				String trans = translation(cmd);
 				if (trans != null && !trans.equalsIgnoreCase("")) {
 					SelectionKey sKey = client.register(selector,
@@ -131,7 +131,7 @@ public class Server extends Thread {
 				client.close();
 			}
 			clientBuffer.clear();
-		} else if (key.isWritable()) { // 写事件
+		} else if (key.isWritable()) { // write event
 			SocketChannel client = (SocketChannel) key.channel();
 			String cmd = (String) key.attachment();
 
@@ -147,7 +147,7 @@ public class Server extends Thread {
 				if (dbgView != null)
 					dbgView.addWriteText(cmd);
 
-				client.write(block);// 向客户端写、发送数据
+				client.write(block);// write/send data to the client
 			}
 			client.register(selector, SelectionKey.OP_READ);
 			// client.close();
@@ -164,7 +164,7 @@ public class Server extends Thread {
 	}
 
 	private String analyse(String line) {
-		line = line.trim();// 去除/r/n
+		line = line.trim();// remove /r/n
 		String str = (String) analyseCMDs_1(line);
 		return str + "\r";
 	}
@@ -209,7 +209,7 @@ public class Server extends Thread {
 		CommandKey cmd = null;
 		String line_head = line;
 		if ((line.startsWith(":")))
-			line_head = line.split(":", 3)[1];//分割3-1次，分成3组
+			line_head = line.split(":", 3)[1];//split 3-1 times, into 3 groups
 
 		// System.err.println(line_head);
 		for (CommandKey ck : factory.getKeys()) {

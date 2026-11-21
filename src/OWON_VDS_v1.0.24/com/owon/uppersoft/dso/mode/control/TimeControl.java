@@ -27,7 +27,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 
 	private int timebaseIdx = -1;
 
-	/** KNOW 用于画界面位置，存在保存文件中，主要以此 */
+	/** KNOW used to draw UI positions, stored in the saved file, mainly based on this */
 	private double horTrgPos = 0;// 10uS
 
 	public void setHorTrgPos(double v) {
@@ -47,7 +47,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 	}
 
 	/**
-	 * 运行时真实的采集到的屏幕范围内的点数
+	 * Number of points actually acquired within the screen range while running
 	 */
 	private int rtfls = 0;
 
@@ -66,7 +66,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 	}
 
 	/**
-	 * 限位
+	 * position limit
 	 * 
 	 * @param p
 	 */
@@ -132,7 +132,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 	}
 
 	public void persist(Pref p) {
-		/** 注意：这里写入的信息在视窗扩展开始时，会在后面被视窗扩展模块覆盖 */
+		/** Note: the information written here will later be overwritten by the viewport extension module when the viewport extension starts */
 		p.persistInt(TIMEBASE_INDEX, timebaseIdx);
 		int v = getHorizontalTriggerPosition();
 		p.persistInt(HOR_TRG_POS, v);
@@ -161,8 +161,8 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 	}
 
 	private void updatePixel_mS_Sample_mS() {
-		/** 缓存一些相关的数值，方便重复使用 */
-		double dbv_mS = getBDTimebase().doubleValue() * GDefine.S2mS;// 转化为mS
+		/** Cache some related values for easy reuse */
+		double dbv_mS = getBDTimebase().doubleValue() * GDefine.S2mS;// convert to mS
 		pixelTime_mS = dbv_mS / GDefine.AREA_WIDTH_BLOCK_PIXES;
 	}
 
@@ -173,7 +173,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 	private double pixelTime_mS;
 
 	/**
-	 * @return 该时基档位每个像素对应的时间，单位为mS
+	 * @return time corresponding to each pixel at this timebase scale, in mS
 	 */
 	public double getPixelTime_mS() {
 		return pixelTime_mS;
@@ -218,10 +218,10 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 		int tmp = timebaseIdx;
 		internalTimebaseIndex(tbidx, effect);
 
-		/** 这里还需要根据时基计算，以及从RT->DM, DM->RT时的转换，如何在时基切换之后重新锁定触发位置 */
+		/** This also needs to be calculated from the timebase, along with the RT->DM, DM->RT conversion, and how to re-lock the trigger position after the timebase switch */
 		tcd.notifyUpdateHorTrgPosRange();
 
-		/** 总是发指令改变当前 */
+		/** Always send a command to change the current */
 		double ohtp = horTrgPos;
 		double v = BigDecimal.valueOf(ohtp)
 				.divide(tcp.ratio(timebaseIdx, tmp)).doubleValue();
@@ -237,7 +237,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 		// return;
 
 		internalTimebaseIndex(tbidx);
-		/** 这里还需要根据时基计算，以及从RT->DM, DM->RT时的转换，如何在时基切换之后重新锁定触发位置 */
+		/** This also needs to be calculated from the timebase, along with the RT->DM, DM->RT conversion, and how to re-lock the trigger position after the timebase switch */
 		tcd.notifyUpdateHorTrgPosRange();
 		restrictHorTrgPos();
 	}
@@ -247,7 +247,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 			internalTimebaseIndex(tbidx);
 		tcd.notifyUpdateHorTrgPosRange();
 
-		/** 变化范围随存储深度和时基(采样率)不同 */
+		/** The variation range differs with memory depth and timebase (sampling rate) */
 		htp = restrictHorTrgPos(htp);
 		horTrgPos = (double) htp;
 		resetPersistence();
@@ -269,7 +269,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 	}
 
 	/**
-	 * 计算水平触发示数，依赖选择波形的信息进行计算，需在导入波形后进行
+	 * Calculate the horizontal trigger reading, which depends on the selected waveform's information and must be done after the waveform is imported
 	 * 
 	 * @return
 	 */
@@ -277,7 +277,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 		int htp;
 		htp = getHorizontalTriggerPosition();
 
-		return getHTPLabel(timebaseIdx, htp);// 像素差转化为时间差
+		return getHTPLabel(timebaseIdx, htp);// convert the pixel difference to a time difference
 	}
 
 	public String getHTPLabel(int tbidx, int htpPixsFromCenter) {
@@ -288,8 +288,8 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 		return UnitConversionUtil.getSimplifiedTimebaseLabel_mS(hv);
 	}
 
-	// ////////////////////////////////////////////////考虑去掉horTrgIdx
-	/** 以存储深度起点为标记，往前为负，往后为正，用于深存储画图 */
+	// ////////////////////////////////////////////////consider removing horTrgIdx
+	/** Marked from the memory depth start point, negative toward the front, positive toward the back, used for deep memory drawing */
 	private int horTrgIdx;
 
 	private void setHorTrgIdx(int v) {
@@ -301,24 +301,24 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 	}
 
 	/**
-	 * 在载入深存储后才有用途
+	 * Only useful after deep memory is loaded
 	 * 
-	 * 求触发前数据的方法
+	 * Method for computing the data before the trigger
 	 * 
-	 * 先求总像素
+	 * First compute the total pixels
 	 * 
-	 * 总像素 = 存储深度 / 压缩率
+	 * Total pixels = memory depth / compression ratio
 	 * 
-	 * 左边的像素个数 = 总像素 / 2
+	 * Pixel count on the left = total pixels / 2
 	 * 
-	 * 右边的像素个数 = - 左边的像素个数
+	 * Pixel count on the right = - pixel count on the left
 	 * 
-	 * 触发前数据个数 = （左边像素个数 - 触发位置）*压缩率
-	 * 
-	 * 
+	 * Data count before trigger = (left pixel count - trigger position) * compression ratio
 	 * 
 	 * 
-	 * 不使用传入的起始位置，按居中计算
+	 * 
+	 * 
+	 * Does not use the passed-in start position, calculates as centered
 	 * 
 	 */
 	public void computeHorTrgIdx(int dmidx, int htp) {
@@ -341,17 +341,17 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 	}
 
 	/**
-	 * 看计算公式，似乎和采样率无关，只是人为限定的一个范围
+	 * Judging from the formula, it seems unrelated to the sampling rate and is just an artificially limited range
 	 * 
-	 * 确定水平触发位置范围
+	 * Determine the horizontal trigger position range
 	 * 
-	 * 取决于: 通道开关、时基、存储深度
+	 * Depends on: channel switches, timebase, memory depth
 	 * 
-	 * 水平位置限位，相应限制的像素个数为
+	 * Horizontal position limit; the corresponding limited pixel counts are
 	 * 
-	 * 左边 = 50M数据/压缩率
+	 * Left = 50M data / compression ratio
 	 * 
-	 * 右边 = 存储深度/2/压缩率
+	 * Right = memory depth / 2 / compression ratio
 	 */
 	public void computeHorTrgRange(int dmidx, int cnf) {
 		Range p = new Range();
@@ -363,7 +363,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 		} else {
 			double rate = rtfls / (double) 1000;
 
-			// TODO压缩率小于1时需了解算法细节
+			// TODO the algorithm details need to be understood when the compression ratio is below 1
 			p.left = (int) (50000000 / rate);
 			p.right = -(int) ((dp.getLength(dmidx) >> 1) / rate);
 			// System.out.println(p);
@@ -373,9 +373,9 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 	}
 
 	/**
-	 * 重新计算设置满屏数
+	 * Recalculate and set the full-screen count
 	 * 
-	 * 取决于: 通道开关、时基、存储深度
+	 * Depends on: channel switches, timebase, memory depth
 	 * 
 	 * @return
 	 */
@@ -423,7 +423,7 @@ public class TimeControl implements IOrgan, IPatchable, ITimeControl {
 		int horTrgPos = getHorizontalTriggerPosition();
 		int del = nhtp - horTrgPos;
 
-		/** 变化范围随存储深度和时基(采样率)不同 */
+		/** The variation range differs with memory depth and timebase (sampling rate) */
 		nhtp = restrictHorTrgPos(nhtp);
 		del = nhtp - horTrgPos;
 		this.horTrgPos = (double) nhtp;

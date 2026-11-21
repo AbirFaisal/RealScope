@@ -13,7 +13,7 @@ import com.owon.uppersoft.vds.util.PrimaryTypeUtil;
 import com.owon.uppersoft.vds.util.SystemPropertiesUtil;
 
 /**
- * 管理网络数据源的状态和开启，提供网络数据源
+ * Manages the state and opening of the network data source, provides the network data source
  * 
  */
 public class NetSourceManager implements ICommunicateManager, ISource {
@@ -104,7 +104,7 @@ public class NetSourceManager implements ICommunicateManager, ISource {
 		return is.read(arr, start, len);
 	}
 
-	/** 以下方法在usb打开连接的时候才有效 */
+	/** The methods below are only valid when the usb connection is open */
 	@Override
 	public int acceptResponse(byte[] arr, int len) {
 		if (isConnected()) {

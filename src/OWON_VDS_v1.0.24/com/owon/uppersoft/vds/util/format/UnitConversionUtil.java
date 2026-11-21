@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 
 /**
- * UnitConversionUtil，单位换算器，精确度改为3位，因为递乘/除的位数是3位
+ * UnitConversionUtil, unit converter, precision changed to 3 digits because the digits for successive multiplication/division are 3
  * 
  */
 /**
@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class UnitConversionUtil {
 
 	/**
-	 * 接收微秒值并自行决定显示方式
+	 * Receives a microsecond value and decides the display format itself
 	 * 
 	 * @param value
 	 * @return
@@ -40,7 +40,7 @@ public class UnitConversionUtil {
 	}
 
 	/**
-	 * 1. 时基档位接收毫秒值并自行决定显示方式
+	 * 1. Timebase scale receives a millisecond value and decides the display format itself
 	 * 
 	 * @param value
 	 * @return
@@ -68,7 +68,7 @@ public class UnitConversionUtil {
 	}
 
 	/**
-	 * 2. 时基档位接收毫秒值并自行决定显示方式
+	 * 2. Timebase scale receives a millisecond value and decides the display format itself
 	 * 
 	 * @param value
 	 * @return
@@ -112,7 +112,7 @@ public class UnitConversionUtil {
 	}
 
 	/**
-	 * 1. 电压档位接收毫伏值并自行决定显示方式
+	 * 1. Voltage scale receives a millivolt value and decides the display format itself
 	 * 
 	 * @param value
 	 * @return
@@ -127,7 +127,7 @@ public class UnitConversionUtil {
 	}
 
 	/**
-	 * 2. 电压档位接收毫伏值并自行决定显示方式
+	 * 2. Voltage scale receives a millivolt value and decides the display format itself
 	 * 
 	 * @param value
 	 * @return
@@ -165,7 +165,7 @@ public class UnitConversionUtil {
 	}
 
 	/**
-	 * 3. 电压档位接收mV的数值并自行决定显示方式
+	 * 3. Voltage scale receives a value in mV and decides the display format itself
 	 * 
 	 * @param value
 	 * @return
@@ -178,7 +178,7 @@ public class UnitConversionUtil {
 	}
 
 	/**
-	 * 3. 电压档位接收mV的数值并自行决定显示方式，单位和数值间无空格
+	 * 3. Voltage scale receives a value in mV and decides the display format itself, no space between the unit and the value
 	 * 
 	 * @param value
 	 * @return
@@ -191,7 +191,7 @@ public class UnitConversionUtil {
 	}
 
 	/**
-	 * 4.下位机代码 电压档位接收毫伏值并自行决定显示方式
+	 * 4. Device code: voltage scale receives a millivolt value and decides the display format itself
 	 * 
 	 * @param value
 	 * @return
@@ -231,7 +231,7 @@ public class UnitConversionUtil {
 	}
 
 	/**
-	 * 电压档位接收伏值并自行决定显示方式
+	 * Voltage scale receives a volt value and decides the display format itself
 	 * 
 	 * @param value
 	 * @return
@@ -249,7 +249,7 @@ public class UnitConversionUtil {
 	public static final String FrequencyLabel_Hz_BTW_Empty = "";
 
 	/**
-	 * 1. 接收频率并自行决定显示方式
+	 * 1. Receives a frequency and decides the display format itself
 	 * 
 	 * @param value
 	 * @return
@@ -291,19 +291,19 @@ public class UnitConversionUtil {
 	}
 
 	private static String distrustCheck(double v, double restrict, String str) {
-		/** 各自精简到三位小数,具体频率如果保留到3位仍超出最大值才加问号。过滤后做比较，增强容错性 */
+		/** Each is trimmed to three decimal places; for the specific frequency, a question mark is added only if it still exceeds the maximum when kept to 3 digits. Compare after filtering, to improve fault tolerance */
 		v = BigDecimal.valueOf(v).setScale(3, BigDecimal.ROUND_HALF_UP)
 				.doubleValue();
 		restrict = BigDecimal.valueOf(restrict)
 				.setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
-		/** 判断是否超限 */
+		/** Check whether the limit is exceeded */
 		if (v > restrict)
 			str += FrequencyLabel_Hz_BTW_Question;
 		return str;
 	}
 
 	/**
-	 * 2. 接收频率并自行决定显示方式
+	 * 2. Receives a frequency and decides the display format itself
 	 * 
 	 * @param value
 	 * @return
@@ -346,7 +346,7 @@ public class UnitConversionUtil {
 	public static final String getSimplifiedFrequencyLabel_Hz2(double value) {
 		if (Double.isNaN(value) || Double.isInfinite(value))
 			return "?";
-		/** value四舍五入5位给v,为了防止v=999.99999Hz被格式化成1000.0Hz返回 */
+		/** value is rounded to 5 decimal places into v, to prevent v=999.99999Hz from being formatted as 1000.0Hz and returned */
 		double v = BigDecimal.valueOf(value)
 				.setScale(5, BigDecimal.ROUND_HALF_UP).doubleValue();
 		if (v < 1000) {

@@ -11,7 +11,7 @@ import com.owon.uppersoft.vds.core.comm.IRuntime;
 import com.owon.uppersoft.vds.core.usb.IDevice;
 
 /**
- * SourceManager，管理同数据源的交互
+ * SourceManager, manages the interaction with the data source
  * 
  */
 public abstract class SourceManager extends BufferredSourceManager implements
@@ -45,7 +45,7 @@ public abstract class SourceManager extends BufferredSourceManager implements
 		return usbsm;
 	}
 
-	/** 连接源状态 */
+	/** Connected source state */
 	public static final int INT_NoSource = -1;
 	public static final int INT_USBSource = 0;
 	public static final int INT_NETSource = 1;
@@ -139,7 +139,7 @@ public abstract class SourceManager extends BufferredSourceManager implements
 		IDevice sel;
 		int len = 0;
 		int count = 0;
-		/** 循环检测sn相同的usb端口，连接；超次返回 */
+		/** Loop to detect usb ports with the same sn and connect; return after exceeding the retry count */
 		OUT: while (true) {
 			ids = usbsm.refreshUSBPort();
 			len = ids.size();

@@ -40,7 +40,7 @@ public class DefaultTriggerExtendDelegate implements TriggerExtendDelegate {
 		int old = sc.getSyncOutput();
 		int newidx = SysControl.SYNOUT_TrgIn;
 		sc.c_setSyncOut(newidx);
-		/** 改变更新到UtilityPane */
+		/** Update the change to UtilityPane */
 		pcs.firePropertyChange(PropertiesItem.SYNCOUTPUTCHANGE, old, newidx);
 	}
 
@@ -59,8 +59,8 @@ public class DefaultTriggerExtendDelegate implements TriggerExtendDelegate {
 		int newidx = SysControl.SYNOUT_TrgOut;
 		sc.c_setSyncOut(newidx);
 
-		/** 改变更新到UtilityPane */
-		/** 提示拔掉外部触发信源 */
+		/** Update the change to UtilityPane */
+		/** Prompt to unplug the external trigger source */
 		pcs.firePropertyChange(PropertiesItem.SYNCOUTPUTCHANGE, old, newidx);
 	}
 

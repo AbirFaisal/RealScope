@@ -20,7 +20,7 @@ import javax.swing.border.LineBorder;
 import com.owon.uppersoft.vds.util.format.SFormatter;
 
 /**
- * 可实现渐进式的提示
+ * Can implement progressive prompts
  * 
  */
 public class PromptDialog extends JPanel implements IPopDown {
@@ -54,11 +54,11 @@ public class PromptDialog extends JPanel implements IPopDown {
 	}
 
 	/**
-	 * 渐进式提示
+	 * Progressive prompt
 	 * 
 	 * @param jp
 	 * @param xloc
-	 *            如为Integer.MIN_VALUE，则为居中
+	 *            if Integer.MIN_VALUE, centered
 	 */
 	public void prompt(JComponent jp, final Runnable r) {
 		if (getComponentCount() > 0) {
@@ -233,7 +233,7 @@ public class PromptDialog extends JPanel implements IPopDown {
 	/**
 	 * @param jp
 	 * @param xloc
-	 *            如为Integer.MIN_VALUE，则为居中
+	 *            if Integer.MIN_VALUE, centered
 	 */
 	public void promptShift(final JComponent jp, final Runnable r) {
 		fireLastComponent();
@@ -268,14 +268,14 @@ public class PromptDialog extends JPanel implements IPopDown {
 		// System.err.println("coreControl: " + coreControl);
 		if (cc > 0) {
 			JComponent curr = (JComponent) getComponent(0);
-			// 将控件移除出容器的信息传递出去
+			// Pass out the information that the component was removed from the container
 			curr.firePropertyChange(PromptDialog.LastPromptDispose, false, true);
 		}
 	}
 
 	public void promptClose() {
 		fireLastComponent();
-		// 将当前控件的引用置空，用于新控件进入判断是展开还是切换
+		// Clear the reference to the current component, used when a new component enters to decide whether to expand or switch
 		removeAll();
 		synchronized (jo) {
 			jo.seq = 0;

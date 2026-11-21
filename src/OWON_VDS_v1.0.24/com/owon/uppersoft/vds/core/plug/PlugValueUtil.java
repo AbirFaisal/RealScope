@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Iterator;
 
 /**
- * 正弦插值，算出9个点，就把1点插成了10个
+ * Sine interpolation: compute 9 points, turning 1 point into 10
  * 
  * @author Matt
  * 
@@ -31,7 +31,7 @@ public class PlugValueUtil {
 	}
 
 	static {
-		/** 矩阵先列后行，讲系数均分到每一个系数数组中去 */
+		/** Matrix is column first then row; distribute the coefficients evenly into each coefficient array */
 		int k = 0;
 		int v;
 		int[] pint = Plug10_old.PlugArgs_int;
@@ -118,22 +118,22 @@ public class PlugValueUtil {
 	 * @return
 	 */
 	public static int compute(int v) {
-		// 只判断后23位，再+1
+		// Only check the last 23 bits, then +1
 		int x = ((v >>> 13) & base1) + 1;// 18
 
 		// if(true)return (byte) x;
 
-		// 只判断8,14位上的位是否满足条件
+		// Only check whether bits 8 and 14 satisfy the condition
 		int y = x & _98;
 		if (y == _81) {
 			x = 0x7F;
 		} else if (y == _91) {
 			x = 0x80;
 		} else {
-			// 加1后的值的1到7位
+			// Bits 1 to 7 of the value after adding 1
 			int z = x >>> 1;
 			z = z & base3;
-			// 拼上第9位
+			// Append bit 9
 			y = x & _91;
 			y = y >>> 2;
 			x = y | z;

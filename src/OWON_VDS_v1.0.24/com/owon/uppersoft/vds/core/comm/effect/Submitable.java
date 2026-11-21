@@ -3,30 +3,30 @@ package com.owon.uppersoft.vds.core.comm.effect;
 import com.owon.uppersoft.vds.core.comm.job.JobUnit;
 
 /**
- * Submitable，其中一些方法无法仅通过给定的参数实现指令控制，这是由机型不同导致的指令控制所需的信息的范围不同导致的，
+ * Submitable, some of whose methods cannot implement command control from the given parameters alone; this is because different models need a different range of information for command control,
  * 
- * 解决的方法是由实现方自己去寻找这些参数
+ * The solution is for the implementer to find these parameters itself
  * 
  * 
  * 
- * 指令的发送是按照JobQueue的执行顺序依次进行的，所以设置仅代表的添加任务，任务会自动在空闲的时候得到执行。
+ * Commands are sent in the execution order of JobQueue, so a setting only represents adding a task; the task is executed automatically when idle.
  * 
- * 可注册完成后动作，在添加的任务完成后被调用，从而有序化波形在指令生效后的效果
+ * A post-completion action can be registered, called after the added task completes, so that the effect on the waveform after the command takes effect is ordered
  * 
- * 可建议优化，在添加的任务被多次设置后仅执行最后一次，从而优化鼠标拖拽和滚轮操作的多次触发操作
+ * Optimization could be suggested: when an added task is set multiple times, only execute the last one, thereby optimizing the repeated triggering from mouse dragging and wheel operations
  * 
  */
 public interface Submitable extends JobUnitDealer {
 	void prepare();
 
 	/**
-	 * 对Tiny暂时是调用对应的设置api就会发送，apply无动作
+	 * For Tiny, calling the corresponding setting api sends immediately for now; apply does nothing
 	 */
 	void apply();
 
 	/**
 	 * @param pf
-	 *            1通过，0失败
+	 *            1 = pass, 0 = fail
 	 */
 	void sync_pf(int pf);
 
@@ -41,7 +41,7 @@ public interface Submitable extends JobUnitDealer {
 	void apply_trg();
 
 	/**
-	 * 进行优化指令发送 level
+	 * Optimized command sending level
 	 * 
 	 * @param item
 	 * @param arr
@@ -49,7 +49,7 @@ public interface Submitable extends JobUnitDealer {
 	void c_trg_edge(int mode, int chl, final byte item, final int... arr);
 
 	/**
-	 * 进行优化指令发送 阈值
+	 * Optimized command sending threshold
 	 * 
 	 * @param item
 	 * @param arr
@@ -59,7 +59,7 @@ public interface Submitable extends JobUnitDealer {
 	void c_trg_video(int mode, int chl, final byte item, final int... arr);
 
 	/**
-	 * 进行优化指令发送 level
+	 * Optimized command sending level
 	 * 
 	 * @param item
 	 * @param arr
@@ -67,7 +67,7 @@ public interface Submitable extends JobUnitDealer {
 	void c_trg_pulse(int mode, int chl, final byte item, final int... arr);
 
 	/**
-	 * 进行优化指令发送
+	 * Optimized command sending
 	 * 
 	 * @param tb
 	 * @param htp
@@ -75,14 +75,14 @@ public interface Submitable extends JobUnitDealer {
 	void c_tb_htp(final int tb, final int htp);
 
 	/**
-	 * 进行优化指令发送
+	 * Optimized command sending
 	 * 
 	 * @param htp
 	 */
 	void c_htp(final int htp);
 
 	/**
-	 * 切换fft的过程设计通道开关，分频系数调整，采集深度调整，通常借助syncDetail完成，这里只是做特定设置
+	 * Switching fft involves channel switches, divider coefficient adjustment, and acquisition depth adjustment, usually done via syncDetail; here only specific settings are made
 	 * 
 	 * @param ffton
 	 * @param fftchl
@@ -98,7 +98,7 @@ public interface Submitable extends JobUnitDealer {
 	void c_sync_output(final int sync_output);
 
 	/**
-	 * 进行优化指令发送
+	 * Optimized command sending
 	 * 
 	 * @param deepIdx
 	 */
@@ -107,7 +107,7 @@ public interface Submitable extends JobUnitDealer {
 	void c_sample(final int modelIdx);
 
 	/**
-	 * 尽量针对设置电压档位、零点位置或是开关通道的情况，进行优化指令发送，及发送完毕的任务执行
+	 * Optimized command sending, as far as possible for setting voltage scale, zero position or switching channels, and execution of the task once sending completes
 	 * 
 	 * @param mode
 	 * @param chl

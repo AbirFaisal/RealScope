@@ -99,7 +99,7 @@ public class CheckUSBPortsPane extends JPanel {
 		// parent.getSize(sz);
 		// int w = sz.width, h = sz.height, y = 30;
 		//
-		// /** 这里用BorderLayout失效？ */
+		// /** Does BorderLayout not work here? */
 		// t.setBounds(0, 0, w, y);
 		// jsp.setBounds(0, y, w, Math.max(h - y, 0));
 		// jsp.doLayout();

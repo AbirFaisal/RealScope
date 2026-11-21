@@ -15,7 +15,7 @@ public class DaemonTimerTask {
 		long c = System.currentTimeMillis();
 		if (c - startt > holdt) {
 			holdjob.run();
-			/**KNOW 会重置reset設置的值，導致clc循环中断，故改到finish()里设置 */
+			/**KNOW Would reset the value set by reset, causing the clc loop to break, so it is set in finish() instead */
 			// startt = holdt = -1;
 		}
 	}

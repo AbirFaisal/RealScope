@@ -2,38 +2,38 @@ package com.owon.uppersoft.dso.source.comm;
 
 public enum TrgStatus {
 	/**
-	 * 这几种为同下位机定义的触发状态，位置固定，它们也都是在和下位机保持连接的状态
+	 * These are the trigger states defined together with the device, at fixed positions; all of them are states where the connection to the device is maintained
 	 * 
-	 * 可点击弹出菜单来断开连接
+	 * Click to pop up a menu to disconnect
 	 */
-	Auto, // 自动触发模式
-	Ready, // 等待触发
-	Trg_d, // 已经触发
-	Scan, // 慢扫描
-	Stop, // 停止
-	Error, // 出错
+	Auto, // Auto trigger mode
+	Ready, // Waiting for trigger
+	Trg_d, // Already triggered
+	Scan, // Slow sweep
+	Stop, // Stopped
+	Error, // Error
 
-	/** 中途断开的情况需要重新匹配，因为下位机可能重启了，或中断后上位机做了一些操作没有设置下去 */
-	ReCfg, // 因为某些原因和下位机重新同步设置 == 6
-	AutoSetting, // 自动设置进行中
-
-	/**
-	 * 以下几种是在未和下位机保持连接的状态
-	 * 
-	 * 
-	 */
-	Offline, // 和下位机无连接
-	USBFound, // 发现可用的下位机USB设备
-	USBDrvErr, // USB驱动安装出错
-	MachineNotSupport, // 无法识别的下位机设备
+	/** After a mid-way disconnection the settings must be matched again, since the device may have restarted, or the host may have made changes after the interruption that were not applied */
+	ReCfg, // Resynchronizing settings with the device for some reason == 6
+	AutoSetting, // Auto setting in progress
 
 	/**
-	 * 以下几种为尝试和下位机进行连接过程中的状态
+	 * The following states are those where the connection to the device is not maintained
+	 * 
+	 * 
 	 */
-	Linking, // 和下位机连接中
-	Connect, // 和下位机连接成功
-	Detect, // 和下位机匹配机型中
-	Initialize;// 和下位机同步设置中
+	Offline, // No connection to the device
+	USBFound, // Found an available USB device (scope)
+	USBDrvErr, // USBUSB driver installation error
+	MachineNotSupport, // Unrecognized scope device
+
+	/**
+	 * The following states occur while attempting to connect to the device
+	 */
+	Linking, // Linking to the device
+	Connect, // Connected to the device
+	Detect, // Matching the model with the device
+	Initialize;// Synchronizing settings with the device
 
 	@Override
 	public String toString() {

@@ -3,7 +3,7 @@ package com.owon.uppersoft.vds.util;
 import java.util.Calendar;
 
 /**
- * TimeMeasure，计时器
+ * TimeMeasure, timer
  * 
  */
 public class TimeMeasure {
@@ -12,21 +12,21 @@ public class TimeMeasure {
 	long stopT;
 
 	/**
-	 * 计时开始
+	 * Start timing
 	 */
 	public void start() {
 		startT = Calendar.getInstance().getTimeInMillis();
 	}
 
 	/**
-	 * 计时结束
+	 * Stop timing
 	 */
 	public void stop() {
 		stopT = Calendar.getInstance().getTimeInMillis();
 	}
 
 	/**
-	 * 计算时间差，毫秒为单位
+	 * Compute the time difference, in milliseconds
 	 * 
 	 * @return
 	 */
@@ -35,7 +35,7 @@ public class TimeMeasure {
 	}
 
 	/**
-	 * 计算时间差，秒为单位
+	 * Compute the time difference, in seconds
 	 * 
 	 * @return
 	 */

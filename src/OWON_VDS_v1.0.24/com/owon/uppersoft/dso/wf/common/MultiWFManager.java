@@ -26,7 +26,7 @@ import com.owon.uppersoft.vds.core.wf.rt.ChannelsTransportInfo;
 import com.owon.uppersoft.vds.core.wf.rt.LoadMedia;
 
 /**
- * MultiWFManager，为不同场合提供数据灌入WaveForm的处理
+ * MultiWFManager, provides the processing for feeding data into WaveForm for different situations
  * 
  */
 public class MultiWFManager implements IMultiWFManager {
@@ -40,13 +40,13 @@ public class MultiWFManager implements IMultiWFManager {
 
 	protected void doReceiveRTData(LoadMedia cti, ScreenContext pc,
 			WaveFormManager wfm, boolean asReload) {
-		/** TODO for check: 混画，效率的瓶颈在画图，而不是传输，RT传输时短，多幅一次画提高刷新率 */
+		/** TODO for check: mixed drawing; the efficiency bottleneck is drawing, not transfer; RT transfer is short, drawing several frames at once improves the refresh rate */
 		Iterator<? extends ChannelDataInfo> it = cti.iterator_ChannelDataInfo();
 		while (it.hasNext()) {
 			ChannelDataInfo cdi = it.next();
 			int chl = cdi.chl;
 			WaveForm wf = wfm.getWaveForm(chl);
-			// TODO 更新频率值
+			// TODO update the frequency value
 
 			wf.setDm_xoffset(cdi.xoffset);
 			wf.prepareRTNormalPaint(cdi, cti,
@@ -54,7 +54,7 @@ public class MultiWFManager implements IMultiWFManager {
 			cti.retireInstance(cdi);
 		}
 		if (cti.getChannelCount() > 0) {
-			// 在wf之后计算
+			// computed after wf
 			wfm.afterWaveFormsFeed(pc);
 		}
 	}
@@ -91,13 +91,13 @@ public class MultiWFManager implements IMultiWFManager {
 			ci.setOn(true);
 
 			OfflineInfo oi = cdi.oi;
-			// 离线数据载入时的剩余参数设置
+			// remaining parameter settings when loading offline data
 			ci.setVoltbaseIndex(oi.vbIdx, false, false);
 			ci.setPos0(oi.pos0);
 			wf.saveFirstLoadPos0();
 			ci.setProbeMultiIdx(oi.probeMultiIdx);
 
-			/** 录制波形无需进行反相 */
+			/** Recorded waveforms need no inversion */
 			ci.c_setInverse(ChannelInverseTranslator.setOfflineInverseType_Normal(cdi
 					.getInverseType()));
 
@@ -117,11 +117,11 @@ public class MultiWFManager implements IMultiWFManager {
 			ChannelInfo ci = wf.wfi.ci;
 			ci.setOn(true);
 
-			// 离线数据载入时的剩余参数设置
+			// remaining parameter settings when loading offline data
 			ci.setVoltbaseIndex(cdi.vbIdx, false, false);
 			ci.setPos0(cdi.pos0);
 
-			/** 预先保存初始零点 */
+			/** Save the initial zero point beforehand */
 			wf.saveFirstLoadPos0();
 
 			boolean inverse = ChannelInverseTranslator.setOfflineInverseType_DM(cdi.inverseType);
@@ -140,7 +140,7 @@ public class MultiWFManager implements IMultiWFManager {
 
 	public void receiveRTDMData(DMInfo ci, ScreenContext pc, BigDecimal tbbd,
 			int tbIdx, WaveFormManager wfm) {
-		/** TODO for check: 混画，效率的瓶颈在画图，而不是传输，RT传输时短，多幅一次画提高刷新率 */
+		/** TODO for check: mixed drawing; the efficiency bottleneck is drawing, not transfer; RT transfer is short, drawing several frames at once improves the refresh rate */
 		List<DMDataInfo> list = ci.channels;
 		for (DMDataInfo cdi : list) {
 			int chl = cdi.chl;
@@ -154,12 +154,12 @@ public class MultiWFManager implements IMultiWFManager {
 		}
 
 		ci.setPKDetect(cm.isPeakDetectWork());
-		/** 使用拿深存储前最后一次的零点位置，就可以处理停止后发生零点移动的情况 */
+		/** Using the last zero point position before fetching deep memory handles zero point moves that happen after stopping */
 		simulateInitAsDM(ci, pc, wfm, false, cm.getTimeControl()
 				.getTimebaseIdx());
 	}
 
-	/** 深存储数据 灌入内存 */
+	/** Feed deep memory data into memory */
 	protected void simulateInitAsDM(DMInfo ci, ScreenContext pc,
 			WaveFormManager wfm, boolean asReload, int tbidx) {
 		WFTimeScopeControl wftsc = wfm.getWFTimeScopeControl();
@@ -176,14 +176,14 @@ public class MultiWFManager implements IMultiWFManager {
 		ChannelsTransportInfo cti = retrieveChannelsTransportInfoFromDM(false,
 				false, wfic);
 
-		/** 不设置wftsc.setPk_1kpix_250(pk_1kpix_250); */
+		/** do not set wftsc.setPk_1kpix_250(pk_1kpix_250); */
 		wftsc.loadDM(cti, wftsc.isPK_Detect(), retrieveDrawModeFromDM(wfic),
 				getDMGap(wfic));
 		doReceiveRTData(cti, pc, wfm, false);
 	}
 
 	/**
-	 * 由深存储转化出运行时的屏幕点数
+	 * Convert deep memory to the run-time screen point count
 	 * 
 	 * @return
 	 */
@@ -237,7 +237,7 @@ public class MultiWFManager implements IMultiWFManager {
 	}
 
 	/**
-	 * DM时通过LocInfo得到
+	 * DM case: obtained through LocInfo
 	 * 
 	 * @return
 	 */

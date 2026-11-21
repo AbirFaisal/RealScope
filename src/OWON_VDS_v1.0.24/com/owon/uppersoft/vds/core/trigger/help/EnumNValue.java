@@ -1,15 +1,15 @@
 package com.owon.uppersoft.vds.core.trigger.help;
 
 /**
- * enum+value，双保存
+ * enum+value, dual storage
  * 
  */
 public abstract class EnumNValue {
 
-	/** 单位部分，同时是步进判断的依据，当然这里还可以加速步进 */
+	/** Unit part, also the basis for step judgment; acceleration of stepping could also be added here */
 	protected int en;
 
-	/** 值部分 */
+	/** Value part */
 	protected int v;
 
 	public EnumNValue() {
@@ -33,7 +33,7 @@ public abstract class EnumNValue {
 
 	/**
 	 * @param etv
-	 * @return 是否修改了原值
+	 * @return Whether the original value was modified
 	 */
 	public boolean set(EnumNValue etv) {
 		if (this.equals(etv))
@@ -56,35 +56,35 @@ public abstract class EnumNValue {
 	}
 
 	/**
-	 * 返回下一个可用值
+	 * Return the next available value
 	 * 
 	 * @return
 	 */
 	public abstract EnumNValue getNext();
 
 	/**
-	 * 返回上一个可用值
+	 * Return the previous available value
 	 * 
 	 * @return
 	 */
 	public abstract EnumNValue getPrevious();
 
 	/**
-	 * 由所含的内容en和v，转换为int值，单位由子类定义
+	 * Convert the contained en and v to an int value; the unit is defined by subclasses
 	 * 
 	 * @return
 	 */
 	public abstract int toInt();
 
 	/**
-	 * 从int中读取值设置en和v，单位由子类定义
+	 * Read the value from an int and set en and v; the unit is defined by subclasses
 	 * 
 	 * @param v
 	 */
 	public abstract void fromInt(int v);
 
 	/**
-	 * 配置文件中的参数项名字
+	 * Name of the parameter item in the configuration file
 	 * 
 	 * @return
 	 */

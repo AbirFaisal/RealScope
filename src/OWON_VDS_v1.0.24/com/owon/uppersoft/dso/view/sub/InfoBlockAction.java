@@ -28,7 +28,7 @@ import com.owon.uppersoft.vds.ui.widget.ComboBoxOwner;
 import com.owon.uppersoft.vds.ui.widget.OwnedComboBox;
 
 /**
- * InfoBlockAction，Acting different floor operations in InfoBlock, including ComboBox, SlideDelegate, etc.
+ * InfoBlockAction, Acting different floor operations in InfoBlock, including ComboBox, SlideDelegate, etc.
  */
 public class InfoBlockAction implements ComboBoxOwner, SliderDelegate, SliderBarLocation {
 	private InfoBlock ib;
@@ -75,13 +75,13 @@ public class InfoBlockAction implements ComboBoxOwner, SliderDelegate, SliderBar
 		WaveFormManager wfm = Platform.getDataHouse().getWaveFormManager();
 		mcctr.chNum = ci.getNumber();
 
-		boolean b = wfm.setVoltBaseIndex(wf, idx);// 设置通道电压档位
+		boolean b = wfm.setVoltBaseIndex(wf, idx);// set the channel voltage scale
 		if (!b)
 			return;
 		mcctr.computeYValues(ci.getPos0(), ci.getVoltValue());
 
 		// Platform.getMainWindow().getToolPane().updateTrgVolt();
-		/** Math中vrms缩放比率重计算，内部判断只在运行时重算 */
+		/** Math vrms scaling ratio recomputation; internally it only recomputes while running */
 		wfm.getFFTView().updateYScaleRate();
 		pcs.firePropertyChange(PropertiesItem.TUNE_VBBCHANGE, null, ci);
 	}
@@ -157,7 +157,7 @@ public class InfoBlockAction implements ComboBoxOwner, SliderDelegate, SliderBar
 		ChannelInfo ci = wf.wfi.ci;
 		boolean on = ci.isOn();
 
-		/** 如果通道在运行时是关闭着的，当它停止下来也没数据，做成不让打开该通道 */
+		/** If the channel was off while running, it has no data when stopped either, so make it not possible to turn this channel on */
 		WaveFormManager wfm = Platform.getDataHouse().getWaveFormManager();
 		if (!on && wfm.isNoWFDataFilled(wf)) {
 			FadeIOShell fs = new FadeIOShell();
@@ -167,10 +167,10 @@ public class InfoBlockAction implements ComboBoxOwner, SliderDelegate, SliderBar
 		}
 
 		// if (on) {
-		// /** 要关闭 */
+		// /** to close */
 		// MathControl mc = controlManager.mathControl;
 		// if (mc.isFFTon() && mc.getFFTchl() == ci.number) {
-		// /** 提示一下通道在做fft，将使fft失效，然后不允许关闭 */
+		// /** Remind that the channel is doing fft and closing it would invalidate the fft, then do not allow closing */
 		// FadeIOShell pv = new FadeIOShell();
 		// pv.prompt(I18nProvider.bundle().getString(
 		// "M.Math.FFT.chlturnoffWarn"), Platform.getMainWindow()
@@ -205,9 +205,9 @@ public class InfoBlockAction implements ComboBoxOwner, SliderDelegate, SliderBar
 	}
 
 	protected void clickInverse(ChannelInfo ci) {
-		/** 加入反相点击切换 */
+		/** add click-to-toggle inversion */
 		ci.c_setInverse(!ci.isInverse());
-		/** 请求更新触发电平等值 */
+		/** request update of trigger level and similar values */
 		pcs.firePropertyChange(PropertiesItem.UPDATE_VOLTSENSE, -1,
 				ci.getNumber());
 		Platform.getMainWindow().updateShow();
@@ -228,7 +228,7 @@ public class InfoBlockAction implements ComboBoxOwner, SliderDelegate, SliderBar
 	}
 
 	/**
-	 * @RF 改用fire
+	 * @RF changed to use fire
 	 */
 	public void dockDialogQuickAct() {
 		cm.getDockControl().dockDialogQuickOpenHide(ChannelPage.Name);
@@ -238,7 +238,7 @@ public class InfoBlockAction implements ComboBoxOwner, SliderDelegate, SliderBar
 	public void valueChanged(int oldV, int newV) {
 		WaveForm wf = ib.getWaveForm();
 		ChannelInfo ci = wf.wfi.ci;
-		/** newV值以屏幕左上角为零点坐标,转化为屏幕中间坐标传入使用 */
+		/** newV value is relative to the screen top-left as origin; converted to screen-center coordinates before being passed in */
 		newV = ci.getHalfPosRange() - newV;//
 		valueChanged_Directly(newV);
 	}
@@ -246,7 +246,7 @@ public class InfoBlockAction implements ComboBoxOwner, SliderDelegate, SliderBar
 	public int valueChanged_Directly(int newV) {
 		WaveForm wf = ib.getWaveForm();
 		ChannelInfo ci = wf.wfi.ci;
-		// v=mcctr.limitPos0Edge(v);//限制零点位置上下边界
+		// v=mcctr.limitPos0Edge(v);//limit the upper and lower bounds of the zero point position
 		MainWindow mw = Platform.getMainWindow();
 		DataHouse dh = Platform.getDataHouse();
 		dh.getWaveFormManager().setZeroYLoc(wf, newV, true);

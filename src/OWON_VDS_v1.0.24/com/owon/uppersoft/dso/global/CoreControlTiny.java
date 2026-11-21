@@ -26,7 +26,7 @@ public class CoreControlTiny extends CoreControl {
 
 	@Override
 	public boolean checkPeakDetectWork() {
-		/** 峰值检测的处理完全由上位机实现，只支持采样率可以提升的情况 */
+		/** Peak detect processing is implemented entirely by the host, and only supports the case where the sampling rate can be raised */
 		return isSamplePromtion();
 	}
 
@@ -35,7 +35,7 @@ public class CoreControlTiny extends CoreControl {
 	@Override
 	public double getTimePerPoint(int points) {
 		int Vnum = points;
-		// final double samp = 1000 / (double) Vnum;// 1000是什么？
+		// final double samp = 1000 / (double) Vnum;// 1000what is 1000?
 		double timebase = getTimeControl().getBDTimebase().doubleValue();
 		double timerange = timebase * GDefine.BlockNum;
 		// System.err.println("timebase: ");
@@ -43,11 +43,11 @@ public class CoreControlTiny extends CoreControl {
 
 		double timePerPoint;
 		/**
-		 * 仅使用于当前的fft实现方式
+		 * Used only by the current fft implementation
 		 * 
-		 * 频率计算：保留普通时的做法，在fft开启时区分，当满2048点时使用实际采样率倒推(无压缩无插值，可视为1/点间隔时间)，
+		 * Frequency calculation: keep the normal approach, and distinguish when fft is enabled; when full at 2048 points, derive from the actual sampling rate (no compression and no interpolation, can be regarded as 1/point interval time),
 		 * 
-		 * 不满2048点仍用原算法，注意加上*2048 / 2000
+		 * With fewer than 2048 points, still use the original algorithm, and note to add *2048 / 2000
 		 */
 		timePerPoint = timerange / (double) Vnum;
 		// System.err.println(timerange);

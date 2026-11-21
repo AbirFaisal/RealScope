@@ -25,7 +25,7 @@ import com.owon.uppersoft.vds.core.wf.rt.ChannelsTransportInfo;
 import com.owon.uppersoft.vds.ui.resource.FontCenter;
 
 /**
- * DataHouse，database
+ * DataHouse, database
  * 
  */
 public abstract class DataHouse implements Localizable, ILazy, Paintable {
@@ -119,7 +119,7 @@ public abstract class DataHouse implements Localizable, ILazy, Paintable {
 	}
 
 	/**
-	 * coordinate：yb - adc
+	 * coordinate: yb - adc
 	 * 
 	 * @return
 	 */

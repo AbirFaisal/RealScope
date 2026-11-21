@@ -86,7 +86,7 @@ public class Pluger2 {
 	}
 
 	/**
-	 * 初始化载入时的插值
+	 * Interpolation at initial load
 	 * 
 	 */
 	public void processPlugForInit(IntBuffer handlebuf) {
@@ -127,7 +127,7 @@ public class Pluger2 {
 		insideBuffer.position(0);
 		insideBuffer.limit(len + ext);
 		diu.retrieveBuf(insideBuffer, iPos);
-		// 可正弦插值，使用已经处理的extendRange计算正弦插值
+		// Sine interpolation is possible; compute the sine interpolation using the already processed extendRange
 		sinePlugForInit(handlebuf, sinePlugRate);
 		linearPlug(handlebuf, linearPlugRate);
 
@@ -141,7 +141,7 @@ public class Pluger2 {
 		insideBuffer.position(0);
 		insideBuffer.limit(len);
 		diu.retrieveBuf(insideBuffer, iPos);
-		// 可正弦插值，使用已经处理的extendRange计算正弦插值
+		// Sine interpolation is possible; compute the sine interpolation using the already processed extendRange
 		sinePlugForInit(handlebuf, sinePlugRate);
 		linearPlug(handlebuf, linearPlugRate);
 		// vl.logln("handlebuf.remaining():" + handlebuf.remaining());
@@ -170,13 +170,13 @@ public class Pluger2 {
 		}
 
 		Plug10.sine_interpolate(handlearr, iba, len, 0, p);
-		/** 偏移还是从extra对应的位置开始，长度为插plugrate之后的长度 */
+		/** The offset still starts from the position corresponding to extra; the length is the length after interpolating by plugrate */
 		handlebuf.position(0);
 		handlebuf.limit(len * sine_rate);
 	}
 
 	/**
-	 * @return 线性插值的倍速
+	 * @return linear interpolation multiplier
 	 */
 	private void linearPlug(IntBuffer handlebuf, int line_rate) {
 		if (line_rate <= 1)
@@ -248,14 +248,14 @@ public class Pluger2 {
 	}
 
 	/**
-	 * 提取插值信息，返回取出拉触发多拿数据以外，正确的屏幕起始位置
+	 * Extract interpolation info and return the correct screen start position, excluding the extra data taken for trigger pull
 	 * 
 	 * @param cdi
 	 * @param li
-	 * @return 没有多拿数据情况下的起始位置
+	 * @return start position when there is no extra data
 	 */
 	public void initPlugInfo(DMDataInfo cdi, MachineType mt) {
-		/** 载入深存储时为无需插值的时基，则后续也不进行插值 */
+		/** When loading deep memory, if the timebase does not need interpolation, no interpolation is done afterwards either */
 		if (!plug) {
 			logln("screendatalen >= 1k err in Pluger.java");
 		}
@@ -370,7 +370,7 @@ public class Pluger2 {
 		doPlug_ext(handlebuf, iPos, len);
 
 		int hlen = handlebuf.remaining();
-		/** 精简插值后实际需要画到屏幕上的点 */
+		/** The points that actually need to be drawn on screen after simplified interpolation */
 		int plen = (int) ((1000 - xoff + 1) * curr_points / 1000);
 		if (hlen > plen)
 			hlen = plen;

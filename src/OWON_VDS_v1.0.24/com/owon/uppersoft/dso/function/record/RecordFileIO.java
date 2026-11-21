@@ -27,25 +27,25 @@ import com.owon.uppersoft.vds.data.Point;
 import com.owon.uppersoft.vds.util.StringPool;
 
 public class RecordFileIO {
-	private static final int recordVer = OfflineChannelsInfo.RECORDPROTOCOL_VDS_CURRENT;// 文件格式版本
+	private static final int recordVer = OfflineChannelsInfo.RECORDPROTOCOL_VDS_CURRENT;// file format version
 
 	public static long writeHeader(RandomAccessFile raf, ControlManager cm) {
 		try {
 			final SoftwareControl sc = cm.getSoftwareControl();
 			byte[] b = sc.getMachineHeader().getBytes(StringPool.ASCIIString);
-			raf.write(b); // 文件头(10 字节, ASCII)
-			raf.writeInt(cm.getMachineTypeForSave()); // 4个字节机型信息 7102
-			raf.writeInt(recordVer); // 4个字节版本信息 1
+			raf.write(b); // file header (10 bytes, ASCII)
+			raf.writeInt(cm.getMachineTypeForSave()); // 4 bytes of model info 7102
+			raf.writeInt(recordVer); // 4 bytes of version info 1
 
-			raf.writeByte(VDS_Portable.FILEFORMAT_RECORD);// 4字节格式信息，后3位保留
+			raf.writeByte(VDS_Portable.FILEFORMAT_RECORD);// 4 bytes of format info, the last 3 bits reserved
 			raf.writeByte(0);
 			raf.writeByte(0);
 			raf.writeByte(0);
 
 			long fileLenPos = raf.getFilePointer();
-			raf.writeInt(0);// 文件长度
-			raf.writeInt(0);// 录制时间间隔
-			raf.writeInt(0);// 帧个数
+			raf.writeInt(0);// file length
+			raf.writeInt(0);// recording time interval
+			raf.writeInt(0);// number of frames
 			return fileLenPos;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -58,7 +58,7 @@ public class RecordFileIO {
 private	static ChannelInverseTranslator cit = new ChannelInverseTranslator();
 
 	/**
-	 * 一帧写入
+	 * Write one frame
 	 * 
 	 * @param raf
 	 * @param cm
@@ -100,8 +100,8 @@ private	static ChannelInverseTranslator cit = new ChannelInverseTranslator();
 				int fsl = cdi.screendatalen;
 				int dl = cdi.datalen;
 
-				// 这里如果做修改，可以节省保存的数据长度
-				raf.writeInt(0);// raf.writeInt(initPos);//屏幕起始
+				// If this is modified, the length of saved data can be reduced
+				raf.writeInt(0);// raf.writeInt(initPos);// screen start
 				raf.writeInt(fsl);
 				raf.writeInt(fsl);// raf.writeInt(dl);
 
@@ -127,7 +127,7 @@ private	static ChannelInverseTranslator cit = new ChannelInverseTranslator();
 				long bendPos = raf.getFilePointer();
 
 				raf.seek(bsizePos);
-				raf.writeInt((int) (bendPos - bsizePos - 4));// -4?块长度存放位置占4字节
+				raf.writeInt((int) (bendPos - bsizePos - 4));// -4? the block length storage position takes 4 bytes
 				raf.seek(bendPos);
 			}
 
@@ -162,7 +162,7 @@ private	static ChannelInverseTranslator cit = new ChannelInverseTranslator();
 			return -1;
 		}
 
-		/** 机型信息 4 字节 */
+		/** Model info, 4 bytes */
 		int machID = ba.nextInt();
 		ci.machine_type = machID;
 		if (!cm.isSuitableMachineType(machID)) {
@@ -171,14 +171,14 @@ private	static ChannelInverseTranslator cit = new ChannelInverseTranslator();
 				return -1;
 		}
 
-		/** 版本信息 4 字节 */
+		/** Version info, 4 bytes */
 		int intEdition = ba.nextInt();
 		ci.record_version = intEdition;
 
 		if (!ci.setMore_Record(ba))
 			return -1;
 
-		/** 文件长度 4 字节 */
+		/** File length, 4 bytes */
 		int intFileSize = ba.nextInt();
 		pc.filesize = intFileSize;
 
@@ -201,7 +201,7 @@ private	static ChannelInverseTranslator cit = new ChannelInverseTranslator();
 
 		int fp = ba.pointer();
 		// System.out.println("fp0:" + fp);
-		int infoLen = ba.nextInt();// 结构体长度,即单帧长
+		int infoLen = ba.nextInt();// structure length, i.e. the length of a single frame
 		ba.skip(infoLen);
 
 		OpenPropertyChangeEvent pce = new OpenPropertyChangeEvent(pc,
@@ -210,7 +210,7 @@ private	static ChannelInverseTranslator cit = new ChannelInverseTranslator();
 		pc.propertyChange(pce);
 
 		Point p = new Point(infoLen, 1);
-		// Point p = new Point(infoLen + 4, 1);//方法二,帧头补上4字节
+		// Point p = new Point(infoLen + 4, 1);// method 2, pad the frame header with 4 bytes
 		timepoints.add(p);
 
 		while (i < c) {
@@ -222,16 +222,16 @@ private	static ChannelInverseTranslator cit = new ChannelInverseTranslator();
 
 			pce.newInt = ++i;
 			pc.propertyChange(pce);
-			// infoLen += 4;//方法二,帧头补上4字节
+			// infoLen += 4;// method 2, pad the frame header with 4 bytes
 			if (infoLen != p.x) {
-				p.x += 4;// 原帧长加保存该帧长的4字节，才是每帧间隔长度，方法一,帧尾补上4字节
+				p.x += 4;// the original frame length plus the 4 bytes that store the frame length is the interval length between frames, method 1, pad the frame tail with 4 bytes
 				timepoints.add(p = new Point(infoLen, 1));//
 			} else {
 				p.y++;
 			}
 
 		}
-		p.x += 4;// 原帧长加保存该帧长的4字节，才是每帧间隔长度，方法一,帧尾补上4字节
+		p.x += 4;// the original frame length plus the 4 bytes that store the frame length is the interval length between frames, method 1, pad the frame tail with 4 bytes
 		return;
 	}
 
@@ -248,15 +248,15 @@ private	static ChannelInverseTranslator cit = new ChannelInverseTranslator();
 		ci.setPKDetect_Record(ba);
 		ci.setDMDetect_Record(ba);
 
-		ci.reset('T');// 清理共享区启存位置
+		ci.reset('T');// clear the start-store position of the shared area
 		ChannelDataInfo cdi = null;
 		while (ba.pointer() - fptr < infoLen) {// && ba.available() >= 41
-			/** 波形名 1 字节 */
+			/** Waveform name, 1 byte */
 			byte wnb = ba.nextByte();
 			// System.out.println("CHname: " + wnb);
 			cdi = ci.getInstance();
 			cdi.chl = wnb;
-			/** 块大小 4 字节 */
+			/** Block size, 4 bytes */
 			int intBlockSize = ba.nextInt();
 
 			int ptr = ba.pointer();
@@ -266,44 +266,44 @@ private	static ChannelInverseTranslator cit = new ChannelInverseTranslator();
 			int initPos = ba.nextInt();
 			cdi.initPos = initPos;
 
-			/** 满屏画图点个数 4字节 */
+			/** Number of points drawn on the full screen, 4 bytes */
 			int screenDataLen = ba.nextInt();
 			// screenDataLen = 1000;
 			cdi.screendatalen = screenDataLen;
 			// System.out.println(cdi.screendatalen);
 
-			/** 传输的数据点个数 4字节 */
+			/** Number of transmitted data points, 4 bytes */
 			int transNum = ba.nextInt();
 			// transNum = 1000000;
 			// System.out.println("transNum:" + transNum);
 			cdi.datalen = transNum;
 
-			/** 慢扫描备用 4 字节 */
+			/** Reserved for slow sweep, 4 bytes */
 			int slowMove = ba.nextInt();
 			cdi.slowMove = slowMove;
 
 			OfflineInfo oi = cdi.oi;
-			/** 零点位置 4 字节 */
+			/** Zero-point position, 4 bytes */
 			int pos0 = ba.nextInt();
 			oi.pos0 = pos0;
-			/** 电压档位 4 字节 */
+			/** Voltage scale, 4 bytes */
 			int vbIdx = ba.nextInt();
 			oi.vbIdx = vbIdx;
-			/** 衰减倍率指数 4 字节 */
+			/** Attenuation ratio exponent, 4 bytes */
 			int probeMultiIdx = ba.nextInt();
 			oi.probeMultiIdx = probeMultiIdx;
-			/** 频率 4 字节 */
+			/** Frequency, 4 bytes */
 			float frequency = ba.nextFloat();
 
 			cdi.setFreq(oi.frequency = frequency);
 
-			/** 周期 4 字节 */
+			/** Period, 4 bytes */
 			float cycle = ba.nextFloat();
 			oi.cycle = cycle;
 
 			ByteBuffer bb = ByteBuffer.allocate(transNum);
 			byte[] arr = bb.array();
-			ba.get(arr, bb.position(), transNum);// (读入文件的)buffer到(共享buffer的)array
+			ba.get(arr, bb.position(), transNum);// (file being read) buffer to (shared buffer's)array
 
 			cdi.setUniqueAdcbuf(bb);
 
@@ -311,9 +311,9 @@ private	static ChannelInverseTranslator cit = new ChannelInverseTranslator();
 			// System.out.println("ci:"+ci.screendatalen);
 			ci.screendatalen = screenDataLen;
 
-			ptr = intBlockSize - (ba.pointer() - ptr);// 若混入垃圾信息，可得其长度
+			ptr = intBlockSize - (ba.pointer() - ptr);// If garbage info got mixed in, its length can be obtained
 			// System.out.println("skip inside: " + ptr);
-			ba.skip(ptr);// 跳过垃圾信息，多层正确性保护
+			ba.skip(ptr);// skip the garbage info, multi-layer correctness protection
 		}
 		ci.setDataComplete(1);
 		if (cdi != null)

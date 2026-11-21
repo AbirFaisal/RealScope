@@ -16,7 +16,7 @@ import com.owon.uppersoft.dso.wf.WaveForm;
 //import com.owon.uppersoft.vds.data.Point;
 
 /**
- * 处理右侧的鼠标事件
+ * Handle mouse events on the right side
  * 
  * @author Matt
  * 
@@ -41,7 +41,7 @@ public class RightScreenGesture implements TrgLevelCheckHandler {
 			ccsm.setScreenSelectWFidx(rollOverChannel);
 			tld.changeTrgLabel(rollOverChannel, ccsm.getOperateThredshodType(),
 					0, wfm, false);
-			// 目的只是设置trgOverInfo.thredshodType进去
+			// The only purpose is to set trgOverInfo.thredshodType in
 			vc.re_paint();
 		}
 	}
@@ -87,7 +87,7 @@ public class RightScreenGesture implements TrgLevelCheckHandler {
 			return false;
 		}
 
-		/** 自身内部状态准备完毕，交由delegate进行check，之后从ccsm中获取check-handle结果 */
+		/** Once its own internal state is ready, hand over to the delegate for the check, then get the check-handle result from ccsm */
 		contxt.setEnvironment(upborder, downborder, mousey, vc
 				.getScreenContext(), CheckAroundSpace);
 		ccsm.resetOperateChannelAndThredshodType();
@@ -123,7 +123,7 @@ public class RightScreenGesture implements TrgLevelCheckHandler {
 			loc0.x = x;
 			loc0.y = y;
 		} else {
-			/** 采用鼠标所在位置的近似值进行设置 */
+			/** Set using the approximate value at the mouse position */
 			int rem = del % 2;
 			loc0.x = x;
 			loc0.y = y + (del > 0 ? rem : (-rem));
@@ -177,11 +177,11 @@ public class RightScreenGesture implements TrgLevelCheckHandler {
 	private boolean checkResult;
 
 	/**
-	 * 处理判断类型
+	 * Handle type determination
 	 * 
 	 * @param type
 	 * @param channel
-	 * @return 是否被选择到了
+	 * @return whether it was selected
 	 */
 	private void handleCheckedType(TrgCheckType type) {
 		ccsm.handleCheckedType(contxt.channel, type);

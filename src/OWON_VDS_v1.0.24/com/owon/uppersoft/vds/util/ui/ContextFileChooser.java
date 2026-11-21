@@ -16,7 +16,7 @@ public class ContextFileChooser {
 		if (dir == null) {
 			dir = new File("");
 		}
-		// 设置打开文件名及所在文件夹
+		// Set the file name to open and its folder
 		try {
 			jfc = new JFileChooser(dir.getCanonicalFile());
 		} catch (IOException e) {
@@ -31,7 +31,7 @@ public class ContextFileChooser {
 			return null;
 		}
 
-		// 当前目录只在执行情况下保存
+		// The current directory is saved only while executing
 		dir = jfc.getCurrentDirectory();
 
 		File f = jfc.getSelectedFile();

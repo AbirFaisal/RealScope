@@ -14,7 +14,7 @@ import com.owon.uppersoft.vds.core.comm.effect.Submitable;
 import com.owon.uppersoft.vds.util.Pref;
 
 public class PulseTrigger extends VoltsensableTrigger {
-	/** 控件为对称限位而设计 */
+	/** The control is designed for symmetric limiting */
 	public static final int VoltSenseHalfRange = GDefine.TriggerLevelDivRange
 			* GDefine.PIXELS_PER_DIV;
 

@@ -28,7 +28,7 @@ import com.owon.uppersoft.vds.util.StringPool;
 
 public class DataSaverTiny extends AbsDataSaver {
 
-	private int fileVer = DMInfoTiny.FILEPROTOCOL_VDS_CURRENT;// 文件格式版本
+	private int fileVer = DMInfoTiny.FILEPROTOCOL_VDS_CURRENT;// file format version
 	private ChannelInverseTranslator cit;
 
 	public DataSaverTiny() {
@@ -36,9 +36,9 @@ public class DataSaverTiny extends AbsDataSaver {
 	}
 
 	/**
-	 * 保存文件，始终使用当前波形通道信息填充，可用于RT载入深存储或是保存文件
+	 * Save the file, always filled with the current waveform channel information, usable for RT loading into deep memory or saving a file
 	 * 
-	 * KNOW 需要处理拿不到的情况：深存储数据已丢失，需要重现匹配
+	 * KNOW need to handle the case where it cannot be obtained: the deep memory data has been lost and matching needs to be redone
 	 * 
 	 * @param ca
 	 * @param cm
@@ -66,11 +66,11 @@ public class DataSaverTiny extends AbsDataSaver {
 			RandomAccessFile raf = new RandomAccessFile(f, "rw");
 			raf.setLength(0);
 			final SoftwareControl sc = cm.getSoftwareControl();
-			// KNOW 原头文件长10个字符，后头文件赋值为机型号一般7个字节,补上"SPB"读入离线文件才正常
+			// KNOW the original header was 10 characters long, later the header is assigned the model number, generally 7 bytes, so "SPB" is added for offline files to load properly
 			byte[] b = (sc.getMachineHeader()).getBytes(StringPool.ASCIIString);
-			raf.write(b); // 文件头(10 字节, ASCII)("SPB"3字节+sc.machine_header 7字节)
-			raf.writeInt(cm.getMachineTypeForSave()); // 4个字节机型信息 7102
-			raf.writeInt(fileVer); // 4个字节版本信息 1
+			raf.write(b); // file header (10 bytes, ASCII)("SPB" 3 bytes + sc.machine_header 7 bytes)
+			raf.writeInt(cm.getMachineTypeForSave()); // 4 bytes model info 7102
+			raf.writeInt(fileVer); // 4 bytes version info 1
 
 			raf.writeByte(VDS_Portable.FILEFORMAT_DM);
 			raf.writeByte(0);
@@ -78,15 +78,15 @@ public class DataSaverTiny extends AbsDataSaver {
 			raf.writeByte(0);
 
 			fileLenPos = raf.getFilePointer();
-			raf.writeInt(0);// 文件长度
+			raf.writeInt(0);// file length
 
-			/* 数据区 */
-			raf.writeByte(0);// 数据区入口标记为0(1字节，byte)
-			p1 = raf.getFilePointer();// 数据区入口指针
-			raf.writeInt(0);// 数据区长度
+			/* data area */
+			raf.writeByte(0);// data area entry marker is 0 (1 byte, byte)
+			p1 = raf.getFilePointer();// data area entry pointer
+			raf.writeInt(0);// data area length
 
-			t1 = raf.getFilePointer();// 采集点数据的指针位置
-			/** 接收数据 */
+			t1 = raf.getFilePointer();// pointer position of the acquisition point data
+			/** Receive data */
 			ci.raf = raf;
 			ci.pcl = pcl;
 
@@ -108,13 +108,13 @@ public class DataSaverTiny extends AbsDataSaver {
 			raf.writeInt((int) (t2 - t1));
 			raf.seek(t2);
 
-			/* 波形通道区 */
-			raf.writeByte(1);// 波形通道区入口标记 数据区第一字节存为1(1字节，byte)
+			/* waveform channel area */
+			raf.writeByte(1);// waveform channel area entry marker, first byte of the data area stored as 1 (1 byte, byte)
 			p1 = raf.getFilePointer();
-			raf.writeInt(0);// 信息区长度
+			raf.writeInt(0);// info area length
 			t1 = raf.getFilePointer();
 
-			raf.writeByte(t); // 是否深存储 'T'/'M': (1字节)存储深度索引档位
+			raf.writeByte(t); // whether deep memory 'T'/'M': (1 byte) memory depth index
 			raf.writeInt(GDefine.AREA_WIDTH);
 			raf.writeInt(Define.def.AREA_HEIGHT);
 
@@ -135,9 +135,9 @@ public class DataSaverTiny extends AbsDataSaver {
 			raf.seek(t2);
 
 			p1 = raf.getFilePointer();
-			raf.writeInt(0);// 波形通道区长度
+			raf.writeInt(0);// waveform channel area length
 			t1 = raf.getFilePointer();
-			// 迭代存储
+			// iterative storage
 
 			// BigDecimal bd = controlManager.getCurrentSampleRateBD_kHz();
 			// MachineType mi = controlManager.getMachine();
@@ -147,7 +147,7 @@ public class DataSaverTiny extends AbsDataSaver {
 				WaveForm wf = wfm.getWaveForm(cd.chl);
 				ChannelInfo chi = wf.wfi.ci;
 
-				/** 在获取dm的时候计算freq，这里不考虑fft的情况 */
+				/** Compute freq when obtaining dm; the fft case is not considered here */
 				// cd.computeFreq(bd, mi);
 				// chi.updateFreqLabel(cd.getFrequencyFloat());
 				chi.snapShot2ChannelDataInfo(cd, wf);
@@ -156,9 +156,9 @@ public class DataSaverTiny extends AbsDataSaver {
 				raf.writeBytes(wf.toString());
 
 				long blockLenPos = raf.getFilePointer();
-				raf.writeInt(0); // (2)块长度：暂时存0
+				raf.writeInt(0); // (2)block length: temporarily store 0
 
-				// 目前只保存深存储文件，其处理方式是INVERSE_TYPE_RAW_REVERSE
+				// currently only deep memory files are saved, handled as INVERSE_TYPE_RAW_REVERSE
 				raf.writeInt(ChannelInverseTranslator.getInverseType_DM(chi.isInverse()));
 
 				cd.writeRandomAccessFile(raf);
@@ -167,12 +167,12 @@ public class DataSaverTiny extends AbsDataSaver {
 				ci.setScreendatalen(cd);
 				ci.slowMove = cd.slowMove;
 
-				raf.writeInt((int) cd.filePointer);// 采集点数据的指针位置
+				raf.writeInt((int) cd.filePointer);// pointer position of the acquisition point data
 
 				long blockEnd = raf.getFilePointer();
 				int segmentLen = (int) (blockEnd - blockstart);
 				raf.seek(blockLenPos);
-				raf.writeInt(segmentLen); // (2)块长度：替代0存入正确值
+				raf.writeInt(segmentLen); // (2)block length: store the correct value in place of 0
 				raf.seek(blockEnd);
 			}
 			t2 = raf.getFilePointer();

@@ -34,7 +34,7 @@ public class ChannelSelectItemListner implements ItemListener {
 	}
 
 	protected void handleSelect(int idx, JComboBox cbb) {
-		// 已包含if (idx >= wfic.getLowMachineChannels())
+		// already includes if (idx >= wfic.getLowMachineChannels())
 		tc.setSingleChannel(idx);
 		// single
 		TriggerLoaderPane lp = tp.getSelectPane();
@@ -42,7 +42,7 @@ public class ChannelSelectItemListner implements ItemListener {
 		tui.c_setTrigger(lp.submitTrigger());
 
 		int chl = tui.getCurrentChannel();
-		/** KNOW 单一触发时，通道改动，影响触发电平的电压数值 */
+		/** KNOW single trigger: when the channel changes, it affects the trigger level voltage value */
 		lp.fireProperty(new PropertyChangeEvent(tc,
 				PropertiesItem.NEXT_SINGLE_CHANNEL, -1, chl));
 		tp.updateTrgVoltPane();

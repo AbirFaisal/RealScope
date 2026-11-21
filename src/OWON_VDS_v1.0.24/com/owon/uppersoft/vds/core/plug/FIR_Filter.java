@@ -1,12 +1,12 @@
 package com.owon.uppersoft.vds.core.plug;
 
 /**
- * 这是一个对语音信号(0.3kHz~3.4kHz)进行低通滤波的C语言程序， 低通滤波的截止频率为800Hz，滤波器采用19点的有限冲击响应FIR滤波。
- * 语音信号的采样频率为8kHz，每个语音样值按16位整型数存放在insp.dat文件中。
+ * This is a C program that low-pass filters a speech signal (0.3kHz~3.4kHz); the low-pass cutoff frequency is 800Hz, and the filter is a 19-tap finite impulse response (FIR) filter.
+ * The speech sampling frequency is 8kHz, and each speech sample is stored as a 16-bit integer in the file insp.dat.
  */
 public class FIR_Filter {
 	public static int length = 180;
-	/** 语音帧长为180点＝22.5ms@8kHz采样 */
+	/** Speech frame length = 180 points = 22.5ms@8kHz sampling */
 	public static int[] x1 = new int[length + 20];
 	public static double[] h = { 0.01218354, -0.009012882, -0.02881839,
 			-0.04743239, -0.04584568, -0.008692503, 0.06446265, 0.1544655,
@@ -14,7 +14,7 @@ public class FIR_Filter {
 			-0.008692503, -0.04584568, -0.04743239, -0.02881839, -0.009012882,
 			0.01218354 };
 
-	/** 低通滤波浮点子程序 */
+	/** Low-pass filtering floating-point subroutine */
 	public static void filter(int xin[], int xout[], int n, double h[]) {
 		int i, j;
 		double sum;

@@ -27,7 +27,7 @@ public class AverageContainer {
 		//System.out.println("[] " + p_adc + ", " + l_adc);
 		//DBG.dbgArray(adcs, p_adc, 10);
 		if (avgbuf == null || avgbuf.remaining() < datalen) {
-			// 第一次平均值就用adc数据直接赋值
+			// For the first average, assign the adc data directly
 			avgbuf = FloatBuffer.allocate(datalen);
 			float[] avgs = avgbuf.array();
 			//System.out.println(": " + (l_adc - p_adc));
@@ -44,9 +44,9 @@ public class AverageContainer {
 		float[] avgs = avgbuf.array();
 		float v;
 		/**
-		 * KNOW 此后使用计算结果，公式：
+		 * KNOW After this, use the computed result, formula:
 		 * 
-		 * AVG(此)=(AVG(前)*(T-1)+adc(此))/T
+		 * AVG(this)=(AVG(prev)*(T-1)+adc(this))/T
 		 */
 		for (int i = p_adc, j = p_pix; i < l_adc; i++, j++) {
 			//if (j < 10)
@@ -61,12 +61,12 @@ public class AverageContainer {
 	}
 
 	/**
-	 * KNOW 平均值采样时，当前的采样点仍会保留并被使用，只是画图用的是平均点的效果
+	 * KNOW When averaging samples, the current sample point is still kept and used; only the drawing uses the effect of the averaged point
 	 * 
-	 * 停止后只要设置
+	 * After stopping, just set
 	 * 
 	 * @param pc
-	 * @return true表示已经完成了像素点数组的坐标计算，后面将跳出；false表示需要执行常规像素点数组的坐标计算，同时会清除内存
+	 * @return true means the coordinate calculation of the pixel point array is done and the following will be skipped; false means the regular pixel point array coordinate calculation needs to run, and memory will be cleared
 	 */
 	private boolean checkAverage(boolean ScreenMode_3, int yb, boolean avgon,
 			int avgtimes, IntBuffer pixbuf, ByteBuffer adcbuf) {
@@ -81,7 +81,7 @@ public class AverageContainer {
 		int mat = at - 1;
 		int i, j;
 
-		// avgbuf和pixbuf的索引都从0开始
+		// avgbuf and pixbuf indices both start from 0
 		int p_pix = 0;
 		int[] pixs = pixbuf.array();
 
@@ -90,7 +90,7 @@ public class AverageContainer {
 		byte[] adcs = adcbuf.array();
 		int datalen = l_adc - p_adc;
 		if (avgbuf == null || avgbuf.remaining() < datalen) {
-			// 第一次平均值就用adc数据直接赋值
+			// For the first average, assign the adc data directly
 			avgbuf = FloatBuffer.allocate(datalen);
 			float[] avgs = avgbuf.array();
 			if (ScreenMode_3) {
@@ -109,11 +109,11 @@ public class AverageContainer {
 		}
 
 		float[] avgs = avgbuf.array();
-		float v;// TODO 将v用赋值表达式直接替换可能提高效率
+		float v;// TODO Replacing v directly with the assignment expression may improve efficiency
 		/**
-		 * KNOW 此后使用计算结果，公式：
+		 * KNOW After this, use the computed result, formula:
 		 * 
-		 * AVG(此)=(AVG(前)*(T-1)+adc(此))/T
+		 * AVG(this)=(AVG(prev)*(T-1)+adc(this))/T
 		 */
 		if (ScreenMode_3) {
 			for (i = p_adc, j = p_pix; i < l_adc; i++, j++) {

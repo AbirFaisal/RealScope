@@ -65,7 +65,7 @@ public final class DefaultTimeControlDelegate implements TimeControlDelegate {
 
 		boolean newIsSlow = tcp.isOnSlowMoveTimebase(newidx);
 		boolean oldIsSlow = tcp.isOnSlowMoveTimebase(oldidx);
-		/** 初始化设置的时候就不控制当前的获取数据间隔了，让它自适配 */
+		/** On initial setup, no longer control the current data acquisition interval, let it adapt itself */
 		if (oldidx < 0) {
 			tc.setTrgEnable(!newIsSlow);
 			return;
@@ -78,7 +78,7 @@ public final class DefaultTimeControlDelegate implements TimeControlDelegate {
 		// newidx);
 		pcs.firePropertyChange(ITimeControl.onTimebaseUpdated, null, null);
 		if (newIsSlow && !oldIsSlow) {
-			/** 保存自动切换前的触发模式 */
+			/** Save the trigger mode before auto-switching */
 			if (tc.isSingleTrg()) {
 				trgmode = tc.getSingleTriggerSet().getTrigger().getSweep();
 				tc.behaveWhenSwitch2SlowMove();
@@ -97,7 +97,7 @@ public final class DefaultTimeControlDelegate implements TimeControlDelegate {
 			pcs.firePropertyChange(PropertiesItem.SWITCH_NormalMOVE, null, null);
 			tc.setTrgEnable(true);
 
-			/** 应用自动切换前的触发模式 */
+			/** Apply the trigger mode from before auto-switching */
 			if (trgmode >= 0 && tc.isSingleTrg()) {
 				tc.getSingleTriggerSet().getTrigger().c_setSweep(trgmode, tc);
 				trgmode = -1;

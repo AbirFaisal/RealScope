@@ -303,7 +303,7 @@ public class InterCommTiny extends AbsInterCommunicator {
 		mw.updateStatus(TrgStatus.Initialize);
 		pcl.propertyChange(new PropertyChangeEvent(this, STATUS, null,
 				I18nProvider.bundle().getString("Label.initialize") + ": "));
-		// + getMachineText() 避免出现usb描述符
+		// + getMachineText() avoid showing the usb descriptor
 
 		StaticPref sp = cm.getConfig().getStaticPref();
 		if (sc.machine_name.equalsIgnoreCase("VDS1021")) {
@@ -318,7 +318,7 @@ public class InterCommTiny extends AbsInterCommunicator {
 		ICommunicateManager sm = getICommunicateManager();
 
 		FPGADownloader fg = new FPGADownloader();
-		/** 识别fpga运行状态：<0出错，==0未下载，>0已下载 */
+		/** identify the fpga run status: <0 error, ==0 not downloaded, >0 downloaded */
 		int downloadFlag = fg.queryFPGADownloaded(sm);
 		if (downloadFlag < 0) {
 			pcl.propertyChange(new PropertyChangeEvent(this, STATUS, null,
@@ -326,11 +326,11 @@ public class InterCommTiny extends AbsInterCommunicator {
 			return false;
 		}
 
-		/** 读取flash中的本机参数配置 */
+		/** read the local parameter configuration from flash */
 		boolean fpgaNotDownload = (downloadFlag == 0);
 
 		/**
-		 * 这里必须先读取flash_txt，从中得到设备的机型和版本，据此下载对应的fpga
+		 * flash_txt must be read first here to get the model and version of the device, from which the corresponding fpga is downloadedfpga
 		 */
 		DeviceFlashCommunicator dflash = new DeviceFlashCommunicator();
 		byte[] devPref = dflash.fetchPrefernce(sm, fpgaNotDownload);
@@ -358,7 +358,7 @@ public class InterCommTiny extends AbsInterCommunicator {
 		// pc.propertyChange(new PropertyChangeEvent(this, STATUS, null, msg));
 
 		if (fpgaNotDownload) {
-			// 这里放各自机型的文件夹用小写命名
+			// the folders for each model are placed here, named in lowercase
 			File fpgafile = fg.checkFPGAAvailable(sn.toLowerCase());
 			if (fpgafile == null) {
 				pcl.propertyChange(new PropertyChangeEvent(this,
@@ -366,7 +366,7 @@ public class InterCommTiny extends AbsInterCommunicator {
 				return false;
 			}
 
-			/** 下载fpga */
+			/** download fpgafpga */
 			success = fg.downloadFPGA(pcl, sm, fpgafile);
 			if (!success) {
 				pcl.propertyChange(new PropertyChangeEvent(this, STATUS, null,
@@ -381,9 +381,9 @@ public class InterCommTiny extends AbsInterCommunicator {
 			sbm.d_chl_vb(0, 9, null);
 			sbm.d_chl_vb(1, 9, null);
 
-			// 在循环之前确保指令发送完毕
+			// make sure the commands are fully sent before the loop
 
-			// adc复位
+			// adc reset
 			sbm.sendCMD(new AddressAttachCommand("reset_adc_0x22", 0x22, 1), 1);// clock
 			try {
 				Thread.sleep(500);
@@ -426,7 +426,7 @@ public class InterCommTiny extends AbsInterCommunicator {
 		ChannelInfo ci = dh.getWaveFormManager().getWaveForm(1).wfi.ci;
 		boolean b = ci.isOn();
 		if (getTinyMachine().name().equals("VDS2052")) {
-			// vds2052专用复位adc特别是ch2以防干扰
+			// vds2052-specific: reset the adc, especially ch2, to prevent interference
 			ci.c_setOn(true);
 			// customInit();
 		}
@@ -494,12 +494,12 @@ public class InterCommTiny extends AbsInterCommunicator {
 		DeviceAddressTable table = getTinyMachine().getDeviceAddressTable();
 		Submitor2 sbm = reinitSubmitor2();
 
-		// 各机型通用
+		// common to all models
 		sbm.sendCMDbyBytes(table.PHASE_FINE, reg.getPhaseFine().getWrValue(),
 				null);
 
 		if (getTinyMachine().name().equals("VDS2052")) {
-			// vds2052处理adc的移动干扰，并延时等待adc工作正常
+			// vds2052 handles the adc movement interference and waits with a delay until the adc works normally
 			// sbm.sendCMD(table.channel_set[0], 0xff);
 			// sbm.sendCMD(table.channel_set[1], 0xff);
 			// sbm.sendCMD(table.volt_gain[0], 1);
@@ -510,7 +510,7 @@ public class InterCommTiny extends AbsInterCommunicator {
 
 	}
 
-	/** 以下来个方法产生界面阻塞，可考虑引入全局可用的阻塞机制，方便按键指令得到屏蔽 */
+	/** the following methods block the UI; consider introducing a globally available blocking mechanism so that key commands can be masked */
 	// public void selfCalibration() {
 	// super.selfCalibration();
 	// }

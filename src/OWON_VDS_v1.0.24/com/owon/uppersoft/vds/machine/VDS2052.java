@@ -48,9 +48,9 @@ public class VDS2052 extends TinyMachine {
 	// public void prepareCommAddress() {
 	// SLOWMOVE_ADD.setAdd(0x0a, 1);
 	// FORCETRG_ADD.setAdd(0x05, 1);
-	// trg_d_ADD.setAdd(0x2001, 1); // @@@ 触发状态地址
+	// trg_d_ADD.setAdd(0x2001, 1); // @@@ trigger status address
 	// CHECK_STOP_ADD.setAdd(0x2062, 1);
-	// VIDEOTRGD_ADD.setAdd(0x2002, 1); // 判断视频触发的地址
+	// VIDEOTRGD_ADD.setAdd(0x2002, 1); // address for determining video trigger
 	// }
 
 	@Override
@@ -106,7 +106,7 @@ public class VDS2052 extends TinyMachine {
 
 	@Override
 	public double doFrequencyCompute(int peroid_num, int time_sum) {
-		/** 这里作针对硬件频率计的参数按采样率区分判断 */
+		/** here the parameters for the hardware frequency counter are distinguished by sampling rate */
 		int div = FreqRef_125M;
 		double v = (double) peroid_num * div / (double) time_sum;
 		return v;
@@ -114,7 +114,7 @@ public class VDS2052 extends TinyMachine {
 
 	@Override
 	public double getLimitFrequency() {
-		return 60000000;// 50M的120%即30000000
+		return 60000000;// 50M120% of 50M, i.e. 3000000030000000
 	}
 
 	public int getDelayAttenuationVBIndex() {
@@ -142,33 +142,33 @@ public class VDS2052 extends TinyMachine {
 				int df = 1000;
 
 				/**
-				 * 观察DAC的补偿或步进调整相对波形adc值可以发现比例关系：
+				 * observing the DAC compensation or step adjustment relative to the waveform adc value reveals a proportional relationship:
 				 * 
-				 * 电压档位: dac增量:adc增量,接近值
+				 * voltage scale: dac increment:adc increment, approximate value
 				 * 
-				 * 5mV: [补偿]100:50,2000 ; [步进]100:50,100
+				 * 5mV: [compensation]100:50,2000 ; [step]100:50,100
 				 * 
-				 * 10mV: [补偿]200:25,2000 ; [步进]200:25,700
+				 * 10mV: [compensation]200:25,2000 ; [step]200:25,700
 				 * 
-				 * 其它大致: [补偿]200:25,2000 ; [步进]200:25,700
+				 * others (approx.): [compensation]200:25,2000 ; [step]200:25,700
 				 * 
-				 * 是否可以缩小精度
+				 * whether the precision can be reduced
 				 * */
-				// 询问这样做法背后的原理是否一致；验证实际校正过程中值的变化；考虑增加显示的进度可视
+				// ask whether the principle behind this approach is consistent; verify how the values change during the actual calibration; consider adding a visible progress display
 				switch (at) {
 				case Compensation:
 					df = 500;
 				case Step:
 					if (vb == 0)
-						df = 20;//5mV参考值
+						df = 20;//5mV reference value
 					else
-						df = 80;//5mv以上参考值
+						df = 80;//5mv and above reference value
 					break;
 				}
 				ICal ic = tran.getSimpleAdjustCMDType(at);
 				return new BaselineArg(chl, vb, ic, dac_complementCode, df) {
 					protected void computeNapply(int sign, int step, int vbidx) {
-						// /** 最小1个电压档位底层作了特别缩小*/
+						// /** the lowest voltage scale is specially reduced in the lower layer*/
 						if (vbidx < 1)
 							step >>= 2;
 						super.computeNapply(sign, step, vbidx);

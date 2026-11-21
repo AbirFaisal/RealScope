@@ -91,10 +91,10 @@ public enum SampleRate {
 	}
 
 	/**
-	 * 满屏数 = 采样率*时基*20
+	 * Full-screen count = sample rate*timebase*20
 	 * 
 	 * @param tb
-	 *            单位为S
+	 *            Unit is S
 	 * @return
 	 */
 	public int compute(BigDecimal tb, int blockNum) {
@@ -117,7 +117,7 @@ public enum SampleRate {
 	}
 
 	private static final BigDecimal[] bdSamplesALL = {
-			// 以kS/s为单位
+			// Unit is kS/s
 			BigDecimal.valueOf(3200000), BigDecimal.valueOf(2000000),
 			BigDecimal.valueOf(1600000), BigDecimal.valueOf(1000000),
 

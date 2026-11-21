@@ -217,7 +217,7 @@ public class InfoPane extends JPanel implements Localizable,
 	}
 
 	public void setInfoPaneEnable(boolean b) {
-		// 每个InfoBlock设Enable(b),由它内部各个地方的isFFTon控制,设完repaint(),后面要改掉。
+		// Each InfoBlock sets Enable(b), controlled in its various places by isFFTon, then repaint() after setting; to be changed later.
 		repaint();
 	}
 

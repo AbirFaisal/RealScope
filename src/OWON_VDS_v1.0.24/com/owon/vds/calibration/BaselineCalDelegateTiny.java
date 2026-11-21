@@ -27,7 +27,7 @@ public class BaselineCalDelegateTiny extends AutoCalDelegate {
 
 	public Runnable nextJob;
 
-	/** 自校正能够重新校准部分参数，但仍有如增益在出厂后不方便重新校对，故而该部分不去改动 */
+	/** Self-calibration can recalibrate some parameters, but some, such as gain, are inconvenient to recalibrate after leaving the factory, so that part is left unchanged */
 	@Override
 	public void autoCal(ProgressObserver po) {
 		PrefControl pc = pt.getPrefControl();

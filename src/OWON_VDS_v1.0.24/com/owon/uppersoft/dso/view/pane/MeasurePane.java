@@ -26,7 +26,7 @@ import com.owon.uppersoft.vds.ui.widget.custom.CCheckBox;
 import com.owon.uppersoft.vds.ui.widget.custom.CComboBox;
 
 /**
- * 测量 添加测量 测量类型 20种测量 信源 ch1,ch2,ch3,ch4 快照全部 删除测量 删除全部
+ * Measurement: Add measurement; Measurement type: 20 kinds of measurements; Source: ch1,ch2,ch3,ch4; Snapshot all; Delete measurement; Delete all
  * 
  * @author Matt
  */
@@ -196,7 +196,7 @@ public class MeasurePane extends FunctionPanel {
 			}
 		}
 
-		/* 更新按钮 */
+		/* Update button */
 		// ncgp();
 		// nrip();
 		// nbtnt("update").addActionListener(new ActionListener() {
@@ -205,15 +205,15 @@ public class MeasurePane extends FunctionPanel {
 		// Platform.getMainWindow().getToolPane().updateValues();
 		// }
 		// });
-		/* 注释组 */
+		/* Comment group */
 		// ncgp();
 		// nrip();
 		/**
-		 * TODO Function New Idea,后面考虑是否添加 功能：找回 Remove all删掉&默认 的勾选项
-		 * 做法：只作用于画图(控制其是否valuePane显示)，或者作用于操作设置(根本上控制)
+		 * TODO Function New Idea,consider whether to add later. Feature: restore the checkbox item for what Remove all deleted & the defaults
+		 * Approach: act only on drawing (controlling whether the valuePane is shown), or act on the operation settings (control at the root))
 		 */
 		/**
-		 * 上述添加是基于Remove all按钮已经存在基础上，增新效果 变通是：Remove all按钮替换成一个开关，控制其显示与否
+		 * The above addition is based on the Remove all button already existing, adding a new effect. A variant: replace the Remove all button with a switch that controls whether it is shown
 		 */
 		// loadpref(chcb, mtcb, oth_mtcb);
 		measMod.updateMeasureSelected(chcb, mtcb, oth_mtcb);

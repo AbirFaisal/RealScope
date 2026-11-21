@@ -26,7 +26,7 @@ public interface InfoUnit {
 	void confirmADCBuffer(ByteBuffer bbuf);
 
 	/**
-	 * 转化为对应到RT时的画图模式
+	 * Converted to the corresponding drawing mode at RT
 	 * 
 	 * @return
 	 */

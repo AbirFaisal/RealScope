@@ -22,7 +22,7 @@ public class TrgLevelCheckContext {
 	}
 
 	/**
-	 * 第1步
+	 * Step 1
 	 * 
 	 * @param upborder
 	 * @param downborder
@@ -44,7 +44,7 @@ public class TrgLevelCheckContext {
 	}
 
 	/**
-	 * 第2步
+	 * Step 2
 	 * 
 	 * @param wf
 	 */
@@ -55,13 +55,13 @@ public class TrgLevelCheckContext {
 	}
 
 	/**
-	 * 第3步
+	 * Step 3
 	 * 
 	 * @param targetv
 	 * @return
 	 */
 	public boolean checkAroundTrgLabelInner(int targetv) {
-		// 反相在判断范围的时候，把触发信息反一下判断是否在附近
+		// When inverted, flip the trigger information when judging the range to determine whether it is nearby
 		if (inverted) {
 			targetv = ChannelInfo.getLevelFromPos0(targetv, pos0);
 		}
@@ -71,7 +71,7 @@ public class TrgLevelCheckContext {
 		else
 			targetv = hc - (targetv << 1);
 
-		// 用"<=,>=",不用"<,>"可以把在边界归到边界外一并处理
+		// Using "<=,>=" instead of "<,>" lets points on the boundary be handled together with those outside the boundary
 		if (targetv <= upborder || targetv >= downborder) {
 			return false;
 		}
@@ -83,13 +83,13 @@ public class TrgLevelCheckContext {
 	}
 	
 	/**
-	 * 第4步
+	 * Step 4
 	 * 
 	 * @param targetv
 	 * @return
 	 */
 	public boolean checkAroundTrgLabelOuter(int targetv) {
-		// 反相在判断范围的时候，把触发信息反一下判断是否在附近
+		// When inverted, flip the trigger information when judging the range to determine whether it is nearby
 		if (inverted) {
 			targetv = ChannelInfo.getLevelFromPos0(targetv, pos0);
 		}

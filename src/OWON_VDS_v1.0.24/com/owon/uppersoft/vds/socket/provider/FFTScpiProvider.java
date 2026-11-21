@@ -39,7 +39,7 @@ public class FFTScpiProvider {
 
 		fftc.c_setFFTon(ffton);
 		dh.getMainWindow().getToolPane().getButtonPane().switch_3in1_fft(ffton);
-		// 在运行时直接适用到下一幅，停止的话需要刷新
+		// when running, it applies directly to the next frame; when stopped, a refresh is needed
 		if (!cm.sourceManager.isConnected() && ffton) {
 			fftv.updateFFT();
 		}
@@ -124,7 +124,7 @@ public class FFTScpiProvider {
 			args = args.substring(format[0].length()).trim();
 			try {
 				volt = Double.parseDouble(args);
-				volt *= 1000;// V转mV
+				volt *= 1000;// V to mV
 			} catch (Exception e) {
 				return ScpiPool.Failed;
 			}

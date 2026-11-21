@@ -9,9 +9,9 @@ import com.owon.uppersoft.vds.device.interpolate.TinyPlugHelper;
 import com.owon.uppersoft.vds.util.format.SFormatter;
 
 /**
- * 注意：反相在拉触发前，平均值在拉触发后，无峰值，
+ * Note: inversion is before trigger locating, averaging is after trigger locating, no peak detect,
  * 
- * 档位 满屏 插值倍数 插值后数据个数
+ * Scale Full-screen Interpolation-factor Count-after-interpolation
  * 
  */
 public class LocateTrgHelper implements Logable {
@@ -47,9 +47,9 @@ public class LocateTrgHelper implements Logable {
 			int fullscreen, TinyPlugHelper tph, int chl) {
 		logPull("[handleTrg]");
 		/**
-		 * 当触发电平超过了adc的限界，adc被自动限界在这一范围内，
+		 * when the trigger level exceeds the adc limits, the adc is automatically clamped to this range,
 		 * 
-		 * 导致拉触发比较的结果必然是找不到对应的位置，可不拉
+		 * so the result of the trigger locating comparison is inevitably that no corresponding position is found, and locating can be skipped
 		 */
 		if (!(level <= LEVEL_UPPEST && level >= LEVEL_LOWEST)) {
 			return 0;
@@ -91,9 +91,9 @@ public class LocateTrgHelper implements Logable {
 	}
 
 	/**
-	 * 简易尝试：
+	 * Simple attempt:
 	 * 
-	 * 先插值trgb，后拉
+	 * interpolate trgb first, then locate
 	 */
 	private int doHandleTrg_plugFirst(ByteBuffer trgb, boolean raise,
 			int level, int fullscreen, TinyPlugHelper tph, int chl) {
@@ -117,7 +117,7 @@ public class LocateTrgHelper implements Logable {
 		int result = getShiftTwoWay(raise, p_trgb, level);
 		logln("result: " + result);
 
-		/** 打印拉触发后的锁定点周围的数据 */
+		/** print the data around the locked point after trigger locating */
 		// final int p = p_trgb.position();
 		// final int l = p_trgb.limit();
 		// final int center = (p + l) >> 1;
@@ -129,7 +129,7 @@ public class LocateTrgHelper implements Logable {
 
 	/**
 	 * 
-	 * 获取拉的位移
+	 * get the locating shift
 	 * 
 	 * @param raise
 	 * @param p_trgb
@@ -145,18 +145,18 @@ public class LocateTrgHelper implements Logable {
 		logln(p + ", " + center + ", " + l);
 		byte[] arr = p_trgb.array();
 
-		/** 打印插值后数据 */
+		/** print the data after interpolation */
 		// DBG.outArray2Logable(this, arr, p, l - p);
 		// if (true)return 0;
 		int shift;
 
 		int defaultTraversal = MAX_PLUGED_LENGTH;
 		/**
-		 * 当波形斜率不大的时候，容易拉到
+		 * when the waveform slope is small, it is easy to locate
 		 * 
-		 * 当波形斜率很大的时候，拉的前后容易过头
+		 * when the waveform slope is large, the locating easily overshoots before or after
 		 * 
-		 * 这里限制最大的遍历范围为500个点
+		 * the maximum traversal range is limited to 500 points here
 		 */
 		int maxleft = center - p - 1 - LocateTrgUtil.Step;
 		if (maxleft < 0)

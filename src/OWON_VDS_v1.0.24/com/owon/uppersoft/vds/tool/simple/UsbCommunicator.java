@@ -250,10 +250,10 @@ public class UsbCommunicator {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// 用于textArea清屏
+				// Used to clear the textArea
 				consoleArea.setText(null);
 
-				// 用于viewchart清屏
+				// Used to clear the viewchart
 				viewchartClear();
 
 			}
@@ -379,7 +379,7 @@ public class UsbCommunicator {
 					sendFileBuf = new byte[fileLen];
 
 					ba = new CByteArrayInputStream(sf);
-					// sendFileBuf = ba.buf().array();//为什么下句可以，这句不行？
+					// sendFileBuf = ba.buf().array();//Why does the next line work but this one does not?
 					ba.get(sendFileBuf, 0, fileLen);
 
 					if (ba != null)
@@ -443,11 +443,11 @@ public class UsbCommunicator {
 						tf_value.getText());
 				re_paint();
 				if (isKeepGet()) {
-					// 在拿波形中，send只把命令添加到队列 ，由守护线程发送
+					// While fetching waveforms, send only adds the command to the queue, and the daemon thread sends it
 					ucc.add2CMDList(tf_add, tf_bytes, tf_value);
 				} else {
-					ucc.sendNAcceptOneCMD(tf_add, tf_bytes, tf_value);// 不用手动拿波形时，单独发送控制命令
-					// ucc.sendNAcceptOneFrame();//手动拿波形时开启
+					ucc.sendNAcceptOneCMD(tf_add, tf_bytes, tf_value);// When not fetching waveforms manually, send the control command separately
+					// ucc.sendNAcceptOneFrame();//Enable when fetching waveforms manually
 				}
 				setInAddcmd(false);
 			}

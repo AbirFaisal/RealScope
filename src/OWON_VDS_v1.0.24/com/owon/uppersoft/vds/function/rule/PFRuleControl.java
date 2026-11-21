@@ -14,7 +14,7 @@ import com.owon.uppersoft.vds.core.aspect.help.AreaImageHelper;
 import com.owon.uppersoft.vds.data.Point;
 
 /**
- * PFRuleControl 使用规则得到结果，优化规则界限点的绘制；这里占用的资源多，在使能关闭后可以释放
+ * PFRuleControl uses the rule to obtain results and optimizes the drawing of rule boundary points; it occupies many resources here, which can be released after the enable is turned off
  * 
  */
 public class PFRuleControl {
@@ -25,11 +25,11 @@ public class PFRuleControl {
 		public ByteBuffer bb;
 	}
 
-	/** 屏幕宽度 */
+	/** screen width */
 	public static final int AREA_WIDTH = 1000;
-	/** 水平每格对应的像素个数 */
+	/** number of pixels per horizontal division */
 	public static final int AREA_WIDTH_BLOCK_PIXES = 50;
-	/** 垂直每格对应的adc不同值个数 */
+	/** number of distinct adc values per vertical division */
 	public static final int PIXELS_PER_DIV = 25;
 
 	/***/
@@ -39,14 +39,14 @@ public class PFRuleControl {
 	private int R_verticalSet = 10, R_horizontalSet = 10;
 
 	/**
-	 * 该长度是对adc数据进行按1k屏幕像素进行等分取最值之后得到的数组使用范围，
+	 * this length is the used range of the array obtained after dividing the adc data equally by 1k screen pixels and taking the extreme values,
 	 * 
-	 * 直接影响到adc_max / adc_min, rule_max / rule_min
+	 * directly affects adc_max / adc_min, rule_max / rule_minadc_max / adc_min, rule_max / rule_min
 	 */
 	private int data_num;
 
 	private int[] adc_min, adc_max;
-	/** rule_max指rule_ceiling, rule_min指rule_floor */
+	/** rule_max refers to rule_ceiling, rule_min refers to rule_floor */
 	private int[] rule_max, rule_min;
 
 	public PFRuleControl(RuleDetail rd) {
@@ -64,15 +64,15 @@ public class PFRuleControl {
 	}
 
 	/**
-	 * 接收数据后，使用一次来生成规则界限点
+	 * called once after receiving data to generate the rule boundary points
 	 * 
-	 * 使用的是一次传输中的最后一帧
+	 * the last frame of a transfer is used
 	 * 
 	 * @param wfm
 	 * @param output_rule
-	 *            输出类型
+	 *            output type
 	 * @param checking
-	 *            是否运行
+	 *            whether running
 	 */
 	public void receiveData(ComplexBuffer cb, boolean checking,
 			int screendatalen) {
@@ -84,9 +84,9 @@ public class PFRuleControl {
 		/**
 		 * KNOW
 		 * 
-		 * 这里，分离出math和chl的做法是它们用intbuffer和bytebuffer，需要各自不同的处理
+		 * Here, math and chl are separated because they use intbuffer and bytebuffer respectively and need different handling
 		 * 
-		 * 暂时来说，处理并不复杂，故而运行它们以不同的方式保存
+		 * For now the handling is not complicated, so they are allowed to be saved in different ways
 		 */
 		IntBuffer ib = cb.ib;
 		ByteBuffer bb = cb.bb;
@@ -140,7 +140,7 @@ public class PFRuleControl {
 	}
 
 	/**
-	 * 保存当前规则，如果已经使能则重新使能
+	 * Save the current rule; if already enabled, enable it again
 	 * 
 	 * @param chl
 	 * @param hor
@@ -152,15 +152,15 @@ public class PFRuleControl {
 		if (enable_rule) {
 			prepared_rule = false;
 			/**
-			 * 这里可能把prepared_rule再次从true设置为false，
+			 * prepared_rule may be set from true back to false again here,
 			 * 
-			 * 而此后的receiveData()中再判断并重新调用重设数组的方法
+			 * and the subsequent receiveData() checks it and calls the array reset method again
 			 */
 		}
 	}
 
 	/**
-	 * @return 使能是否打开
+	 * @return whether enable is on
 	 */
 	public boolean isRuleEnable() {
 		return enable_rule;
@@ -192,7 +192,7 @@ public class PFRuleControl {
 			- (ScreenEndsOffsetPixels << 1);
 
 	/**
-	 * 重设规则数组和adc数组
+	 * Reset the rule arrays and the adc arrays
 	 * 
 	 */
 	private void resetRulePoints() {
@@ -208,7 +208,7 @@ public class PFRuleControl {
 	}
 
 	/**
-	 * 使能规则
+	 * Enable the rule
 	 * 
 	 */
 	public void enableRule() {
@@ -216,7 +216,7 @@ public class PFRuleControl {
 	}
 
 	/**
-	 * 关闭规则使能
+	 * Disable the rule
 	 */
 	public void disableRule() {
 		enable_rule = false;
@@ -231,7 +231,7 @@ public class PFRuleControl {
 	}
 
 	/**
-	 * 准备点集
+	 * Prepare the point set
 	 */
 	private void prepareRulePoints(int w) {
 		adc_min = new int[w];
@@ -241,20 +241,20 @@ public class PFRuleControl {
 	}
 
 	/**
-	 * 准备ADC点集
+	 * Prepare the ADC point set
 	 */
 	private void prepareADCPoints(int w) {
 		for (int i = 0; i < w; i++) {
-			adc_min[i] = 255;// 用最大值判断，比它小的，不断得到最小值
-			adc_max[i] = -255;// 用最小值判断，比它大的，不断得到最大值
+			adc_min[i] = 255;// compare against the maximum value; smaller values keep updating to get the minimum
+			adc_max[i] = -255;// compare against the minimum value; larger values keep updating to get the maximum
 		}
 	}
 
 	/**
-	 * 判断数据是否符合规则
+	 * Determine whether the data conforms to the rule
 	 * 
 	 * @param buf
-	 * @return 通过(PASS) / 失败(FAIL)
+	 * @return pass (PASS) / fail (FAIL)(FAIL)
 	 */
 	private int checkRulePoints(ByteBuffer buf, int[] rule_min, int[] rule_max,
 			int data_num) {
@@ -269,7 +269,7 @@ public class PFRuleControl {
 
 		result = PASS;
 		for (; p < l; p++, g = g + r, j = (int) g) {
-			// 略过头尾空白区，在循环中判断，由于此间数据不多，性能影响不大
+			// skip the blank areas at the head and tail, checked inside the loop; since there is little data in between, the performance impact is small
 			if (j < ScreenEndsOffsetPixels
 					|| j > ScreenPixels - ScreenEndsOffsetPixels)
 				continue;
@@ -280,16 +280,16 @@ public class PFRuleControl {
 			}
 		}
 
-		// 不当的方法 int dataNum = distributeADCPoints(buf, adc_min, adc_max);
-		/** 由算法决定，一般假定dataNum == data_num == adc_min.length */
+		// improper approach: int dataNum = distributeADCPoints(buf, adc_min, adc_max);
+		/** determined by the algorithm; generally dataNum == data_num == adc_min.length is assumeddataNum == data_num == adc_min.length */
 		return result;
 	}
 
 	/**
-	 * 判断数据是否符合规则
+	 * Determine whether the data conforms to the rule
 	 * 
 	 * @param buf
-	 * @return 通过(PASS) / 失败(FAIL)
+	 * @return pass (PASS) / fail (FAIL)(FAIL)
 	 */
 	private int checkRulePoints(IntBuffer buf, int[] rule_min, int[] rule_max,
 			int data_num) {
@@ -304,7 +304,7 @@ public class PFRuleControl {
 
 		result = PASS;
 		for (; p < l; p++, g = g + r, j = (int) g) {
-			// 略过头尾空白区，在循环中判断，由于此间数据不多，性能影响不大
+			// skip the blank areas at the head and tail, checked inside the loop; since there is little data in between, the performance impact is small
 			if (j < ScreenEndsOffsetPixels
 					|| j > ScreenPixels - ScreenEndsOffsetPixels)
 				continue;
@@ -315,8 +315,8 @@ public class PFRuleControl {
 			}
 		}
 
-		// 不当的方法 int dataNum = distributeADCPoints_Math(buf, adc_min, adc_max);
-		/** 由算法决定，一般假定dataNum == data_num == adc_min.length */
+		// improper approach: int dataNum = distributeADCPoints_Math(buf, adc_min, adc_max);
+		/** determined by the algorithm; generally dataNum == data_num == adc_min.length is assumeddataNum == data_num == adc_min.length */
 		return result;
 	}
 
@@ -327,7 +327,7 @@ public class PFRuleControl {
 	}
 
 	/**
-	 * 使用缓存画规则界限点
+	 * Draw the rule boundary points using the cache
 	 * 
 	 * @param g2d
 	 * @param pc

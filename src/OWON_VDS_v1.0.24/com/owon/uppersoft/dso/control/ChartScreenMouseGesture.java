@@ -25,7 +25,7 @@ import com.owon.uppersoft.vds.core.paint.ScreenContext;
 //import com.owon.uppersoft.vds.data.Point;
 
 /**
- * MouseGesture，鼠标手势 TODO 零点限界
+ * MouseGesture, mouse gestures TODO zero-point limit
  * 
  */
 public class ChartScreenMouseGesture extends MouseAdapter {
@@ -73,9 +73,9 @@ public class ChartScreenMouseGesture extends MouseAdapter {
 		pa.addMouseListener(ima);
 		pa.addMouseMotionListener(ima);
 		mcctr = cm.mcctr;
-		/** 获取ViewChart 、DataHouse 对象，传递到以下MarkCursorControl类内部,常驻利用 */
+		/** Get the ViewChart and DataHouse objects and pass them into the MarkCursorControl class below for permanent use */
 		mcctr.acceptImporter(c, dh);
-		/** 获取ViewChart对象，传递到以下AssitControl类内部,常驻利用 */
+		/** Get the ViewChart object and pass it into the AssitControl class below for permanent use */
 	}
 
 	public void enableGesture(boolean b) {
@@ -98,7 +98,7 @@ public class ChartScreenMouseGesture extends MouseAdapter {
 			rsg.mousePressed(vc, wfm);
 		}
 		if (top) {
-			// 如果连接暂停，调动htp,波形将变动，需要载入DM
+			// If the connection is paused, adjusting htp changes the waveform, so it is necessary to load DM
 			boolean operatable = Platform.getControlApps().interComm
 					.isTimeOperatableNTryGetDM();
 			if (!operatable)
@@ -179,7 +179,7 @@ public class ChartScreenMouseGesture extends MouseAdapter {
 	}
 
 	private void dragCenter(int x, int y) {
-		// 鼠标位于中部时的操作
+		// operations when the mouse is in the middle
 		mcctr.dragMarkCursor(x, y, loc0);
 		loc0.x = x;
 		loc0.y = y;
@@ -193,7 +193,7 @@ public class ChartScreenMouseGesture extends MouseAdapter {
 			int code = mcctr.checkMark(pc.isScreenMode_3(), x, y);
 
 		//	if (x > x0 && x < x0 + 20 && y > yh - 20 && y < yh) {
-		//		code = Cursor.HAND_CURSOR;//触发光标测量的手势
+		//		code = Cursor.HAND_CURSOR;//gesture that triggers cursor measurement
 		//	}
 			centre = (code != Cursor.DEFAULT_CURSOR);
 			cursor(code);
@@ -206,15 +206,15 @@ public class ChartScreenMouseGesture extends MouseAdapter {
 	}
 
 	private void dragTop(int x, int y, boolean commit) {
-		// TODO 这里是否可以改成fire值到detailPane,来更新htp,zhtp?
+		// TODO Could this be changed to fire the value to detailPane to update htp,zhtp?
 		ccsm.setOnShowHtpDetail(true);
 		int dx = loc0.x - x;
 		tc.c_addHorizontalTriggerPosition(dx, commit);
 
-		// DetailPane下更新htp
+		// DetailPane: update htp
 		if (!cm.getZoomAssctr().isonAssistSet())
 			cm.pcs.firePropertyChange(ITimeControl.onHTPChanged, null, null);
-		// Zoom下更新zhtp
+		// Zoom: update zhtp
 		cm.getZoomAssctr().updateZoomHtp();
 
 		cm.mcctr.computeXValues();
@@ -225,7 +225,7 @@ public class ChartScreenMouseGesture extends MouseAdapter {
 
 	private boolean checkTop(int x, int y, Rectangle r) {
 		if (dh.isHorTrgPosFrozen()) {
-			/** 慢扫不可用 */
+			/** slow sweep is not available */
 			return top = false;
 		}
 		if (cm.getZoomAssctr().isonAssistSet()) {
@@ -237,7 +237,7 @@ public class ChartScreenMouseGesture extends MouseAdapter {
 			int pos = tc.getHorizontalTriggerPosition();
 			pos = r.x + (r.width >> 1) - pos;
 			if (x > pos - 5 && x < pos + 5) {
-				// 备用
+				// reserved
 			}
 			cursor(Cursor.W_RESIZE_CURSOR);// Cursor.HAND_CURSOR
 		} else if (top) {

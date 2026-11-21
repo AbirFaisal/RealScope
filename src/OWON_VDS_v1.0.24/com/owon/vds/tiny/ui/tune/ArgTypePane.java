@@ -51,7 +51,7 @@ public class ArgTypePane extends JPanel implements CalibrationArgType,
 	public void onVoltbaseChange(int channel, int idx) {
 	}
 
-	/** 由外部调用的方法，在内部，附加内容，并转移到其它方法由子类实现 */
+	/** Method called externally; internally it adds content and delegates to other methods implemented by subclasses */
 	public void create(Container base, IntVolt[] volts) {
 		int channelNumber = cmdt.channelNumber;
 		spinners = new CompositeSpin[channelNumber];
@@ -106,7 +106,7 @@ public class ArgTypePane extends JPanel implements CalibrationArgType,
 	}
 
 	public void refreshContentWhileSuspend() {
-		/** 未创建时无行为 */
+		/** No behavior when not created */
 		if (spinners == null)
 			return;
 		int channelNumber = cmdt.channelNumber;
@@ -158,7 +158,7 @@ public class ArgTypePane extends JPanel implements CalibrationArgType,
 		// System.out.println(vbcbb.getSelectedItem().toString()+","+
 		// chlcbb.getSelectedItem().toString());
 		refreshContentWhileSuspend();
-		// spinstore();// 每次改动都应用一次
+		// spinstore();// Apply on every change
 		if (vb >= 0) {
 			ttd.vbChangeForChannel(chl, vb);
 		}

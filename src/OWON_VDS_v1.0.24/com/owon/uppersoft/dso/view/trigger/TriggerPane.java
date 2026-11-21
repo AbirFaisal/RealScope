@@ -204,14 +204,14 @@ public abstract class TriggerPane extends FunctionPanel {
 	}
 
 	/**
-	 * 根据单触还是交替的装载触发信息
+	 * Load trigger info according to single trigger or alternate
 	 */
 	private void loadTriggerControl() {
 		this.listening = false;
 
 		TriggerUIInfo tui = tc.getTriggerUIInfo();
 		int curChl = tui.getCurrentChannel();
-		/** 因为把listening关掉了，所以不会触发多余事件 */
+		/** because listening is turned off, no extra events are triggered */
 		chlp.setChannel(curChl);
 
 		AbsTrigger at = tui.getCurrentTriggerSet().getTrigger();
@@ -250,7 +250,7 @@ public abstract class TriggerPane extends FunctionPanel {
 			trgPane.remove(selectPane);
 		selectPane = getTriggerLoaderPane(idx);
 
-		/** 装载对应Trigger的内容，根据内容和当前语言设置文本 */
+		/** Load the content of the corresponding Trigger, and set the text according to the content and the current language */
 		selectPane.loadTrigger(getTriggerUIInfo().getCurrentChannel());
 		selectPane.localizeSelf();
 		/***/

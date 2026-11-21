@@ -8,12 +8,12 @@ import com.owon.uppersoft.dso.view.pane.function.UtilityPane;
 import com.owon.uppersoft.vds.ui.widget.custom.LContainer;
 
 /**
- * 选项 显示 网格 语言 中文，英文
+ * Options  display  grid  language  Chinese, English
  * 
  * 
- * 通用 校准 同步输出 触发电平，通过/失败
+ * General  calibration  sync output  trigger level, pass/fail
  * 
- * 打印 帮助 更新 连接
+ * Print  help  update  connect
  * 
  * @author Matt
  * 

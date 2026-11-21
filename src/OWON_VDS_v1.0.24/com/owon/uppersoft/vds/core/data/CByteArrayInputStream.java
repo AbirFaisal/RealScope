@@ -44,7 +44,7 @@ public class CByteArrayInputStream  {
 			e.printStackTrace();
 		}
 
-		// TODO CByteArrayInputStream的构造函数内设置bigendian因为测试作出了修改，测试结束后须改回
+		// TODO CByteArrayInputStream's constructor sets bigendian, which was changed for testing; must be reverted after testing ends
 		// buf.order(ByteOrder.LITTLE_ENDIAN);
 		buf.order(ByteOrder.BIG_ENDIAN);
 	}
@@ -115,9 +115,9 @@ public class CByteArrayInputStream  {
 	/**
 	 * TODO buf.get(bs, beg, len);
 	 * 
-	 * 由于buf.get(bs, beg, len)在底层实现反复调用了获取单个元素的方法，效率不高
+	 * Because buf.get(bs, beg, len) repeatedly calls the single-element getter in the underlying implementation, it is inefficient
 	 * 
-	 * 优化可考虑使用更直接的io数组操作来实现，可能无法使用内存映射，性能决定于底层机制
+	 * For optimization, consider using more direct io array operations, which may not be able to use memory mapping; performance depends on the underlying mechanism
 	 * 
 	 */
 	public final void get(byte[] bs, int beg, int len) {
@@ -153,7 +153,7 @@ public class CByteArrayInputStream  {
 	}
 
 	public final void gap_get(int[] bs, int beg, int len, int gap) {
-		// 由于buf.get(bs, beg, len)在底层实现反复调用了获取单个元素的方法，效率不高
+		// Because buf.get(bs, beg, len) repeatedly calls the single-element getter in the underlying implementation, it is inefficient
 		for (int i = 0, j = beg; i < len; i++, j += gap) {
 			bs[j] = buf.get();
 		}
@@ -164,7 +164,7 @@ public class CByteArrayInputStream  {
 	}
 
 	/*
-	 * 读取数组，指针步进，用LittleEdian方式取出4字节的下一个整数
+	 * Read an array, advance the pointer, fetch the next 4-byte integer in LittleEdian fashion
 	 */
 	public final int nextInt() {
 		return buf.getInt();
@@ -191,7 +191,7 @@ public class CByteArrayInputStream  {
 	}
 
 	/**
-	 * @return 当前指针的下一位起可以提供的字节数
+	 * @return number of bytes available starting from the next position after the current pointer
 	 */
 	public final int available() {
 		return buf.remaining();

@@ -8,7 +8,7 @@ import com.owon.uppersoft.dso.wf.WaveForm;
 import com.owon.uppersoft.vds.util.Pref;
 
 public class TriggerSet {
-	// 标记通道名
+	// marks the channel name
 	private int channel;
 
 	public int getChannel() {
@@ -61,7 +61,7 @@ public class TriggerSet {
 	}
 
 	/**
-	 * 画触发电平标志
+	 * Draw the trigger level marker
 	 * 
 	 * @param wfm
 	 * @param lr
@@ -90,7 +90,7 @@ public class TriggerSet {
 	}
 
 	/**
-	 * 判断y所在位置是否有可以点击的触发参数
+	 * Determine whether there is a clickable trigger parameter at position y
 	 * 
 	 * @return
 	 */
@@ -99,12 +99,12 @@ public class TriggerSet {
 	}
 
 	/**
-	 * 对指定参数进行增减
+	 * Increment or decrement the specified parameter
 	 * 
 	 * @param del
-	 *            不为0才发指令改变
+	 *            Send a command to change only if non-zero
 	 * @param type
-	 * @return 触发的事件类名
+	 * @return class name of the trigger event
 	 */
 	public boolean handelIncr(int del, TrgCheckType type) {
 		return trigger.handelIncr(del, type);
@@ -124,7 +124,7 @@ public class TriggerSet {
 	}
 
 	/**
-	 * 内部处理和绘图使用的是绝对值，不改变它，仅在示数和下传时使用相对值
+	 * Internal processing and drawing use absolute values, which are not changed; relative values are used only for readings and for sending down to the device
 	 * 
 	 * @return
 	 */
@@ -141,35 +141,35 @@ public class TriggerSet {
 	}
 
 	/**
-	 * 尝试设置为单次触发
+	 * Try to set to single-shot trigger
 	 */
 	void trySweepOnce(TriggerControl tc) {
 		trigger.c_setSweep(TriggerDefine.TrigOnceIndex, tc);
 	}
 
 	/**
-	 * @return 是否单次触发
+	 * @return whether single-shot trigger
 	 */
 	boolean isSweepOnce() {
 		return trigger.getSweep() == TriggerDefine.TrigOnceIndex;
 	}
 
 	/**
-	 * @return 是否正常触发
+	 * @return whether normal trigger
 	 */
 	boolean isSweepNormal() {
 		return trigger.getSweep() == TriggerDefine.TrigNormalIndex;
 	}
 
 	/**
-	 * @return 是否自动触发
+	 * @return whether auto trigger
 	 */
 	boolean isSweepAuto() {
 		return trigger.getSweep() == TriggerDefine.TrigSweepAutoIndex;
 	}
 
 	/**
-	 * 重置为自动触发
+	 * Reset to auto trigger
 	 */
 	void resumeAuto(TriggerControl tc) {
 		trigger.c_setSweep(TriggerDefine.TrigSweepAutoIndex, tc);
@@ -197,7 +197,7 @@ public class TriggerSet {
 	}
 
 	/**
-	 * 用于打印识别
+	 * Used for print identification
 	 */
 	private int category;
 

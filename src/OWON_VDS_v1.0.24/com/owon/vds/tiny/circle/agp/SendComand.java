@@ -10,7 +10,7 @@ import com.owon.uppersoft.dso.util.DBG;
 import com.owon.vds.tiny.tune.TinyTuneFunction;
 
 public class SendComand {
-	/** 闭环 */
+	/** Closed loop */
 	// 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000
 	String[] command = { //
 	"$Amp,0.03,Vpp", "$Amp,0.06,Vpp", "$Amp,0.12,Vpp",//
@@ -74,7 +74,7 @@ public class SendComand {
 		config("turnChannels: " + on);
 		if (on) {
 			sendCMD(OUTPUT_OPEN);
-			/*延时一小段时间，由于串口收发需要时间*/
+			/*Delay briefly, since serial send/receive takes time*/
 			try {
 				Thread.sleep(20);
 			} catch (InterruptedException e) {

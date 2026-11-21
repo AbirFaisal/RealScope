@@ -21,7 +21,7 @@ public class BaselineCal implements Logable, IWFCalRoutine {
 	 * @param wf
 	 * @param vbnum
 	 * @param ac
-	 *            使用ArgCreator来创建每个不同校正条目下的具体上下文，涉及算法细节量
+	 *            Uses ArgCreator to create the specific context under each calibration item; involves algorithm details
 	 */
 	public BaselineCal(WaveForm wf, int vbnum, ArgCreator ac) {
 		this.wf = wf;
@@ -93,7 +93,7 @@ public class BaselineCal implements Logable, IWFCalRoutine {
 
 				arg.resetFitTimes();
 
-				/** 本次更新adc计算结果无进展，需要尝试新的值 */
+				/** No progress in the adc calculation result of this update; a new value needs to be tried */
 				argTuneAgain(average, pos0);
 				return ROUT_ZERO;
 			}
@@ -115,7 +115,7 @@ public class BaselineCal implements Logable, IWFCalRoutine {
 
 				arg.resetFitTimes();
 
-				/** 本次更新adc计算结果无进展，需要尝试新的值 */
+				/** No progress in the adc calculation result of this update; a new value needs to be tried */
 				argTuneAgain(average, pos0);
 				return ROUT_ZERO;
 			}
@@ -124,10 +124,10 @@ public class BaselineCal implements Logable, IWFCalRoutine {
 	}
 
 	private void nextZeroAmplitude() {
-		/** 本次更新adc计算结果有进展 */
+		/** Progress in the adc calculation result of this update */
 		int vb = arg.vb + 1;
 		if (vb >= vbnum) {
-			/** 校正任务终结 */
+			/** Calibration task finished */
 			arg = null;
 		} else {
 			initNextZeroAmplitude(vb);
@@ -135,10 +135,10 @@ public class BaselineCal implements Logable, IWFCalRoutine {
 	}
 
 	private void nextZeroCompensation() {
-		/** 本次更新adc计算结果有进展 */
+		/** Progress in the adc calculation result of this update */
 		int vb = arg.vb + 1;
 		if (vb >= vbnum) {
-			/** 校正类型完成全部校正，切换到下一类型 */
+			/** The calibration type has completed all calibration; switch to the next type */
 			initNextZeroAmplitude(0);
 		} else {
 			initNextZeroCompensation(vb);
@@ -147,7 +147,7 @@ public class BaselineCal implements Logable, IWFCalRoutine {
 
 	private void argTuneAgain(double average, int pos0) {
 		double del = average - pos0;
-		// 可优化
+		// Can be optimized
 		// if (average <= -125)
 		// del = -201;
 		// else if (average >= 125)

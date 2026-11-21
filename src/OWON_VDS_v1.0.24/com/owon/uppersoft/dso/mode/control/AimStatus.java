@@ -1,7 +1,7 @@
 package com.owon.uppersoft.dso.mode.control;
 
 /**
- * 三者的定义详见{@code AimStatusChecker}
+ * For the definitions of the three, see {@code AimStatusChecker}
  * 
  * @author John
  * 

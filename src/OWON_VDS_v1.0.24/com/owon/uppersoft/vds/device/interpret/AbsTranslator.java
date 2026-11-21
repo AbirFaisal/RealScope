@@ -39,7 +39,7 @@ public abstract class AbsTranslator implements LowerTranslator {
 			up = low + 10;
 		}
 
-		/** 下限=上限-10, level在上升沿时用作上限，在下降沿时用作下限 */
+		/** lower limit = upper limit - 10; level is used as the upper limit on a rising edge and as the lower limit on a falling edge */
 		return (up & 0xff) | ((low & 0xff) << 8);
 	}
 }

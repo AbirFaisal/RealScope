@@ -12,7 +12,7 @@ import com.owon.uppersoft.vds.core.aspect.Localizable;
 import com.owon.uppersoft.vds.ui.resource.FontCenter;
 
 /**
- * 最普通的Label
+ * The most ordinary Label
  * 
  */
 public class NLabel extends JLabel implements Localizable {

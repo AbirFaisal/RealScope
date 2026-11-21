@@ -5,7 +5,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 
 /**
- * SystemPropertiesUtil，系统信息列表
+ * SystemPropertiesUtil, system information list
  */
 public class SystemPropertiesUtil {
 

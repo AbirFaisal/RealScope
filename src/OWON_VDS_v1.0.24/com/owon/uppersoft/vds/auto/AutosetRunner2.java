@@ -73,19 +73,19 @@ public class AutosetRunner2 implements Logable, JobRunner {
 	// private ChannelSets[] css;
 
 	/**
-	 * <code>进入自动设置后，其它的菜单关闭不可用真至自动设置完成
-	若开pass  fail功能，则关闭
-	设置为非停止状态
-	开启两通道;
-	关闭FFT;
-	通道耦合方式切换至DC，反相关闭，带宽限制关闭;
-	水平位置0(即水平居中);
-	零点位置,CH1放0格位置,CH2放0格位置;
-	水平时基初值(10ms)
-	触发类型设置为交替. 触发位置设置0,模式＆释抑设置为自动(释抑100ns)
-	(触发方式，如边沿视频或是单触交替之类可以不设置）
-	采样方式为峰值检测(预先存好当前方式);
-	电压档位初值(200mv);
+	 * <code>After entering autoset, other menus are closed and unavailable until autoset completes
+	If the pass  fail function is on, turn it off
+	Set to non-stopped state
+	Enable both channels;
+	Disable FFT;
+	Switch channel coupling to DC, turn off invert, turn off bandwidth limit;
+	Horizontal position 0 (i.e. horizontally centered);
+	Zero position, place CH1 at the 0 division position, CH2 at the 0 division position;
+	Initial horizontal timebase value (10ms)
+	Trigger type set to alternate. Trigger position set to 0, mode & holdoff set to auto (holdoff 100ns)
+	(trigger mode, such as edge, video or single-trigger alternate, can be left unset)
+	Sampling mode set to peak detect (save the current mode beforehand);
+	Initial voltage scale value (200mv);
 	</code>
 	 */
 	protected void beforeAutoset() {
@@ -216,7 +216,7 @@ public class AutosetRunner2 implements Logable, JobRunner {
 
 	// public static final AddValueAttachCommand VIDEOTRGD_ADD = new
 	// AddValueAttachCommand(
-	// "VIDEOTRGD_ADD", 0x2, 1, 1); // 判断视频触发的地址
+	// "VIDEOTRGD_ADD", 0x2, 1, 1); // check the address for video trigger
 
 	public void queryVideoTrgd(CMDResponser responser) {
 		DeviceAddressTable table = ict.getTinyMachine().getDeviceAddressTable();

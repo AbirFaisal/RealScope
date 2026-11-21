@@ -62,7 +62,7 @@ public class I18nProvider {
 	}
 
 	public static void main(String[] args) {
-		// System.out.println(toUnicode("华文细黑", false));
+		// System.out.println(toUnicode("STXihei", false));
 	}
 
 	/*

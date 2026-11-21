@@ -73,10 +73,10 @@ public abstract class ControlApps implements IStopable {
 	private IRuntime ir;
 
 	public void releaseConnect() {
-		/** 运行状态已开启则忽略当前装载的行为 */
+		/** If the running state is already on, ignore the current loading action */
 		if (!ir.isKeepGet())
 			return;
-		// 先停下，再断开
+		// Stop first, then disconnect
 		InfiniteDaemon id = daemon;
 		id.addMission(id.m_dislink);
 	}
@@ -86,7 +86,7 @@ public abstract class ControlApps implements IStopable {
 			return;
 		ir.setKeepGet(false);
 
-		/** KNOW 停止后马上减到单帧 */
+		/** KNOW KNOW Immediately reduce to single frame after stopping */
 		cm.reduceFrame();
 		isDMprepared = (true);
 	}
@@ -102,7 +102,7 @@ public abstract class ControlApps implements IStopable {
 	private boolean isDMDataGotAlready = false;
 	private boolean isDMprepared = false;
 
-	/** 设置深存储是否拿过一次 */
+	/** Set whether deep memory has been fetched once */
 	public void setDMDataGotAlready(boolean b) {
 		isDMDataGotAlready = b;
 	}
@@ -120,7 +120,7 @@ public abstract class ControlApps implements IStopable {
 	}
 
 	// public void load() {
-	// /** 运行状态已开启则忽略当前装载的行为 */
+	// /** If the running state is already on, ignore the current loading action */
 	// if (ir.isKeepGet())
 	// return;
 	//
@@ -129,11 +129,11 @@ public abstract class ControlApps implements IStopable {
 	// }
 
 	public void keepload() {
-		/** 运行状态已开启则忽略当前装载的行为 */
+		/** If the running state is already on, ignore the current loading action */
 		if (ir.isKeepGet())
 			return;
 
-		// 先运行，再计数
+		// Run first, then count
 		InfiniteDaemon id = daemon;
 		id.addMission(id.m_startGet);
 	}

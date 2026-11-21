@@ -96,7 +96,7 @@ public class ReloadManager {
 					cm.sourceManager.disconnectSource();
 					Platform.getDataHouse().releaseDeepMemoryStorage();
 					Platform.getMainWindow().getFrame().dispose();
-					// mw.onDispose();//该工作重复，已监听MainFrame的关闭，关闭会触发这句
+					// mw.onDispose();//this work is duplicated; the closing of MainFrame is already listened to, and closing triggers this statement
 					try {
 						Thread.sleep(500);
 					} catch (InterruptedException e) {

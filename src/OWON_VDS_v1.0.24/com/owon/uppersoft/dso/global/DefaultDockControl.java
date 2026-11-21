@@ -23,7 +23,7 @@ public abstract class DefaultDockControl implements DockControl {
 	public void init(ControlManager cm) {
 		this.cm = cm;
 
-		// 在这里创建pm，方便在load properties之前可以添加到plList中去
+		// create pm here, so it can be added to plList before load properties
 		pm = createPageManager();
 		cm.lpList.add(pm);
 	}

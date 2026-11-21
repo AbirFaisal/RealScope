@@ -20,13 +20,13 @@ import com.owon.uppersoft.vds.core.measure.VR;
 import com.owon.uppersoft.vds.core.measure.VerticalValueMeasure;
 
 /**
- * MeasureManager，测量管理
+ * MeasureManager, measurement management
  * 
  */
 public class MeasureManager {
 	public static final String RefreshMeasureResult = "RefreshMeasureResult";
 
-	/** 提供给外部调用时判断是否跳过 */
+	/** For external callers, to decide whether to skip */
 	private boolean on = false;
 
 	private PropertyChangeSupport pcs;
@@ -77,7 +77,7 @@ public class MeasureManager {
 	}
 
 	/**
-	 * 始终都在算
+	 * Always calculating
 	 */
 	public void measure(MeasureWFSupport wfm, TriggerInfoForChannel tip,
 			double freLimit, boolean mayDelayInvalid, VoltageProvider vp,
@@ -87,8 +87,8 @@ public class MeasureManager {
 
 		ON_WF_Iterator owi = wfm.on_wf_Iterator();
 
-		int points = precust(owi);// 各通道平均值设成on，要计算
-		// VR[] vrs = wf.madc.vrs;//一个与MeasureT枚举一一对应的数组
+		int points = precust(owi);// set each channel's average to on, so it is calculated
+		// VR[] vrs = wf.madc.vrs;// an array in one-to-one correspondence with the MeasureT enum
 		// MeasureT[] mts = VALUES;
 		// int len = mts.length;
 		if (points < 0)
@@ -101,7 +101,7 @@ public class MeasureManager {
 			IWF wf = owi.next();
 
 			if (wf.isOn()) {// && wf.getChannelNumber() == 1
-				// TODO 无法避免地出现buf null
+				// TODO unavoidably get buf null
 				if (wf.getADC_Buffer() == null)
 					continue;
 
@@ -133,7 +133,7 @@ public class MeasureManager {
 			}
 		}
 
-		// TODO 还是无法避免buf null
+		// TODO still unable to avoid buf null
 		if (channelsNumber >= 4) {
 			wfa = wfm.getWaveForm(2);
 			wfb = wfm.getWaveForm(3);
@@ -163,7 +163,7 @@ public class MeasureManager {
 
 	public int[] doDelayMeasure(IWF wf1, IWF wf2) {
 		MeasureADC madc1 = wf1.getMeasureADC(), madc2 = wf2.getMeasureADC();
-		/* KNOW DelayP_N[0]为延迟上升沿，DelayP_N[1]为延迟下降沿 */
+		/* KNOW DelayP_N[0] is the delay rising edge, DelayP_N[1] is the delay falling edge */
 		int delayRaise = MeasureT.FAILURE, delayFall = MeasureT.FAILURE;
 
 		ByteBuffer buf = wf2.getADC_Buffer();
@@ -179,7 +179,7 @@ public class MeasureManager {
 		double ampHigh = vvc2.Vamp * 9 / 10 + vvc2.Vbase;
 		double ampHalf;
 		// System.err.print("Vamp:"+madc2.Vamp+"ampLow:"+ampLow+",ampHigh:"+ampHigh+",");
-		// 可能是嵌套太复杂，混淆通不过
+		// Maybe the nesting is too complex and obfuscation cannot handle it
 		if (wf1.isOn() && wf2.isOn()) {
 			// if (!wf1.isInverted() && !wf2.isInverted()) {
 			if ((MeasureT.FAILURE != madc1.raiseTime)
@@ -262,12 +262,12 @@ public class MeasureManager {
 	// private int p, l;
 
 	/**
-	 * 把采样的点的 ADC值(以垂直中心为零点，上正下负)转化为屏幕带零点位置的值
+	 * Convert the ADC value of a sampled point (with the vertical center as zero, positive up and negative down) into a value with the zero-point position on screen
 	 * 
-	 * 并且后面计算各种测量值都依据转化后的值来算。
+	 * and all the measurement values calculated afterwards are based on the converted values.
 	 */
 	private void prepareArray(IWF wf) {
-		ByteBuffer buf = wf.getADC_Buffer();// 采样的点 ADC值，以垂直中心为零点，上正下负。
+		ByteBuffer buf = wf.getADC_Buffer();// ADC value of the sampled points, with the vertical center as zero, positive up and negative down.
 		MeasureADC madc = wf.getMeasureADC();
 
 		byte[] array0 = buf.array();
@@ -288,7 +288,7 @@ public class MeasureManager {
 	// private static final double H_DIV_PER_POINT = 20 / (double) 1000;
 
 	/**
-	 * ？压缩点如何处理？
+	 * ? How are compressed points handled?
 	 * 
 	 * @param dh
 	 * @param wf
@@ -296,7 +296,7 @@ public class MeasureManager {
 	protected void doWaveFormMeasure(IWF wf, boolean isvideo, double freLimit,
 			double timePerPoint, VoltageProvider vp) {
 		MeasureADC madc = wf.getMeasureADC();
-		VR[] vrs = madc.vrs;// 一个与MeasureT枚举一一对应的数组
+		VR[] vrs = madc.vrs;// an array in one-to-one correspondence with the MeasureT enum
 		madc.doVerticalMeasure(wf, isvideo, freLimit, vp);
 		doHorizontalMeasure(wf, vrs, isvideo, freLimit, timePerPoint);// .getMeasureADC()
 	}
@@ -311,16 +311,16 @@ public class MeasureManager {
 		int Vbase = vvc.Vbase, Vamp = vvc.Vamp;// ,Vtop = vvc.Vtop;
 		int Vnum = l - p;
 
-		/** 计算周期 */
+		/** Calculate period */
 		double Vavg = vvc.Vavg;
-		int Vmid = (vvc.Vmax + vvc.Vmin) >> 1;// Vmax-(Vmax-Vmin)/2,最大值-幅值一半的位置
-		// int Vmid = 0;// adc点已扣除pos0，窗口中点位置固定垂直中部
+		int Vmid = (vvc.Vmax + vvc.Vmin) >> 1;// Vmax-(Vmax-Vmin)/2, the position of the maximum minus half the amplitude
+		// int Vmid = 0;// adc points already have pos0 subtracted; the window midpoint is fixed at the vertical center
 		int initPos;
 
 		/**
-		 * 用于在测量周期时转换一个周期起始的adc点到屏幕像素点
+		 * Used when measuring the period to convert the adc point at the start of a period to a screen pixel
 		 * 
-		 * 算法还不确定，且基本没有实现，所以暂时屏蔽，只使用固定的方式返回
+		 * The algorithm is not yet settled and is mostly unimplemented, so it is disabled for now and only a fixed way of returning is used
 		 * 
 		 * @param pos
 		 * @return
@@ -334,7 +334,7 @@ public class MeasureManager {
 
 		float peroid = computePeroid(initPos, Vmid, Vnum, array, l);// p+initPos?initPos?
 		// System.out.println(peroid);
-		/** 计算上升下降时间 */
+		/** Calculate rise and fall time */
 		// float raiseTime = 0, fallTime = 0, pWidth = 0, nWidth = 0, pDuty,
 		// nDuty;
 		// int raiseStart = 0, fallStart = 0, raiseFlag = 0, fallFlag = 0;
@@ -348,12 +348,12 @@ public class MeasureManager {
 		// int firstEdge = FAILURE;
 		// for (; i < l; i++) {
 		// v = array[i];
-		// // 若点电压值从开始就比amLow小,则第一波形边是从下而上的。
+		// // If the point voltage is lower than amLow from the start, the first waveform edge goes from bottom to top.
 		// if (ampLow > v) {
 		// firstEdge = RISE;
 		// break;
 		// }
-		// // 若点电压值从开始就比ampHigh大,则第一波形边是从上而下的。
+		// // If the point voltage is higher than ampHigh from the start, the first waveform edge goes from top to bottom.
 		// if (ampHigh < v) {
 		// firstEdge = FALL;
 		// break;
@@ -385,7 +385,7 @@ public class MeasureManager {
 		// }
 		// }
 		// if (firstEdge == FALL) {
-		// // FALL时，从ampHigh到ampLow，之间的点走过的时间为fallTime
+		// // FALL: the time taken by the points going from ampHigh to ampLow is fallTime
 		// for (; i < l; i++) {
 		// v = array[i];
 		// if (ampHigh < v) {
@@ -397,7 +397,7 @@ public class MeasureManager {
 		// break;
 		// }
 		// }
-		// // FALL时，再从ampLow到ampHigh，之间的点走过的时间为raiseTime
+		// // FALL: then the time taken by the points going from ampLow to ampHigh is raiseTime
 		// for (; i < l; i++) {
 		// v = array[i];
 		// if (ampLow > v) {
@@ -433,7 +433,7 @@ public class MeasureManager {
 		// System.out.println("raiseStart:"+raiseStart+",fallStart:"+fallStart);
 		getRiseFallTime(madc);
 
-		/** 计算正负脉宽 */
+		/** Calculate positive and negative pulse width */
 		int i;
 		int v;
 		float ampHalf = (float) Vamp / 2 + Vbase;
@@ -458,7 +458,7 @@ public class MeasureManager {
 		// System.out.println(String.format("pWidth:%f,nWidth:%f", pWidth,
 		// nWidth));
 
-		/** 计算正负占空比 */
+		/** Calculate positive and negative duty cycle */
 		float pDuty, nDuty;
 		if (madc.pWidth == -1 || madc.nWidth == -1) {
 			pDuty = nDuty = -1;
@@ -511,7 +511,7 @@ public class MeasureManager {
 	}
 
 	/**
-	 * 预留的用于在原始adc上去除零点的方法
+	 * Reserved method for removing the zero point from the raw adc
 	 * 
 	 * @param wf
 	 * @deprecated
@@ -523,25 +523,25 @@ public class MeasureManager {
 		int pos0 = 0;
 		int Vsquare_sum = 0, Vnum = 0, Vsum = 0;
 		/*
-		 * KNOW array每点减Pos0后的修改， Vmax、Vmin、Vsum、Vsquare_sum
+		 * KNOW array modification after Pos0 is subtracted from each point: Vmax, Vmin, Vsum, Vsquare_sum
 		 * 
-		 * MEM_1k[v +128](无法立即处理)
+		 * MEM_1k[v +128](cannot be handled immediately)
 		 */
 		vvc.Vmax -= pos0;
 		vvc.Vmin -= pos0;
-		/* [ pos0*pos0*Vnum+(-2*pos0)*∑(p->l)v ]为[(v-pos0)*(v-pos0)]与[v * v]的差 */
+		/* [ pos0*pos0*Vnum+(-2*pos0)*∑(p->l)v ] is the difference between [(v-pos0)*(v-pos0)] and [v * v] */
 		Vsquare_sum = Vsquare_sum + (pos0 * pos0 * Vnum - 2 * Vsum * pos0);
 		Vsum -= (Vnum * pos0);
-		// MEM_1k[v + 128]++; MEM_1k产生的变动，后面处理
+		// MEM_1k[v + 128]++; MEM_1k changes are handled later
 
-		/* KNOW array每点减Pos0后,MEM_1k相应改变后的修改 */
+		/* KNOW array modification after Pos0 is subtracted from each point and MEM_1k changes accordingly */
 		vvc.Vtop -= pos0;
 		vvc.Vbase -= pos0;
 		// ----------------------------------------------------
-		/* KNOW array每点减Pos0后, ampLow、ampHigh补回pos0后的修改 */
+		/* KNOW array modification after Pos0 is subtracted from each point and ampLow, ampHigh have pos0 added back */
 		float ampLow = (float) vvc.Vamp / 10 + vvc.Vbase + pos0;
 		float ampHigh = (float) vvc.Vamp * 9 / 10 + vvc.Vbase + pos0;
-		/* KNOW array每点减Pos0后, ampHalf补回pos0后的修改 */
+		/* KNOW array modification after Pos0 is subtracted from each point and ampHalf has pos0 added back */
 		float ampHalf = vvc.Vamp / 2 + vvc.Vbase + pos0;
 		// Vmid += pos0;
 	}
@@ -647,13 +647,13 @@ public class MeasureManager {
 	 * @param array
 	 * @param l
 	 * @param pos0
-	 * @return cyc_show 既周期
+	 * @return cyc_show i.e. the period
 	 */
 	protected float computePeroid(int start, int ADMiddle, int Vnum,
 			int[] array, int l) {
 		final int step = 2;
-		int winLow = ADMiddle - 7, winHigh = ADMiddle + 7;// 窗口门限，参考FPGA
-		// 原来的门限值,即窗口中间值的上下限
+		int winLow = ADMiddle - 7, winHigh = ADMiddle + 7;// window threshold, refer to FPGA
+		// The original threshold values, i.e. the upper and lower limits around the window midpoint
 		// int largerthan, lessthan
 		int status = MeasureT.FAILURE, edge = MeasureT.FAILURE;// status_flag,edgeSelect;
 		int start_counter = 0, win_cyc_counter = 0, win_data_counter = 0;
@@ -689,8 +689,8 @@ public class MeasureManager {
 		}
 		// System.out.println(win_cyc_counter + ">?" + (1024 / step));
 		if (win_cyc_counter != 0 && win_cyc_counter <= 1024 / step) {
-			// 单位是ms,要换算成s
-			// FFT时间间隔不一样!
+			// The unit is ms, to be converted to s
+			// FFT time interval is different!
 			float cyc_show = (win_data_counter / (float) win_cyc_counter);
 			// * step * (1000 / (float)Vnum)
 
@@ -720,12 +720,12 @@ public class MeasureManager {
 		int firstEdge = MeasureT.FAILURE;
 		for (; i < l; i++) {
 			v = array[i];
-			// 若点电压值从开始就比amLow小,则第一波形边是从下而上的。
+			// If the point voltage is lower than amLow from the start, the first waveform edge goes from bottom to top.
 			if (ampLow > v) {
 				firstEdge = MeasureT.RISE;
 				break;
 			}
-			// 若点电压值从开始就比ampHigh大,则第一波形边是从上而下的。
+			// If the point voltage is higher than ampHigh from the start, the first waveform edge goes from top to bottom.
 			if (ampHigh < v) {
 				firstEdge = MeasureT.FALL;
 				break;
@@ -757,7 +757,7 @@ public class MeasureManager {
 			}
 		}
 		if (firstEdge == MeasureT.FALL) {
-			// FALL时，从ampHigh到ampLow，之间的点走过的时间为fallTime
+			// FALL: the time taken by the points going from ampHigh to ampLow is fallTime
 			for (; i < l; i++) {
 				v = array[i];
 				if (ampHigh < v) {
@@ -769,7 +769,7 @@ public class MeasureManager {
 					break;
 				}
 			}
-			// FALL时，再从ampLow到ampHigh，之间的点走过的时间为raiseTime
+			// FALL: then the time taken by the points going from ampLow to ampHigh is raiseTime
 			for (; i < l; i++) {
 				v = array[i];
 				if (ampLow > v) {

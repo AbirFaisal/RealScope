@@ -136,7 +136,7 @@ public class EdgePane extends TriggerLoaderPane implements ItemListener {
 
 		nrip().add(vup);
 
-		/** 先设置模型，更新语言，然后添加事件监听器 */
+		/** First set the model, update the language, then add the event listeners */
 		cbbcoupling.setModel(new DefaultComboBoxModel(TriggerDefine.COUPLING));
 		cbbrnf.setModel(new DefaultComboBoxModel(EdgeTrigger.RiseFall));
 		cbbsweep.setModel(new DefaultComboBoxModel(LObject

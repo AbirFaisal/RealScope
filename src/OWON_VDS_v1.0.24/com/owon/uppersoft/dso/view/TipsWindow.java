@@ -118,7 +118,7 @@ public class TipsWindow implements Localizable {
 			tipsDlg = new JDialog();
 			tipsDlg.setBounds(300, 350, windowWidth, windowHeight);
 		} else {
-			tipsDlg = new JDialog(mw.getFrame(), false);// 模式化true
+			tipsDlg = new JDialog(mw.getFrame(), false);// Modal true
 			tipsDlg.setSize(windowWidth, windowHeight);
 		}
 		tipsDlg.setLayout(new BorderLayout());
@@ -156,7 +156,7 @@ public class TipsWindow implements Localizable {
 						RenderingHints.VALUE_ANTIALIAS_ON);
 				g2d.fillRoundRect(x0, y0, width + 10, height + 10, 50, 50);
 				g2d.setPaint(TipsWindow.getGradualTexturePaint(0, y0, 1, y0
-						+ TitleBar.H));// 设置画笔颜色渐变
+						+ TitleBar.H));// Set the paint color gradient
 				g2d.fillRoundRect(x0 + 2, y0 + 2, width + 10, height + 10, 50,
 						50);
 				g2d.drawImage(lightIcon.getImage(), 0, 0, null);
@@ -176,7 +176,7 @@ public class TipsWindow implements Localizable {
 				g2d.fillOval(0, 5, 32, 32);
 				g2d.fillRect(0, y0, width - 16, height);
 				g2d.setPaint(TipsWindow.getGradualTexturePaint(0, y0, 1, y0
-						+ TitleBar.H));// 设置画笔颜色渐变
+						+ TitleBar.H));// Set the paint color gradient
 				g2d.fillRect(0, y0 + 2, width - 18, height);
 
 				g2d.drawImage(closeIcon.getImage(), 0, 5, null);
@@ -208,7 +208,7 @@ public class TipsWindow implements Localizable {
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 						RenderingHints.VALUE_ANTIALIAS_ON);
 				g2d.fillRect(0, 0, width, 5);
-				g2d.setPaint(TitleBar.GradientTexturePaint);// 设置画笔颜色渐变
+				g2d.setPaint(TitleBar.GradientTexturePaint);// Set the paint color gradient
 				g2d.fillRect(0, 2, width, height);
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 						RenderingHints.VALUE_ANTIALIAS_OFF);
@@ -322,11 +322,11 @@ public class TipsWindow implements Localizable {
 			}
 		});
 		// chlp.setContentType("text/html");
-		// setEditorPaneContent(chlp, url);//localize会加入
+		// setEditorPaneContent(chlp, url);//localize will add it
 		/*-
-		 * 利用setEditable()方法将JEditorPane设为不可编辑.请注意，这行是相当重要的，若是我们将这个方法设为true,
-		 * 我们将会失去HTML文件本身的特性，如超级链接的功能等等。因此一般都会将编辑的功能取消(设置false).目前这个超
-		 * 级链接功能并没有作用，这部份将在JEditorPane的事件处理中介绍.
+		 * Use the setEditable() method to make the JEditorPane non-editable. Note that this line is quite important: if we set this method to true,true,
+		 * we will lose the features of the HTML file itself, such as hyperlink functionality. Therefore editing is generally disabled (set to false). Currently this hyper
+		 * link feature has no effect; this part will be introduced in the JEditorPane event handling..
 		 */
 		chlp.setEditable(false);
 		final JEditorPane edp = chlp;
@@ -356,9 +356,9 @@ public class TipsWindow implements Localizable {
 			file = new File(contentURL);
 		}
 
-		String str = file.getAbsolutePath();// 取得文件位置的绝对路径
-		str = "file:" + str;// 将绝对路径加入URL.protocol合成一完整的URL输入字符串
-		/* 利用setPage()方法将字符串中路径所指的文件加载JEditorPane. */
+		String str = file.getAbsolutePath();// Get the absolute path of the file location
+		str = "file:" + str;// Add the absolute path to the URL.protocol to compose a complete URL input string
+		/* Use the setPage() method to load the file pointed to by the path in the string into the JEditorPane.JEditorPane. */
 		try {
 			edp.setPage(str);
 		} catch (IOException ioe) {

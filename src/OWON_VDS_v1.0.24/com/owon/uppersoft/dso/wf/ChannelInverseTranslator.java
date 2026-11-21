@@ -6,7 +6,7 @@ public class ChannelInverseTranslator {
 	public ChannelInverseTranslator() {
 	}
 
-	/** RT & DM 是否进行各自的反相处理 */
+	/** RT & DM each do their own inversion processing or not */
 	public static boolean setOfflineInverseType_Normal(int inverseType) {
 		switch (inverseType) {
 		default:
@@ -15,7 +15,7 @@ public class ChannelInverseTranslator {
 		case VDS_Portable.INVERSE_TYPE_REVERSED:
 			return true;
 		}
-		/** 录制波形无需进行反相 */
+		/** Recorded waveforms need no inversion */
 	}
 
 	public static boolean setOfflineInverseType_DM(int inverseType) {
@@ -24,14 +24,14 @@ public class ChannelInverseTranslator {
 		case VDS_Portable.INVERSE_TYPE_RAW_FINE:
 			return false;
 		case VDS_Portable.INVERSE_TYPE_RAW_REVERSE:
-			/** 离线载入DM，需要反相 */
+			/** Loading DM offline needs inversion */
 			return true;
 		}
 	}
 
 	public static boolean setRTInverseType_DM(boolean inverse) {
 		if (inverse) {
-			/** 载入DM，需要反相 */
+			/** Loading DM needs inversion */
 			return true;
 		} else {
 			return false;
@@ -39,7 +39,7 @@ public class ChannelInverseTranslator {
 	}
 
 	/**
-	 * 保存深存储文件
+	 * Save deep memory file
 	 * 
 	 * @return
 	 */
@@ -49,7 +49,7 @@ public class ChannelInverseTranslator {
 	}
 
 	/**
-	 * 保存录制文件
+	 * Save recording file
 	 * 
 	 * @return
 	 */

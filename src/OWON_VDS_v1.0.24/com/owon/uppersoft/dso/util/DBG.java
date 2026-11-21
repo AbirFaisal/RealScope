@@ -8,16 +8,16 @@ import com.owon.uppersoft.vds.util.LoggerUtil;
 import com.owon.uppersoft.vds.util.LoggerUtil.Textable;
 
 /**
- * 记得关闭打印，在程序发布后提高很大效率，无论是out/err还是文件，还是方法调用中的字符串创建
+ * Remember to turn off printing; after release this greatly improves efficiency, whether it is out/err, files, or string creation in method calls
  * 
  * @author Matt
  * 
  */
 public class DBG {
 
-	/** 总开关是否调试，效率原因 */
+	/** Master switch for debugging, for efficiency reasons */
 	public static boolean debug = true;
-	/** 打印调试0~8, 还是部署(文件)调试-1 ,部署文件即导出的程序打印台重定向到log.txt打印 */
+	/** Print debugging 0~8, or deployment (file) debugging -1; deployment file means the exported program's console is redirected to log.txt for printing */
 	public static int cmddebug = -1;
 
 	private static Logger logger = LoggerUtil.getConsoleLogger(
@@ -49,7 +49,7 @@ public class DBG {
 			l = Levels[cmd];
 		}
 		logger.setLevel(l);
-		// FINE (打印)// CONFIG
+		// FINE (print)// CONFIG
 	}
 
 	public static final void prepareLogType(int cmd, File logDir) {
@@ -136,7 +136,7 @@ public class DBG {
 	}
 
 	/**
-	 * 调试时方便单独输出一些信息
+	 * Convenient for outputting some info separately while debugging
 	 * 
 	 * @param msg
 	 */
@@ -147,7 +147,7 @@ public class DBG {
 	}
 
 	/**
-	 * 调试时方便单独输出一些信息
+	 * Convenient for outputting some info separately while debugging
 	 * 
 	 * @param msg
 	 */

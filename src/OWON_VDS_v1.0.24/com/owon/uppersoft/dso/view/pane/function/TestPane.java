@@ -39,7 +39,7 @@ public class TestPane extends FunctionPanel implements Runnable {
 
 	private USBSourceManager usbsm;
 
-	/** 连接 */
+	/** Connect */
 	private class PropertyCL implements PropertyChangeListener {
 		private int num = -1, len = -1, range = -1, vl = 0;
 
@@ -70,7 +70,7 @@ public class TestPane extends FunctionPanel implements Runnable {
 		}
 	};
 
-	/** 连接 */
+	/** Connect */
 	private CLabel cl;
 	private CComboBox comboBox;
 	private CButton refreshButton;
@@ -81,7 +81,7 @@ public class TestPane extends FunctionPanel implements Runnable {
 	private CButton stopButton;
 	private JProgressBar jpb;
 
-	/** 连接 */
+	/** Connect */
 	private void createConnectGroup() {
 		ncgp();
 		nrip();
@@ -148,7 +148,7 @@ public class TestPane extends FunctionPanel implements Runnable {
 		final JButton linkBtn = nbtnt("StaDat");
 		linkBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// 过时的协议，可能不再适用
+				// obsolete protocol, may no longer apply
 				// GetDataRunner gdr = ca.getDaemon().getGetDataRunner();
 				// gdr.sendCommand(sm, GetDataRunner.sgad, t);
 				// ca.interComm.receiveALL(controlManager, sm);
@@ -167,7 +167,7 @@ public class TestPane extends FunctionPanel implements Runnable {
 		cl = nlblt("%");
 		cl.setPreferredSize(new Dimension(80, 0));
 
-		/** 写法不错 */
+		/** nicely written */
 		final ContextFileChooser ifc = new ContextFileChooser();
 
 		dmBtn.addActionListener(new ActionListener() {
@@ -191,13 +191,13 @@ public class TestPane extends FunctionPanel implements Runnable {
 						// if (ci.status == DMInfo.Status_RT_NoDM) {
 						//
 						// ic.showNoDM();
-						// // 关闭可能出现的进度框
+						// // close the progress dialog that may be showing
 						// dmBtn.setEnabled(true);
 						// return;
 						// }
 						//
 						// Platform.getDataHouse().receiveRTDMData(ci);
-						// // TODO 按钮无法恢复
+						// // TODO the button cannot be restored
 						// dmBtn.setEnabled(true);
 					}
 				}.start();
@@ -213,7 +213,7 @@ public class TestPane extends FunctionPanel implements Runnable {
 
 	public static final int MaxMeasureTimes = 10;
 
-	/** 连接 */
+	/** Connect */
 	@Override
 	public void run() {
 		List<IDevice> ids = usbsm.refreshUSBPort();

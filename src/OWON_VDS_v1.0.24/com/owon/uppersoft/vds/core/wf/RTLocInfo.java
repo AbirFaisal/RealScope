@@ -10,7 +10,7 @@ import com.owon.uppersoft.vds.core.rt.IDataMaxMin;
 import com.owon.uppersoft.vds.util.PrimaryTypeUtil;
 
 /**
- * RT单次波形绘图，不在内部支持接地，由外部设置，尽量精简支持的逻辑，严格控制增加，适用不同机型，性能优化后期再考虑
+ * RT single-shot waveform drawing; grounding is not supported internally but set externally, keep the supported logic minimal, strictly control additions, applicable to different models, performance optimization will be considered later
  * 
  * @author Matt
  * 
@@ -18,7 +18,7 @@ import com.owon.uppersoft.vds.util.PrimaryTypeUtil;
 public class RTLocInfo implements IDataMaxMin {
 	public static int AREA_WIDTH = GDefine.AREA_WIDTH;
 	/**
-	 * 这个数组为固定adc字节数据，实为usb使用的共享数组，不在上面直接修改值
+	 * This array is fixed adc byte data, actually a shared array used by usb; do not modify its values directly
 	 */
 	public ByteBuffer adcbuf;
 
@@ -32,7 +32,7 @@ public class RTLocInfo implements IDataMaxMin {
 
 	private void prepare() {
 		if (pixbuf == null) {
-			/** 扩大pixbuf范围，使其支持在屏幕之前开始画图而延伸出更多数据点的情况 */
+			/** Extend the pixbuf range so that it supports drawing starting before the screen, which extends to more data points */
 			pixbuf = IntBuffer.allocate((AREA_WIDTH << 2) + 1000);// 4008
 			pixbuf.position(0);
 			pixbuf.limit(0);
@@ -55,7 +55,7 @@ public class RTLocInfo implements IDataMaxMin {
 	}
 
 	/**
-	 * 这里的处理方式仅是对adc数据简单地做平移和缩放，在峰值检测时的max_min数据也同样使用，仅在峰值画图时，分开处理
+	 * The handling here is just a simple shift and scale of the adc data; it is also used for the max_min data in peak detect, with separate handling only when drawing peaks
 	 * 
 	 * 
 	 * @param vbmulti
@@ -150,9 +150,9 @@ public class RTLocInfo implements IDataMaxMin {
 	}
 
 	/**
-	 * RT时通过数据buffer填充画图buffer的内容，只在载入时调用一次
+	 * RT: fill the drawing buffer from the data buffer; called only once at load time
 	 * 
-	 * 由于处理了反相，该方法只在载入数据时调用一次
+	 * Because inversion is handled, this method is called only once when loading data
 	 * 
 	 * @param buf
 	 * @param yb
@@ -163,9 +163,9 @@ public class RTLocInfo implements IDataMaxMin {
 		prepare();
 
 		/**
-		 * KNOW 临时缓冲区被直接拿来使用，在多次传输中反复使用，并且所有内容共用一个大的缓冲区方便分配，少量配置信息出于方便也存在其中
+		 * KNOW The temporary buffer is used directly and reused over multiple transfers; all content shares one large buffer for easy allocation, and a small amount of configuration info is also kept in it for convenience
 		 * 
-		 * KNOW 数组包含了从下位机传上来的所有数据，但只有用initPos和screendatalen截取的才是画在屏幕上的
+		 * KNOW The array contains all the data uploaded from the device, but only the portion cut out with initPos and screendatalen is drawn on screen
 		 */
 		adcbuf = buf;
 		// vl.logByteBuffer(pixbuf);

@@ -6,13 +6,13 @@ public interface ITimeControl extends HorizontalUnit {
 
 	public static final String onHorTrgPosChangedByTimebase = "onHorTrgPosChangedByTimebase";
 
-	/** 同时fire出newidx, oldidx，用于产生波形的同步影响 */
+	/** Also fires newidx, oldidx, used to synchronize the effect on waveform generation */
 	public static final String onTimebaseEffect = "onTimebaseEffect";
 
-	/** 同时fire出newidx, oldidx */
+	/** Also fires out newidx, oldidx */
 //	public static final String onTimebaseChanged = "onTimebaseChanged";
 
-	/** 无需fire出newidx, oldidx */
+	/** No need to fire out newidx, oldidx */
 	public static final String onTimebaseUpdated = "onTimebaseUpdated";
 
 	public static final String onHTPChanged = "onHTPChanged";

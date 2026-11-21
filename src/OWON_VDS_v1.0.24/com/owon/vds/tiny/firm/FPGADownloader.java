@@ -94,7 +94,7 @@ public class FPGADownloader implements Logable {
 			"FPGA_DOWNLOAD_ADD", 0x4000, 4);
 
 	public static final AddValueAttachCommand FPGA_DOWNLOAD_QUERY_ADD = new AddValueAttachCommand(
-			"FPGA_DOWNLOAD_QUERY_ADD", 0x223, 1, 0); // 判断fpga是否已经下载过了
+			"FPGA_DOWNLOAD_QUERY_ADD", 0x223, 1, 0); // Check whether the fpga has already been downloaded
 
 	public boolean downloadFPGA(
 			PropertyChangeListener pcl,
@@ -114,7 +114,7 @@ public class FPGADownloader implements Logable {
 		bbuf.put((byte) fda.bytes);
 		bbuf.putInt(fsize);
 		arr = bbuf.array();
-		int len = bbuf.position();// 缓存put时position也跟着移动,这里不是0
+		int len = bbuf.position();// When the buffer is put, position also moves, so here it is not 0
 		/** Send FPGA file F+'file size (4 bytes)' */
 		int wrn = sm.write(arr, len);
 		if (wrn <= 0) {
@@ -159,7 +159,7 @@ public class FPGADownloader implements Logable {
 					log(".");
 				}
 
-				EndianUtil.writeIntL(usbbuf, 0, frame);// 写入帧数(4字节,开头)，验证对了
+				EndianUtil.writeIntL(usbbuf, 0, frame);// Write the frame count (4 bytes, at the start), verified correct
 				/** Usbbuf fills the data */
 				// ba.get(usbbuf, 4, sendsize);
 				raf.read(usbbuf, 4, sendsize);

@@ -42,7 +42,7 @@ public class RecordControlTiny extends RecordControl {
 	}
 
 	/**
-	 * 一帧写入
+	 * write one frame
 	 * 
 	 * @param raf
 	 * @param cm
@@ -84,8 +84,8 @@ public class RecordControlTiny extends RecordControl {
 				int fsl = cdi.screendatalen;
 				int dl = cdi.datalen;
 
-				// 这里如果做修改，可以节省保存的数据长度
-				raf.writeInt(0);// raf.writeInt(initPos);//屏幕起始
+				// if modified here, the saved data length can be reduced
+				raf.writeInt(0);// raf.writeInt(initPos);//screen start
 				raf.writeInt(fsl);
 				raf.writeInt(fsl);// raf.writeInt(dl);
 
@@ -103,7 +103,7 @@ public class RecordControlTiny extends RecordControl {
 					return;
 				}
 
-				// 慢扫时起始位置含了慢扫个数，必须置零
+				// in slow sweep the start position includes the slow-scan count, so it must be zeroed
 				int pos = bb.position();
 				if (tc.isOnSlowMoveTimebase())
 					pos = 0;
@@ -113,7 +113,7 @@ public class RecordControlTiny extends RecordControl {
 				long bendPos = raf.getFilePointer();
 
 				raf.seek(bsizePos);
-				raf.writeInt((int) (bendPos - bsizePos - 4));// -4?块长度存放位置占4字节
+				raf.writeInt((int) (bendPos - bsizePos - 4));// -4? the block length storage position takes 4 bytes
 				raf.seek(bendPos);
 			}
 

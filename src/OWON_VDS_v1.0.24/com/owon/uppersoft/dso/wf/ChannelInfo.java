@@ -110,7 +110,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 		if (idx >= vp.getVoltageNumber()) {
 			change = vp.getVoltageNumber() - 1;
 		}
-		// 避免闭环校正增益时未设置重复电压档位
+		// avoid the vertical scale not being set again when calibrating gain in a closed loop
 		return change;// (change == getVoltbaseIndex()) ? -1 :
 	}
 
@@ -128,13 +128,13 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	}
 
 	public void load(Pref p) {
-		// 判断通道无法找到对应配置时
+		// when no corresponding config can be found for the channel
 		int vb = p.loadInt(name + ".vbIdx");
 		if (vb < 0 || vb >= vp.getVoltageNumber()) {
 			vb = 0;
 		}
 		this.pos0 = p.loadInt(name + ".pos0");
-		// KNOW 先设置pos0,在设置电压档位时getPos0()才有正确值拿
+		// KNOW set pos0 first, so that getPos0() returns the correct value when the voltage scale is set
 		setVoltbaseIndex(vb, true, true);
 		this.on = p.loadBoolean(name + ".on");
 
@@ -175,7 +175,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	}
 
 	/**
-	 * 返回pos0在从上到下从0到2*hr这个半范围内对应的值，
+	 * Returns the value corresponding to pos0 within this half range, from top to bottom, from 0 to 2*hr,
 	 * 
 	 * @param hr
 	 * @return
@@ -185,7 +185,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	}
 
 	/**
-	 * 当附加反相时，用于获得“相对”值；当过滤反相时，用于获得“绝对”值
+	 * When inversion is appended, used to get the "relative" value; when inversion is filtered, used to get the "absolute" value
 	 * 
 	 * @param v
 	 * @return
@@ -237,7 +237,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	}
 
 	/**
-	 * 计算出逻辑上是频率计数值
+	 * computes what is logically the frequency counter value
 	 * 
 	 * @param freq
 	 */
@@ -275,11 +275,11 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	}
 
 	/**
-	 * 软件反相，反相时波形零点拉到上方，由于限界会在下方出现平行的截断线；
+	 * Software inversion: when inverted the waveform zero point is pulled to the top, and because of the limit boundary a parallel clipping line appears at the bottom;
 	 * 
-	 * 触发电平或阈值的斜率的设置也会在波形上看到相反的效果，保留这样的做法，同SDS，无需改动
+	 * the trigger level or threshold slope setting also shows the opposite effect on the waveform; this approach is kept, same as SDS, no change needed
 	 * 
-	 * 则拉触发，也无需改动
+	 * pulling the trigger, no change needed either
 	 * 
 	 * @param iv
 	 */
@@ -289,7 +289,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 
 		inverse = iv;
 
-		// 改为软反相
+		// changed to soft inversion
 	}
 
 	public void c_setOn(boolean on) {
@@ -316,7 +316,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 
 		sbm.recommendOptimize();
 		/**
-		 * KNOW 尝试使用单例对象 尝试使用同步发送
+		 * KNOW try using a singleton object, try using synchronous sending
 		 */
 		if (on) {
 			sbm.c_chl(P_Channel.ONOFF, chl, 1);
@@ -383,7 +383,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 		// if (vb0 == vbidx)
 		// return;
 
-		/** 这里限制零点，零点可能在其它的电压档位被设置在了界外 */
+		/** The zero point is limited here, since it may have been set out of bounds at other voltage scales */
 		setVoltbaseIndex(change, false, false);
 
 		if (shouldForcebandlimit(vbidx)) {
@@ -423,7 +423,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 		final int p0 = pos0;
 
 		// System.err.println(zero+", "+pos0);
-		/** 后续版本中halfPosRange可能改变为和vbIdx相关的量 */
+		/** In later versions halfPosRange may change to a quantity related to vbIdx */
 		int hpr = pos0HalfRange;
 		if (zero < -hpr) {
 			zero = -hpr;
@@ -437,16 +437,16 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 		final int dp = p1 - p0;
 		this.pos0 = zero;
 
-		// 引起触发电平的改变
+		// causes the trigger level to change
 		final int chlidx = number;
 		final Runnable r = pvi.thredshold_voltsense_ByPos0(chlidx, dp, commit);
 
 		if (commit) {
 			/**
 			 * KNOW
-			 * 当前是在ui线程，一旦syncJob被设置，再次进入的将跳过添加指令任务，而持续操作结束之后(比如mouseRelease)
+			 * Currently on the ui thread; once syncJob is set, re-entry skips adding the command task, and after the continuous operation ends (e.g. mouseRelease)
 			 * 
-			 * 该状态值被重置，重置是在另一线程，所以未必被再次进入的处理检测到
+			 * this state value is reset; the reset happens on another thread, so re-entering handlers may not detect it
 			 */
 			Submitable sbm = SubmitorFactory.reInit();
 			sbm.d_chl_pos0(number, pos0, new Runnable() {
@@ -483,7 +483,7 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 	// }
 
 	public void snapShot2ChannelDataInfo(DMDataInfo cd, WaveForm wf) {
-		/** 存盘的零点为运行最后一次的，这样才能和停止拿到的dm对应，之后的零点移动产生的波形偏移不保存 */
+		/** The saved zero point is the one from the last run, so that it matches the dm obtained on stop; waveform offsets from later zero point moves are not saved */
 		cd.pos0 = wf.getFirstLoadPos0();
 		cd.vbIdx = vbIdx;
 		cd.probeMultiIdx = probeMultiIdx;
@@ -505,16 +505,16 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 			boolean isfirstload) {
 		this.vbIdx = vbIdx;
 
-		/** 随vbIdx而改变的pos0HalfRange */
+		/** vbIdx-dependent pos0HalfRange */
 		Volt volt = getVoltageLabel();
 
-		// 使用底层的时基电压档位值来作判断只用，不计入探头上的倍率
+		// Use the underlying timebase voltage scale value for the check, not counting the probe multiplier
 		int currentVolt = volt.getValue(0);
 		pos0HalfRange = vp.getPos0HalfRange(currentVolt);
 
 		if (!restricePos0)
 			return;
-		/** 改变电压档位的同时限制零点，可能牵连影响触发电平 */
+		/** Limit the zero point while changing the voltage scale; may affect the trigger level */
 		DataHouse dh = Platform.getDataHouse();
 		if (dh == null || isfirstload) {
 			// System.out.println("datahouse IS NULL");
@@ -600,8 +600,8 @@ public class ChannelInfo implements IOrgan, IChannelInfo, Markable {
 
 	public boolean isBandlimit() {
 		if (isForcebandlimit())
-//			setBandlimit(true);// 各个档位强制开启带宽限制
-		 return true;// 只在最小档位开启，回到其他档位恢复原状态
+//			setBandlimit(true);// enforce bandwidth limit at every scale
+		 return true;// enabled only at the lowest scale; restores the original state when going back to other scales
 		return bandlimit;
 	}
 

@@ -4,7 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 /**
- * GlobalPropertyChangeManager，将所以涉及到这两个方法的地方抽象出来
+ * GlobalPropertyChangeManager, abstracts out all places that involve these two methods
  *
  */
 public class GlobalPropertyChangeManager {

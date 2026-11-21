@@ -20,7 +20,7 @@ public class PaintChannelTrgLabelContext {
 	}
 
 	/**
-	 * 必须先设置，然后才能调用set方法
+	 * Must be set first, and only then can the set method be called
 	 * 
 	 * @param cssm
 	 */

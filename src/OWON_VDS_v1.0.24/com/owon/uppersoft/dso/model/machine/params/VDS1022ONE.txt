@@ -1,6 +1,6 @@
 //[xxx] then \r\n to contents
 //add "2ns"
-//不可用的采样率数值
+//unavailable sampling rate values
 //[Grids]
 //20
 

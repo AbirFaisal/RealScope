@@ -4,7 +4,7 @@ import com.owon.uppersoft.dso.model.trigger.TrgCheckType;
 import com.owon.uppersoft.vds.core.trigger.help.RightTrgLevelInfoProvider;
 
 /**
- * ChartScreenSelectModel，包含选取的通道，及触发电平和阈值的选取状态
+ * ChartScreenSelectModel, contains the selected channel, and the selection state of the trigger level and threshold
  * 
  */
 public class ChartScreenSelectModel implements RightTrgLevelInfoProvider {
@@ -36,7 +36,7 @@ public class ChartScreenSelectModel implements RightTrgLevelInfoProvider {
 	 * ------------------------------
 	 */
 	/**
-	 * x:点击或拖拽的通道名，y：如果为阈值，UppOver = 1, LowOver = 2;
+	 * x: name of the clicked or dragged channel, y: if it is a threshold, UppOver = 1, LowOver = 2;
 	 */
 	private int operateChannel = -1;
 	private TrgCheckType operateThredshodType = TrgCheckType.NotOver;
@@ -60,11 +60,11 @@ public class ChartScreenSelectModel implements RightTrgLevelInfoProvider {
 	}
 
 	/**
-	 * 处理判断类型
+	 * Process and determine the type
 	 * 
 	 * @param type
 	 * @param channel
-	 * @return 是否被选择到了
+	 * @return whether it was selected
 	 */
 	public void handleCheckedType(int channel, TrgCheckType type) {
 		switch (type) {
@@ -87,7 +87,7 @@ public class ChartScreenSelectModel implements RightTrgLevelInfoProvider {
 	 * ------------------------------------------------------------------------
 	 * ------------------------------
 	 */
-	/** 是否显示右侧的触发电平箭头 */
+	/** Whether to show the trigger level arrow on the right side */
 	private boolean arrowDraw = false;
 
 	private boolean trgInfoControlActive = false;
@@ -97,7 +97,7 @@ public class ChartScreenSelectModel implements RightTrgLevelInfoProvider {
 	}
 
 	/**
-	 * 标记在右下角弹出触发电平控件的情况
+	 * Marks the case where the trigger level control pops up at the bottom right
 	 * 
 	 * @param active
 	 */
@@ -111,7 +111,7 @@ public class ChartScreenSelectModel implements RightTrgLevelInfoProvider {
 	}
 
 	/**
-	 * 标记鼠标在右侧需要画箭头框的情况
+	 * Marks the case where the mouse is on the right side and the arrow box needs to be drawn
 	 * 
 	 * @param draw
 	 */
@@ -174,11 +174,11 @@ public class ChartScreenSelectModel implements RightTrgLevelInfoProvider {
 	 * ------------------------------
 	 */
 	/**
-	 * 是否出现了需要画线的情况，至于哪个通道画，有selectWFidx确定
+	 * Whether a line needs to be drawn; which channel draws it is determined by selectWFidx
 	 * 
-	 * selectWFidx被重复使用了，作为左右两侧选定通道的索引。
+	 * selectWFidx is reused, as the index of the selected channels on the left and right sides.
 	 * 
-	 * 则需要判断只有满足右侧或是右下角控件模拟状态时，才认为需要画触发电平线
+	 * so the trigger level line is considered to need drawing only when the right side or the bottom-right control simulated state is satisfied
 	 * 
 	 * @return
 	 */

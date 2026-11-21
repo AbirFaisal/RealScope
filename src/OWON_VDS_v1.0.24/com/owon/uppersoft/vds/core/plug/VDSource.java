@@ -4,7 +4,7 @@ import java.nio.ShortBuffer;
 import java.util.Arrays;
 
 /**
- * VDSource，虚拟的数据来源
+ * VDSource, virtual data source
  * 
  */
 public class VDSource {
@@ -22,26 +22,26 @@ public class VDSource {
 		byte[] t1 = genSine(127, 10, offin, bn + 1);
 		byte[] t2 = new byte[p * bn + off - 1];
 
-		// 更改插值使用的内容：线性&插0
+		// Change what the interpolation uses: linear & insert 0
 		genSimulatePlugZero(t2, off - 1, t1, offin, bn, p);
 		return t2;
 	}
 
 	/**
-	 * outlen只有1个点时不插值
+	 * outlen has only 1 point: no interpolation
 	 * 
-	 * 例如in[0~n-1]:共n个元素
+	 * For example in[0~n-1]: n elements in total
 	 * 
 	 * in[0],in[1]; in[1],in[2];...; in[n-2],in[n-1]
 	 * 
-	 * 其中各插入pr-1个点
+	 * Of which pr-1 points are inserted in each
 	 * 
 	 * @param out
 	 * @param in
 	 * @param offout
 	 * @param offin
 	 * @param inlen
-	 *            >=2, 其中inlen-1个点被扩充了pr倍
+	 *            >=2, of which inlen-1 points are expanded by a factor of pr
 	 * @param pr
 	 * @return
 	 */
@@ -66,20 +66,20 @@ public class VDSource {
 	}
 
 	/**
-	 * outlen只有1个点时不插值
+	 * outlen has only 1 point: no interpolation
 	 * 
-	 * 例如in[0~n-1]:共n个元素
+	 * For example in[0~n-1]: n elements in total
 	 * 
 	 * in[0],in[1]; in[1],in[2];...; in[n-2],in[n-1]
 	 * 
-	 * 其中各插入pr-1个点
+	 * Of which pr-1 points are inserted in each
 	 * 
 	 * @param out
 	 * @param in
 	 * @param offout
 	 * @param offin
 	 * @param inlen
-	 *            >=2, 其中inlen-1个点被扩充了pr倍
+	 *            >=2, of which inlen-1 points are expanded by a factor of pr
 	 * @param pr
 	 * @return
 	 */
@@ -154,9 +154,9 @@ public class VDSource {
 	}
 
 	/**
-	 * outlen只有1个点时不插值
+	 * outlen has only 1 point: no interpolation
 	 * 
-	 * 例如in[0~2]:共3个元素
+	 * For example in[0~2]: 3 elements in total
 	 * 
 	 * in[0], x, in[1], x, x;
 	 * 
@@ -167,7 +167,7 @@ public class VDSource {
 	 * @param offout
 	 * @param offin
 	 * @param inlen
-	 *            >=2, 其中inlen-1个点每2个点被扩充成5个点
+	 *            >=2, of which, for the inlen-1 points, every 2 points are expanded into 5 points
 	 * @return
 	 */
 	public static int[] genSimulateLinearPlug_2_3(int[] out, int offout,
@@ -220,7 +220,7 @@ public class VDSource {
 	}
 
 	/**
-	 * outlen只有1个点时不插值
+	 * outlen has only 1 point: no interpolation
 	 * 
 	 * @param out
 	 * @param in
@@ -252,7 +252,7 @@ public class VDSource {
 
 	/**
 	 * 
-	 * 插0值
+	 * Insert zero values
 	 * 
 	 * @param out
 	 * @param in

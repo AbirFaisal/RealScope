@@ -94,7 +94,7 @@ public class CKeyAdapter extends KeyAdapter {
 			changeVB(3, 1);
 			break;
 
-		// 用page up & down是否更好，数字小键盘考虑不？
+		// Would page up & down be better? Is the numeric keypad considered?
 		case KeyEvent.VK_LEFT:
 			changeTB(-1);
 			break;

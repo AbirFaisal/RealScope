@@ -55,7 +55,7 @@ public class TitleLContainer extends LContainer {
 	}
 
 	/**
-	 * 通过装载方法载入和界面无关的内容
+	 * Load content unrelated to the UI via the loading method
 	 * 
 	 * @param cur
 	 * @param back

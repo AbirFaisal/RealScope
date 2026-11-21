@@ -1,28 +1,28 @@
 package com.owon.uppersoft.dso.function;
 
-/**未实现的方法
+/** Unimplemented methods
  *
- *为避免网格闪烁，网格画在画布bi上
+ * To avoid grid flicker, the grid is drawn on canvas bi
  *  
- * TYPE_USHORT_565_RGB做法：每次fade(),画一遍网格、标尺，故网格、标尺在波形之上。
+ * TYPE_USHORT_565_RGB approach: each fade() redraws the grid and cursors, so the grid and cursors are above the waveform.
  * TODO
- * 更理想效果：网格、标尺在波形下面。
- * 1、什么时候画网格、标尺？ 
- *    当GridBar颜色拖动、清除余辉、重置画布时 等等。
- * 2、画布上会增加网格的颜色？ 
- *    可以在fade()中，判断过滤黑色的相同位置，过滤掉网格的颜色，避免网格变暗。
- * 	  具体方法：把网格GrideBar拖动后的颜色值以画布的TYPE_USHORT_565_RGB
- * 格式存储，把存该值的变量传递给fade(),渐淡时像素为该变量值则跳出。
+ * A better effect: the grid and cursors below the waveform.
+ * 1. When to draw the grid and cursors? 
+ *    When the GridBar color is dragged, persistence is cleared, the canvas is reset, and so on.
+ * 2. Will the grid color be added onto the canvas? 
+ *    In fade(), check and filter the positions that match black, filtering out the grid color to avoid darkening the grid.
+ * 	  Specific method: store the color value of the grid after GrideBar is dragged in the canvas's TYPE_USHORT_565_RGB
+ * format, pass the variable holding that value to fade(), and when fading, break out if the pixel equals that variable's value.
  * */
 
-/**：对原做法的修改：
- * TYPE_USHORT_565_RGB格式为不透明画布，网格在下方被遮盖，有3种处理方法
+/**: modifications to the original approach:
+ * TYPE_USHORT_565_RGB format is an opaque canvas, so the grid below is covered; there are 3 ways to handle it
  * 
- * 1.添加网格到画布，过滤画布颜色
+ * 1. Add the grid to the canvas and filter the canvas color
  * 
- * 2.添加网格到画布，判断网格坐标，若没被波形遮盖，重画网格
+ * 2. Add the grid to the canvas, check the grid coordinates, and redraw the grid if it is not covered by the waveform
  * 
- * 3.改成透明画布(现在的TYPE_INT_ARGB做法)
+ * 3. Change to a transparent canvas (the current TYPE_INT_ARGB approach)
  */
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -38,7 +38,7 @@ import com.owon.uppersoft.vds.core.aspect.help.ImageHandler;
 import com.owon.uppersoft.vds.data.RGB;
 
 /**
- * PersistenceFader，余辉渐变器
+ * PersistenceFader, persistence fader
  * 
  * @author Matt
  * 
@@ -164,7 +164,7 @@ public class PersistenceFader implements ImageHandler, Runnable {
 			if (hsbvals[2] <= 0.25) {
 				if (onInfinite)
 					continue;
-				co[i] = 0;// 设为透明
+				co[i] = 0;// set to transparent
 			} else
 				co[i] = Color.HSBtoRGB(hsbvals[0], hsbvals[1], hsbvals[2]);
 		}
@@ -177,7 +177,7 @@ public class PersistenceFader implements ImageHandler, Runnable {
 			phosphor_ch(persistbi, tempbi);
 		else
 			fade_ch(persistbi, tempbi);
-		// test(bi);// 自画 红黄紫蓝绿 测试余辉
+		// test(bi);// hand-draw red, yellow, purple, blue, green to test persistence
 	}
 
 	private long testt = 0;
@@ -230,7 +230,7 @@ public class PersistenceFader implements ImageHandler, Runnable {
 	float[] hsbt = new float[3];
 
 	private void phosphor_ch(BufferedImage persistbi, BufferedImage tempbi) {
-		// 在这里对各通道波形进行：补亮度的操作，若原来波形像素已亮，则加亮，若原是无光，则画出默认亮度。
+		// Here, for each channel waveform, a brightness top-up operation: if the original waveform pixel is already lit, brighten it; if it was dark, draw the default brightness.
 		if (tempbi == null) {
 			return;
 		}
@@ -244,7 +244,7 @@ public class PersistenceFader implements ImageHandler, Runnable {
 			int plen = pdata.length;
 
 			for (int i = 0; i < plen; i++) {
-				if (tdata[i] == 0)// 临时画布该像素无色，余晖画布减暗
+				if (tdata[i] == 0)// this pixel of the temporary canvas has no color, dim the persistence canvas
 					continue;
 
 				RGB.toHSB(pdata[i], hsbp);
@@ -272,7 +272,7 @@ public class PersistenceFader implements ImageHandler, Runnable {
 				if (hsbp[2] <= 0.25) {
 					if (onInfinite)
 						continue;
-					pdata[i] = 0;// 设为透明
+					pdata[i] = 0;// set to transparent
 				} else
 					pdata[i] = Color.HSBtoRGB(hsbp[0], hsbp[1], hsbp[2]);
 			}
@@ -293,17 +293,17 @@ public class PersistenceFader implements ImageHandler, Runnable {
 			v = co[i];
 			if (v == 0)
 				continue;
-			/** 以红色为例：11111(最高位)变至0则变黑，既31变0，那么从红变黑至少需要200*31ms */
+			/** Taking red as an example: when 11111 (highest bit) goes to 0 it turns black, i.e. 31 goes to 0, so going from red to black takes at least 200*31ms */
 			/** Red 11111111 11111111 00000000 00000000 (0xFF FF0000(ARGB)) */
 			if ((v & 0xFF0000) != 0 && (v & 0xFFFF) == 0) {
-				/** 红色减淡到无限余晖最低值0xFF3F0000时，跳出本次进入下次循环，停止该像素颜色减淡。 */
-				/** 11111111 00111111 00000000 00000000 0xFF3F0000判断无限余辉最低值 */
+				/** When red fades to the infinite persistence minimum value 0xFF3F0000, skip to the next loop iteration and stop fading this pixel. */
+				/** 11111111 00111111 00000000 00000000 0xFF3F0000 used to judge the infinite persistence minimum value */
 				if (onInfinite && v <= 0xFF3F0000) {
 					continue;
 				}
-				/** R位减1 */
+				/** R bit decremented by 1 */
 				v -= 0x10000;
-				/** 设为透明 */
+				/** set to transparent */
 				if ((v & 0xFF0000) == 0) {
 					v = 0;
 				}
@@ -313,13 +313,13 @@ public class PersistenceFader implements ImageHandler, Runnable {
 			 * Yellow 11111111 11111111 11111111 00000000 (0xFF FFFF00(ARGB))
 			 */
 			if ((v & 0xFF) == 0 && (v & 0xFF00) != 0 && (v & 0xFF0000) != 0) {
-				/** 11111111 00111111 00111111 00000000 0xFF3F3F00判断无限余辉最低值 */
+				/** 11111111 00111111 00111111 00000000 0xFF3F3F00 used to judge the infinite persistence minimum value */
 				if (onInfinite && v <= 0xFF3F3F00) {
 					continue;
 				}
-				/** RG位同时减1 */
+				/** RG bits both decremented by 1 */
 				v -= 0x10100;
-				/** 设为透明 */
+				/** set to transparent */
 				if ((v & 0xFF0000) == 0) {
 					v = 0;
 				}
@@ -327,13 +327,13 @@ public class PersistenceFader implements ImageHandler, Runnable {
 			}
 			/** CYAN 00000000 01100110 11001100 11111111 (0xFF 66CCFF(ARGB)) */
 			if ((v & 0xFF00) != 0 && (v & 0xFF) != 0) {
-				/** B位递减到 0011 1111 时，无限余辉 */
+				/** B bit decrements to 0011 1111: infinite persistence */
 				if (onInfinite && (v & 0xFF) <= 0x3F) {
 					continue;
 				}
 				/**
-				 * 首先34遍(R位从102到0):R减3且G减1,得R:0 G:170 B:255;后170遍G低位减1
-				 * ,且同时B位交替减2或减1
+				 * First 34 passes (R bits from 102 to 0): R decremented by 3 and G by 1, giving R:0 G:170 B:255; then 170 passes with the G low bit decremented by 1
+				 * , and at the same time the B bits alternately decrement by 2 or 1
 				 */
 				if ((v & 0xFF0000) != 0) {
 					v -= 0x30100;
@@ -343,7 +343,7 @@ public class PersistenceFader implements ImageHandler, Runnable {
 					else
 						v -= 0x101;// 01 00000001
 				}
-				/** 设为透明 */
+				/** set to transparent */
 				if ((v & 0xFF00) == 0) {
 					v = 0;
 				}
@@ -353,28 +353,28 @@ public class PersistenceFader implements ImageHandler, Runnable {
 			 * Violet 11111111 11001100 00000000 11111111 (0xFF CC00FF(ARGB))
 			 */
 			if ((v & 0xFF00) == 0 && (v & 0xFF) != 0 && (v & 0xFF0000) != 0) {
-				/** B位递减到 0011 1111 时，无限余辉 */
+				/** B bit decrements to 0011 1111: infinite persistence */
 				if (onInfinite && (v & 0xFF) <= 0x3F) {
 					continue;
 				}
-				/** B位减1，到R和B相等时，RB一起减1 */
+				/** B bit decremented by 1 until R equals B, then RB are decremented together by 1 */
 				if (((v & 0xFF0000) >>> 16) != (v & 0xFF))
 					v -= 0x1;
 				else
 					v -= 0x10001;
-				/** 设为透明 */
+				/** set to transparent */
 				if ((v & 0xFF0000) == 0)
 					v = 0;
 				co[i] = v;
 			}
 			/** GREEN 11111111 00000000 11111111 00000000 (0xFF 00FF00(ARGB)) */
 			if ((v & 0xFF0000) == 0 && (v & 0xFF) == 0 && (v & 0x00FF00) != 0) {
-				/** G位递减到 0011 1111 时，无限余辉 */
+				/** G bit decrements to 0011 1111: infinite persistence */
 				if (onInfinite && (v & 0xFF00) <= 0x3F00) {
 					continue;
 				}
 				v -= 0x100;
-				/** 设为透明 */
+				/** set to transparent */
 				if ((v & 0xFF00) == 0)
 					v = 0;
 				co[i] = v;
@@ -398,14 +398,14 @@ public class PersistenceFader implements ImageHandler, Runnable {
 
 			/** Red 11111111 11111111 00000000 00000000 (0xFF FF0000(ARGB)) */
 			if ((v & 0xFF0000) != 0 && (v & 0xFFFF) == 0) {
-				/** 红色减淡到无限余晖最低值0xFF3F0000时，跳出本次进入下次循环，停止该像素颜色减淡。 */
-				/** 11111111 00111111 00000000 00000000 0xFF3F0000判断无限余辉最低值 */
+				/** When red fades to the infinite persistence minimum value 0xFF3F0000, skip to the next loop iteration and stop fading this pixel. */
+				/** 11111111 00111111 00000000 00000000 0xFF3F0000 used to judge the infinite persistence minimum value */
 				if (onInfinite && v <= 0xFF3F0000) {
 					continue;
 				}
-				/** R位减1 */
+				/** R bit decremented by 1 */
 				v -= 0x10000;
-				/** 设为透明 */
+				/** set to transparent */
 				if ((v & 0xFF0000) == 0) {
 					v = 0;
 				}
@@ -415,13 +415,13 @@ public class PersistenceFader implements ImageHandler, Runnable {
 			 * Yellow 11111111 11111111 11111111 00000000 (0xFF FFFF00(ARGB))
 			 */
 			if ((v & 0xFF) == 0 && (v & 0xFF00) != 0 && (v & 0xFF0000) != 0) {
-				/** 11111111 00111111 00111111 00000000 0xFF3F3F00判断无限余辉最低值 */
+				/** 11111111 00111111 00111111 00000000 0xFF3F3F00 used to judge the infinite persistence minimum value */
 				if (onInfinite && v <= 0xFF3F3F00) {
 					continue;
 				}
-				/** RG位同时减1 */
+				/** RG bits both decremented by 1 */
 				v -= 0x10100;
-				/** 设为透明 */
+				/** set to transparent */
 				if ((v & 0xFF0000) == 0) {
 					v = 0;
 				}
@@ -429,12 +429,12 @@ public class PersistenceFader implements ImageHandler, Runnable {
 			}
 			/** GREEN 11111111 00000000 11111111 00000000 (0xFF 00FF00(ARGB)) */
 			if ((v & 0xFF0000) == 0 && (v & 0xFF) == 0 && (v & 0x00FF00) != 0) {
-				/** G位递减到 0011 1111 时，无限余辉 */
+				/** G bit decrements to 0011 1111: infinite persistence */
 				if (onInfinite && (v & 0xFF00) <= 0x3F00) {
 					continue;
 				}
 				v -= 0x100;
-				/** 设为透明 */
+				/** set to transparent */
 				if ((v & 0xFF00) == 0)
 					v = 0;
 				co[i] = v;

@@ -28,7 +28,7 @@ import com.owon.uppersoft.vds.core.wf.rt.ChannelsTransportInfo;
 import com.owon.uppersoft.vds.print.PrinterPreviewFrame;
 
 /**
- * MultiReceiver，为不同场合提供数据读入DataHouse的处理，同时更新controlManager中相应设置的状态
+ * MultiReceiver, provides the processing for reading data into the DataHouse for different situations, and also updates the state of the corresponding settings in controlManager
  * 
  */
 public class MultiReceiver implements IMultiReceiver {
@@ -60,13 +60,13 @@ public class MultiReceiver implements IMultiReceiver {
 			int status) {
 		if (oci.getChannelCount() == 0)
 			return;
-		/** 0帧的情况返回，这样在平均值采样时避免计入空帧 */
+		/** 0 frame case returns, so that empty frames are not counted during average sampling */
 		if (oci.getFrameCount() == 0)
 			return;
 		dh.setStatus(status);
 		dh.dataComplete();
 
-		// 时基
+		// timebase
 		MainWindow mw = Platform.getMainWindow();
 		ToolPane tp = mw.getToolPane();
 
@@ -74,11 +74,11 @@ public class MultiReceiver implements IMultiReceiver {
 
 		// System.err.println("receiveRTData: "+pc.pkdetect);
 
-		// 深存储画图的预备：将LocInfo.cba指向dh.cba等.以免时基若变动，设置时崩溃.
+		// Preparation for deep memory drawing: point LocInfo.cba at dh.cba etc., so that it does not crash when the timebase changes and is set.
 		int dmidx = cm.getMachineInfo().getDMIndexFromLength(oci.DMlen);
 		if (dmidx >= 0)
 			cm.getDeepMemoryControl().setDeepIdx(dmidx);
-		// 水平触发位置的设置和更新,须先设置深度
+		// Setting and updating the horizontal trigger position; the depth must be set first
 		tc.setHorTrgPos(oci.horTrgPos);
 		cm.getCoreControl().updateHorTrgIdx4View();
 		cm.getCoreControl().updateHorTrgPosRange();
@@ -89,7 +89,7 @@ public class MultiReceiver implements IMultiReceiver {
 
 		cm.measure(wfm);
 
-		/** 依赖选择波形的信息进行计算，需在导入波形后进行 */
+		/** Computation depends on the selected waveform info; must be done after the waveform is imported */
 		tc.recomputeHorizontalTriggerLabel();
 		mw.updateShow();
 		tp.updateChannels();
@@ -119,10 +119,10 @@ public class MultiReceiver implements IMultiReceiver {
 		int tbIdx = ci.timebase;
 		BigDecimal tbd = cc.getTimeConfProvider().getBDTimebase(tbIdx);
 
-		// 存储深度 TODO 测试用暂定如此，与屏幕中心点的像素差转化为读入时的触发点位置，在中心对称的运行时情况下适用
+		// memory depth TODO temporary for testing; the pixel difference from the screen center point is converted to the trigger point position at read time, applicable in the center-symmetric run-time case
 		cm.getDeepMemoryControl().setDeepIdx(dmidx);
 
-		// 水平触发位置的设置和更新,须先设置深度
+		// Setting and updating the horizontal trigger position; the depth must be set first
 		tc.setHorTrgPos(ci.horTrgPos);
 
 		int initPos = ci.initPos;
@@ -135,13 +135,13 @@ public class MultiReceiver implements IMultiReceiver {
 		wfm.receiveOfflineDMData(ci, pc, tbd, tbIdx);
 		dh.dataComplete();
 
-		// 将LocInfo.cba指向dh.cba等.以免时基若变动，设置时崩溃.
+		// point LocInfo.cba at dh.cba etc., so that it does not crash when the timebase changes and is set.
 		tc.offline_setTimeBaseIdx(tbIdx);
-		// 时基调动，因LocInfo->CompressInfoUnit.tbTranslate()要拿buf数据,故LocInfo的cba不能空,要先设。
+		// On a timebase change, LocInfo->CompressInfoUnit.tbTranslate() needs the buf data, so the cba of LocInfo cannot be empty; set it first.
 
 		cm.measure(wfm);
 
-		/** 依赖选择波形的信息进行计算，需在导入波形后进行 */
+		/** Computation depends on the selected waveform info; must be done after the waveform is imported */
 		tc.recomputeHorizontalTriggerLabel();
 
 		cm.pcs.firePropertyChange(PropertiesItem.APPLY_CHANNELS, null, null);
@@ -160,7 +160,7 @@ public class MultiReceiver implements IMultiReceiver {
 		if (cti.getChannelCount() == 0 || cti.getDataComplete() == 0)
 			return;
 
-		/** 0帧的情况返回，这样在平均值采样时避免计入空帧 */
+		/** 0 frame case returns, so that empty frames are not counted during average sampling */
 		if (cti.getFrameCount() == 0)
 			return;
 
@@ -173,9 +173,9 @@ public class MultiReceiver implements IMultiReceiver {
 		boolean slow = cm.getCoreControl().isRunMode_slowMove();
 		// System.err.println("slow: "+slow);
 		/**
-		 * 做额外判断，防止从慢扫切到非慢扫时，可能还拿到几个慢扫的帧
+		 * Extra check, to prevent getting a few slow sweep frames when switching from slow sweep to non-slow sweep
 		 * 
-		 * 在非慢扫时，cti.slowMove不会拿来用，只是照例画波形，但这几帧还是慢扫的数据需要被过滤掉
+		 * In non-slow sweep, cti.slowMove is not used and waveforms are drawn as usual, but these few frames still contain slow sweep data and need to be filtered out
 		 */
 
 		if (!slow) {
@@ -194,7 +194,7 @@ public class MultiReceiver implements IMultiReceiver {
 
 		cm.getCoreControl().updateHorTrgIdx4View();
 
-		/** 当慢扫的情况下进行单次触发，停止的那一帧是特例，因为它不能以慢扫的方式画图 */
+		/** When doing a single trigger in slow sweep, the frame where it stops is a special case, because it cannot be drawn in the slow sweep manner */
 		boolean sweepOnceStop = cm.getTriggerControl().isSweepOnce()
 				&& cti.triggerStatus == TrgStatus.Stop.ordinal();
 		slow = slow && !sweepOnceStop;
@@ -202,10 +202,10 @@ public class MultiReceiver implements IMultiReceiver {
 
 		cm.updateMeasure(wfm);
 
-		/** 依赖选择波形的信息进行计算，需在导入波形后进行 */
+		/** Computation depends on the selected waveform info; must be done after the waveform is imported */
 
 		PersistentDisplay pd = dh.getPersistentDisplay();
-		// RT时余辉
+		// RT persistence
 		if (pd.isUseCanvasBuffer()) {
 			pd.bufferWaveForms(pc, wfm, mw);
 		} else {
@@ -236,8 +236,8 @@ public class MultiReceiver implements IMultiReceiver {
 
 		wfm.receiveRTDMData(ci, pc, tc.getBDTimebase(), tc.getTimebaseIdx());
 
-		// 停下来载入深存储不再计算一次测量值
-		/** 依赖选择波形的信息进行计算，需在导入波形后进行 */
+		// When stopped, loading deep memory does not compute the measurement values again
+		/** Computation depends on the selected waveform info; must be done after the waveform is imported */
 		mw.updateShow();
 		tp.updateAfterData();
 	}

@@ -81,12 +81,12 @@ public abstract class PortFilterTiny implements USBPortsFilter {
 
 	/**
 	 * @param machineCode
-	 * @return 为null表示无法识别
+	 * @return null means unrecognized
 	 */
 	protected abstract String getMachineNameFromCode(int machineCode);
 
 	/**
-	 * 可用于到显示阶段修改机型描述
+	 * can be used to modify the model description at the display stage
 	 * 
 	 * @param id
 	 */

@@ -227,11 +227,11 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 
 	public int circleSerialPort;
 	private Principle principle;
-	/** 测量管理 */
+	/** measurement management */
 	private MeasureManager mm;
 
 	/**
-	 * @return 测量管理
+	 * @return measurement management
 	 */
 	public MeasureManager getMeasureManager() {
 		return mm;
@@ -245,7 +245,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 
 		long t1 = System.currentTimeMillis();
 		long delta = t1 - measureTimes;
-		/** 改变后需要等到下一次赋值才能生效 */
+		/** takes effect only after the next assignment once changed */
 		if (delta > 800) {
 			// MainWindow mw = getMainWindow();
 			// ToolPane tp = mw.getToolPane();
@@ -309,7 +309,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 
 		Define.prepare(p.loadInt("STYLE_TYPE"));
 
-		// 尽量早设置
+		// set as early as possible
 		DBG.debug = p.loadBoolean("debug");
 		// dbgbtns = p.loadBoolean( "dbgbtns");
 
@@ -354,7 +354,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 		displayControl = new DisplayControl(p, this);
 		rwc = new ReferenceWaveControl(p, coreControl);
 		playCtrl = new PlayerControl(this, p);
-		ewc = new ExportWaveControl(this);// 用到pcs
+		ewc = new ExportWaveControl(this);// uses pcs
 		docManager = new DocsManager(this);
 		paintContext = new PaintContext() {
 			@Override
@@ -398,7 +398,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	}
 
 	/**
-	 * 初始同步，在任何模式下都发完整信息进行匹配
+	 * Initial synchronization, sends the complete information in any mode for matching
 	 * 
 	 * @param bbuf
 	 */
@@ -407,7 +407,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	}
 
 	/**
-	 * 在运行时同步，可在切入fft时只发必要信息
+	 * Synchronization while running, may send only the necessary information when switching to fft
 	 * 
 	 * @param bbuf
 	 */
@@ -416,11 +416,11 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	}
 
 	/**
-	 * 数据点：min,max,min,max 可在改变采样率时判断，减少测试次数，但测试内容比较简单，这里就不优化了
+	 * Data points: min,max,min,max can be determined when changing the sampling rate, reducing the number of tests, but the test is simple, so it is not optimized here
 	 * 
-	 * 但是界面下方的采样率显示区不需要针对打开峰值检测而更改为实际的采样率
+	 * However, the sampling rate display area at the bottom of the UI does not need to change to the actual sampling rate when peak detect is on
 	 * 
-	 * @return 峰值检测实际是否开启
+	 * @return whether peak detect is actually enabled
 	 */
 	public boolean isPeakDetectWork() {
 		return coreControl.isPeakDetectWork();
@@ -503,7 +503,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	public int measureSnapshotIdx = 0;
 	public int maxFailureTime = 20;
 
-	/** 此部分为软件内部使用的变量 */
+	/** These are variables used internally by the software */
 	public String openfilePath, saveimgPath, exportPath;
 	public boolean istipsWindowShow;
 
@@ -523,11 +523,11 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 		boolean stop = !rt;
 		boolean rr = rc.isRecording(), pr = playCtrl.isPlaying();
 		if (rr && stop) {
-			// 录制时停止要数据，因录制在原线程的获取数据之后，而数据不再获取，这里快速模拟一次结束录制关闭文件
+			// When stopping data requests during recording: since recording happens after data acquisition in the original thread and data is no longer acquired, quickly simulate one end-of-recording here to close the file
 			rc.forceStop();
 		}
 		if (pr && rt) {
-			// 回放时开始要数据，则简单关闭回复即可
+			// When starting to request data during playback, simply close playback
 		}
 	}
 
@@ -561,7 +561,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 		MeasureSnapshot.closeMeasureSnapshot();
 		fireFFTonoff2EnableMainWindow();
 		mw.updateDefaultAll();
-		/** 发送到下位机 */
+		/** Send to the device */
 		Platform.getControlApps().interComm.syncFactorySet2Machine();
 		// fire_RefreshMeasureResult();
 	}
@@ -629,7 +629,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	// }
 
 	/**
-	 * @return 配置
+	 * @return configuration
 	 */
 	public Config getConfig() {
 		return conf;
@@ -640,7 +640,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	}
 
 	/**
-	 * 根据运行时的情况来使用频率计
+	 * Use the frequency counter according to the runtime situation
 	 * 
 	 * @return
 	 */
@@ -669,7 +669,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 		return ci.getFreqtxt();
 	}
 
-	/** 运行实时的触发状态 */
+	/** Real-time trigger status while running */
 	public int curTrgStatus;
 
 	public List<LObject> getSyncInOuts() {
@@ -703,7 +703,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	}
 
 	/**
-	 * 屏幕内波形的变换，原来是非运行时，后来关闭了，再后来开启在运行时正常触发情况下
+	 * Transformation of the waveform within the screen: originally when not running, later turned off, and later enabled when running with normal triggering
 	 * 
 	 * @return
 	 */
@@ -713,7 +713,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	}
 
 	/**
-	 * 屏幕内波形的变换，原来是非运行时，后来关闭了，再后来开启在运行时正常触发情况下
+	 * Transformation of the waveform within the screen: originally when not running, later turned off, and later enabled when running with normal triggering
 	 * 
 	 * @return
 	 */
@@ -728,7 +728,7 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 	}
 
 	/**
-	 * 用于在指令更新后添加清空余辉，后续不放在Submitor里调用
+	 * Used to add clearing of persistence after a command update; later it is not called from Submitor
 	 * 
 	 * @return
 	 */
@@ -773,11 +773,11 @@ public abstract class ControlManager implements ISupportChannelsNumber {
 		}
 
 		boolean operatable = Platform.getControlApps().interComm
-				.isTimeOperatableNTryGetDM();// 如果连接暂停，调动htp,波形将变动，需要载入DM
+				.isTimeOperatableNTryGetDM();// if the connection is paused, adjusting htp will move the waveform, so it needs to load DM
 		if (!operatable)
 			return false;
 
-		/** 冻结在后，否则无法在停下来后要慢扫的深存储数据 */
+		/** Freeze afterwards, otherwise the slow-scan deep memory data cannot be requested after stopping */
 		if (Platform.getDataHouse().isHorTrgPosFrozen()) {
 			FadeIOShell fs = new FadeIOShell();
 			fs.prompt(I18nProvider.bundle().getString("Label.SlowMoveWarn"),

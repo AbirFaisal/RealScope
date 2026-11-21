@@ -55,12 +55,12 @@ public class FFTCursorControl {
 
 		if (onVoltbaseMark) {
 			String[] Yvalues = getYvalues();
-			// 画Y标尺线
+			// Draw Y cursor line
 			y1 = limitYEdge(y1, r);//
 			y2 = limitYEdge(y2, r);
 			g2d.drawLine(r.x, y1, r.x + w, y1);
 			g2d.drawLine(r.x, y2, r.x + w, y2);
-			// Y值显示
+			// Y value display
 			g2d.drawString("Y1:" + Yvalues[0], wx1, y);
 			g2d.drawString("Y2:" + Yvalues[1], wx2, y);
 			mcctr.drawTriangle(g2d, wx3 - 10, y);
@@ -69,19 +69,19 @@ public class FFTCursorControl {
 		}// else
 		if (onFrebaseMark) {
 			String[] Xvalues = getXvalues();
-			// 画X标尺线
+			// Draw X cursor line
 			x1 = limitXEdge(x1, r);//
 			x2 = limitXEdge(x2, r);
 			g2d.drawLine(x1, r.y, x1, r.y + r.height);
 			g2d.drawLine(x2, r.y, x2, r.y + r.height);
-			// X值显示
+			// X value display
 			g2d.drawString("X1:" + Xvalues[0], wx1, y);
 			g2d.drawString("X2:" + Xvalues[1], wx2, y);
 			mcctr.drawTriangle(g2d, wx3 - 10, y);
 			g2d.drawString("X:" + Xvalues[2], wx3, y);
 			y -= rh;
 		}
-		// 矩形框
+		// rectangle
 		if (p) {
 			int ww = 254;
 			g2d.drawRoundRect(r.x + 2, y, ww, r.y + r.height - y - 2, 10, 8);
@@ -229,7 +229,7 @@ public class FFTCursorControl {
 
 	private boolean preScreenMode = true;
 
-	/** preScreenMode作用:保证只有真正在1、3窗口切换时,x、y标尺才按2倍率缩放,其他情况不缩放 */
+	/** preScreenMode purpose: ensure that x and y cursors are scaled by 2x only when really switching between windows 1 and 3, and not scaled otherwise */
 	public void resetCursor(Rectangle r) {
 		boolean b = cm.paintContext.isScreenMode_3();
 		if (b != preScreenMode) {

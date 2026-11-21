@@ -11,15 +11,15 @@ import com.owon.uppersoft.vds.core.wf.rt.ChannelsTransportInfo;
 import com.owon.uppersoft.vds.util.format.SFormatter;
 
 /**
- * OfflineChannelsInfo，给录制文件用
+ * OfflineChannelsInfo, for recording files
  * 
  */
 public class OfflineChannelsInfo extends ChannelsTransportInfo {
-	public static final int RECORDPROTOCOL_VDS_INVERSE = 1;// 从1开始，0表示原型版本
-	private static final int RECORDPROTOCOL_VDS_EXTEND = 2;// 从2开始，加入记录格式标识
-	private static final int RECORDPROTOCOL_VDS_PK = 3;// 从3开始，加入峰值检测
-	private static final int RECORDPROTOCOL_VDS_DM = 4;// 从4开始，加入深存储检测
-	public static final int RECORDPROTOCOL_VDS_CURRENT = RECORDPROTOCOL_VDS_DM;// 始终使用软件当前的版本
+	public static final int RECORDPROTOCOL_VDS_INVERSE = 1;// starts from 1, 0 denotes the prototype version
+	private static final int RECORDPROTOCOL_VDS_EXTEND = 2;// starts from 2, adding the record format identifier
+	private static final int RECORDPROTOCOL_VDS_PK = 3;// starts from 3, adding peak detect
+	private static final int RECORDPROTOCOL_VDS_DM = 4;// starts from 4, adding deep memory detection
+	public static final int RECORDPROTOCOL_VDS_CURRENT = RECORDPROTOCOL_VDS_DM;// always use the software's current version
 
 	public OfflineChannelsInfo() {
 	}
@@ -30,13 +30,13 @@ public class OfflineChannelsInfo extends ChannelsTransportInfo {
 	}
 
 	/**
-	 * 边读取，边判断是否为录制格式
+	 * Read while checking whether it is a recording format
 	 * 
 	 * @param ba
-	 * @return 若否停止读取录制文件
+	 * @return if not, stop reading the recording file
 	 */
 	public boolean setMore_Record(CByteArrayInputStream ba) {
-		/** 录制格式 4字节 低3位保留，用于区别其他文件 */
+		/** Recording format, 4 bytes, low 3 bits reserved, used to distinguish it from other files */
 		if (record_version >= RECORDPROTOCOL_VDS_EXTEND) {
 			extend = ba.nextInt();
 
@@ -67,10 +67,10 @@ public class OfflineChannelsInfo extends ChannelsTransportInfo {
 	public boolean isPKDetect = false;
 	public int DMlen;
 
-	/* 时基挡位 4 字节 */
+	/* Timebase scale, 4 bytes */
 	public int timebase;
 
-	/* 水平触发位置 */
+	/* Horizontal trigger position */
 	public int horTrgPos;
 
 	public void log() {
@@ -84,11 +84,11 @@ public class OfflineChannelsInfo extends ChannelsTransportInfo {
 	private void config(String string) {
 	}
 
-	/** 读取专用 */
-	public int machine_type;// 导出时的上位机软件处理方式版本-机型版本
-	public int record_version;// 录制格式-版本版本
+	/** For reading only */
+	public int machine_type;// version of the host software's handling at export time - model version
+	public int record_version;// recording format - version
 
-	public int extend;// 扩展格式 -OfflineDM & 记录文件
+	public int extend;// extended format - OfflineDM & record file
 
 	private List<ChannelDataInfo> channels = new LinkedList<ChannelDataInfo>();
 

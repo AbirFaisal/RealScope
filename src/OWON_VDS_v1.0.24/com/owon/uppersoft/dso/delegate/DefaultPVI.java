@@ -40,16 +40,16 @@ public class DefaultPVI implements Pos0_VBChangeInfluence {
 	}
 
 	/**
-	 * 限随电压档位改变而改变
+	 * Changes along with the voltage scale change
 	 * 
 	 * @param chlidx
-	 *            通道序号
+	 *            channel index
 	 * @param pos0
-	 *            零点位置，以屏幕竖直中心为零值
+	 *            zero-point position, with the vertical center of the screen as zero
 	 * @param vb0
-	 *            改变前的电压档位
+	 *            voltage scale before the change
 	 * @param vb1
-	 *            改变后的电压档位
+	 *            voltage scale after the change
 	 */
 	public void thredshold_voltsense_ByVoltBase(int chlidx, int pos0, int vb0,
 			int vb1, Runnable r, int destpos0) {
@@ -67,7 +67,7 @@ public class DefaultPVI implements Pos0_VBChangeInfluence {
 		if (ts.isCurrentTrigger_Slope()) {
 			Thredshold ths = ts.slope.getThredshold();
 
-			/** 计算时使用的是触发电平和零点位置的相对距离 */
+			/** The calculation uses the relative distance between the trigger level and the zero-point position */
 
 			// int[] vbs = controlManager.getMachineInfo().intVOLTAGE[0];
 			// System.out.println(pos0 + ", " + vs + ", " + vbs[vb0] + ", "
@@ -87,7 +87,7 @@ public class DefaultPVI implements Pos0_VBChangeInfluence {
 			}
 		} else if (ts.isVoltsenseSupport()) {
 			VoltsensableTrigger vt = (VoltsensableTrigger) ts.getTrigger();
-			/** 计算时使用的是触发电平和零点位置的相对距离 */
+			/** The calculation uses the relative distance between the trigger level and the zero-point position */
 			Voltsensor vs = vt.getVoltsensor();
 
 			long value = vs.getVoltsense() - pos0;
@@ -108,7 +108,7 @@ public class DefaultPVI implements Pos0_VBChangeInfluence {
 				vt.submitVoltsense(alpha, chlidx, sbm);
 				sbm.apply_trgThen(r);
 
-				/** 这里刷新改变了的触发电平值，也可不刷新，只是刷新的数值更准确 */
+				/** Here the changed trigger level value is refreshed; refreshing is optional, it only makes the refreshed value more accurate */
 				pcs.firePropertyChange(PropertiesItem.UPDATE_VOLTSENSE, -1,
 						chlidx);
 			}
@@ -116,12 +116,12 @@ public class DefaultPVI implements Pos0_VBChangeInfluence {
 	}
 
 	/**
-	 * 随零点位置改变而改变
+	 * Changes along with the zero-point position change
 	 * 
 	 * @param chlidx
-	 *            通道序号
+	 *            channel index
 	 * @param dp
-	 *            零点变化差
+	 *            zero-point change difference
 	 */
 	public Runnable thredshold_voltsense_ByPos0(final int chlidx, int dp,
 			final boolean commit) {
@@ -137,7 +137,7 @@ public class DefaultPVI implements Pos0_VBChangeInfluence {
 			if (tc.isTrgEnable() && (ths.setUppest(ths.getUppest() + dp))
 					|| (ths.setLowest(ths.getLowest() + dp))) {
 
-				/** 这里刷新改变了的触发电平值，也可不刷新，只是刷新的数值更准确 */
+				/** Here the changed trigger level value is refreshed; refreshing is optional, it only makes the refreshed value more accurate */
 				pcs.firePropertyChange(PropertiesItem.UPDATE_UPP_LOW, -1,
 						chlidx);
 
@@ -166,7 +166,7 @@ public class DefaultPVI implements Pos0_VBChangeInfluence {
 			vs.setVoltsense(value + dp);
 			if (tc.isTrgEnable()) {
 
-				/** 这里刷新改变了的触发电平值，也可不刷新，只是刷新的数值更准确 */
+				/** Here the changed trigger level value is refreshed; refreshing is optional, it only makes the refreshed value more accurate */
 				pcs.firePropertyChange(PropertiesItem.UPDATE_VOLTSENSE, -1,
 						chlidx);
 
@@ -179,7 +179,7 @@ public class DefaultPVI implements Pos0_VBChangeInfluence {
 
 								@Override
 								public void run() {
-									// 将随零点改变触发电平的控制任务改为从ui线程而非指令队列启动执行
+									// Change the control task that changes the trigger level along with the zero point to start from the UI thread instead of the command queue
 									Submitable sbm = SubmitorFactory.reInit();
 									//System.out
 									//		.println("sbm.presetTrg_cur_chl: "

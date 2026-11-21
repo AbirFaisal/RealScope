@@ -15,7 +15,7 @@ import com.owon.uppersoft.vds.core.paint.ScreenContext;
 import com.owon.uppersoft.vds.data.Point;
 
 /**
- * PersistentDisplay，余辉画图显示器
+ * PersistentDisplay, persistence drawing display
  * 
  */
 public class PersistentDisplay implements IPersistentDisplay {
@@ -41,7 +41,7 @@ public class PersistentDisplay implements IPersistentDisplay {
 	public void adjustView(ScreenContext pc, Rectangle bound) {
 		if (useCanvasBuffer) {
 			/**
-			 * KNOW 出于对原有波形画图代码的保留的考虑，图像缓存的区域是包含四边空白的，到了画图像时只画其中对应到网格内的一部分
+			 * KNOW To preserve the original waveform drawing code, the image cache area includes blank margins on all four sides, and only the part corresponding to the grid is drawn when drawing the image
 			 */
 			tryCreateFadeBufferedImage();
 			// pc.currentLocInfo = bound;
@@ -61,7 +61,7 @@ public class PersistentDisplay implements IPersistentDisplay {
 	}
 
 	/**
-	 * KNOW 这里是在通信线程中获取数据，和刷屏线程竞争bi，必须竞争，然后才进行下一次获取，否则新旧获取的数据可能互相污染
+	 * KNOW Here data is acquired in the communication thread and competes with the refresh thread for bi; it must compete, and only then proceed to the next acquisition, otherwise old and new acquired data may pollute each other
 	 * 
 	 * @param pc
 	 */
@@ -81,14 +81,14 @@ public class PersistentDisplay implements IPersistentDisplay {
 		synchronized (persistbi) {
 			Graphics2D g2d = (Graphics2D) persistbi.getGraphics();
 			/**
-			 * 这里原本没有重设pc的currentLocInfo为ChartView的Rectangle，
+			 * Originally, pc's currentLocInfo was not reset to the ChartView's Rectangle here,
 			 * 
-			 * 会导致可能为两个子窗口的Rectangle，而导致画余辉波形左边界不对
+			 * which could end up being the Rectangle of one of two sub-windows, making the left boundary of the persistence waveform wrong
 			 * 
-			 * 为什么这里重设了仍然无法避免画图的时候被改动：因为没有synchronized(pc.currentLocInfo)
+			 * Why resetting here still cannot prevent changes during drawing: because there is no synchronized(pc.currentLocInfo)
 			 * 
-			 * 不再重设了，余辉画图时使用固定的Rectangle会更容易解决，但是继承结构暂不方便打破，
-			 * 所以改为直接在WaveForm内部使用固定的Rectangle，这样改动最小
+			 * No longer reset here; using a fixed Rectangle when drawing persistence would be easier to solve, but the inheritance structure is not convenient to break for now,
+			 * so a fixed Rectangle is used directly inside WaveForm instead, which is the smallest change
 			 * 
 			 * 
 			 */
@@ -118,7 +118,7 @@ public class PersistentDisplay implements IPersistentDisplay {
 	}
 
 	/**
-	 * KNOW 原样，只是图形不是从0,0开始画；原样，方便图形的归图形，方便原来的用原来
+	 * KNOW as is, except the graphics are not drawn from 0,0; as is, so that graphics stay with graphics and the original code keeps using the original
 	 * 
 	 */
 	@Override
@@ -156,7 +156,7 @@ public class PersistentDisplay implements IPersistentDisplay {
 	}
 
 	/**
-	 * 设置画布是否开启
+	 * Set whether the canvas is enabled
 	 */
 	public void setUseCanvasBuffer(boolean use) {
 		useCanvasBuffer = use;
@@ -210,7 +210,7 @@ public class PersistentDisplay implements IPersistentDisplay {
 		}
 	}
 
-	/** 线程在处理persistbi画布，摧毁线程前仍需要画布存在 */
+	/** The thread is processing the persistbi canvas; the canvas must still exist before the thread is destroyed */
 	public void destroyFadeThread() {
 		pf.setOff();
 		if (pThread != null && pThread.isAlive())

@@ -11,7 +11,7 @@ public interface IPluger {
 	double getGap();
 
 	/**
-	 * 非初始化载入时的插值
+	 * Interpolation for non-initial loading
 	 * 
 	 * @param iPos
 	 * @param len
@@ -28,7 +28,7 @@ public interface IPluger {
 			IntBuffer handlebuf, CByteArrayInputStream cba);
 
 	/**
-	 * 初始化载入时的插值
+	 * Interpolation for initial loading
 	 * 
 	 * @param datalen
 	 * @param screendatalen
@@ -38,7 +38,7 @@ public interface IPluger {
 	 * @param handlebuf
 	 * @param cba
 	 * @param halfpixs
-	 * @return 插值后的满屏点数
+	 * @return the full-screen point count after interpolation
 	 */
 	int processPlugForInit(int datalen, int screendatalen, int filePointer,
 			boolean shouldReverse, int loadPos0, IntBuffer handlebuf,
@@ -51,11 +51,11 @@ public interface IPluger {
 	void setPlug(boolean plug);
 
 	/**
-	 * 提取插值信息，返回取出拉触发多拿数据以外，正确的屏幕起始位置
+	 * Extract the interpolation info and return the correct screen start position, excluding the extra data fetched for trigger pull
 	 * 
 	 * @param cdi
 	 * @param li
-	 * @return 没有多拿数据情况下的起始位置
+	 * @return the start position without extra data fetched
 	 */
 	int initPlugInfo(DMDataInfo cdi, MachineType mt);
 

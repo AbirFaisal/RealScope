@@ -182,7 +182,7 @@ public class Label extends JComponent implements MouseListener,
 				if (ts.isVoltsenseSupport()) {
 					if (idx >= 0) {
 						wfm.getWaveForm(idx).doubleClickOnLevel();
-						/** 自己刷新自身的改变内容 */
+						/** refresh its own changed content itself */
 						repaint();
 					}
 				}
@@ -301,7 +301,7 @@ public class Label extends JComponent implements MouseListener,
 				VoltsensableTrigger vt = (VoltsensableTrigger) ts.getTrigger();
 				final Voltsensor vs = ts.getVoltsense();
 				int value = vs.c_getVoltsense();
-				// 附加反相
+				// append inversion
 				value = ci.getInverseValue(value);
 				SymmetrySliderBar.createSymmetrySliderFrame(Platform
 								.getMainWindow().getFrame(), p.x, p.y, hr, ci
@@ -321,9 +321,9 @@ public class Label extends JComponent implements MouseListener,
 				tc.nextSingleChannel();
 
 				/**
-				 * KNOW 单一触发时，通道改动，影响触发电平的电压数值
+				 * KNOW single trigger: when the channel changes, it affects the trigger level voltage value
 				 *
-				 * 因为触发电平的电压数值，受到通道的电压档位和零点位置的影响，而通道改变时，这些内容会改变，所以需要随着刷新
+				 * because the trigger level voltage value is affected by the channel voltage scale and zero point position, and these change when the channel changes, a refresh is needed accordingly
 				 */
 				cm.pcs.firePropertyChange(PropertiesItem.NEXT_SINGLE_CHANNEL,
 						null, tc.singleTriggerSet.getChannel());

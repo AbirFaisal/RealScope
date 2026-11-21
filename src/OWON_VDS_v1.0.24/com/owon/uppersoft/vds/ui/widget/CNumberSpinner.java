@@ -6,14 +6,14 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.text.DefaultFormatterFactory;
 
 /**
- * CNumberSpinner，即输即提交，验证仅数字，限制范围
+ * CNumberSpinner, commits on every input, validates digits only, limits the range
  * 
  */
 public class CNumberSpinner extends JSpinner {
 
 	/**
 	 * @param model
-	 *            必须是Long
+	 *            must be Long
 	 */
 	public CNumberSpinner(SpinnerNumberModel model) {
 		super(model);

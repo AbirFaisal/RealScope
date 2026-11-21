@@ -1,7 +1,7 @@
 package com.owon.uppersoft.vds.core.aspect.base;
 
 /**
- * 和示波器基本功能相关的器官
+ * Organs related to the basic functions of the oscilloscope
  * 
  */
 public interface IOrgan {

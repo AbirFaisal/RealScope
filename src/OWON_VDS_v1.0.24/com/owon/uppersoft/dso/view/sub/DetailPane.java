@@ -175,7 +175,7 @@ public class DetailPane extends JPanel implements MouseListener,
 	}
 
 	/**
-	 * 供快捷键使用的简单增减
+	 * Simple increment/decrement for use by shortcut keys
 	 * 
 	 * @param del
 	 */
@@ -204,7 +204,7 @@ public class DetailPane extends JPanel implements MouseListener,
 	}
 
 	public void changeTimeBase(int idx) {
-		/** 暂时不在这里判断是否可操作，外层基本都有判断了 */
+		/** No operability check here for now; the outer layers mostly check already */
 		boolean operatable = Platform.getControlApps().interComm
 				.isTimeOperatableNTryGetDM();
 		if (!operatable)
@@ -214,7 +214,7 @@ public class DetailPane extends JPanel implements MouseListener,
 	}
 
 	public void changeFFTTimeBase(int idx) {
-		/** 这个给fft使用,不去获取深存储 */
+		/** this is for fft use, does not fetch deep memory */
 		tc.c_setTimebaseIdx(idx, true);
 	}
 
@@ -237,8 +237,8 @@ public class DetailPane extends JPanel implements MouseListener,
 				if (!AssitControl.FastMWstwich)
 					return;
 				/**
-				 * KNOW A状态和Z状态下若调大Z时基，大到M时基跟着改变时， 存的mtbIdx 、mhtpz需重算;
-				 * 已在astbcbb和zmtbcbb的keepZtbNotbiggerthanMtb()判断中重算。
+				 * KNOW A-state and Z-state: if Z timebase is increased so far that the M timebase changes with it, the stored mtbIdx and mhtpz must be recomputed;
+				 * already recomputed in the keepZtbNotbiggerthanMtb() checks of astbcbb and zmtbcbb.
 				 */
 				int dst = ac.isonZoom() ? AssitControl.MAIN_STATUS
 						: AssitControl.ZOOM_STATUS;
@@ -251,7 +251,7 @@ public class DetailPane extends JPanel implements MouseListener,
 				repaint();
 
 			} else {
-				// 如果连接暂停，调动tb,波形将变动，需要载入DM
+				// if the connection is paused, adjusting tb will make the waveform change, and it needs to load DM
 				boolean operatable = Platform.getControlApps().interComm
 						.isTimeOperatableNTryGetDM();
 				if (!operatable)
@@ -341,12 +341,12 @@ public class DetailPane extends JPanel implements MouseListener,
 									+ tc.getHorizontalTriggerLabel();
 							repaint();
 							cm.mcctr.computeXValues();
-							// Zoom下更新zhtp
+							// Zoom mode: update zhtp
 							cm.getZoomAssctr().updateZoomHtp();
 						}
 
 						public void actionOff() {
-							// 预留 System.err.println("value");
+							// reserved System.err.println("value");
 						}
 
 					}, I18nProvider.bundle());

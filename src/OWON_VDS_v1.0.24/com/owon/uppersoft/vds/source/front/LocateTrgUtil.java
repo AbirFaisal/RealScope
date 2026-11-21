@@ -4,32 +4,32 @@ import com.owon.uppersoft.vds.core.aspect.base.Logable;
 
 public class LocateTrgUtil implements Logable {
 	/***************************************************************************
-	 * 函数名:trigpull
+	 * Function name:trigpull
 	 * 
-	 * 功能描述: 遍历查找最近的触发位置。
-	 * 
-	 * **********************************
-	 * 
-	 * 输入:
-	 * 
-	 * trigbuf : 触发数据的BUFFER;
-	 * 
-	 * trigedge: 0--上升沿，1--下降沿;
-	 * 
-	 * trigvalue: 触发值;
-	 * 
-	 * midpos : 开始遍历的位置；
-	 * 
-	 * maxright: 遍历的右侧极限位置；
-	 * 
-	 * maxleft: 遍历的左侧极限位置；
-	 * 
-	 * 
-	 * 输出: 返回值: 正值代表要往后加点，负值代表要往前减点
+	 * Description: traverse to find the nearest trigger position.
 	 * 
 	 * **********************************
 	 * 
-	 * 作者:葛水焕 2012年5月04日
+	 * Input::
+	 * 
+	 * trigbuf : the trigger data BUFFER;
+	 * 
+	 * trigedge: 0--rising edge, 1--falling edge;
+	 * 
+	 * trigvalue: trigger value;
+	 * 
+	 * midpos : start position of the traversal;
+	 * 
+	 * maxright: right limit position of the traversal;
+	 * 
+	 * maxleft: left limit position of the traversal;
+	 * 
+	 * 
+	 * Output: return value: a positive value means points are added backward, a negative value means points are subtracted forward
+	 * 
+	 * **********************************
+	 * 
+	 * Author: Ge Shuihuan, 04 May 2012
 	 * 
 	 **************************************************************************/
 
@@ -41,15 +41,15 @@ public class LocateTrgUtil implements Logable {
 			final int trigvalue, final int midpos, final int maxright,
 			final int maxleft) {
 		int right_search = RS_Finding;
-		// 右侧遍历标志:
-		// 0--查找上升/下降沿，1--已找到沿并查找触发位置，2--遍历到右侧极限位置。
+		// Right-side traversal flag::
+		// 0--search for rising/falling edge, 1--edge found and searching for trigger position, 2--reached the right limit position.
 		int left_search = LS_Finding;
-		// 左侧遍历标志:
-		// 0--查找上升/下降沿，1--已找到沿并查找触发位置，2--遍历到左侧极限位置。
+		// Left-side traversal flag::
+		// 0--search for rising/falling edge, 1--edge found and searching for trigger position, 2--reached the left limit position.
 
-		int cnt_R = 0; // 右侧遍历计数
-		int cnt_L = 0; // 左侧遍历计数
-		int pullvalue; // 拉触发值
+		int cnt_R = 0; // right-side traversal count
+		int cnt_L = 0; // left-side traversal count
+		int pullvalue; // trigger locating value
 
 		if (trigedge == 0) {
 			while (true) {

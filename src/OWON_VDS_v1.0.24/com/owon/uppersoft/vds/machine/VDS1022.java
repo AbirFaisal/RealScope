@@ -69,7 +69,7 @@ public class VDS1022 extends TinyMachine {
 
 	@Override
 	public double doFrequencyCompute(int peroid_num, int time_sum) {
-		/** 这里作针对硬件频率计的参数按采样率区分判断 */
+		/** here the parameters for the hardware frequency counter are distinguished by sampling rate */
 		int div = FreqRef_100M;
 		double v = peroid_num / (double) time_sum * div;
 		return v;
@@ -77,7 +77,7 @@ public class VDS1022 extends TinyMachine {
 
 	@Override
 	public double getLimitFrequency() {
-		return 30000000;// 25M的120%即30000000
+		return 30000000;// 25M120% of 25M is 3000000030000000
 	}
 
 	public int getDelayAttenuationVBIndex() {
@@ -99,19 +99,19 @@ public class VDS1022 extends TinyMachine {
 					protected void fillArgTypeList(
 							List<DefaultCalArgType> cmdts, int channelNumber,
 							int vbNum) {
-						// 粗调增益
+						// coarse gain adjustment
 						DefaultCalArgType coarseGain = new DefaultCalArgType(
 								ArgType.Gain.ordinal(), Cending.ascending,
 								channelNumber, vbNum);
 						cmdts.add(coarseGain);
 
-						// 零点步进
+						// zero point step
 						DefaultCalArgType zeroAmplitude = new DefaultCalArgType(
 								ArgType.Step.ordinal(), Cending.ascending,
 								channelNumber, vbNum);
 						cmdts.add(zeroAmplitude);
 
-						// 零点补偿
+						// zero point compensation
 						DefaultCalArgType zeroCompensation = new DefaultCalArgType(
 								ArgType.Compensation.ordinal(),
 								Cending.descending, channelNumber, vbNum);
@@ -123,7 +123,7 @@ public class VDS1022 extends TinyMachine {
 		return ttf;
 	}
 
-	// 也是最大值
+	// also the maximum value
 	public static final int dac_complementCode = 1023;
 	public static final int dac_defaultCode = 512;
 
@@ -134,19 +134,19 @@ public class VDS1022 extends TinyMachine {
 			public GainArg createGainArg(int chl, int vb) {
 				ICal ic = tran.getSimpleAdjustCMDType(ArgType.Gain);
 				/**
-				 * 观察DAC的增益调整相对波形adc值可以发现比例关系：
+				 * observing the DAC gain adjustment relative to the waveform adc value reveals a proportional relationship:
 				 * 
-				 * 递增关系
+				 * increasing relationship
 				 * 
-				 * 电压档位: dac增量:adc增量,接近值
+				 * voltage scale: dac increment:adc increment, approximate value
 				 * 
-				 * 5mV: [增益]100:50,630 ;
+				 * 5mV: [gain]100:50,630 ;
 				 * 
-				 * 50mV: [增益]100:50,630 ;
+				 * 50mV: [gain]100:50,630 ;
 				 * 
-				 * 其它大致: [增益]100:50,630 ;
+				 * others (approx.): [gain]100:50,630 ;
 				 * 
-				 * 5V: [增益]100:50,630 ;
+				 * 5V: [gain]100:50,630 ;
 				 * 
 				 * */
 				return new GainArg(chl, vb, ic, 99999, 800) {
@@ -168,23 +168,23 @@ public class VDS1022 extends TinyMachine {
 				BaselineArg arg = null;
 				int df = dac_defaultCode;
 				/**
-				 * 观察DAC的补偿或步进调整相对波形adc值可以发现比例关系：
+				 * observing the DAC compensation or step adjustment relative to the waveform adc value reveals a proportional relationship:
 				 * 
-				 * 补偿在垂直中心，二者是递减关系；步进在正4格时，二者是递增关系(负4格则递减)
+				 * compensation at the vertical center: the two are in a decreasing relationship; step at +4 divisions: the two are in an increasing relationship (decreasing at -4 divisions))
 				 * 
-				 * 而且可调范围很窄，容易出现溢出
+				 * and the adjustable range is very narrow, so overflow occurs easily
 				 * 
-				 * 电压档位: dac增量:adc增量,接近值
+				 * voltage scale: dac increment:adc increment, approximate value
 				 * 
-				 * 5mV: [补偿]60:50,630 ; [步进]60:50,110
+				 * 5mV: [compensation]60:50,630 ; [step]60:50,110
 				 * 
-				 * 10mV: [补偿]60:50,630 ; [步进]60:50,110
+				 * 10mV: [compensation]60:50,630 ; [step]60:50,110
 				 * 
-				 * 其它大致: [补偿]60:50,630 ; [步进]60:50,110
+				 * others (approx.): [compensation]60:50,630 ; [step]60:50,110
 				 * 
-				 * 是否可以缩小精度
+				 * whether the precision can be reduced
 				 * */
-				// 使用最接近的数值，后续可支持当当前值和默认值相差太大时，使用默认值作为起始数值
+				// use the closest value; later it could be supported to use the default value as the starting value when the current value differs too much from the default
 				switch (at) {
 				case Compensation:
 					df = 630;

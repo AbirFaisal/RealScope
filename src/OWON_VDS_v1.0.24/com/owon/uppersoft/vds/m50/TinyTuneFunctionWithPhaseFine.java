@@ -42,7 +42,7 @@ public class TinyTuneFunctionWithPhaseFine extends TinyTuneFunction {
 		int value = pf.getAbsValue();
 		// System.err.println(value);
 		JPanel fine_pane = new JPanel();
-		// 相位细调
+		// fine phase adjustment
 		fine_pane.add(new JLabel("\u76F8\u4F4D\u7EC6\u8C03"));
 		final JToggleButton jtb = new JToggleButton();
 		jtb.setSelected(select);
@@ -92,19 +92,19 @@ public class TinyTuneFunctionWithPhaseFine extends TinyTuneFunction {
 			@Override
 			protected void fillArgTypeList(List<DefaultCalArgType> cmdts,
 					int channelNumber, int vbNum) {
-				// 粗调增益
+				// coarse gain adjustment
 				DefaultCalArgType coarseGain = new DefaultCalArgType(
 						ArgType.Gain.ordinal(), Cending.ascending,
 						channelNumber, vbNum);
 				cmdts.add(coarseGain);
 
-				// 零点步进
+				// zero point step
 				DefaultCalArgType zeroAmplitude = new DefaultCalArgType(
 						ArgType.Step.ordinal(), Cending.ascending,
 						channelNumber, vbNum);
 				cmdts.add(zeroAmplitude);
 
-				// 零点补偿
+				// zero point compensation
 				DefaultCalArgType zeroCompensation = new DefaultCalArgType(
 						ArgType.Compensation.ordinal(), Cending.ascending,
 						channelNumber, vbNum);

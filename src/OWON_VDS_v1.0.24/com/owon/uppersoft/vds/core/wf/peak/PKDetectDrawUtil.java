@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import java.nio.IntBuffer;
 
 /**
- * 目前之供Smart使用，Tiny可能有所不同
+ * Currently only for Smart; Tiny may differ
  * 
  */
 public class PKDetectDrawUtil {
@@ -19,13 +19,13 @@ public class PKDetectDrawUtil {
 	public static final int PK_DETECT_TYPE_2K_MINMAX_1PIX = 3;
 
 	/**
-	 * 保持2500在峰值检测时的普通画法，验证效果，再考虑是否针对峰值检测研究更遵循采样方式的画法，
+	 * Keep the ordinary drawing at 2500 for peak detect to verify the effect, then consider whether to study a drawing method that follows the sampling method more closely for peak detect,
 	 * 
-	 * 对应真实adc采集满屏2500个点的情况，5对峰值放在4个像素点上
+	 * Corresponds to the real adc acquisition filling the full screen with 2500 points, with 5 pairs of peaks placed on 4 pixels
 	 */
 	public static final int PK_DETECT_TYPE_2500_2_5p = 5;
 
-	/** 点数为1250，这是插值后，插值前是250，此档达不到pk的条件 */
+	/** The point count is 1250, which is after interpolation; before interpolation it is 250, and this scale cannot meet the pk condition */
 	public static final int PK_DETECT_TYPE_1250_4_5p = 6;
 
 	public static final int PK_DETECT_TYPE_4K_BEGMINMAXEND_1PIX = 4;// DM
@@ -33,12 +33,12 @@ public class PKDetectDrawUtil {
 	public static final int PK_DETECT_TYPE_1K_MINMAX_2PIX = 7;
 
 	/**
-	 * 画最值而不连线，用于测试
+	 * Draw extrema without connecting lines, for testing
 	 */
 	public static final boolean draw_no_link = (0 == 1);
 
 	/**
-	 * 在MINMAXMINMAX的时候拿到的可能会是偏了2个数据点的数据，但是仍然可用
+	 * At MINMAXMINMAX the data obtained may be offset by 2 data points, but it is still usable
 	 * 
 	 * @param g2d
 	 * @param pixbuf
@@ -64,13 +64,13 @@ public class PKDetectDrawUtil {
 		int minbeg = pos;
 		int maxend = limit;
 		int minend = limit - 1;
-		/** 画上下通道，开上下通道不同颜色的话可以检查max和min颠倒的情况 */
+		/** Draw upper and lower channels; enabling upper and lower channels in different colors allows checking for max and min being swapped */
 		switch (pk_detect_type) {
 		case PK_DETECT_TYPE_1K_MINMAX_2PIX: {
 			/**
-			 * min, max，数据只有1k,隔两个像素连线, 数据1k, 大部分1k的情况, 由于1k间隔取点导致布不满屏幕，最右差1个像素
+			 * min, max, data is only 1k, connect lines every two pixels, data 1k, most 1k cases, because taking points at 1k intervals cannot fill the screen, the rightmost is 1 pixel short
 			 * 
-			 * 数值隔2点，x坐标隔2点
+			 * Values every 2 points, x coordinate every 2 points
 			 */
 			prt_gap = 2;
 			xgap = 2;
@@ -87,10 +87,10 @@ public class PKDetectDrawUtil {
 		case PK_DETECT_TYPE_1K_MINMAXMINMAX_4PIX: {
 			// System.err.println("dd");
 			/**
-			 * min, max， min, max，数据只有1k,隔4个像素连线, 数据1k, 仅出现在1k存深500ns时基pk时,
-			 * 由于1k间隔取点导致布不满屏幕，最右差3个像素
+			 * min, max, min, max, data is only 1k, connect lines every 4 pixels, data 1k, only occurs for pk at 1k memory depth 500ns timebase,
+			 * because taking points at 1k intervals cannot fill the screen, the rightmost is 3 pixels short
 			 * 
-			 * 数值隔4点，x坐标隔4点
+			 * Values every 4 points, x coordinate every 4 points
 			 */
 			prt_gap = 4;
 			xgap = 4;
@@ -106,14 +106,14 @@ public class PKDetectDrawUtil {
 		}
 		case PK_DETECT_TYPE_4K_MINMAXMINMAX_1PIX: {
 			/**
-			 * min,max,min,max->max,min，用在1个像素上, 数据4k
+			 * min,max,min,max->max,min, used on 1 pixel, data 4k
 			 * 
-			 * 数值隔4点，x坐标隔1点
+			 * Values every 4 points, x coordinate every 1 point
 			 */
 			prt_gap = 4;
 			xgap = 1;
 
-			// 防折线 pos += 2;
+			// Avoid zigzag lines pos += 2;
 			maxbeg = pos + 1;
 			minbeg = pos;
 			maxend = limit;
@@ -125,9 +125,9 @@ public class PKDetectDrawUtil {
 		}
 		case PK_DETECT_TYPE_2K_MINMAX_1PIX: {
 			/**
-			 * min,max，用在1个像素上, 数据2k
+			 * min,max, used on 1 pixel, data 2k
 			 * 
-			 * 数值隔2点，x坐标隔1点
+			 * Values every 2 points, x coordinate every 1 point
 			 */
 			prt_gap = 2;
 			xgap = 1;
@@ -143,9 +143,9 @@ public class PKDetectDrawUtil {
 		}
 		case PK_DETECT_TYPE_4K_BEGMINMAXEND_1PIX: {
 			/**
-			 * beg, min, max, end, 数据4k,深存储压缩后
+			 * beg, min, max, end, data 4k, after deep memory compression
 			 * 
-			 * 数值隔4点，x坐标隔1点
+			 * Values every 4 points, x coordinate every 1 point
 			 */
 			prt_gap = 4;
 			xgap = 1;
@@ -161,7 +161,7 @@ public class PKDetectDrawUtil {
 					prt_gap, xgap, maxbeg, minbeg, maxend, minend);
 			break;
 		}
-			// 研究采集原理
+			// Study the acquisition principle
 		case PK_DETECT_TYPE_1250_4_5p: {
 			// prt_gap = 2;
 			// xgap = 2;
@@ -197,12 +197,12 @@ public class PKDetectDrawUtil {
 	private static void paint_pk_shadow_border(Graphics2D g2d, int xb, int yb,
 			int screenheight, boolean linelink, int[] array, int prt_gap,
 			int xgap, int maxbeg, int minbeg, int maxend, int minend) {
-		/** 画阴影 */
+		/** Draw shadow */
 		if (!draw_no_link && linelink) {
 			// g2d.setColor(Color.orange);
 			paint_integral(g2d, xb, yb, screenheight, array, minbeg, maxbeg,
 					minend, prt_gap, xgap);
-			// 开启则可针对PK_DETECT_TYPE_MINMAX_2PIX，补全相邻间隔的像素
+			// If enabled, can fill in adjacent interval pixels for PK_DETECT_TYPE_MINMAX_2PIX
 			// paint_integral(g2d, xb + 1, yb, screenheight, array, minbeg,
 			// maxbeg, minend, prt_gap, xgap);
 		}
@@ -270,13 +270,13 @@ public class PKDetectDrawUtil {
 			y0 = array[i];
 			y = array[j];
 
-			/** 这里的判断的前提是不确定max和min各是哪个的情况，但是这里它们已经确定了，所以可以不用判断 */
+			/** The premise of the judgment here is that it is uncertain which of max and min is which, but here they are already determined, so the judgment can be omitted */
 			if (y < y0) {
 				tmp = y;
 				y = y0;
 				y0 = tmp;
 			}
-			/** 对每一个x值，垂直放下上y值在(x-1000,x+500)的范围内每个定长画点 ，这一范围再次被缩小到(x%hgap, h) */
+			/** For each x value, vertically draw a point at every fixed length for y values within the range (x-1000,x+500); this range is narrowed again to (x%hgap, h) */
 			for (yv = (x % hgap) + yb; yv < maxy; yv += hgap) {
 				if ((yv > y0) && (yv < y)) {
 					g2d.drawLine(x, yv, x, yv);

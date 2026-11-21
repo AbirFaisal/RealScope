@@ -15,7 +15,7 @@ import com.owon.vds.firm.protocol.AddValueAttachCommand;
 import com.owon.vds.firm.protocol.AddressAttachCommand;
 
 /**
- * Sendable，提供标准的发送规范，说明传输协议可用的发送格式
+ * Sendable: provides a standard send specification, describing the send formats available to the transport protocol
  * 
  */
 public class Sendable {

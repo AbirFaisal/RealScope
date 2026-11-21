@@ -21,7 +21,7 @@ public abstract class ScreenContext implements ColorProvider {
 		return screenMode == ScreenMode_3;
 	}
 
-	/** 中心相对屏幕位置 */
+	/** Center position relative to the screen */
 	private int hcenter;
 	private int wcenter;
 
@@ -41,7 +41,7 @@ public abstract class ScreenContext implements ColorProvider {
 		this.wcenter = wcenter;
 	}
 
-	/** chart屏幕的范围变量 */
+	/** chart screen range variables */
 	private Rectangle chartRectangle = new Rectangle();
 	private Insets chartInsets = new Insets(0, 0, 0, 0);
 

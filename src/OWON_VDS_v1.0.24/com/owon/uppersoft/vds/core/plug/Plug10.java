@@ -1,9 +1,9 @@
 package com.owon.uppersoft.vds.core.plug;
 
 /**
- * Plug10, 插值算法使用须知:
+ * Plug10, notes on using the interpolation algorithm:
  * 
- * 参数数组[9][10]，列数为插值倍数，行数为乘加一次的参数使用量
+ * Parameter array [9][10]: the column count is the interpolation factor, the row count is the number of parameters used per multiply-accumulate
  * 
  */
 public class Plug10 {
@@ -35,15 +35,15 @@ public class Plug10 {
 	public static final int SOURCE_DATA_OFFSET = INTERPOLATENUM - 1;
 
 	/**
-	 * H0, H0H1, ... H0~H8参与乘加，接下来才是H1~H9，最前面不满9个adc数据就在前面补0，实际插值时前面都有多拿数据
+	 * H0, H0H1, ... H0~H8 take part in the multiply-accumulate, then H1~H9 next; if fewer than 9 adc data points are at the front, pad with 0 at the front; actual interpolation takes extra data at the front
 	 * 
 	 * @param dst
 	 * @param src
 	 * @param src_length
 	 * @param dest_beg
-	 *            从此处开始填充数据
+	 *            Start filling data from here
 	 * @param src_beg
-	 *            从此处开始，需要先有SOURCE_DATA_OFFSET个0，然后才是adc，这些数据参与计算
+	 *            From here on, SOURCE_DATA_OFFSET zeros are needed first, then the adc data; these data take part in the calculation
 	 */
 	public static final void sine_interpolate(byte[] dst, byte[] src,
 			int src_length, int dest_beg, int src_beg) {
@@ -56,8 +56,8 @@ public class Plug10 {
 					sum += PlugArgs_dbl[LINESINE - 1 - row_idx][column_idx]
 							* src[src_idx + row_idx];
 				}
-				// 做四舍五入处理，否则当波形是直线部分时会出现一个一个的小突起;
-				/** 这一处理可能是机型相关的，根据下位机的正弦插值方式不同，可能需要去适应不同的算法细节 */
+				// Round to nearest, otherwise small bumps appear one by one when the waveform is a straight section;
+				/** This handling may be model-dependent; depending on how the device's sine interpolation works, different algorithm details may need to be accommodated */
 
 				sum += (sum > 0) ? compensate : -compensate;
 				sum = (sum > LEVEL_UPPEST) ? LEVEL_UPPEST : sum;
@@ -78,8 +78,8 @@ public class Plug10 {
 					sum += PlugArgs_dbl[LINESINE - 1 - row_idx][column_idx]
 							* src[src_idx + row_idx];
 				}
-				// 做四舍五入处理，否则当波形是直线部分时会出现一个一个的小突起;
-				/** 这一处理可能是机型相关的，根据下位机的正弦插值方式不同，可能需要去适应不同的算法细节 */
+				// Round to nearest, otherwise small bumps appear one by one when the waveform is a straight section;
+				/** This handling may be model-dependent; depending on how the device's sine interpolation works, different algorithm details may need to be accommodated */
 
 				sum += (sum > 0) ? compensate : -compensate;
 				sum = (sum > LEVEL_UPPEST) ? LEVEL_UPPEST : sum;

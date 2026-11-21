@@ -122,7 +122,7 @@ public class VideoTrigger extends AbsTrigger {
 
 	@Override
 	public String getLabelText(boolean inverse, int voltbase, int pos0) {
-		// 在video的时候作为行数文本
+		// used as the line number text in video
 		if (sync == 4)
 			return "#" + syncValue;
 		else
@@ -135,12 +135,12 @@ public class VideoTrigger extends AbsTrigger {
 	}
 
 	/**
-	 * 对指定参数进行增减
+	 * Increment or decrement the specified parameter
 	 * 
 	 * @param del
-	 *            不为0才发指令改变
+	 *            Send a command to change only if non-zero
 	 * @param type
-	 * @return 触发的事件类名
+	 * @return class name of the trigger event
 	 */
 	@Override
 	public boolean handelIncr(int del, TrgCheckType type) {
@@ -154,7 +154,7 @@ public class VideoTrigger extends AbsTrigger {
 	}
 
 	/**
-	 * 画触发电平标志
+	 * Draw the trigger level marker
 	 * 
 	 * @param g2d
 	 * @param pc

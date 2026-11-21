@@ -3,7 +3,7 @@ package com.owon.uppersoft.vds.core.fft.other;
 
 public class AfterFFTD {
 	/**
-	 * 均方根，fms = (i==0)?(FFT.mod()/N) : (FFT.mod()/(N/2));
+	 * Root mean square, fms = (i==0)?(FFT.mod()/N) : (FFT.mod()/(N/2));
 	 * 
 	 * @param cs
 	 * @param data
