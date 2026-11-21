@@ -1,7 +1,7 @@
 package com.owon.uppersoft.vds.core.usb;
 
-import ch.ntb.usb.Usb_Device;
+import net.codecrete.usb.UsbDevice;
 
 public interface IDeviceCreator {
-	IDevice createIDevice(Usb_Device usb_Device);
+	IDevice createIDevice(UsbDevice usbDevice);
 }

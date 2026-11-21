@@ -6,10 +6,8 @@ import static com.owon.uppersoft.vds.core.usb.IUSBProtocol.IdVender;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ntb.usb.LibusbJava;
-import ch.ntb.usb.USBException;
-import ch.ntb.usb.Usb_Device;
-import ch.ntb.usb.Usb_Device_Descriptor;
+import net.codecrete.usb.Usb;
+import net.codecrete.usb.UsbDevice;
 
 import com.owon.uppersoft.vds.core.comm.ICommunicateManager;
 import com.owon.uppersoft.vds.core.usb.CDevice;
@@ -17,6 +15,7 @@ import com.owon.uppersoft.vds.core.usb.ComparableDevice;
 import com.owon.uppersoft.vds.core.usb.IDevice;
 import com.owon.uppersoft.vds.core.usb.IDeviceCreator;
 import com.owon.uppersoft.vds.core.usb.IUSBProtocol;
+import com.owon.uppersoft.vds.core.usb.USBException;
 
 /**
  * Manages the state and opening of the USB data source, provides the USB data source
@@ -67,10 +66,7 @@ public class USBSourceManager implements ICommunicateManager, IDeviceCreator,
 	 */
 	public boolean init_check_usbdrv() {
 		try {
-			LibusbJava.usb_init();
-			LibusbJava.usb_find_busses();
-			LibusbJava.usb_find_devices();
-			LibusbJava.usb_get_busses();
+			Usb.getDevices();
 			return true;
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -79,8 +75,8 @@ public class USBSourceManager implements ICommunicateManager, IDeviceCreator,
 	}
 
 	@Override
-	public IDevice createIDevice(Usb_Device usb_Device) {
-		return ComparableDevice.getInstance(usb_Device, "");
+	public IDevice createIDevice(UsbDevice usbDevice) {
+		return ComparableDevice.getInstance(usbDevice, "");
 	}
 
 	/**
@@ -141,12 +137,7 @@ public class USBSourceManager implements ICommunicateManager, IDeviceCreator,
 					IUSBProtocol.IdProduct, this);
 
 			for (IDevice id : udl) {
-				Usb_Device dev = id.getUsb_Device();
-				long handle = LibusbJava.usb_open(dev);
-				Usb_Device_Descriptor devDesc = dev.getDescriptor();
-				String iSerialNumber = LibusbJava.usb_get_string_simple(handle,
-						devDesc.getISerialNumber());
-				LibusbJava.usb_close(handle);
+				String iSerialNumber = id.getUsbDevice().getSerialNumber();
 				// System.err.println("find: " + iSerialNumber);
 				if (sn.equalsIgnoreCase(iSerialNumber)) {
 					id.setSerialNumber(iSerialNumber);

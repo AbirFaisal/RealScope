@@ -8,9 +8,7 @@ import java.util.List;
 
 import javax.swing.JTextField;
 
-import ch.ntb.usb.LibusbJava;
-import ch.ntb.usb.Usb_Device;
-import ch.ntb.usb.Usb_Device_Descriptor;
+import net.codecrete.usb.UsbDevice;
 
 import com.owon.uppersoft.dso.source.usb.USBSource;
 import com.owon.uppersoft.dso.source.usb.USBSourceManager;
@@ -115,8 +113,8 @@ public class UsbComControl implements IDeviceCreator {
 	}
 
 	@Override
-	public IDevice createIDevice(Usb_Device usb_Device) {
-		return ComparableDevice.getInstance(usb_Device, "");
+	public IDevice createIDevice(UsbDevice usbDevice) {
+		return ComparableDevice.getInstance(usbDevice, "");
 	}
 
 	private List<IDevice> collectPorts(List<IDevice> udl) {
@@ -124,12 +122,7 @@ public class UsbComControl implements IDeviceCreator {
 		int i = 0;
 		while (it.hasNext()) {
 			IDevice id = it.next();
-			Usb_Device dev = id.getUsb_Device();
-			long handle = LibusbJava.usb_open(dev);
-			Usb_Device_Descriptor devDesc = dev.getDescriptor();
-			String iSerialNumber = LibusbJava.usb_get_string_simple(handle,
-					devDesc.getISerialNumber());
-			LibusbJava.usb_close(handle);
+			String iSerialNumber = id.getUsbDevice().getSerialNumber();
 			if (iSerialNumber == null || iSerialNumber.isEmpty()) {
 				iSerialNumber = "" + i;
 			}

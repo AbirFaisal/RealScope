@@ -12,8 +12,6 @@ import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 
-import sun.nio.ch.DirectBuffer;
-
 
 
 
@@ -95,10 +93,7 @@ public class CByteArrayInputStream  {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (buf instanceof DirectBuffer) {
-			DirectBuffer db = (DirectBuffer) buf;
-			//db.cleaner().clean();
-
+		if (buf.isDirect()) {
 			System.err.println("RELEASE");
 		}
 

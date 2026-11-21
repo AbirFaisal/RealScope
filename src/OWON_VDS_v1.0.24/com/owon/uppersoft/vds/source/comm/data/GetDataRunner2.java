@@ -12,8 +12,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Iterator;
 
-import ch.ntb.usb.USBException;
-
 import com.owon.uppersoft.dso.global.DataHouse;
 import com.owon.uppersoft.dso.model.WaveFormInfoControl;
 import com.owon.uppersoft.dso.source.comm.AbsGetDataRunner;
@@ -21,6 +19,7 @@ import com.owon.uppersoft.dso.source.usb.USBSourceManager;
 import com.owon.uppersoft.vds.core.aspect.base.EchoLogger;
 import com.owon.uppersoft.vds.core.aspect.base.VLog;
 import com.owon.uppersoft.vds.core.comm.ICommunicateManager;
+import com.owon.uppersoft.vds.core.usb.USBException;
 import com.owon.uppersoft.vds.core.wf.WaveFormInfo;
 import com.owon.uppersoft.vds.core.wf.rt.ChannelsTransportInfo;
 import com.owon.uppersoft.vds.device.interpret.util.Sendable;

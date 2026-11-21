@@ -3,11 +3,10 @@ package com.owon.uppersoft.dso.source.usb;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import ch.ntb.usb.USBException;
-
 import com.owon.uppersoft.vds.core.comm.ISource;
 import com.owon.uppersoft.vds.core.usb.CDevice;
 import com.owon.uppersoft.vds.core.usb.IDevice;
+import com.owon.uppersoft.vds.core.usb.USBException;
 
 /**
  * USBUSB data source

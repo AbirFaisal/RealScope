@@ -6,13 +6,16 @@ Working.zip contains a tested and functional version.
 
 JavaDocs: https://abirfaisal.github.io/RealScope/
 
-Tested on MacOS, you do need install the appropriate the drivers though
+USB access uses [Java Does USB](https://github.com/manuelbl/JavaDoesUSB), which is pure Java, so no native libraries or libusb are needed. It runs on Intel and Apple Silicon Macs, Windows and Linux.
 
-To install with Homebrew on MacOS:
-> brew install libusb-compat libusb
+Requires JDK 25. Run with:
+> java --enable-native-access=ALL-UNNAMED -cp ... com.owon.vds.tiny.Main
 
+The IntelliJ run configuration `RealScope` already sets this flag.
 
-If the OEM software works on windows then this modified version should work as is.
+On Windows the scope needs the WinUSB driver instead of the libusb-win32 driver that OWON's installer sets up. Switch it once with [Zadig](https://zadig.akeo.ie/).
+
+On Linux the user needs access to the device, e.g. with a udev rule for vendor `5345`, product `1234`.
 
 
 

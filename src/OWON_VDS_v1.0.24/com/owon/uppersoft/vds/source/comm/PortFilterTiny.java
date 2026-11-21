@@ -5,10 +5,6 @@ import java.nio.ByteOrder;
 import java.util.Iterator;
 import java.util.List;
 
-import ch.ntb.usb.LibusbJava;
-import ch.ntb.usb.Usb_Device;
-import ch.ntb.usb.Usb_Device_Descriptor;
-
 import com.owon.uppersoft.dso.source.usb.USBDelegate;
 import com.owon.uppersoft.dso.source.usb.USBPortsFilter;
 import com.owon.uppersoft.dso.source.usb.USBSource;
@@ -25,12 +21,7 @@ public abstract class PortFilterTiny implements USBPortsFilter {
 		Iterator<IDevice> it = udl.iterator();
 		while (it.hasNext()) {
 			IDevice id = it.next();
-			Usb_Device dev = id.getUsb_Device();
-			long handle = LibusbJava.usb_open(dev);
-			Usb_Device_Descriptor devDesc = dev.getDescriptor();
-			String iSerialNumber = LibusbJava.usb_get_string_simple(handle,
-					devDesc.getISerialNumber());
-			LibusbJava.usb_close(handle);
+			String iSerialNumber = id.getUsbDevice().getSerialNumber();
 
 			String machineName = "";
 			if (iSerialNumber == null || iSerialNumber.isEmpty()) {

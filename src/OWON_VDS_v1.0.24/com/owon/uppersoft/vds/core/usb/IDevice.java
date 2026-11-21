@@ -1,6 +1,6 @@
 package com.owon.uppersoft.vds.core.usb;
 
-import ch.ntb.usb.Usb_Device;
+import net.codecrete.usb.UsbDevice;
 
 /**
  * IDevice, device interface
@@ -8,9 +8,9 @@ import ch.ntb.usb.Usb_Device;
 public interface IDevice {
 
 	/**
-	 * @return Usb_Device
+	 * @return UsbDevice
 	 */
-	Usb_Device getUsb_Device();
+	UsbDevice getUsbDevice();
 
 	/**
 	 * @return SerialNumber

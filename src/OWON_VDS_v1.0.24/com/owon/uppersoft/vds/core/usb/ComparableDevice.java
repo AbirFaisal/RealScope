@@ -1,10 +1,12 @@
 package com.owon.uppersoft.vds.core.usb;
 
-import ch.ntb.usb.Usb_Config_Descriptor;
-import ch.ntb.usb.Usb_Device;
-import ch.ntb.usb.Usb_Endpoint_Descriptor;
-import ch.ntb.usb.Usb_Interface;
-import ch.ntb.usb.Usb_Interface_Descriptor;
+import java.util.List;
+
+import net.codecrete.usb.UsbAlternateInterface;
+import net.codecrete.usb.UsbDevice;
+import net.codecrete.usb.UsbDirection;
+import net.codecrete.usb.UsbEndpoint;
+import net.codecrete.usb.UsbInterface;
 
 import com.owon.uppersoft.vds.util.format.SFormatter;
 
@@ -13,7 +15,7 @@ import com.owon.uppersoft.vds.util.format.SFormatter;
  */
 public class ComparableDevice implements IDevice, Comparable<ComparableDevice> {
 
-	private Usb_Device usb_Device;
+	private UsbDevice usbDevice;
 	private String serialNumber;
 
 	private int bConfigurationValue, bInterfaceNumber, bAlternateSetting;
@@ -49,8 +51,8 @@ public class ComparableDevice implements IDevice, Comparable<ComparableDevice> {
 		return WriteEndpoint;
 	}
 
-	private ComparableDevice(Usb_Device usb_Device, String serialNumber) {
-		this.usb_Device = usb_Device;
+	private ComparableDevice(UsbDevice usbDevice, String serialNumber) {
+		this.usbDevice = usbDevice;
 		this.serialNumber = serialNumber;
 	}
 
@@ -63,57 +65,50 @@ public class ComparableDevice implements IDevice, Comparable<ComparableDevice> {
 		return msg;
 	}
 
-	public static final ComparableDevice getInstance(Usb_Device usb_Device,
+	public static final ComparableDevice getInstance(UsbDevice usbDevice,
 			String serialNumber) {
-		Usb_Config_Descriptor[] ucds = usb_Device.getConfig();
-		// System.out.println(ucds.length);
-		if (ucds == null || ucds.length == 0)
+		List<UsbInterface> uis = usbDevice.getInterfaces();
+		// System.out.println(uis.size());
+		if (uis.isEmpty())
 			return null;
 
-		Usb_Config_Descriptor ucd = ucds[0];
-		Usb_Interface[] uis = ucd.getInterface();
-		// System.out.println(uis.length);
-		if (uis == null || uis.length == 0)
+		UsbInterface ui = uis.get(0);
+		List<UsbAlternateInterface> uas = ui.getAlternates();
+		// System.out.println(uas.size());
+		if (uas.isEmpty())
 			return null;
 
-		Usb_Interface ui = uis[0];
-		Usb_Interface_Descriptor[] uids = ui.getAltsetting();
-		// System.out.println(uids.length);
-		if (uids == null || uids.length == 0)
+		UsbAlternateInterface ua = uas.get(0);
+		List<UsbEndpoint> ueps = ua.getEndpoints();
+		// System.out.println(ueps.size());
+		if (ueps.size() < 2)
 			return null;
 
-		Usb_Interface_Descriptor uid = uids[0];
-		Usb_Endpoint_Descriptor[] ueds = uid.getEndpoint();
-		// System.out.println(ueds.length);
-		if (ueds == null || ueds.length < 2)
-			return null;
+		ComparableDevice cd = new ComparableDevice(usbDevice, serialNumber);
+		/** bConfigurationValue is byte 5 of the configuration descriptor */
+		cd.bConfigurationValue = usbDevice.getConfigurationDescriptor()[5] & 0xff;
+		cd.bInterfaceNumber = ui.getNumber();
+		cd.bAlternateSetting = IUSBProtocol.DevAltinterface;// ua.getNumber();
 
-		ComparableDevice cd = new ComparableDevice(usb_Device, serialNumber);
-		cd.bConfigurationValue = ucd.getBConfigurationValue();
-		cd.bInterfaceNumber = uid.getBInterfaceNumber();
-		cd.bAlternateSetting = IUSBProtocol.DevAltinterface;// uid.getBAlternateSetting();
-
-		for (Usb_Endpoint_Descriptor ued : ueds) {
-			int ep = ued.getBEndpointAddress();
-			int adr = ued.getBEndpointAddress() & 0xff;
-			int MaxPacketSize = ued.getWMaxPacketSize();
-			if ((ep & 0x80) > 0) {
-				// IN
-				cd.ReadEndpoint = adr;
+		for (UsbEndpoint uep : ueps) {
+			int MaxPacketSize = uep.getPacketSize();
+			if (uep.getDirection() == UsbDirection.IN) {
+				// IN, keep the endpoint address with its direction bit
+				cd.ReadEndpoint = uep.getNumber() | 0x80;
 				cd.RdEpMaxPacketSize = MaxPacketSize;
 			} else {
 				// OUT
-				cd.WriteEndpoint = adr;
+				cd.WriteEndpoint = uep.getNumber();
 				cd.WrEpMaxPacketSize = MaxPacketSize;
 			}
-			// System.err.println(adr+", "+MaxPacketSize);
+			// System.err.println(uep.getNumber()+", "+MaxPacketSize);
 		}
 		// DBG.errprintln(cd);
 		return cd;
 	}
 
-	public Usb_Device getUsb_Device() {
-		return usb_Device;
+	public UsbDevice getUsbDevice() {
+		return usbDevice;
 	}
 
 	public String getSerialNumber() {
@@ -124,8 +119,8 @@ public class ComparableDevice implements IDevice, Comparable<ComparableDevice> {
 		this.serialNumber = serialNumber;
 	}
 
-	public void setUsb_Device(Usb_Device usb_Device) {
-		this.usb_Device = usb_Device;
+	public void setUsbDevice(UsbDevice usbDevice) {
+		this.usbDevice = usbDevice;
 	}
 
 	public int compareTo(ComparableDevice o) {

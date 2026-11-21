@@ -12,6 +12,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import net.codecrete.usb.Version;
+
 import com.owon.uppersoft.vds.core.usb.IDevice;
 
 public class ContextMenuManager implements PopupMenuListener {
@@ -61,8 +63,9 @@ public class ContextMenuManager implements PopupMenuListener {
 				: ACTION_NO_USB_FOUND));
 		if (b) {
 			for (final IDevice id : ids) {
-				String bcd = Integer.toHexString(id.getUsb_Device()
-						.getDescriptor().getBcdUSB());
+				Version v = id.getUsbDevice().getUsbVersion();
+				String bcd = Integer.toHexString((v.getMajor() << 8)
+						| (v.getMinor() << 4) | v.getSubminor());
 				String name = id.toString() + ", bcd: 0x" + bcd;
 
 				JMenuItem jmi = new JMenuItem(name);
