@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ch.ntb.usb-0.5.9">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/ch.ntb.usb_0.5.9/ch.ntb.usb-0.5.9.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
