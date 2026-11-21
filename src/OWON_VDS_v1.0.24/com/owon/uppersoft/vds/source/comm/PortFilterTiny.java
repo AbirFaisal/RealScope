@@ -24,7 +24,7 @@ public abstract class PortFilterTiny implements USBPortsFilter {
 			String iSerialNumber = id.getUsbDevice().getSerialNumber();
 
 			String machineName = "";
-			if (iSerialNumber == null || iSerialNumber.isEmpty()) {
+			if (!isMachineName(iSerialNumber)) {
 				ByteBuffer bb = ByteBuffer.allocate(6);
 				bb.order(ByteOrder.LITTLE_ENDIAN);
 
@@ -75,6 +75,19 @@ public abstract class PortFilterTiny implements USBPortsFilter {
 	 * @return null means unrecognized
 	 */
 	protected abstract String getMachineNameFromCode(int machineCode);
+
+	/**
+	 * Some devices report a placeholder such as "0" as their USB serial
+	 * number, they are asked for their machine code instead
+	 *
+	 * @param serialNumber
+	 *            USB serial number
+	 * @return true if the serial number can be used as the machine name
+	 */
+	protected boolean isMachineName(String serialNumber) {
+		return serialNumber != null
+				&& serialNumber.toUpperCase().startsWith("VDS");
+	}
 
 	/**
 	 * can be used to modify the model description at the display stage
