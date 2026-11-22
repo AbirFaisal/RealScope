@@ -28,11 +28,11 @@ $auto_self_cal coarsegain_CH2_5V=562;
 $auto_self_cal step_CH1_5mV=158;
 $auto_self_cal step_CH1_10mV=158;
 $auto_self_cal step_CH1_20mV=158;
-$auto_self_cal step_CH1_50mV=159;
+$auto_self_cal step_CH1_50mV=158;
 $auto_self_cal step_CH1_100mV=158;
 $auto_self_cal step_CH1_200mV=158;
-$auto_self_cal step_CH1_500mV=158;
-$auto_self_cal step_CH1_1V=158;
+$auto_self_cal step_CH1_500mV=159;
+$auto_self_cal step_CH1_1V=159;
 $auto_self_cal step_CH1_2V=158;
 $auto_self_cal step_CH1_5V=158;
 
@@ -40,7 +40,7 @@ $auto_self_cal step_CH2_5mV=161;
 $auto_self_cal step_CH2_10mV=161;
 $auto_self_cal step_CH2_20mV=161;
 $auto_self_cal step_CH2_50mV=161;
-$auto_self_cal step_CH2_100mV=161;
+$auto_self_cal step_CH2_100mV=162;
 $auto_self_cal step_CH2_200mV=161;
 $auto_self_cal step_CH2_500mV=161;
 $auto_self_cal step_CH2_1V=161;
@@ -49,22 +49,22 @@ $auto_self_cal step_CH2_5V=161;
 
 
 //Compensation
-$auto_self_cal zero_CH1_5mV=545;
+$auto_self_cal zero_CH1_5mV=544;
 $auto_self_cal zero_CH1_10mV=548;
 $auto_self_cal zero_CH1_20mV=546;
 $auto_self_cal zero_CH1_50mV=546;
 $auto_self_cal zero_CH1_100mV=544;
 $auto_self_cal zero_CH1_200mV=544;
-$auto_self_cal zero_CH1_500mV=546;
-$auto_self_cal zero_CH1_1V=545;
+$auto_self_cal zero_CH1_500mV=547;
+$auto_self_cal zero_CH1_1V=546;
 $auto_self_cal zero_CH1_2V=544;
 $auto_self_cal zero_CH1_5V=544;
 
-$auto_self_cal zero_CH2_5mV=549;
+$auto_self_cal zero_CH2_5mV=548;
 $auto_self_cal zero_CH2_10mV=553;
 $auto_self_cal zero_CH2_20mV=553;
 $auto_self_cal zero_CH2_50mV=554;
-$auto_self_cal zero_CH2_100mV=553;
+$auto_self_cal zero_CH2_100mV=554;
 $auto_self_cal zero_CH2_200mV=553;
 $auto_self_cal zero_CH2_500mV=553;
 $auto_self_cal zero_CH2_1V=553;

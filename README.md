@@ -1,5 +1,5 @@
 # RealScope
-OWON VDS1022 Software Modification Project, Because having a USB scope should be like having a RealScope.
+OWON USB Oscilloscope Software Project, Because having a USB scope should be like having a RealScope.
 
 Working.zip contains a tested and functional version.
 
