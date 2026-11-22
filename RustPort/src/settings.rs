@@ -90,7 +90,12 @@ impl ChannelSettings {
 
     /// Converts a raw ADC sample to volts (`WFO.java:66-77`, probe ×1).
     pub fn sample_to_volts(&self, sample: i8) -> f64 {
-        (sample as i32 - self.pos0) as f64 * self.volts_per_div() / COUNTS_PER_DIV as f64
+        self.code_to_volts(sample as i32)
+    }
+
+    /// Voltage at a screen position given in ADC counts (0 = centre, ±125 = edges).
+    pub fn code_to_volts(&self, code: i32) -> f64 {
+        (code - self.pos0) as f64 * self.volts_per_div() / COUNTS_PER_DIV as f64
     }
 
     pub fn clamp_pos0(pos0: i32) -> i32 {
@@ -105,5 +110,23 @@ impl Settings {
         let ch = &self.ch[self.trigger.source];
         let counts = (self.trigger.level_v / ch.volts_per_div() * COUNTS_PER_DIV as f64).round();
         (ch.pos0 + counts as i32).clamp(-ADC_MAX, ADC_MAX)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn code_to_volts_follows_position() {
+        let ch = ChannelSettings { on: true, vdiv_idx: 7, coupling: Coupling::Dc, pos0: 0 };
+        assert_eq!(ch.code_to_volts(125), 5.0);
+        assert_eq!(ch.code_to_volts(-125), -5.0);
+        // Zero line moved up 2 div: top of screen is now 3 div above it.
+        let up = ChannelSettings { pos0: 50, ..ch };
+        assert_eq!(up.code_to_volts(125), 3.0);
+        assert_eq!(up.code_to_volts(50), 0.0);
+        let mv = ChannelSettings { vdiv_idx: 4, ..ch }; // 100 mV/div
+        assert!((mv.code_to_volts(25) - 0.1).abs() < 1e-12);
     }
 }

@@ -5,8 +5,8 @@ use std::time::Duration;
 
 use gpui::{
     App, Application, Bounds, ClickEvent, Context, ElementId, Hsla, IntoElement, PathBuilder, Pixels, Render,
-    SharedString, Task, TitlebarOptions, Window, WindowBounds, WindowOptions, canvas, div, fill, point, prelude::*,
-    px, rgb, size,
+    SharedString, Task, TextRun, TitlebarOptions, Window, WindowBounds, WindowOptions, canvas, div, fill, point,
+    prelude::*, px, rgb, size,
 };
 
 use crate::acquire::{self, Event, Frame};
@@ -16,6 +16,13 @@ use crate::tables::{
 };
 
 const CH_COLORS: [u32; 2] = [0xf5d742, 0x42d4f5];
+
+/// Space around the graticule for axis labels: CH1 volts left, CH2 volts right, time below.
+const MARGIN_SIDE: f32 = 56.;
+const MARGIN_TOP: f32 = 6.;
+const MARGIN_BOTTOM: f32 = 20.;
+const LABEL_SIZE: f32 = 11.;
+const LABEL_GAP: f32 = 4.;
 
 pub fn run() {
     Application::new().run(|cx: &mut App| {
@@ -328,7 +335,7 @@ impl Render for ScopeApp {
                     .child(
                         div()
                             .flex_1()
-                            .child(canvas(|_, _, _| (), move |b, _, window, _| paint_scope(b, frame.as_ref(), &settings, window)).size_full()),
+                            .child(canvas(|_, _, _| (), move |b, _, window, cx| paint_scope(b, frame.as_ref(), &settings, window, cx)).size_full()),
                     )
                     .child(self.status_line()),
             )
@@ -336,16 +343,85 @@ impl Render for ScopeApp {
     }
 }
 
-fn paint_scope(bounds: Bounds<Pixels>, frame: Option<&Frame>, settings: &Settings, window: &mut Window) {
-    let x0 = f32::from(bounds.origin.x);
-    let y0 = f32::from(bounds.origin.y);
-    let w = f32::from(bounds.size.width);
-    let h = f32::from(bounds.size.height);
+#[derive(Clone, Copy)]
+enum Align {
+    Left,
+    Center,
+    Right,
+}
+
+/// Paints one line of text with its anchor point at `(x, y)`: `align` picks
+/// which horizontal edge sits on `x`, and the text is vertically centred on `y`.
+/// The result is clamped horizontally into `clip_x`.
+fn paint_label(
+    text: String,
+    color: Hsla,
+    (x, y): (f32, f32),
+    align: Align,
+    clip_x: (f32, f32),
+    window: &mut Window,
+    cx: &mut App,
+) {
+    let run = TextRun {
+        len: text.len(),
+        font: window.text_style().font(),
+        color,
+        background_color: None,
+        underline: None,
+        strikethrough: None,
+    };
+    let line = window.text_system().shape_line(text.into(), px(LABEL_SIZE), &[run], None);
+    let width = f32::from(line.width);
+    let left = match align {
+        Align::Left => x,
+        Align::Center => x - width / 2.,
+        Align::Right => x - width,
+    };
+    let left = left.min(clip_x.1 - width).max(clip_x.0);
+    let line_height = LABEL_SIZE * 1.3;
+    let _ = line.paint(point(px(left), px(y - line_height / 2.)), px(line_height), window, cx);
+}
+
+fn paint_scope(bounds: Bounds<Pixels>, frame: Option<&Frame>, settings: &Settings, window: &mut Window, cx: &mut App) {
+    window.paint_quad(fill(bounds, rgb(0x000000)));
+
+    // Graticule rectangle, inset to leave room for the axis labels.
+    let bx = f32::from(bounds.origin.x);
+    let bw = f32::from(bounds.size.width);
+    let x0 = bx + MARGIN_SIDE;
+    let y0 = f32::from(bounds.origin.y) + MARGIN_TOP;
+    let w = (bw - 2. * MARGIN_SIDE).max(1.);
+    let h = (f32::from(bounds.size.height) - MARGIN_TOP - MARGIN_BOTTOM).max(1.);
     let full = 2.0 * ADC_MAX as f32;
     // ADC code -> screen y: +125 at the top, -125 at the bottom.
     let y_of = |code: f32| y0 + h / 2.0 - code / full * h;
+    let clip = (bx, bx + bw);
 
-    window.paint_quad(fill(bounds, rgb(0x000000)));
+    // Time axis: label every division if there is room, otherwise every 2nd or 5th.
+    let div_w = w / H_DIVS as f32;
+    let every = if div_w >= 56. { 1 } else if div_w >= 28. { 2 } else { 5 };
+    let time_color: Hsla = rgb(0x8a8a8a).into();
+    for i in (0..=H_DIVS).step_by(every) {
+        let x = x0 + div_w * i as f32;
+        let text = tables::format_si(tables::grid_time_s(settings.tdiv_idx, i), "s");
+        paint_label(text, time_color, (x, y0 + h + MARGIN_BOTTOM / 2.), Align::Center, clip, window, cx);
+    }
+
+    // Voltage axes: each channel has its own V/div and position, so each gets
+    // its own scale in its colour, CH1 on the left and CH2 on the right.
+    for (i, ch) in settings.ch.iter().enumerate() {
+        if !ch.on {
+            continue;
+        }
+        let color: Hsla = rgb(CH_COLORS[i]).into();
+        for j in 0..=V_DIVS {
+            let code = ADC_MAX - COUNTS_PER_DIV * j as i32;
+            let text = tables::format_si(ch.code_to_volts(code), "V");
+            let y = y_of(code as f32);
+            let (x, align) = if i == 0 { (x0 - LABEL_GAP, Align::Right) } else { (x0 + w + LABEL_GAP, Align::Left) };
+            paint_label(text, color, (x, y), align, clip, window, cx);
+        }
+    }
 
     let grid: Hsla = rgb(0x2a2a2a).into();
     let axis: Hsla = rgb(0x4a4a4a).into();

@@ -60,7 +60,15 @@ pub fn tdiv_label(idx: usize) -> String {
     format_si(TDIV_S[idx], "s")
 }
 
+/// Time of vertical grid line `i` (0..=H_DIVS) relative to the trigger, which
+/// sits at the centre of the record.
+pub fn grid_time_s(tdiv_idx: usize, i: usize) -> f64 {
+    (i as f64 - (H_DIVS / 2) as f64) * TDIV_S[tdiv_idx]
+}
+
 pub fn format_si(value: f64, unit: &str) -> String {
+    // Snap float noise so the zero line reads "0 V", not "-0 V".
+    let value = if value.abs() < 1e-12 { 0.0 } else { value };
     let abs = value.abs();
     let (scale, prefix) = if abs == 0.0 {
         (1.0, "")
@@ -103,5 +111,14 @@ mod tests {
         assert_eq!(tdiv_label(9), "5 µs");
         assert_eq!(tdiv_label(16), "1 ms");
         assert_eq!(format_si(250e3, "Sa/s"), "250 kSa/s");
+        assert_eq!(format_si(-0.0, "V"), "0 V");
+        assert_eq!(format_si(-2.5e-3, "s"), "-2.5 ms");
+    }
+
+    #[test]
+    fn grid_times() {
+        assert_eq!(format_si(grid_time_s(16, 0), "s"), "-10 ms");
+        assert_eq!(format_si(grid_time_s(16, H_DIVS / 2), "s"), "0 s");
+        assert_eq!(format_si(grid_time_s(9, H_DIVS), "s"), "50 µs");
     }
 }
