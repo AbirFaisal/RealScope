@@ -1,0 +1,15 @@
+[package]
+name = "realscope"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1"
+# runtime_shaders: compile Metal shaders at launch, so building does not need
+# the separately-downloaded Xcode Metal Toolchain.
+gpui = { version = "0.2.2", features = ["runtime_shaders"] }
+# nusb 0.2 requires core-foundation ^0.10.1, which conflicts with gpui 0.2.2's
+# `=0.10.0` pin; 0.1 uses core-foundation 0.9 and coexists.
+nusb = "0.1.14"
+# Already in gpui's dependency graph; used to block on nusb transfers with a timeout.
+smol = "2"
