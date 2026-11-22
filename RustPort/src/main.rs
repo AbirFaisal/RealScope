@@ -13,9 +13,13 @@ use acquire::Scope;
 use device::Device;
 use settings::Settings;
 
-fn dump_path() -> Option<String> {
+fn arg_value(flag: &str) -> Option<String> {
     let args: Vec<String> = std::env::args().collect();
-    args.iter().position(|a| a == "--dump").and_then(|i| args.get(i + 1).cloned())
+    args.iter().position(|a| a == flag).and_then(|i| args.get(i + 1).cloned())
+}
+
+fn dump_path() -> Option<String> {
+    arg_value("--dump")
 }
 
 fn main() -> Result<()> {
@@ -41,7 +45,10 @@ fn probe(capture: bool) -> Result<()> {
         return Ok(());
     }
 
-    let settings = Settings::default();
+    let mut settings = Settings::default();
+    if let Some(idx) = arg_value("--tdiv").and_then(|v| v.parse().ok()) {
+        settings.tdiv_idx = usize::clamp(idx, tables::TDIV_MIN_IDX, tables::TDIV_MAX_IDX);
+    }
     let mut scope = Scope::new(dev, cal);
     scope.apply(&settings)?;
     if let Some(path) = dump_path() {

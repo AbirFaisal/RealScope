@@ -6,7 +6,7 @@
 use anyhow::{Result, bail, ensure};
 
 use crate::settings::{ChannelSettings, Coupling, Sweep};
-use crate::tables::{ADC_MAX, ATTENUATION_VDIV_IDX};
+use crate::tables::{ADC_MAX, ATTENUATION_VDIV_IDX, screen_points};
 
 pub const VENDOR_ID: u16 = 0x5345;
 pub const PRODUCT_ID: u16 = 0x1234;
@@ -131,11 +131,12 @@ pub const HOLDOFF_DEFAULT: u32 = 0x0041;
 /// Deep-memory length written to DM: 5000 screen points + 50 + 50 margin.
 pub const DM_LEN: u32 = 5100;
 
-/// Pre/post trigger lengths for a centred trigger at tdiv index >= 9
-/// (`Submitor2.c_htp`, `LowControlManager20M.getHTPWithoutCompress`).
-pub fn pre_suf_centered() -> (u32, u32) {
+/// Pre/post trigger lengths for a centred trigger (`Submitor2.c_htp`,
+/// `LowControlManager20M.getHTPWithoutCompress` with htp = 0, incremented to 1):
+/// `v = 5000 / 1000` for full-memory timebases, `screen_points / 1000` below.
+pub fn pre_suf(tdiv_idx: usize) -> (u32, u32) {
     let half = DM_LEN / 2;
-    let v = 5; // (htp + 1) * 5000 / 1000 with htp = 0
+    let v = (screen_points(tdiv_idx) / 1000) as u32;
     (half - v, half + v)
 }
 
@@ -214,11 +215,21 @@ pub fn parse_flash(flash: &[u8]) -> Result<Calibration> {
 /// with absolute `ByteBuffer.get(index)`, so it starts at byte 0 even though
 /// that buffer is positioned at the deep memory (`GetDataRunner2.java:310-354`).
 pub const BLOCK_LEN: usize = 5211;
-const DM_BEGIN: usize = 111;
-pub const SCREEN_POINTS: usize = 5000;
-/// First on-screen sample: skip the 50-sample pre-roll, plus the vendor's
-/// one-sample shift that removes edge jitter (`PreHandler.java:56-66`).
-const SCREEN_BEGIN: usize = DM_BEGIN + 50 + 1;
+/// The 5000 deep-memory samples, after the 50-sample pre-roll; 50 post-roll follow.
+const DM_BEGIN: usize = 111 + 50;
+pub const MAX_SCREEN_POINTS: usize = 5000;
+
+/// Where the on-screen samples sit in a block (`PreHandler.preLoadReceiveData`).
+fn screen_window(tdiv_idx: usize) -> (usize, usize) {
+    let points = screen_points(tdiv_idx);
+    if points >= MAX_SCREEN_POINTS {
+        // Whole record, shifted by one sample to remove edge jitter (PreHandler.java:56-66).
+        (DM_BEGIN + 1, MAX_SCREEN_POINTS)
+    } else {
+        // Centred window around the trigger (AbsPreHandler.handelData_noplug).
+        (DM_BEGIN + MAX_SCREEN_POINTS / 2 - points / 2, points)
+    }
+}
 
 #[derive(Debug, PartialEq)]
 pub enum Block {
@@ -228,14 +239,15 @@ pub enum Block {
     Data { channel: u8, samples: Vec<i8> },
 }
 
-pub fn parse_block(buf: &[u8]) -> Result<Block> {
+pub fn parse_block(buf: &[u8], tdiv_idx: usize) -> Result<Block> {
     if buf.first() == Some(&b'E') {
         return Ok(Block::Busy);
     }
     ensure!(buf.len() >= BLOCK_LEN, "short data block: {} bytes", buf.len());
     let channel = buf[0];
     ensure!(channel < 2, "bad channel byte {channel} in data block");
-    let samples = buf[SCREEN_BEGIN..SCREEN_BEGIN + SCREEN_POINTS]
+    let (begin, points) = screen_window(tdiv_idx);
+    let samples = buf[begin..begin + points]
         .iter()
         .map(|&b| (b as i8 as i32).clamp(-ADC_MAX, ADC_MAX) as i8)
         .collect();
@@ -264,8 +276,11 @@ mod tests {
 
     #[test]
     fn bytewise() {
-        let (pre, suf) = pre_suf_centered();
+        let (pre, suf) = pre_suf(9);
         assert_eq!((pre, suf), (2545, 2555));
+        assert_eq!(pre_suf(21), (2545, 2555));
+        assert_eq!(pre_suf(6), (2549, 2551));
+        assert_eq!(pre_suf(8), (2546, 2554));
         assert_eq!(cmd_bytewise(reg::PRE_TRG, 2, pre), vec![
             vec![0x5a, 0, 0, 0, 1, 0xf1],
             vec![0x5b, 0, 0, 0, 1, 0x09],
@@ -359,20 +374,32 @@ mod tests {
 
     #[test]
     fn block_parse() {
-        assert_eq!(parse_block(b"EBUSY").unwrap(), Block::Busy);
+        assert_eq!(parse_block(b"EBUSY", 9).unwrap(), Block::Busy);
         let mut buf = vec![0u8; BLOCK_LEN];
         buf[0] = 1;
         buf[162] = 0x80; // -128
         buf[162 + 4999] = 42;
-        match parse_block(&buf).unwrap() {
+        match parse_block(&buf, 9).unwrap() {
             Block::Data { channel, samples } => {
                 assert_eq!(channel, 1);
-                assert_eq!(samples.len(), SCREEN_POINTS);
+                assert_eq!(samples.len(), MAX_SCREEN_POINTS);
                 assert_eq!(samples[0], -125); // -128 clamped
                 assert_eq!(samples[4999], 42);
             }
             Block::Busy => panic!("expected data"),
         }
-        assert!(parse_block(&buf[..100]).is_err());
+        assert!(parse_block(&buf[..100], 9).is_err());
+
+        // 2 µs/div: 4000 points centred in the 5000-point record.
+        buf[661] = 7;
+        buf[661 + 3999] = 9;
+        match parse_block(&buf, 8).unwrap() {
+            Block::Data { samples, .. } => {
+                assert_eq!(samples.len(), 4000);
+                assert_eq!(samples[0], 7);
+                assert_eq!(samples[3999], 9);
+            }
+            Block::Busy => panic!("expected data"),
+        }
     }
 }

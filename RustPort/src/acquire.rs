@@ -127,7 +127,7 @@ impl Scope {
         };
         let mut samples: [Option<Vec<i8>>; 2] = [None, None];
         for block in &blocks {
-            if let Block::Data { channel, samples: s } = protocol::parse_block(block)? {
+            if let Block::Data { channel, samples: s } = protocol::parse_block(block, settings.tdiv_idx)? {
                 let ch = &settings.ch[channel as usize];
                 samples[channel as usize] = Some(if ch.coupling == Coupling::Gnd {
                     vec![ch.pos0 as i8; s.len()]
@@ -178,15 +178,16 @@ impl Scope {
             }
         }
 
+        if first {
+            self.dev.write_reg(reg::DM, 2, protocol::DM_LEN)?;
+        }
         let tdiv = new.tdiv_idx.clamp(TDIV_MIN_IDX, TDIV_MAX_IDX);
         if first || old.map(|o| o.tdiv_idx) != Some(new.tdiv_idx) {
             self.dev.write_reg(reg::TIMEBASE, 4, TIMEBASE_DIV[tdiv])?;
             self.dev.write_reg(reg::SAMPLE, 1, 0)?;
             self.dev.write_reg(reg::SLOWMOVE, 1, 0)?;
-        }
-        if first {
-            self.dev.write_reg(reg::DM, 2, protocol::DM_LEN)?;
-            let (pre, suf) = protocol::pre_suf_centered();
+            // The trigger window depends on how many points fill the screen.
+            let (pre, suf) = protocol::pre_suf(tdiv);
             self.dev.write_reg_bytewise(reg::PRE_TRG, 2, pre)?;
             self.dev.write_reg_bytewise(reg::SUF_TRG, 4, suf)?;
             self.dev.write_reg(reg::EMPTY, 1, 1)?;

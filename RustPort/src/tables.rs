@@ -27,10 +27,12 @@ pub const TIMEBASE_DIV: [u32; 32] = [
 
 pub const ADC_CLOCK_HZ: f64 = 100e6;
 
-/// Timebases the MVP supports. Below index 9 the record is shorter than the
-/// screen and the vendor software interpolates; from `[SlowMoveTimebase]`
-/// (100 ms, index 22) on the scope switches to roll mode. Neither is ported yet.
-pub const TDIV_MIN_IDX: usize = 9;
+/// Timebases the app supports. From index 9 (5 µs) the 5000-point record fills
+/// the screen; indices 6–8 run at the full 100 MS/s and show 1000–4000 real
+/// points (`VDS1022.TB_1_4kFullScreen`). Below index 6 the vendor software
+/// interpolates, and from `[SlowMoveTimebase]` (100 ms, index 22) the scope
+/// switches to roll mode. Neither is ported yet.
+pub const TDIV_MIN_IDX: usize = 6;
 pub const TDIV_MAX_IDX: usize = 21;
 
 /// Horizontal and vertical graticule (`GDefine.BlockNum`, `GDefine.PIXELS_PER_DIV`).
@@ -45,6 +47,12 @@ pub const POS0_MAX: i32 = 250;
 
 pub fn sample_rate_hz(tdiv_idx: usize) -> f64 {
     ADC_CLOCK_HZ / TIMEBASE_DIV[tdiv_idx] as f64
+}
+
+/// Samples spanning the 20-division screen: `min(5000, 20 × tdiv × 100 MS/s)`
+/// (`MachineInfo.fillSampleRates`).
+pub fn screen_points(tdiv_idx: usize) -> usize {
+    (sample_rate_hz(tdiv_idx) * TDIV_S[tdiv_idx] * H_DIVS as f64).round() as usize
 }
 
 pub fn vdiv_label(idx: usize) -> String {
@@ -96,12 +104,18 @@ mod tests {
     use super::*;
 
     #[test]
-    fn supported_timebases_fill_5000_points() {
+    fn screen_points_per_timebase() {
         // SR = min(100 MS/s, 5000 / (20 * tdiv)), MachineInfo.java:323-379
-        for idx in TDIV_MIN_IDX..=TDIV_MAX_IDX {
-            let points = sample_rate_hz(idx) * TDIV_S[idx] * H_DIVS as f64;
-            assert!((points - 5000.0).abs() < 1e-6, "idx {idx}: {points}");
+        assert_eq!(screen_points(6), 1000);
+        assert_eq!(screen_points(7), 2000);
+        assert_eq!(screen_points(8), 4000);
+        for idx in 9..=TDIV_MAX_IDX {
+            assert_eq!(screen_points(idx), 5000, "idx {idx}");
         }
+        for idx in TDIV_MIN_IDX..=8 {
+            assert_eq!(sample_rate_hz(idx), 100e6);
+        }
+        assert_eq!(sample_rate_hz(9), 50e6);
     }
 
     #[test]
