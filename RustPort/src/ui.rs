@@ -1,15 +1,16 @@
-//! GPUI front end: waveform canvas plus a control panel.
+//! GPUI front end: ribbon, waveform canvas and a control panel.
 
 use std::sync::mpsc;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use gpui::{
-    App, Application, Bounds, ClickEvent, Context, ElementId, Hsla, IntoElement, PathBuilder, Pixels, Render,
-    SharedString, Task, TextRun, TitlebarOptions, Window, WindowBounds, WindowOptions, canvas, div, fill, point,
-    prelude::*, px, rgb, size,
+    App, Application, Bounds, ClickEvent, Context, Div, ElementId, Hsla, IntoElement, PathBuilder, Pixels, Render,
+    SharedString, Stateful, Task, TextRun, TitlebarOptions, Window, WindowBounds, WindowOptions, canvas, div, fill,
+    point, prelude::*, px, rgb, size,
 };
 
 use crate::acquire::{self, Event, Frame};
+use crate::phosphor::{self, Persistence, Phosphor, Run};
 use crate::settings::{ChannelSettings, Settings, Sweep};
 use crate::tables::{
     self, ADC_MAX, COUNTS_PER_DIV, H_DIVS, POS0_MAX, TDIV_MAX_IDX, TDIV_MIN_IDX, V_DIVS, VDIV_MV,
@@ -47,7 +48,18 @@ struct ScopeApp {
     frame: Option<Frame>,
     status: String,
     device: Option<String>,
+    /// Digital-phosphor display: accumulate captures instead of drawing the latest one.
+    phosphor_on: bool,
+    persistence: Persistence,
+    phosphor: Phosphor,
+    last_frame_at: Option<Instant>,
     _poll: Task<()>,
+}
+
+/// What the canvas draws for the waveforms.
+enum Trace {
+    Line(Option<Frame>),
+    Phosphor([Vec<Run>; 2]),
 }
 
 impl ScopeApp {
@@ -82,6 +94,10 @@ impl ScopeApp {
             frame: None,
             status: "Searching for scope…".into(),
             device: None,
+            phosphor_on: false,
+            persistence: Persistence::Medium,
+            phosphor: Phosphor::default(),
+            last_frame_at: None,
             _poll: poll,
         }
     }
@@ -93,11 +109,26 @@ impl ScopeApp {
                 self.status = "Connected".into();
                 self.device = Some(format!("{serial} ({version})"));
             }
-            Event::Frame(f) => self.frame = Some(f),
+            Event::Frame(f) => {
+                let now = Instant::now();
+                if self.phosphor_on {
+                    if let Some(last) = self.last_frame_at {
+                        self.phosphor.decay(self.persistence.decay_factor(now - last));
+                    }
+                    for (ch, samples) in f.samples.iter().enumerate() {
+                        if let Some(samples) = samples.as_deref().filter(|_| self.settings.ch[ch].on) {
+                            self.phosphor.accumulate(ch, samples);
+                        }
+                    }
+                }
+                self.last_frame_at = Some(now);
+                self.frame = Some(f);
+            }
             Event::Disconnected(e) => {
                 self.status = e;
                 self.device = None;
                 self.frame = None;
+                self.phosphor.clear();
             }
         }
     }
@@ -105,17 +136,12 @@ impl ScopeApp {
     fn update_settings(&mut self, cx: &mut Context<Self>, f: &dyn Fn(&mut Settings)) {
         f(&mut self.settings);
         let _ = self.settings_tx.send(self.settings);
+        // Accumulated captures were drawn under the old scales.
+        self.phosphor.clear();
         cx.notify();
     }
 
-    fn button(
-        &self,
-        id: String,
-        label: impl Into<SharedString>,
-        active: bool,
-        cx: &mut Context<Self>,
-        f: impl Fn(&mut Settings) + 'static,
-    ) -> impl IntoElement {
+    fn button_base(id: String, label: impl Into<SharedString>, active: bool) -> Stateful<Div> {
         let bg = if active { rgb(0x35557f) } else { rgb(0x2a2a2a) };
         div()
             .id(ElementId::Name(id.into()))
@@ -126,7 +152,80 @@ impl ScopeApp {
             .hover(|s| s.bg(rgb(0x404a58)))
             .cursor_pointer()
             .child(label.into())
+    }
+
+    /// Button that changes scope settings (sent to the acquisition thread).
+    fn button(
+        &self,
+        id: String,
+        label: impl Into<SharedString>,
+        active: bool,
+        cx: &mut Context<Self>,
+        f: impl Fn(&mut Settings) + 'static,
+    ) -> impl IntoElement {
+        Self::button_base(id, label, active)
             .on_click(cx.listener(move |this, _: &ClickEvent, _, cx| this.update_settings(cx, &f)))
+    }
+
+    /// Button that changes display-only state.
+    fn view_button(
+        &self,
+        id: String,
+        label: impl Into<SharedString>,
+        active: bool,
+        cx: &mut Context<Self>,
+        f: impl Fn(&mut ScopeApp) + 'static,
+    ) -> impl IntoElement {
+        Self::button_base(id, label, active).on_click(cx.listener(move |this, _: &ClickEvent, _, cx| {
+            f(this);
+            cx.notify();
+        }))
+    }
+
+    /// A labelled cluster of ribbon buttons.
+    fn ribbon_group(title: &str, children: Vec<gpui::AnyElement>) -> impl IntoElement {
+        div()
+            .flex()
+            .items_center()
+            .gap_1()
+            .pr_3()
+            .border_r_1()
+            .border_color(rgb(0x333333))
+            .child(div().pr_1().text_xs().text_color(rgb(0x888888)).child(title.to_owned()))
+            .children(children)
+    }
+
+    fn ribbon(&self, cx: &mut Context<Self>) -> impl IntoElement {
+        let mut display = vec![
+            self.view_button("phosphor".into(), "Phosphor", self.phosphor_on, cx, |this| {
+                this.phosphor_on = !this.phosphor_on;
+                this.phosphor.clear();
+            })
+            .into_any_element(),
+        ];
+        if self.phosphor_on {
+            display.push(div().w(px(8.)).into_any_element());
+            for p in Persistence::ALL {
+                display.push(
+                    self.view_button(format!("persist-{}", p.label()), p.label(), self.persistence == p, cx, move |this| {
+                        this.persistence = p
+                    })
+                    .into_any_element(),
+                );
+            }
+            display.push(div().w(px(8.)).into_any_element());
+            display.push(self.view_button("phosphor-clear".into(), "Clear", false, cx, |this| this.phosphor.clear()).into_any_element());
+        }
+        div()
+            .flex()
+            .items_center()
+            .gap_3()
+            .px_2()
+            .py_1()
+            .bg(rgb(0x1c1c1c))
+            .border_b_1()
+            .border_color(rgb(0x333333))
+            .child(Self::ribbon_group("Display", display))
     }
 
     /// `label  ◀ value ▶`
@@ -317,29 +416,41 @@ impl ScopeApp {
 
 impl Render for ScopeApp {
     fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        let frame = self.frame.clone();
         let settings = self.settings;
+        let trace = if self.phosphor_on {
+            let runs = |ch: usize| if settings.ch[ch].on { self.phosphor.runs(ch) } else { Vec::new() };
+            Trace::Phosphor([runs(0), runs(1)])
+        } else {
+            Trace::Line(self.frame.clone())
+        };
         div()
             .flex()
+            .flex_col()
             .size_full()
             .bg(rgb(0x101010))
             .text_color(rgb(0xdddddd))
             .text_sm()
+            .child(self.ribbon(cx))
             .child(
                 div()
                     .flex_1()
                     .flex()
-                    .flex_col()
-                    .gap_1()
-                    .p_2()
                     .child(
                         div()
                             .flex_1()
-                            .child(canvas(|_, _, _| (), move |b, _, window, cx| paint_scope(b, frame.as_ref(), &settings, window, cx)).size_full()),
+                            .flex()
+                            .flex_col()
+                            .gap_1()
+                            .p_2()
+                            .child(
+                                div()
+                                    .flex_1()
+                                    .child(canvas(|_, _, _| (), move |b, _, window, cx| paint_scope(b, &trace, &settings, window, cx)).size_full()),
+                            )
+                            .child(self.status_line()),
                     )
-                    .child(self.status_line()),
+                    .child(self.controls(cx)),
             )
-            .child(self.controls(cx))
     }
 }
 
@@ -382,7 +493,7 @@ fn paint_label(
     let _ = line.paint(point(px(left), px(y - line_height / 2.)), px(line_height), window, cx);
 }
 
-fn paint_scope(bounds: Bounds<Pixels>, frame: Option<&Frame>, settings: &Settings, window: &mut Window, cx: &mut App) {
+fn paint_scope(bounds: Bounds<Pixels>, trace: &Trace, settings: &Settings, window: &mut Window, cx: &mut App) {
     window.paint_quad(fill(bounds, rgb(0x000000)));
 
     // Graticule rectangle, inset to leave room for the axis labels.
@@ -448,7 +559,27 @@ fn paint_scope(bounds: Bounds<Pixels>, frame: Option<&Frame>, settings: &Setting
     window.paint_quad(fill(Bounds::new(point(px(x0 + w - 8.), px(ty - 4.)), size(px(8.), px(8.))), tc));
     window.paint_quad(fill(Bounds::new(point(px(x0 + w / 2. - 4.), px(y0)), size(px(8.), px(6.))), tc));
 
-    let Some(frame) = frame else { return };
+    let frame = match trace {
+        Trace::Line(Some(frame)) => frame,
+        Trace::Line(None) => return,
+        Trace::Phosphor(runs) => {
+            // Each run is one quad; brightness is the channel colour's alpha.
+            let col_w = w / phosphor::COLS as f32;
+            for (i, runs) in runs.iter().enumerate() {
+                let mut color: Hsla = rgb(CH_COLORS[i]).into();
+                for run in runs {
+                    color.a = run.level as f32 / phosphor::LEVELS as f32;
+                    let top = y_of(run.code_hi() as f32 + 0.5);
+                    let bottom = y_of(run.code_lo() as f32 - 0.5);
+                    let x = x0 + run.col as f32 * col_w;
+                    // Round widths up so neighbouring columns don't leave gaps.
+                    let quad = Bounds::new(point(px(x), px(top)), size(px(col_w.ceil()), px(bottom - top)));
+                    window.paint_quad(fill(quad, color));
+                }
+            }
+            return;
+        }
+    };
     for (i, samples) in frame.samples.iter().enumerate() {
         let Some(samples) = samples else { continue };
         if !settings.ch[i].on || samples.is_empty() {

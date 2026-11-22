@@ -1,5 +1,6 @@
 mod acquire;
 mod device;
+mod phosphor;
 mod protocol;
 mod settings;
 mod tables;
