@@ -17,7 +17,7 @@ use crate::tables::{
     self, ADC_MAX, COUNTS_PER_DIV, H_DIVS, POS0_MAX, TDIV_MAX_IDX, TDIV_MIN_IDX, V_DIVS, VDIV_MV,
 };
 
-const CH_COLORS: [u32; 2] = [0xf5d742, 0x42d4f5];
+const CH_COLORS: [u32; 2] = [0x42d4f5, 0x42f578];
 /// Trigger marker colour when triggering from the external input.
 const EXT_TRIGGER_COLOR: u32 = 0xbbbbbb;
 
