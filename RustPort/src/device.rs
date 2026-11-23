@@ -188,8 +188,26 @@ impl Device {
 
     /// Opens the scope and brings it to a state where registers can be
     /// written (`InterCommTiny.initMachine`).
+    /// Discards anything the scope still had queued for the previous session
+    /// (e.g. half of a data block if that process quit mid-transfer), which
+    /// would otherwise be read as the reply to our first commands.
+    fn drain(&mut self) -> usize {
+        let mut drained = 0;
+        for _ in 0..64 {
+            match self.read(protocol::BLOCK_LEN, Duration::from_millis(50)) {
+                Ok(data) if !data.is_empty() => drained += data.len(),
+                _ => break,
+            }
+        }
+        drained
+    }
+
     pub fn connect(log: &mut dyn FnMut(String)) -> Result<(Self, Calibration)> {
         let mut dev = Self::open()?;
+        let stale = dev.drain();
+        if stale > 0 {
+            log(format!("Discarded {stale} stale bytes from a previous session"));
+        }
 
         let fpga_loaded = dev.write_reg(reg::FPGA_QUERY, 1, 0)? != 0;
         let cal = protocol::parse_flash(&dev.read_flash()?).context("reading calibration from flash")?;

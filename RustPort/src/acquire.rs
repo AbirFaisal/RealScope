@@ -2,7 +2,7 @@
 
 use std::sync::mpsc::{Receiver, RecvTimeoutError, Sender, TryRecvError};
 use std::thread::{self, sleep};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use anyhow::Result;
 
@@ -17,6 +17,9 @@ pub struct Frame {
     /// Raw ADC samples per channel (screen position in counts, 0 = centre),
     /// `None` when the channel is off.
     pub samples: [Option<Vec<i8>>; 2],
+    /// Hardware frequency counter per channel, kept only when that channel
+    /// triggered (the counter is meaningless otherwise).
+    pub counter_hz: [Option<f64>; 2],
     pub triggered: bool,
 }
 
@@ -45,7 +48,7 @@ fn worker(settings_rx: Receiver<Settings>, events: Sender<Event>) {
             Ok((dev, cal)) => {
                 // The USB serial descriptor is just "0" on these units; the board serial lives in flash.
                 let _ = events.send(Event::Connected { serial: cal.serial.clone(), version: cal.version.clone() });
-                let mut scope = Scope { dev, cal, applied: None };
+                let mut scope = Scope::new(dev, cal);
                 match scope.run(&settings_rx, &events, &mut settings) {
                     Ok(()) => return, // UI went away
                     Err(e) => {
@@ -70,11 +73,13 @@ pub struct Scope {
     pub dev: Device,
     pub cal: Calibration,
     applied: Option<Settings>,
+    /// When the frequency-counter thresholds were last written.
+    counter_fed: Option<Instant>,
 }
 
 impl Scope {
     pub fn new(dev: Device, cal: Calibration) -> Self {
-        Scope { dev, cal, applied: None }
+        Scope { dev, cal, applied: None, counter_fed: None }
     }
 
     /// Main loop. Returns `Ok` when the UI closed the settings channel.
@@ -126,8 +131,12 @@ impl Scope {
             return Ok(None);
         };
         let mut samples: [Option<Vec<i8>>; 2] = [None, None];
+        let mut counter_hz = [None, None];
         for block in &blocks {
-            if let Block::Data { channel, samples: s } = protocol::parse_block(block, settings.tdiv_idx)? {
+            if let Block::Data { channel, samples: s, counter_hz: c } = protocol::parse_block(block, settings.tdiv_idx)? {
+                if trg_status >> channel & 1 != 0 {
+                    counter_hz[channel as usize] = c;
+                }
                 let ch = &settings.ch[channel as usize];
                 samples[channel as usize] = Some(if ch.coupling == Coupling::Gnd {
                     vec![ch.pos0 as i8; s.len()]
@@ -136,7 +145,16 @@ impl Scope {
                 });
             }
         }
-        Ok(Some(Frame { samples, triggered: trg_status != 0 }))
+        // The vendor app refreshes the counter thresholds every 2 s.
+        if self.counter_fed.is_none_or(|t| t.elapsed() > Duration::from_secs(2)) {
+            for (ch, s) in samples.iter().enumerate() {
+                if let Some(mid) = s.as_deref().and_then(protocol::counter_threshold) {
+                    self.dev.write_reg(reg::FREQ_REF[ch], 1, mid as u32)?;
+                }
+            }
+            self.counter_fed = Some(Instant::now());
+        }
+        Ok(Some(Frame { samples, counter_hz, triggered: trg_status != 0 }))
     }
 
     /// Writes whatever registers differ from the last applied settings.
@@ -213,6 +231,8 @@ impl Scope {
         }
 
         self.applied = Some(*new);
+        // Scale or position changed, so the counter threshold moved: refresh it on the next frame.
+        self.counter_fed = None;
         Ok(())
     }
 }

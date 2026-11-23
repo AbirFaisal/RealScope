@@ -88,12 +88,8 @@ impl ChannelSettings {
         VDIV_MV[self.vdiv_idx] as f64 / 1000.0
     }
 
-    /// Converts a raw ADC sample to volts (`WFO.java:66-77`, probe ×1).
-    pub fn sample_to_volts(&self, sample: i8) -> f64 {
-        self.code_to_volts(sample as i32)
-    }
-
-    /// Voltage at a screen position given in ADC counts (0 = centre, ±125 = edges).
+    /// Voltage at a screen position given in ADC counts (0 = centre, ±125 = edges),
+    /// probe ×1 (`WFO.java:66-77`).
     pub fn code_to_volts(&self, code: i32) -> f64 {
         (code - self.pos0) as f64 * self.volts_per_div() / COUNTS_PER_DIV as f64
     }

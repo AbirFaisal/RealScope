@@ -10,6 +10,7 @@ use gpui::{
 };
 
 use crate::acquire::{self, Event, Frame};
+use crate::measure::{self, Group, Measurements};
 use crate::phosphor::{self, Persistence, Phosphor, Run};
 use crate::settings::{ChannelSettings, Settings, Sweep};
 use crate::tables::{
@@ -17,6 +18,9 @@ use crate::tables::{
 };
 
 const CH_COLORS: [u32; 2] = [0xf5d742, 0x42d4f5];
+
+/// How often the measurements panel refreshes; faster than this is unreadable.
+const MEASURE_INTERVAL: Duration = Duration::from_millis(250);
 
 /// Space around the graticule for axis labels: CH1 volts left, CH2 volts right, time below.
 const MARGIN_SIDE: f32 = 56.;
@@ -53,6 +57,10 @@ struct ScopeApp {
     persistence: Persistence,
     phosphor: Phosphor,
     last_frame_at: Option<Instant>,
+    /// Measurements panel, refreshed at a readable rate rather than every frame.
+    measurements_on: bool,
+    measurements: [Option<Measurements>; 2],
+    measured_at: Option<Instant>,
     _poll: Task<()>,
 }
 
@@ -98,6 +106,9 @@ impl ScopeApp {
             persistence: Persistence::Medium,
             phosphor: Phosphor::default(),
             last_frame_at: None,
+            measurements_on: true,
+            measurements: [None, None],
+            measured_at: None,
             _poll: poll,
         }
     }
@@ -122,6 +133,10 @@ impl ScopeApp {
                     }
                 }
                 self.last_frame_at = Some(now);
+                if self.measured_at.is_none_or(|t| now - t >= MEASURE_INTERVAL) {
+                    self.update_measurements(&f);
+                    self.measured_at = Some(now);
+                }
                 self.frame = Some(f);
             }
             Event::Disconnected(e) => {
@@ -129,8 +144,61 @@ impl ScopeApp {
                 self.device = None;
                 self.frame = None;
                 self.phosphor.clear();
+                self.measurements = [None, None];
             }
         }
+    }
+
+    fn update_measurements(&mut self, frame: &Frame) {
+        let dt = 1.0 / tables::sample_rate_hz(self.settings.tdiv_idx);
+        for ch in 0..2 {
+            self.measurements[ch] = frame.samples[ch].as_deref().filter(|_| self.settings.ch[ch].on).map(|samples| {
+                let mut m = measure::measure(samples, &self.settings.ch[ch], dt);
+                m.counter = frame.counter_hz[ch];
+                m
+            });
+        }
+    }
+
+    fn measurements_panel(&self) -> impl IntoElement {
+        let tables = self.measurements.each_ref().map(|m| measure::table(m.as_ref().unwrap_or(&Measurements::default())));
+        let dim = rgb(0x888888);
+        let row = |label: SharedString, values: [SharedString; 2], colors: [gpui::Rgba; 2], label_color: gpui::Rgba| {
+            div()
+                .flex()
+                .gap_1()
+                .child(div().w(px(58.)).text_color(label_color).child(label))
+                .child(div().flex_1().text_right().text_color(colors[0]).child(values[0].clone()))
+                .child(div().flex_1().text_right().text_color(colors[1]).child(values[1].clone()))
+        };
+        let ch_colors = [rgb(CH_COLORS[0]), rgb(CH_COLORS[1])];
+        let value_color = rgb(0xdddddd);
+        let mut panel = div()
+            .w(px(240.))
+            .flex()
+            .flex_col()
+            .gap(px(2.))
+            .p_2()
+            .bg(rgb(0x181818))
+            .text_xs()
+            .child(div().text_sm().pb_1().child("Measurements"))
+            .child(row("".into(), ["CH1".into(), "CH2".into()], ch_colors, dim));
+        let mut group = None;
+        for (a, b) in tables[0].iter().zip(&tables[1]) {
+            if group != Some(a.0) {
+                group = Some(a.0);
+                let title = match a.0 {
+                    Group::Time => "Time",
+                    Group::Voltage => "Voltage",
+                };
+                panel = panel.child(div().pt_2().text_color(dim).border_b_1().border_color(rgb(0x2a2a2a)).child(title));
+            }
+            panel = panel.child(row(a.1.into(), [a.2.clone().into(), b.2.clone().into()], [value_color; 2], dim));
+        }
+        if self.measurements.iter().flatten().any(|m| m.clipped) {
+            panel = panel.child(div().pt_2().text_color(dim).child("? = signal off screen; value is a bound"));
+        }
+        panel
     }
 
     fn update_settings(&mut self, cx: &mut Context<Self>, f: &dyn Fn(&mut Settings)) {
@@ -138,6 +206,8 @@ impl ScopeApp {
         let _ = self.settings_tx.send(self.settings);
         // Accumulated captures were drawn under the old scales.
         self.phosphor.clear();
+        // Show readings for the new settings as soon as a frame arrives.
+        self.measured_at = None;
         cx.notify();
     }
 
@@ -197,6 +267,10 @@ impl ScopeApp {
 
     fn ribbon(&self, cx: &mut Context<Self>) -> impl IntoElement {
         let mut display = vec![
+            self.view_button("measurements".into(), "Measurements", self.measurements_on, cx, |this| {
+                this.measurements_on = !this.measurements_on
+            })
+            .into_any_element(),
             self.view_button("phosphor".into(), "Phosphor", self.phosphor_on, cx, |this| {
                 this.phosphor_on = !this.phosphor_on;
                 this.phosphor.clear();
@@ -435,6 +509,7 @@ impl Render for ScopeApp {
                 div()
                     .flex_1()
                     .flex()
+                    .when(self.measurements_on, |row| row.child(self.measurements_panel()))
                     .child(
                         div()
                             .flex_1()

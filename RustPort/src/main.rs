@@ -1,5 +1,6 @@
 mod acquire;
 mod device;
+mod measure;
 mod phosphor;
 mod protocol;
 mod settings;
@@ -50,6 +51,14 @@ fn probe(capture: bool) -> Result<()> {
     if let Some(idx) = arg_value("--tdiv").and_then(|v| v.parse().ok()) {
         settings.tdiv_idx = usize::clamp(idx, tables::TDIV_MIN_IDX, tables::TDIV_MAX_IDX);
     }
+    if let Some(idx) = arg_value("--vdiv").and_then(|v| v.parse::<usize>().ok()) {
+        for ch in &mut settings.ch {
+            ch.vdiv_idx = idx.min(tables::VDIV_MV.len() - 1);
+        }
+    }
+    if let Some(level) = arg_value("--level").and_then(|v| v.parse().ok()) {
+        settings.trigger.level_v = level;
+    }
     let mut scope = Scope::new(dev, cal);
     scope.apply(&settings)?;
     if let Some(path) = dump_path() {
@@ -68,35 +77,38 @@ fn probe(capture: bool) -> Result<()> {
         println!("Wrote {} blocks to {path}", blocks.len());
         return Ok(());
     }
-    let deadline = Instant::now() + Duration::from_secs(3);
-    let frame = loop {
-        if let Some(frame) = scope.acquire(&settings)? {
-            break frame;
-        }
-        if Instant::now() > deadline {
-            bail!("no data within 3 s");
+    // Keep capturing briefly: the frequency counter is armed after the first
+    // frame and reports in later ones.
+    let start = Instant::now();
+    let mut frame = None;
+    while start.elapsed() < Duration::from_secs(3) {
+        if let Some(f) = scope.acquire(&settings)? {
+            let done = f.counter_hz.iter().any(Option::is_some) || start.elapsed() > Duration::from_millis(1500);
+            frame = Some(f);
+            if done {
+                break;
+            }
         }
         std::thread::sleep(Duration::from_millis(5));
-    };
+    }
+    let Some(frame) = frame else { bail!("no data within 3 s") };
     println!(
         "Captured at {}/div, {} (triggered: {})",
         tables::tdiv_label(settings.tdiv_idx),
         tables::format_si(tables::sample_rate_hz(settings.tdiv_idx), "Sa/s"),
         frame.triggered
     );
+    let dt = 1.0 / tables::sample_rate_hz(settings.tdiv_idx);
     for (i, samples) in frame.samples.iter().enumerate() {
         let Some(samples) = samples else { continue };
         let ch = &settings.ch[i];
-        let volts: Vec<f64> = samples.iter().map(|&s| ch.sample_to_volts(s)).collect();
-        let min = volts.iter().cloned().fold(f64::INFINITY, f64::min);
-        let max = volts.iter().cloned().fold(f64::NEG_INFINITY, f64::max);
-        let mean = volts.iter().sum::<f64>() / volts.len() as f64;
-        println!(
-            "CH{} @ {}/div: min {min:.3} V  max {max:.3} V  mean {mean:.3} V  ({} samples)",
-            i + 1,
-            tables::vdiv_label(ch.vdiv_idx),
-            volts.len()
-        );
+        let mut m = measure::measure(samples, ch, dt);
+        m.counter = frame.counter_hz[i];
+        println!("CH{} @ {}/div ({} samples):", i + 1, tables::vdiv_label(ch.vdiv_idx), samples.len());
+        for row in measure::table(&m).chunks(4) {
+            let cells: Vec<String> = row.iter().map(|(_, label, value)| format!("{label:>9} {value:<11}")).collect();
+            println!("  {}", cells.join(""));
+        }
     }
     Ok(())
 }

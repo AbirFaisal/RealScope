@@ -75,23 +75,19 @@ pub fn grid_time_s(tdiv_idx: usize, i: usize) -> f64 {
 }
 
 pub fn format_si(value: f64, unit: &str) -> String {
+    const PREFIXES: [(f64, &str); 6] = [(1e9, "n"), (1e6, "µ"), (1e3, "m"), (1.0, ""), (1e-3, "k"), (1e-6, "M")];
     // Snap float noise so the zero line reads "0 V", not "-0 V".
     let value = if value.abs() < 1e-12 { 0.0 } else { value };
-    let abs = value.abs();
-    let (scale, prefix) = if abs == 0.0 {
+    // Smallest prefix whose scaled value, once rounded to 3 decimals, is below
+    // 1000 (so 999.9999 Hz reads "1 kHz", not "1000 Hz").
+    let (scale, prefix) = if value == 0.0 {
         (1.0, "")
-    } else if abs < 1e-6 {
-        (1e9, "n")
-    } else if abs < 1e-3 {
-        (1e6, "µ")
-    } else if abs < 1.0 {
-        (1e3, "m")
-    } else if abs < 1e3 {
-        (1.0, "")
-    } else if abs < 1e6 {
-        (1e-3, "k")
     } else {
-        (1e-6, "M")
+        PREFIXES
+            .iter()
+            .copied()
+            .find(|&(scale, _)| ((value.abs() * scale) * 1000.0).round() / 1000.0 < 1000.0)
+            .unwrap_or(PREFIXES[PREFIXES.len() - 1])
     };
     let v = value * scale;
     let text = format!("{v:.3}");
@@ -127,6 +123,11 @@ mod tests {
         assert_eq!(format_si(250e3, "Sa/s"), "250 kSa/s");
         assert_eq!(format_si(-0.0, "V"), "0 V");
         assert_eq!(format_si(-2.5e-3, "s"), "-2.5 ms");
+        assert_eq!(format_si(999.9999, "Hz"), "1 kHz");
+        assert_eq!(format_si(999.4, "Hz"), "999.4 Hz");
+        assert_eq!(format_si(3e-13, "s"), "0 s");
+        assert_eq!(format_si(2e-9, "s"), "2 ns");
+        assert_eq!(format_si(3e7, "Sa/s"), "30 MSa/s");
     }
 
     #[test]

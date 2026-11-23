@@ -25,6 +25,8 @@ pub mod reg {
     /// Holdoff arg/index pairs per channel.
     pub const HOLDOFF: [u32; 2] = [0x26, 0x2a];
     pub const EDGE_LEVEL: [u32; 2] = [0x2e, 0x30];
+    /// Threshold the hardware frequency counter counts crossings of.
+    pub const FREQ_REF: [u32; 2] = [0x4a, 0x4b];
     pub const TIMEBASE: u32 = 0x52;
     pub const SUF_TRG: u32 = 0x56;
     pub const PRE_TRG: u32 = 0x5a;
@@ -235,8 +237,27 @@ fn screen_window(tdiv_idx: usize) -> (usize, usize) {
 pub enum Block {
     /// Device has no data yet (`EBUSY`).
     Busy,
-    /// On-screen samples, clamped to the ADC range.
-    Data { channel: u8, samples: Vec<i8> },
+    /// On-screen samples, clamped to the ADC range, plus the hardware
+    /// frequency counter reading if it has one.
+    Data { channel: u8, samples: Vec<i8>, counter_hz: Option<f64> },
+}
+
+/// Threshold to feed the hardware frequency counter: the midpoint of the
+/// on-screen record in raw ADC codes (`ValueFeeder.syncChannelsMiddle`,
+/// `MinMax.computeMiddle`).
+pub fn counter_threshold(samples: &[i8]) -> Option<u8> {
+    let max = *samples.iter().max()? as i32;
+    let min = *samples.iter().min()? as i32;
+    Some(((min + max) >> 1) as i8 as u8)
+}
+
+/// Hardware frequency counter from the block header: `period_num` periods of
+/// the trigger source took `time_sum` ticks of the 100 MHz reference
+/// (`GetDataRunner2.acceptChannelDataT2`, `VDS1022.doFrequencyCompute`).
+fn counter_hz(buf: &[u8]) -> Option<f64> {
+    let time_sum = u32::from_le_bytes(buf[1..5].try_into().unwrap());
+    let period_num = u32::from_le_bytes(buf[5..9].try_into().unwrap());
+    (time_sum > 0 && period_num > 0).then(|| period_num as f64 * 100e6 / time_sum as f64)
 }
 
 pub fn parse_block(buf: &[u8], tdiv_idx: usize) -> Result<Block> {
@@ -251,7 +272,7 @@ pub fn parse_block(buf: &[u8], tdiv_idx: usize) -> Result<Block> {
         .iter()
         .map(|&b| (b as i8 as i32).clamp(-ADC_MAX, ADC_MAX) as i8)
         .collect();
-    Ok(Block::Data { channel, samples })
+    Ok(Block::Data { channel, samples, counter_hz: counter_hz(buf) })
 }
 
 #[cfg(test)]
@@ -380,8 +401,9 @@ mod tests {
         buf[162] = 0x80; // -128
         buf[162 + 4999] = 42;
         match parse_block(&buf, 9).unwrap() {
-            Block::Data { channel, samples } => {
+            Block::Data { channel, samples, counter_hz } => {
                 assert_eq!(channel, 1);
+                assert_eq!(counter_hz, None);
                 assert_eq!(samples.len(), MAX_SCREEN_POINTS);
                 assert_eq!(samples[0], -125); // -128 clamped
                 assert_eq!(samples[4999], 42);
@@ -389,6 +411,18 @@ mod tests {
             Block::Busy => panic!("expected data"),
         }
         assert!(parse_block(&buf[..100], 9).is_err());
+
+        assert_eq!(counter_threshold(&[49, 62, 55]), Some(55));
+        assert_eq!(counter_threshold(&[-10, -3]), Some((-7i8) as u8)); // floor, like Java >> 1
+        assert_eq!(counter_threshold(&[]), None);
+
+        // Counter: 3 periods in 300_000 ticks of 100 MHz = 1 kHz.
+        buf[1..5].copy_from_slice(&300_000u32.to_le_bytes());
+        buf[5..9].copy_from_slice(&3u32.to_le_bytes());
+        match parse_block(&buf, 9).unwrap() {
+            Block::Data { counter_hz, .. } => assert_eq!(counter_hz, Some(1000.0)),
+            Block::Busy => panic!("expected data"),
+        }
 
         // 2 µs/div: 4000 points centred in the 5000-point record.
         buf[661] = 7;
