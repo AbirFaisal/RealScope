@@ -280,7 +280,7 @@ mod tests {
     use super::*;
 
     fn ch(on: bool, vdiv_idx: usize, coupling: Coupling) -> ChannelSettings {
-        ChannelSettings { on, vdiv_idx, coupling, pos0: 0 }
+        ChannelSettings { on, vdiv_idx, coupling, pos0: 0, probe: 1 }
     }
 
     #[test]

@@ -19,6 +19,9 @@ use crate::tables::{
 
 const CH_COLORS: [u32; 2] = [0xf5d742, 0x42d4f5];
 
+/// Width of the label column in the channel/trigger control rows.
+const STEPPER_LABEL_W: f32 = 80.;
+
 /// How often the measurements panel refreshes; faster than this is unreadable.
 const MEASURE_INTERVAL: Duration = Duration::from_millis(250);
 
@@ -316,7 +319,7 @@ impl ScopeApp {
             .flex()
             .items_center()
             .gap_1()
-            .child(div().w(px(70.)).text_color(rgb(0x999999)).child(label.to_owned()))
+            .child(div().w(px(STEPPER_LABEL_W)).text_color(rgb(0x999999)).child(label.to_owned()))
             .child(self.button(format!("{id}-dec"), "◀", false, cx, dec))
             .child(div().flex_1().text_center().child(value))
             .child(self.button(format!("{id}-inc"), "▶", false, cx, inc))
@@ -358,7 +361,7 @@ impl ScopeApp {
             .child(self.stepper(
                 &format!("ch{i}-vdiv"),
                 "Volts/div",
-                tables::vdiv_label(ch.vdiv_idx),
+                ch.vdiv_label(),
                 cx,
                 move |s| s.ch[i].vdiv_idx = s.ch[i].vdiv_idx.saturating_sub(1),
                 move |s| s.ch[i].vdiv_idx = (s.ch[i].vdiv_idx + 1).min(VDIV_MV.len() - 1),
@@ -371,6 +374,15 @@ impl ScopeApp {
                 move |s| s.ch[i].pos0 = ChannelSettings::clamp_pos0(s.ch[i].pos0 - COUNTS_PER_DIV / 5),
                 move |s| s.ch[i].pos0 = ChannelSettings::clamp_pos0(s.ch[i].pos0 + COUNTS_PER_DIV / 5),
             ))
+            .child(
+                div()
+                    .flex()
+                    .items_center()
+                    .gap_1()
+                    .child(div().w(px(STEPPER_LABEL_W)).text_color(rgb(0x999999)).child("Attenuation"))
+                    .child(self.button(format!("ch{i}-x1"), "x1", ch.probe == 1, cx, move |s| s.set_probe(i, 1)))
+                    .child(self.button(format!("ch{i}-x10"), "x10", ch.probe == 10, cx, move |s| s.set_probe(i, 10))),
+            )
     }
 
     fn controls(&self, cx: &mut Context<Self>) -> impl IntoElement {

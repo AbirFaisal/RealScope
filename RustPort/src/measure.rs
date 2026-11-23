@@ -262,7 +262,7 @@ mod tests {
 
     /// 1 V/div, so one count = 40 mV.
     fn ch() -> ChannelSettings {
-        ChannelSettings { on: true, vdiv_idx: 7, coupling: Coupling::Dc, pos0: 0 }
+        ChannelSettings { on: true, vdiv_idx: 7, coupling: Coupling::Dc, pos0: 0, probe: 1 }
     }
     const K: f64 = 1.0 / 25.0;
     const DT: f64 = 1e-6;

@@ -55,15 +55,6 @@ pub fn screen_points(tdiv_idx: usize) -> usize {
     (sample_rate_hz(tdiv_idx) * TDIV_S[tdiv_idx] * H_DIVS as f64).round() as usize
 }
 
-pub fn vdiv_label(idx: usize) -> String {
-    let mv = VDIV_MV[idx];
-    if mv >= 1000 {
-        format!("{} V", mv / 1000)
-    } else {
-        format!("{mv} mV")
-    }
-}
-
 pub fn tdiv_label(idx: usize) -> String {
     format_si(TDIV_S[idx], "s")
 }
@@ -116,8 +107,6 @@ mod tests {
 
     #[test]
     fn labels() {
-        assert_eq!(vdiv_label(0), "5 mV");
-        assert_eq!(vdiv_label(7), "1 V");
         assert_eq!(tdiv_label(9), "5 µs");
         assert_eq!(tdiv_label(16), "1 ms");
         assert_eq!(format_si(250e3, "Sa/s"), "250 kSa/s");

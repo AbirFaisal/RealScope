@@ -104,7 +104,7 @@ fn probe(capture: bool) -> Result<()> {
         let ch = &settings.ch[i];
         let mut m = measure::measure(samples, ch, dt);
         m.counter = frame.counter_hz[i];
-        println!("CH{} @ {}/div ({} samples):", i + 1, tables::vdiv_label(ch.vdiv_idx), samples.len());
+        println!("CH{} @ {}/div ({} samples):", i + 1, ch.vdiv_label(), samples.len());
         for row in measure::table(&m).chunks(4) {
             let cells: Vec<String> = row.iter().map(|(_, label, value)| format!("{label:>9} {value:<11}")).collect();
             println!("  {}", cells.join(""));

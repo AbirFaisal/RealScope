@@ -1,6 +1,6 @@
 //! User-facing scope configuration, shared between the UI and the acquisition thread.
 
-use crate::tables::{ADC_MAX, COUNTS_PER_DIV, POS0_MAX, VDIV_MV};
+use crate::tables::{ADC_MAX, COUNTS_PER_DIV, POS0_MAX, VDIV_MV, format_si};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Coupling {
@@ -40,6 +40,9 @@ pub struct ChannelSettings {
     pub coupling: Coupling,
     /// Vertical position of the channel's 0 V line, in ADC counts (25 per div).
     pub pos0: i32,
+    /// Probe attenuation (1 or 10). Display-only: the scope always sees the
+    /// attenuated signal, readings are scaled to the probe tip (`MachineInfo.java:139-141`).
+    pub probe: u32,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -66,6 +69,7 @@ impl Default for Settings {
             vdiv_idx: 7, // 1 V/div
             coupling: Coupling::Dc,
             pos0: 0,
+            probe: 1,
         };
         Settings {
             ch: [
@@ -84,12 +88,18 @@ impl Default for Settings {
 }
 
 impl ChannelSettings {
+    /// Volts per division at the probe tip.
     pub fn volts_per_div(&self) -> f64 {
-        VDIV_MV[self.vdiv_idx] as f64 / 1000.0
+        VDIV_MV[self.vdiv_idx] as f64 / 1000.0 * self.probe as f64
     }
 
-    /// Voltage at a screen position given in ADC counts (0 = centre, ±125 = edges),
-    /// probe ×1 (`WFO.java:66-77`).
+    /// V/div readout at the probe tip, e.g. "500 mV" or "10 V".
+    pub fn vdiv_label(&self) -> String {
+        format_si(self.volts_per_div(), "V")
+    }
+
+    /// Probe-tip voltage at a screen position given in ADC counts
+    /// (0 = centre, ±125 = edges; `WFO.java:66-77`).
     pub fn code_to_volts(&self, code: i32) -> f64 {
         (code - self.pos0) as f64 * self.volts_per_div() / COUNTS_PER_DIV as f64
     }
@@ -100,6 +110,19 @@ impl ChannelSettings {
 }
 
 impl Settings {
+    /// Changes a channel's probe attenuation. If it is the trigger source, the
+    /// level is rescaled so the trigger stays at the same screen position.
+    pub fn set_probe(&mut self, ch: usize, probe: u32) {
+        let old = self.ch[ch].probe;
+        if old == probe {
+            return;
+        }
+        self.ch[ch].probe = probe;
+        if self.trigger.source == ch {
+            self.trigger.level_v *= probe as f64 / old as f64;
+        }
+    }
+
     /// Trigger level as an absolute ADC code, including the source channel's
     /// position (`EdgeTrigger.java`, `VoltsensableTrigger.java:69-70`).
     pub fn trigger_level_code(&self) -> i32 {
@@ -115,7 +138,7 @@ mod tests {
 
     #[test]
     fn code_to_volts_follows_position() {
-        let ch = ChannelSettings { on: true, vdiv_idx: 7, coupling: Coupling::Dc, pos0: 0 };
+        let ch = ChannelSettings { on: true, vdiv_idx: 7, coupling: Coupling::Dc, pos0: 0, probe: 1 };
         assert_eq!(ch.code_to_volts(125), 5.0);
         assert_eq!(ch.code_to_volts(-125), -5.0);
         // Zero line moved up 2 div: top of screen is now 3 div above it.
@@ -124,5 +147,33 @@ mod tests {
         assert_eq!(up.code_to_volts(50), 0.0);
         let mv = ChannelSettings { vdiv_idx: 4, ..ch }; // 100 mV/div
         assert!((mv.code_to_volts(25) - 0.1).abs() < 1e-12);
+    }
+
+    #[test]
+    fn probe_scales_readings() {
+        let ch = ChannelSettings { on: true, vdiv_idx: 7, coupling: Coupling::Dc, pos0: 0, probe: 10 };
+        assert_eq!(ch.volts_per_div(), 10.0);
+        assert_eq!(ch.code_to_volts(25), 10.0);
+        assert_eq!(ch.vdiv_label(), "10 V");
+        let x1 = ChannelSettings { probe: 1, ..ch };
+        assert_eq!(x1.vdiv_label(), "1 V");
+        assert_eq!(ChannelSettings { vdiv_idx: 0, ..x1 }.vdiv_label(), "5 mV");
+        assert_eq!(ChannelSettings { vdiv_idx: 0, ..ch }.vdiv_label(), "50 mV");
+    }
+
+    #[test]
+    fn set_probe_keeps_trigger_on_screen() {
+        let mut s = Settings::default();
+        assert_eq!(s.trigger.source, 0);
+        let code = s.trigger_level_code();
+        s.set_probe(0, 10);
+        assert_eq!(s.trigger.level_v, 10.0);
+        assert_eq!(s.trigger_level_code(), code);
+        // The other channel's probe doesn't move the CH1 trigger.
+        s.set_probe(1, 10);
+        assert_eq!(s.trigger.level_v, 10.0);
+        s.set_probe(0, 1);
+        assert_eq!(s.trigger.level_v, 1.0);
+        assert_eq!(s.trigger_level_code(), code);
     }
 }
