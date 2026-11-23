@@ -56,6 +56,9 @@ fn probe(capture: bool) -> Result<()> {
             ch.vdiv_idx = idx.min(tables::VDIV_MV.len() - 1);
         }
     }
+    if std::env::args().any(|a| a == "--ext") {
+        settings.trigger.source = settings::EXT;
+    }
     if let Some(level) = arg_value("--level").and_then(|v| v.parse().ok()) {
         settings.trigger.level_v = level;
     }

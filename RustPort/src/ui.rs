@@ -12,12 +12,14 @@ use gpui::{
 use crate::acquire::{self, Event, Frame};
 use crate::measure::{self, Group, Measurements};
 use crate::phosphor::{self, Persistence, Phosphor, Run};
-use crate::settings::{ChannelSettings, Settings, Sweep};
+use crate::settings::{ChannelSettings, EXT, Settings, Sweep};
 use crate::tables::{
     self, ADC_MAX, COUNTS_PER_DIV, H_DIVS, POS0_MAX, TDIV_MAX_IDX, TDIV_MIN_IDX, V_DIVS, VDIV_MV,
 };
 
 const CH_COLORS: [u32; 2] = [0xf5d742, 0x42d4f5];
+/// Trigger marker colour when triggering from the external input.
+const EXT_TRIGGER_COLOR: u32 = 0xbbbbbb;
 
 /// Width of the label column in the channel/trigger control rows.
 const STEPPER_LABEL_W: f32 = 80.;
@@ -388,11 +390,27 @@ impl ScopeApp {
     fn controls(&self, cx: &mut Context<Self>) -> impl IntoElement {
         let s = self.settings;
         let src = s.trigger.source;
-        // Trigger level steps by 1/5 division of the source channel.
-        let level_step = move |s: &Settings| s.ch[s.trigger.source].volts_per_div() / 5.0;
-        let level_limit = move |s: &Settings| {
-            let ch = &s.ch[s.trigger.source];
-            (ADC_MAX - ch.pos0.min(ADC_MAX)) as f64 * ch.volts_per_div() / COUNTS_PER_DIV as f64
+        // Trigger level steps by 1/5 division of the source channel, within the screen.
+        let nudge_level = |up: bool| {
+            move |s: &mut Settings| {
+                let Some(c) = s.trigger_channel() else { return };
+                let ch = &s.ch[c];
+                let step = ch.volts_per_div() / 5.0;
+                let lim = (ADC_MAX - ch.pos0.min(ADC_MAX)) as f64 * ch.volts_per_div() / COUNTS_PER_DIV as f64;
+                s.trigger.level_v = if up { (s.trigger.level_v + step).min(lim) } else { (s.trigger.level_v - step).max(-lim) };
+            }
+        };
+        let level_row = if s.trigger_channel().is_some() {
+            self.stepper("trg-level", "Level", tables::format_si(s.trigger.level_v, "V"), cx, nudge_level(false), nudge_level(true))
+                .into_any_element()
+        } else {
+            div()
+                .flex()
+                .items_center()
+                .gap_1()
+                .child(div().w(px(STEPPER_LABEL_W)).text_color(rgb(0x999999)).child("Level"))
+                .child(div().text_color(rgb(0x999999)).child("set by external signal"))
+                .into_any_element()
         };
         div()
             .w(px(280.))
@@ -448,9 +466,6 @@ impl ScopeApp {
                         div()
                             .flex()
                             .gap_1()
-                            .child(self.button("trg-ch1".into(), "CH1", src == 0, cx, |s| s.trigger.source = 0))
-                            .child(self.button("trg-ch2".into(), "CH2", src == 1, cx, |s| s.trigger.source = 1))
-                            .child(div().flex_1())
                             .child(self.button("trg-auto".into(), "Auto", s.trigger.sweep == Sweep::Auto, cx, |s| {
                                 s.trigger.sweep = Sweep::Auto
                             }))
@@ -462,20 +477,15 @@ impl ScopeApp {
                                 |s| s.trigger.sweep = Sweep::Normal,
                             )),
                     )
-                    .child(self.stepper(
-                        "trg-level",
-                        "Level",
-                        tables::format_si(s.trigger.level_v, "V"),
-                        cx,
-                        move |s| {
-                            let lim = level_limit(s);
-                            s.trigger.level_v = (s.trigger.level_v - level_step(s)).max(-lim);
-                        },
-                        move |s| {
-                            let lim = level_limit(s);
-                            s.trigger.level_v = (s.trigger.level_v + level_step(s)).min(lim);
-                        },
-                    )),
+                    .child(
+                        div()
+                            .flex()
+                            .gap_1()
+                            .child(self.button("trg-ch1".into(), "CH1", src == 0, cx, |s| s.trigger.source = 0))
+                            .child(self.button("trg-ch2".into(), "CH2", src == 1, cx, |s| s.trigger.source = 1))
+                            .child(self.button("trg-ext".into(), "EXT", src == EXT, cx, |s| s.trigger.source = EXT)),
+                    )
+                    .child(level_row),
             )
     }
 
@@ -641,9 +651,11 @@ fn paint_scope(bounds: Bounds<Pixels>, trace: &Trace, settings: &Settings, windo
             window.paint_quad(fill(Bounds::new(point(px(x0), px(y - 4.)), size(px(8.), px(8.))), rgb(CH_COLORS[i])));
         }
     }
-    let ty = y_of(settings.trigger_level_code() as f32);
-    let tc = rgb(CH_COLORS[settings.trigger.source]);
-    window.paint_quad(fill(Bounds::new(point(px(x0 + w - 8.), px(ty - 4.)), size(px(8.), px(8.))), tc));
+    let tc = settings.trigger_channel().map_or(rgb(EXT_TRIGGER_COLOR), |c| rgb(CH_COLORS[c]));
+    if let Some(code) = settings.trigger_level_code() {
+        let ty = y_of(code as f32);
+        window.paint_quad(fill(Bounds::new(point(px(x0 + w - 8.), px(ty - 4.)), size(px(8.), px(8.))), tc));
+    }
     window.paint_quad(fill(Bounds::new(point(px(x0 + w / 2. - 4.), px(y0)), size(px(8.), px(6.))), tc));
 
     let frame = match trace {

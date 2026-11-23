@@ -45,11 +45,16 @@ pub struct ChannelSettings {
     pub probe: u32,
 }
 
+/// Trigger source index for the external trigger input, after the two
+/// channels (the vendor's `TriggerControl.EXTTRG_CHANNEL`).
+pub const EXT: usize = 2;
+
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct TriggerSettings {
-    /// 0 = CH1, 1 = CH2.
+    /// 0 = CH1, 1 = CH2, [`EXT`] = external input.
     pub source: usize,
-    /// Level in volts at the probe tip of the source channel.
+    /// Level in volts at the probe tip of the source channel (unused for EXT,
+    /// whose threshold is fixed in hardware).
     pub level_v: f64,
     pub sweep: Sweep,
 }
@@ -123,12 +128,18 @@ impl Settings {
         }
     }
 
+    /// The channel the trigger follows, or `None` for the external input.
+    pub fn trigger_channel(&self) -> Option<usize> {
+        (self.trigger.source < self.ch.len()).then_some(self.trigger.source)
+    }
+
     /// Trigger level as an absolute ADC code, including the source channel's
     /// position (`EdgeTrigger.java`, `VoltsensableTrigger.java:69-70`).
-    pub fn trigger_level_code(&self) -> i32 {
-        let ch = &self.ch[self.trigger.source];
+    /// `None` for the external trigger, which has no adjustable level.
+    pub fn trigger_level_code(&self) -> Option<i32> {
+        let ch = &self.ch[self.trigger_channel()?];
         let counts = (self.trigger.level_v / ch.volts_per_div() * COUNTS_PER_DIV as f64).round();
-        (ch.pos0 + counts as i32).clamp(-ADC_MAX, ADC_MAX)
+        Some((ch.pos0 + counts as i32).clamp(-ADC_MAX, ADC_MAX))
     }
 }
 
@@ -175,5 +186,18 @@ mod tests {
         s.set_probe(0, 1);
         assert_eq!(s.trigger.level_v, 1.0);
         assert_eq!(s.trigger_level_code(), code);
+    }
+
+    #[test]
+    fn external_trigger_has_no_level() {
+        let mut s = Settings::default();
+        assert_eq!(s.trigger_channel(), Some(0));
+        assert!(s.trigger_level_code().is_some());
+        s.trigger.source = EXT;
+        assert_eq!(s.trigger_channel(), None);
+        assert_eq!(s.trigger_level_code(), None);
+        // A probe change never touches the level while triggering externally.
+        s.set_probe(0, 10);
+        assert_eq!(s.trigger.level_v, 1.0);
     }
 }

@@ -5,7 +5,7 @@
 
 use anyhow::{Result, bail, ensure};
 
-use crate::settings::{ChannelSettings, Coupling, Sweep};
+use crate::settings::{ChannelSettings, Coupling, EXT, Sweep};
 use crate::tables::{ADC_MAX, ATTENUATION_VDIV_IDX, screen_points};
 
 pub const VENDOR_ID: u16 = 0x5345;
@@ -22,8 +22,11 @@ pub mod reg {
     pub const CHL_ON: u32 = 0x0b;
     pub const PHASE_FINE: u32 = 0x18;
     pub const TRG: u32 = 0x24;
-    /// Holdoff arg/index pairs per channel.
-    pub const HOLDOFF: [u32; 2] = [0x26, 0x2a];
+    /// Holdoff arg/index pairs per trigger source; EXT shares CH1's
+    /// (`DeviceAddressTable.trg_holdoff`).
+    pub const HOLDOFF: [u32; 3] = [0x26, 0x2a, 0x26];
+    /// Function of the multi-purpose I/O connector (trigger in / trigger out / pass-fail).
+    pub const MULTI_IO: u32 = 0x06;
     pub const EDGE_LEVEL: [u32; 2] = [0x2e, 0x30];
     /// Threshold the hardware frequency counter counts crossings of.
     pub const FREQ_REF: [u32; 2] = [0x4a, 0x4b];
@@ -99,15 +102,20 @@ pub fn zero_offset(compensation: i32, step: i32, pos0: i32) -> i32 {
     v
 }
 
-/// TRG register for a single-channel rising-edge trigger
-/// (`TinyTrgSubmitHandler.java:61-111`): bit13 source, bit12 slope (0 = rise),
-/// bits 11:10 sweep.
+/// MULTI_IO value that makes the connector the external trigger input
+/// (`Submitor2.sync_out[SysControl.SYNOUT_TrgIn]`).
+pub const MULTI_IO_TRIGGER_IN: u32 = 2;
+
+/// TRG register for a single-source rising-edge trigger
+/// (`TinyTrgSubmitHandler.java:61-111`): bit13 channel (0 = CH1, 1 = CH2),
+/// bit0 external input, bit12 slope (0 = rise), bits 11:10 sweep.
 pub fn trigger(source: usize, sweep: Sweep) -> u16 {
     let sweep = match sweep {
         Sweep::Auto => 0,
         Sweep::Normal => 1,
     };
-    ((source as u16 & 1) << 13) | (sweep << 10)
+    let source_bits = if source == EXT { 1 } else { (source as u16 & 1) << 13 };
+    source_bits | (sweep << 10)
 }
 
 /// Edge level register for a rising edge (`AbsTranslator.getLevelArg`): low
@@ -328,6 +336,8 @@ mod tests {
         assert_eq!(trigger(0, Sweep::Auto), 0x0000);
         assert_eq!(trigger(1, Sweep::Auto), 0x2000);
         assert_eq!(trigger(0, Sweep::Normal), 0x0400);
+        assert_eq!(trigger(EXT, Sweep::Auto), 0x0001);
+        assert_eq!(trigger(EXT, Sweep::Normal), 0x0401);
     }
 
     #[test]

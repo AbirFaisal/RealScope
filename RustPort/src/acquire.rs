@@ -8,7 +8,7 @@ use anyhow::Result;
 
 use crate::device::Device;
 use crate::protocol::{self, Block, Calibration, reg};
-use crate::settings::{Coupling, Settings, Sweep};
+use crate::settings::{Coupling, EXT, Settings, Sweep};
 use crate::tables::{ATTENUATION_VDIV_IDX, TDIV_MAX_IDX, TDIV_MIN_IDX, TIMEBASE_DIV};
 
 /// One acquisition.
@@ -154,7 +154,10 @@ impl Scope {
             }
             self.counter_fed = Some(Instant::now());
         }
-        Ok(Some(Frame { samples, counter_hz, triggered: trg_status != 0 }))
+        // TRG_D doesn't report the external input; in Normal sweep data only
+        // arrives on a trigger, so a frame means it fired.
+        let ext_fired = settings.trigger.source == EXT && settings.trigger.sweep == Sweep::Normal;
+        Ok(Some(Frame { samples, counter_hz, triggered: trg_status != 0 || ext_fired }))
     }
 
     /// Writes whatever registers differ from the last applied settings.
@@ -214,6 +217,12 @@ impl Scope {
         let trg = new.trigger;
         let src = trg.source;
         if first || old.map(|o| (o.trigger.source, o.trigger.sweep)) != Some((src, trg.sweep)) {
+            if src == EXT && (first || old.map(|o| o.trigger.source) != Some(EXT)) {
+                // Make the shared I/O connector an input. Like the vendor app, it is
+                // not switched back to an output afterwards, so it never drives a
+                // signal into a source that is still attached.
+                self.dev.write_reg(reg::MULTI_IO, 1, protocol::MULTI_IO_TRIGGER_IN)?;
+            }
             self.dev.write_reg(reg::TRG, 2, protocol::trigger(src, trg.sweep) as u32)?;
             // Holdoff goes high byte first (ClockTimeAdjuster.send), unlike cmd_bytewise.
             let h = protocol::HOLDOFF_DEFAULT;
@@ -221,9 +230,12 @@ impl Scope {
             self.dev.write_reg(reg::HOLDOFF[src] + 1, 1, h & 0xff)?;
         }
         // The level is an absolute ADC code, so it moves with the source's vdiv and position.
+        // (The external input has a fixed threshold, so there's nothing to write.)
         let level = new.trigger_level_code();
-        if first || old.map(|o| (o.trigger.source, o.trigger_level_code())) != Some((src, level)) {
-            self.dev.write_reg_bytewise(reg::EDGE_LEVEL[src], 2, protocol::edge_level(level))?;
+        if let Some(code) = level
+            && (first || old.map(|o| (o.trigger.source, o.trigger_level_code())) != Some((src, level)))
+        {
+            self.dev.write_reg_bytewise(reg::EDGE_LEVEL[src], 2, protocol::edge_level(code))?;
         }
 
         if first || was_running != new.running {
