@@ -1,5 +1,6 @@
 mod acquire;
 mod autoset;
+mod decode;
 mod device;
 mod fft;
 mod math;
@@ -76,6 +77,18 @@ fn probe(capture: bool) -> Result<()> {
         let shared = settings.trigger;
         settings.trigger.per_channel = [settings::EdgeSettings { level_v: shared.level_v, slope: shared.slope }; 2];
         settings.trigger.mode = settings::TriggerMode::PerChannel;
+    }
+    if let Some(p) = arg_value("--decode") {
+        settings.decode.on = true;
+        settings.decode.protocol = match p.as_str() {
+            "i2c" => decode::Protocol::I2c,
+            "spi" => decode::Protocol::Spi,
+            "1wire" => decode::Protocol::OneWire,
+            _ => decode::Protocol::Uart,
+        };
+        if let Some(baud) = arg_value("--baud").and_then(|v| v.parse().ok()) {
+            settings.decode.uart.baud = baud;
+        }
     }
     if let Some(op) = arg_value("--math") {
         settings.math.on = true;
@@ -160,6 +173,16 @@ fn probe(capture: bool) -> Result<()> {
                     );
                 }
                 None => println!("    no peak"),
+            }
+        }
+    }
+    if settings.decode.on {
+        let dt = 1.0 / tables::sample_rate_hz(settings.tdiv_idx);
+        for row in decode::decode(frame.samples.each_ref().map(|s| s.as_deref()), &settings) {
+            println!("Decode {} {}: {} items{}", settings.decode.protocol.label(), row.label, row.items.len(), row.message.map_or(String::new(), |m| format!(" ({m})")));
+            for item in row.items.iter().take(20) {
+                let t = (item.start - row.len as f64 / 2.0) * dt;
+                println!("  {:>10}  {}", tables::format_si(t, "s"), item.describe());
             }
         }
     }

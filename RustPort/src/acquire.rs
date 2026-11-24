@@ -27,6 +27,9 @@ pub struct Frame {
 }
 
 /// Requests from the UI to the acquisition thread.
+// Settings are copied by value; commands only flow on user actions, so the
+// size difference between variants doesn't matter.
+#[allow(clippy::large_enum_variant)]
 pub enum Command {
     /// Use these settings from now on.
     Apply(Settings),

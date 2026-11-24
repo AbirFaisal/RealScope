@@ -2,6 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::decode::DecodeSettings;
 use crate::fft::FftSettings;
 use crate::math::MathSettings;
 use crate::measure::Scale;
@@ -116,6 +117,7 @@ pub struct Settings {
     pub trigger: TriggerSettings,
     pub math: MathSettings,
     pub fft: FftSettings,
+    pub decode: DecodeSettings,
     /// Not saved: the app always starts acquiring.
     #[serde(skip)]
     pub run: RunMode,
@@ -158,6 +160,7 @@ impl Default for Settings {
             trigger: TriggerSettings::default(),
             math: MathSettings::default(),
             fft: FftSettings::default(),
+            decode: DecodeSettings::default(),
             run: RunMode::Running,
         }
     }
@@ -211,13 +214,15 @@ impl Settings {
         self.math.vdiv_idx = self.math.vdiv_idx.min(MATH_VDIV_V.len() - 1);
         self.math.pos0 = ChannelSettings::clamp_pos0(self.math.pos0);
         self.fft.sanitize();
+        self.decode.sanitize();
         self
     }
 
     /// Whether the scope captures channel `i`: when it is shown, or when the
-    /// math trace or the spectrum needs it (a hidden source is still captured).
+    /// math trace, the spectrum or the decoder needs it (a hidden source is
+    /// still captured).
     pub fn captures(&self, i: usize) -> bool {
-        self.ch[i].on || self.math.on || (self.fft.on && self.fft.source == i)
+        self.ch[i].on || self.math.on || (self.fft.on && self.fft.source == i) || self.decode.uses(i)
     }
 
     /// Screen scale of trace `i`: CH1, CH2, or 2 = Math.
@@ -234,6 +239,7 @@ impl Settings {
         }
         hw.math = MathSettings::default();
         hw.fft = FftSettings::default();
+        hw.decode = DecodeSettings::default();
         hw
     }
 

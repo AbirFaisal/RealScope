@@ -10,6 +10,7 @@ use gpui::{
 };
 
 use crate::acquire::{self, Command, Event, Frame};
+use crate::decode::{self, BAUDS, DataFormat, Kind, Parity, Protocol, Row, UartLines};
 use crate::fft::{self, DB_PER_DIV, FFT_H_DIVS, FftSettings, FftUnit, FftWindow, Spectrum};
 use crate::math::{self, MathOp, MathTrace};
 use crate::measure::{self, Group, Measurements};
@@ -40,6 +41,11 @@ const MARGIN_TOP: f32 = 6.;
 const MARGIN_BOTTOM: f32 = 20.;
 const LABEL_SIZE: f32 = 11.;
 const LABEL_GAP: f32 = 4.;
+/// Height of one protocol-decode bus row under the graticule, and the gap above it.
+const BUS_ROW_H: f32 = 20.;
+const BUS_ROW_GAP: f32 = 3.;
+/// Most lines shown in the decoded-frames list.
+const DECODE_LIST_MAX: usize = 500;
 
 pub fn run() {
     Application::new().run(|cx: &mut App| {
@@ -598,6 +604,172 @@ impl ScopeApp {
         ))
     }
 
+    fn decode_panel(&self, cx: &mut Context<Self>) -> impl IntoElement {
+        let d = self.settings.decode;
+        let row = || div().flex().gap_1().items_center();
+        let caption = |t: &str| div().w(px(STEPPER_LABEL_W)).text_color(rgb(0x999999)).child(t.to_owned());
+        let panel = div()
+            .flex()
+            .flex_col()
+            .gap_1()
+            .p_2()
+            .rounded_md()
+            .border_1()
+            .border_color(if d.on { rgb(0xdddddd) } else { rgb(0x333333) })
+            .child(
+                div()
+                    .flex()
+                    .justify_between()
+                    .items_center()
+                    .child("Decode")
+                    .child(self.button("dec-on".into(), if d.on { "ON" } else { "OFF" }, d.on, cx, |s| {
+                        s.decode.on = !s.decode.on
+                    })),
+            );
+        if !d.on {
+            return panel;
+        }
+        let mut panel = panel.child(row().children(Protocol::ALL.map(|p| {
+            self.button(format!("dec-{p:?}"), p.label(), d.protocol == p, cx, move |s| s.decode.protocol = p).into_any_element()
+        })));
+        // `[CH1][CH2]` choice of the channel stored by `set`.
+        let channel_row = |this: &Self, id: &str, title: &str, current: usize, set: fn(&mut Settings, usize), cx: &mut Context<Self>| {
+            row().child(caption(title)).children((0..2).map(|c| {
+                this.button(format!("{id}-{c}"), TRACE_NAMES[c], current == c, cx, move |s| set(s, c)).into_any_element()
+            }))
+        };
+        match d.protocol {
+            Protocol::Uart => {
+                let u = d.uart;
+                let baud_idx = BAUDS.iter().position(|&b| b == u.baud).unwrap_or(4);
+                panel = panel
+                    .child(row().child(caption("Lines")).children(
+                        [(UartLines::Ch1, "CH1"), (UartLines::Ch2, "CH2"), (UartLines::Both, "Both")].map(|(l, name)| {
+                            self.button(format!("dec-uart-{l:?}"), name, u.lines == l, cx, move |s| s.decode.uart.lines = l)
+                                .into_any_element()
+                        }),
+                    ))
+                    .child(self.stepper(
+                        "dec-baud",
+                        "Baud",
+                        u.baud.to_string(),
+                        cx,
+                        move |s| s.decode.uart.baud = BAUDS[baud_idx.saturating_sub(1)],
+                        move |s| s.decode.uart.baud = BAUDS[(baud_idx + 1).min(BAUDS.len() - 1)],
+                    ))
+                    .child(self.stepper(
+                        "dec-bits",
+                        "Data bits",
+                        u.data_bits.to_string(),
+                        cx,
+                        |s| s.decode.uart.data_bits = (s.decode.uart.data_bits - 1).max(5),
+                        |s| s.decode.uart.data_bits = (s.decode.uart.data_bits + 1).min(9),
+                    ))
+                    .child(row().child(caption("Parity")).children(
+                        [(Parity::None, "None"), (Parity::Even, "Even"), (Parity::Odd, "Odd")].map(|(p, name)| {
+                            self.button(format!("dec-par-{p:?}"), name, u.parity == p, cx, move |s| s.decode.uart.parity = p)
+                                .into_any_element()
+                        }),
+                    ))
+                    .child(row().child(caption("Idle level")).children([(false, "High"), (true, "Low (RS-232)")].map(
+                        |(inv, name)| {
+                            self.button(format!("dec-inv-{inv}"), name, u.inverted == inv, cx, move |s| {
+                                s.decode.uart.inverted = inv
+                            })
+                            .into_any_element()
+                        },
+                    )));
+            }
+            Protocol::I2c => {
+                panel = panel
+                    .child(channel_row(self, "dec-scl", "SCL on", d.i2c.scl, |s, c| s.decode.i2c.scl = c, cx))
+                    .child(row().child(caption("SDA on")).child(TRACE_NAMES[1 - d.i2c.scl]));
+            }
+            Protocol::Spi => {
+                let sp = d.spi;
+                panel = panel
+                    .child(channel_row(self, "dec-clk", "Clock on", sp.clock, |s, c| s.decode.spi.clock = c, cx))
+                    .child(row().child(caption("Data on")).child(TRACE_NAMES[1 - sp.clock]))
+                    .child(self.stepper(
+                        "dec-mode",
+                        "Mode",
+                        format!("{} ({})", sp.mode, if matches!(sp.mode, 0 | 3) { "↑" } else { "↓" }),
+                        cx,
+                        |s| s.decode.spi.mode = s.decode.spi.mode.saturating_sub(1),
+                        |s| s.decode.spi.mode = (s.decode.spi.mode + 1).min(3),
+                    ))
+                    .child(self.stepper(
+                        "dec-word",
+                        "Word bits",
+                        sp.bits.to_string(),
+                        cx,
+                        |s| s.decode.spi.bits = (s.decode.spi.bits - 1).max(4),
+                        |s| s.decode.spi.bits = (s.decode.spi.bits + 1).min(16),
+                    ))
+                    .child(row().child(caption("Bit order")).children([(false, "MSB first"), (true, "LSB first")].map(
+                        |(lsb, name)| {
+                            self.button(format!("dec-lsb-{lsb}"), name, sp.lsb_first == lsb, cx, move |s| {
+                                s.decode.spi.lsb_first = lsb
+                            })
+                            .into_any_element()
+                        },
+                    )));
+            }
+            Protocol::OneWire => {
+                panel = panel.child(channel_row(self, "dec-1w", "Line", d.onewire.line, |s, c| s.decode.onewire.line = c, cx));
+            }
+        }
+        panel.child(row().child(caption("Format")).children(DataFormat::ALL.map(|f| {
+            self.button(format!("dec-fmt-{f:?}"), f.label(), d.format == f, cx, move |s| s.decode.format = f).into_any_element()
+        })))
+    }
+
+    /// Decoded items of all rows in time order, with times relative to the trigger.
+    fn decode_list(&self, rows: &[Row]) -> impl IntoElement {
+        let dt = 1.0 / tables::sample_rate_hz(self.settings.tdiv_idx);
+        let dim = rgb(0x888888);
+        let mut entries: Vec<(f64, &str, &decode::Item)> = rows
+            .iter()
+            .flat_map(|r| {
+                r.items
+                    .iter()
+                    .filter(|i| i.kind != Kind::Ack)
+                    .map(move |i| ((i.start - r.len as f64 / 2.0) * dt, r.label.as_str(), i))
+            })
+            .collect();
+        entries.sort_by(|a, b| a.0.total_cmp(&b.0));
+        let mut list = div()
+            .id("decode-list")
+            .overflow_y_scroll()
+            .w(px(250.))
+            .flex()
+            .flex_col()
+            .gap(px(2.))
+            .p_2()
+            .bg(rgb(0x181818))
+            .text_xs()
+            .child(div().text_sm().pb_1().child(format!("Decoded {}", self.settings.decode.protocol.label())));
+        for r in rows.iter().filter(|r| r.message.is_some()) {
+            list = list.child(div().text_color(dim).child(format!("{}: {}", r.label, r.message.as_deref().unwrap_or(""))));
+        }
+        let several = rows.len() > 1;
+        for (t, label, item) in entries.iter().take(DECODE_LIST_MAX) {
+            let color = if item.error.is_some() { rgb(0xff8a8a) } else { rgb(0xdddddd) };
+            list = list.child(
+                div()
+                    .flex()
+                    .gap_2()
+                    .child(div().w(px(64.)).flex_none().text_right().text_color(dim).child(tables::format_si(*t, "s")))
+                    .when(several, |d| d.child(div().flex_none().text_color(dim).child(label.to_string())))
+                    .child(div().text_color(color).child(item.describe())),
+            );
+        }
+        if entries.len() > DECODE_LIST_MAX {
+            list = list.child(div().text_color(dim).child(format!("… {} more", entries.len() - DECODE_LIST_MAX)));
+        }
+        list
+    }
+
     /// What the spectrum pane shows, computed from the held capture.
     fn spectrum_view(&self) -> SpectrumView {
         let s = &self.settings;
@@ -678,6 +850,7 @@ impl ScopeApp {
             .child(self.channel_panel(1, cx))
             .child(self.math_panel(cx))
             .child(self.fft_panel(cx))
+            .child(self.decode_panel(cx))
             .child(
                 div()
                     .flex()
@@ -850,6 +1023,11 @@ impl Render for ScopeApp {
         let settings = self.settings;
         let shown = [settings.ch[0].on, settings.ch[1].on, settings.math.on];
         let spectrum = settings.fft.on.then(|| self.spectrum_view());
+        let decoded = settings.decode.on.then(|| {
+            let f = self.frame.as_ref();
+            decode::decode([0, 1].map(|i| f.and_then(|f| f.samples[i].as_deref())), &settings)
+        });
+        let bus = decoded.clone().unwrap_or_default();
         let trace = if self.phosphor_on {
             Trace::Phosphor(std::array::from_fn(|i| if shown[i] { self.phosphor.runs(i) } else { Vec::new() }))
         } else {
@@ -870,6 +1048,7 @@ impl Render for ScopeApp {
                     .flex_1()
                     .flex()
                     .when(self.measurements_on, |row| row.child(self.measurements_panel()))
+                    .when_some(decoded.as_deref(), |row, rows| row.child(self.decode_list(rows)))
                     .child(
                         div()
                             .flex_1()
@@ -880,7 +1059,7 @@ impl Render for ScopeApp {
                             .child(
                                 div()
                                     .flex_1()
-                                    .child(canvas(|_, _, _| (), move |b, _, window, cx| paint_scope(b, &trace, &settings, window, cx)).size_full()),
+                                    .child(canvas(|_, _, _| (), move |b, _, window, cx| paint_scope(b, &trace, &settings, &bus, window, cx)).size_full()),
                             )
                             .when_some(spectrum, |col, view| {
                                 col.child(
@@ -935,7 +1114,7 @@ fn paint_label(
     let _ = line.paint(point(px(left), px(y - line_height / 2.)), px(line_height), window, cx);
 }
 
-fn paint_scope(bounds: Bounds<Pixels>, trace: &Trace, settings: &Settings, window: &mut Window, cx: &mut App) {
+fn paint_scope(bounds: Bounds<Pixels>, trace: &Trace, settings: &Settings, bus: &[Row], window: &mut Window, cx: &mut App) {
     window.paint_quad(fill(bounds, rgb(0x000000)));
 
     // Voltage label columns: CH1 left, CH2 right. Math takes the column of a
@@ -952,7 +1131,9 @@ fn paint_scope(bounds: Bounds<Pixels>, trace: &Trace, settings: &Settings, windo
     let x0 = bx + left_margin;
     let y0 = f32::from(bounds.origin.y) + MARGIN_TOP;
     let w = (bw - left_margin - MARGIN_SIDE).max(1.);
-    let h = (f32::from(bounds.size.height) - MARGIN_TOP - MARGIN_BOTTOM).max(1.);
+    // Decode bus rows sit between the graticule and the time labels.
+    let bus_h = bus.len() as f32 * (BUS_ROW_H + BUS_ROW_GAP);
+    let h = (f32::from(bounds.size.height) - MARGIN_TOP - MARGIN_BOTTOM - bus_h).max(1.);
     let full = 2.0 * ADC_MAX as f32;
     // ADC code -> screen y: +125 at the top, -125 at the bottom.
     let y_of = |code: f32| y0 + h / 2.0 - code / full * h;
@@ -965,7 +1146,11 @@ fn paint_scope(bounds: Bounds<Pixels>, trace: &Trace, settings: &Settings, windo
     for i in (0..=H_DIVS).step_by(every) {
         let x = x0 + div_w * i as f32;
         let text = tables::format_si(tables::grid_time_s(settings.tdiv_idx, i), "s");
-        paint_label(text, time_color, (x, y0 + h + MARGIN_BOTTOM / 2.), Align::Center, clip, window, cx);
+        paint_label(text, time_color, (x, y0 + h + bus_h + MARGIN_BOTTOM / 2.), Align::Center, clip, window, cx);
+    }
+    for (r, row) in bus.iter().enumerate() {
+        let y = y0 + h + BUS_ROW_GAP + r as f32 * (BUS_ROW_H + BUS_ROW_GAP);
+        paint_bus_row(row, settings.decode.format, (x0, w), y, clip, window, cx);
     }
 
     // Voltage axes: each trace has its own V/div and position, so each gets
@@ -1045,6 +1230,60 @@ fn paint_scope(bounds: Bounds<Pixels>, trace: &Trace, settings: &Settings, windo
             }
         }
     }
+}
+
+/// One decode row: a box per item, aligned with the trace (same sample-to-x
+/// mapping as [`paint_trace`]), labelled when the text fits.
+fn paint_bus_row(row: &Row, format: DataFormat, (x0, w): (f32, f32), y: f32, clip: (f32, f32), window: &mut Window, cx: &mut App) {
+    let h = BUS_ROW_H;
+    let dim: Hsla = rgb(0x8a8a8a).into();
+    window.paint_quad(fill(Bounds::new(point(px(x0), px(y)), size(px(w), px(h))), rgb(0x0b0b0b)));
+    paint_label(row.label.clone(), dim, (x0 - LABEL_GAP, y + h / 2.), Align::Right, clip, window, cx);
+    if let Some(message) = &row.message {
+        paint_label(message.clone(), dim, (x0 + w / 2., y + h / 2.), Align::Center, clip, window, cx);
+        return;
+    }
+    let n = row.len.max(2);
+    let x_of = |k: f64| x0 + w * (k / (n - 1) as f64) as f32;
+    for item in &row.items {
+        let (mut a, mut b) = (x_of(item.start).max(x0), x_of(item.end).min(x0 + w));
+        // Point events (START, STOP) get a small marker.
+        if b - a < 12. && item.start == item.end {
+            let c = (a + b) / 2.;
+            (a, b) = (c - 6., c + 6.);
+        }
+        let color = match (item.error, item.kind) {
+            (Some(_), _) => 0x6b2020,
+            (_, Kind::Data) => 0x1d4650,
+            (_, Kind::Address { .. } | Kind::Reset) => 0x5a4518,
+            (_, Kind::Start | Kind::RepeatedStart | Kind::Presence) => 0x2e6b2e,
+            (_, Kind::Stop) => 0x6b2e2e,
+            (_, Kind::Ack) => 0x333333,
+            (_, Kind::Nack) => 0x7a4a10,
+        };
+        let quad = Bounds::new(point(px(a), px(y + 1.)), size(px((b - a).max(1.)), px(h - 2.)));
+        window.paint_quad(fill(quad, rgb(color)));
+        paint_fitted(item.text(format), (a, b), y + h / 2., window, cx);
+    }
+}
+
+/// Text centred between `a` and `b`, drawn only if it fits.
+fn paint_fitted(text: String, (a, b): (f32, f32), y: f32, window: &mut Window, cx: &mut App) {
+    let run = TextRun {
+        len: text.len(),
+        font: window.text_style().font(),
+        color: rgb(0xeeeeee).into(),
+        background_color: None,
+        underline: None,
+        strikethrough: None,
+    };
+    let line = window.text_system().shape_line(text.into(), px(LABEL_SIZE), &[run], None);
+    let width = f32::from(line.width);
+    if width + 4. > b - a {
+        return;
+    }
+    let line_height = LABEL_SIZE * 1.3;
+    let _ = line.paint(point(px((a + b - width) / 2.), px(y - line_height / 2.)), px(line_height), window, cx);
 }
 
 /// Draws one record across the graticule (`x0`, width `w`) as a line.

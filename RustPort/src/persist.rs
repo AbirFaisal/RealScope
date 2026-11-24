@@ -85,6 +85,7 @@ fn save_to(path: &Path, saved: &Saved) -> io::Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::decode::Protocol;
     use crate::fft::{FftSettings, FftUnit, FftWindow};
     use crate::math::{MathOp, MathSettings};
     use crate::settings::{Coupling, EXT, EdgeSettings, RunMode, Slope, Sweep, TriggerMode};
@@ -116,6 +117,10 @@ mod tests {
             ref_dbv: -10,
             zoom: 2,
         };
+        saved.scope.decode.on = true;
+        saved.scope.decode.protocol = Protocol::Spi;
+        saved.scope.decode.spi.mode = 3;
+        saved.scope.decode.uart.baud = 115_200;
         saved.phosphor_on = true;
         saved.persistence = Persistence::Infinite;
         save_to(&path, &saved).unwrap();
@@ -146,6 +151,7 @@ mod tests {
         assert_eq!(loaded.scope.trigger, Settings::default().trigger);
         assert!(!loaded.scope.math.on, "a file from before the math trace loads with it off");
         assert!(!loaded.scope.fft.on);
+        assert!(!loaded.scope.decode.on);
         assert_eq!(loaded.scope.run, RunMode::Running);
         assert!(loaded.phosphor_on);
         assert!(loaded.measurements_on);
