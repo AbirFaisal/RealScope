@@ -13,7 +13,7 @@ use crate::acquire::{self, Event, Frame};
 use crate::measure::{self, Group, Measurements};
 use crate::persist::{self, Saved};
 use crate::phosphor::{self, Persistence, Phosphor, Run};
-use crate::settings::{ChannelSettings, EXT, Settings, Sweep};
+use crate::settings::{ChannelSettings, EXT, Settings, Slope, Sweep};
 use crate::tables::{
     self, ADC_MAX, COUNTS_PER_DIV, H_DIVS, POS0_MAX, TDIV_MAX_IDX, TDIV_MIN_IDX, V_DIVS, VDIV_MV,
 };
@@ -475,7 +475,7 @@ impl ScopeApp {
                     .rounded_md()
                     .border_1()
                     .border_color(rgb(0x333333))
-                    .child("Trigger (rising edge)")
+                    .child("Trigger")
                     .child(
                         div()
                             .flex()
@@ -498,6 +498,17 @@ impl ScopeApp {
                             .child(self.button("trg-ch1".into(), "CH1", src == 0, cx, |s| s.trigger.source = 0))
                             .child(self.button("trg-ch2".into(), "CH2", src == 1, cx, |s| s.trigger.source = 1))
                             .child(self.button("trg-ext".into(), "EXT", src == EXT, cx, |s| s.trigger.source = EXT)),
+                    )
+                    .child(
+                        div()
+                            .flex()
+                            .gap_1()
+                            .child(self.button("trg-rise".into(), "↑ Rise", s.trigger.slope == Slope::Rising, cx, |s| {
+                                s.trigger.slope = Slope::Rising
+                            }))
+                            .child(self.button("trg-fall".into(), "↓ Fall", s.trigger.slope == Slope::Falling, cx, |s| {
+                                s.trigger.slope = Slope::Falling
+                            })),
                     )
                     .child(level_row),
             )

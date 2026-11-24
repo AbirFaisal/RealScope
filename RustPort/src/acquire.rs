@@ -216,14 +216,14 @@ impl Scope {
 
         let trg = new.trigger;
         let src = trg.source;
-        if first || old.map(|o| (o.trigger.source, o.trigger.sweep)) != Some((src, trg.sweep)) {
+        if first || old.map(|o| (o.trigger.source, o.trigger.slope, o.trigger.sweep)) != Some((src, trg.slope, trg.sweep)) {
             if src == EXT && (first || old.map(|o| o.trigger.source) != Some(EXT)) {
                 // Make the shared I/O connector an input. Like the vendor app, it is
                 // not switched back to an output afterwards, so it never drives a
                 // signal into a source that is still attached.
                 self.dev.write_reg(reg::MULTI_IO, 1, protocol::MULTI_IO_TRIGGER_IN)?;
             }
-            self.dev.write_reg(reg::TRG, 2, protocol::trigger(src, trg.sweep) as u32)?;
+            self.dev.write_reg(reg::TRG, 2, protocol::trigger(src, trg.slope, trg.sweep) as u32)?;
             // Holdoff goes high byte first (ClockTimeAdjuster.send), unlike cmd_bytewise.
             let h = protocol::HOLDOFF_DEFAULT;
             self.dev.write_reg(reg::HOLDOFF[src], 1, h >> 8)?;
@@ -233,9 +233,10 @@ impl Scope {
         // (The external input has a fixed threshold, so there's nothing to write.)
         let level = new.trigger_level_code();
         if let Some(code) = level
-            && (first || old.map(|o| (o.trigger.source, o.trigger_level_code())) != Some((src, level)))
+            && (first
+                || old.map(|o| (o.trigger.source, o.trigger.slope, o.trigger_level_code())) != Some((src, trg.slope, level)))
         {
-            self.dev.write_reg_bytewise(reg::EDGE_LEVEL[src], 2, protocol::edge_level(code))?;
+            self.dev.write_reg_bytewise(reg::EDGE_LEVEL[src], 2, protocol::edge_level(code, trg.slope))?;
         }
 
         if first || was_running != new.running {

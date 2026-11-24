@@ -35,6 +35,14 @@ pub enum Sweep {
     Normal,
 }
 
+/// Which signal edge fires the trigger.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum Slope {
+    #[default]
+    Rising,
+    Falling,
+}
+
 // `serde(default)`: fields missing from an older settings file keep their defaults.
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
@@ -61,6 +69,7 @@ pub struct TriggerSettings {
     /// Level in volts at the probe tip of the source channel (unused for EXT,
     /// whose threshold is fixed in hardware).
     pub level_v: f64,
+    pub slope: Slope,
     pub sweep: Sweep,
 }
 
@@ -92,6 +101,7 @@ impl Default for TriggerSettings {
         TriggerSettings {
             source: 0,
             level_v: 1.0,
+            slope: Slope::Rising,
             sweep: Sweep::Auto,
         }
     }

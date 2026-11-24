@@ -5,7 +5,7 @@
 
 use anyhow::{Result, bail, ensure};
 
-use crate::settings::{ChannelSettings, Coupling, EXT, Sweep};
+use crate::settings::{ChannelSettings, Coupling, EXT, Slope, Sweep};
 use crate::tables::{ADC_MAX, ATTENUATION_VDIV_IDX, screen_points};
 
 pub const VENDOR_ID: u16 = 0x5345;
@@ -106,24 +106,28 @@ pub fn zero_offset(compensation: i32, step: i32, pos0: i32) -> i32 {
 /// (`Submitor2.sync_out[SysControl.SYNOUT_TrgIn]`).
 pub const MULTI_IO_TRIGGER_IN: u32 = 2;
 
-/// TRG register for a single-source rising-edge trigger
+/// TRG register for a single-source edge trigger
 /// (`TinyTrgSubmitHandler.java:61-111`): bit13 channel (0 = CH1, 1 = CH2),
-/// bit0 external input, bit12 slope (0 = rise), bits 11:10 sweep.
-pub fn trigger(source: usize, sweep: Sweep) -> u16 {
+/// bit0 external input, bit12 slope (0 = rise, 1 = fall), bits 11:10 sweep.
+pub fn trigger(source: usize, slope: Slope, sweep: Sweep) -> u16 {
     let sweep = match sweep {
         Sweep::Auto => 0,
         Sweep::Normal => 1,
     };
     let source_bits = if source == EXT { 1 } else { (source as u16 & 1) << 13 };
-    source_bits | (sweep << 10)
+    let slope_bit = (slope == Slope::Falling) as u16;
+    source_bits | (slope_bit << 12) | (sweep << 10)
 }
 
-/// Edge level register for a rising edge (`AbsTranslator.getLevelArg`): low
-/// byte = upper threshold = level, high byte = lower threshold = level - 10.
-pub fn edge_level(level_code: i32) -> u32 {
+/// Edge level register (`AbsTranslator.getLevelArg`): low byte = upper
+/// threshold, high byte = lower threshold, 10 codes apart. The level is the
+/// upper threshold on a rising edge and the lower one on a falling edge.
+pub fn edge_level(level_code: i32, slope: Slope) -> u32 {
     const LEVEL_MAX: i32 = 128;
-    let mut up = level_code;
-    let mut low = up - 10;
+    let (mut up, mut low) = match slope {
+        Slope::Rising => (level_code, level_code - 10),
+        Slope::Falling => (level_code + 10, level_code),
+    };
     if up > LEVEL_MAX {
         up = LEVEL_MAX;
         low = up - 10;
@@ -333,20 +337,32 @@ mod tests {
 
     #[test]
     fn trigger_bits() {
-        assert_eq!(trigger(0, Sweep::Auto), 0x0000);
-        assert_eq!(trigger(1, Sweep::Auto), 0x2000);
-        assert_eq!(trigger(0, Sweep::Normal), 0x0400);
-        assert_eq!(trigger(EXT, Sweep::Auto), 0x0001);
-        assert_eq!(trigger(EXT, Sweep::Normal), 0x0401);
+        use Slope::*;
+        assert_eq!(trigger(0, Rising, Sweep::Auto), 0x0000);
+        assert_eq!(trigger(1, Rising, Sweep::Auto), 0x2000);
+        assert_eq!(trigger(0, Rising, Sweep::Normal), 0x0400);
+        assert_eq!(trigger(EXT, Rising, Sweep::Auto), 0x0001);
+        assert_eq!(trigger(EXT, Rising, Sweep::Normal), 0x0401);
+        assert_eq!(trigger(0, Falling, Sweep::Auto), 0x1000);
+        assert_eq!(trigger(1, Falling, Sweep::Normal), 0x3400);
+        assert_eq!(trigger(EXT, Falling, Sweep::Auto), 0x1001);
     }
 
     #[test]
     fn edge_levels() {
-        let cmds = cmd_bytewise(reg::EDGE_LEVEL[0], 2, edge_level(0));
+        let pair = |up: i32, low: i32| ((up & 0xff) | ((low & 0xff) << 8)) as u32;
+        let cmds = cmd_bytewise(reg::EDGE_LEVEL[0], 2, edge_level(0, Slope::Rising));
         assert_eq!(cmds[0], [0x2e, 0, 0, 0, 1, 0x00]);
         assert_eq!(cmds[1], [0x2f, 0, 0, 0, 1, 0xf6]);
         // Clamped at the bottom: low = -128, up = -118.
-        assert_eq!(edge_level(-125), (((-118i32) & 0xff) | ((-128i32 & 0xff) << 8)) as u32);
+        assert_eq!(edge_level(-125, Slope::Rising), pair(-118, -128));
+        // Falling: the level is the lower threshold.
+        let cmds = cmd_bytewise(reg::EDGE_LEVEL[0], 2, edge_level(0, Slope::Falling));
+        assert_eq!(cmds[0], [0x2e, 0, 0, 0, 1, 0x0a]);
+        assert_eq!(cmds[1], [0x2f, 0, 0, 0, 1, 0x00]);
+        assert_eq!(edge_level(50, Slope::Falling), pair(60, 50));
+        // Clamped at the top: up = 128, low = 118.
+        assert_eq!(edge_level(125, Slope::Falling), pair(128, 118));
     }
 
     #[test]

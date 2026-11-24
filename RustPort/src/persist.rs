@@ -85,7 +85,7 @@ fn save_to(path: &Path, saved: &Saved) -> io::Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::settings::{Coupling, EXT, Sweep};
+    use crate::settings::{Coupling, EXT, Slope, Sweep};
 
     fn temp_path(name: &str) -> PathBuf {
         std::env::temp_dir().join(format!("realscope-test-{}-{name}", std::process::id())).join("settings.json")
@@ -101,6 +101,7 @@ mod tests {
         saved.scope.tdiv_idx = 9;
         saved.scope.trigger.source = EXT;
         saved.scope.trigger.sweep = Sweep::Normal;
+        saved.scope.trigger.slope = Slope::Falling;
         saved.phosphor_on = true;
         saved.persistence = Persistence::Infinite;
         save_to(&path, &saved).unwrap();
