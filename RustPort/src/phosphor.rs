@@ -15,6 +15,8 @@ use crate::tables::ADC_MAX;
 pub const COLS: usize = 1000;
 /// One row per ADC code, -125..=125.
 pub const ROWS: usize = 2 * ADC_MAX as usize + 1;
+/// Traces kept: CH1, CH2 and the math trace (index 2).
+pub const TRACES: usize = 3;
 /// Brightness steps used for drawing.
 pub const LEVELS: u8 = 16;
 /// Hits at which a cell reaches ~63% of full intensity before the gamma lift.
@@ -71,12 +73,12 @@ impl Run {
 
 pub struct Phosphor {
     /// Column-major hit grids, `col * ROWS + row`.
-    grid: [Vec<f32>; 2],
+    grid: [Vec<f32>; TRACES],
 }
 
 impl Default for Phosphor {
     fn default() -> Self {
-        Phosphor { grid: [vec![0.0; COLS * ROWS], vec![0.0; COLS * ROWS]] }
+        Phosphor { grid: std::array::from_fn(|_| vec![0.0; COLS * ROWS]) }
     }
 }
 

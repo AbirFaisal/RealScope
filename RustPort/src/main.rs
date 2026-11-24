@@ -1,6 +1,7 @@
 mod acquire;
 mod autoset;
 mod device;
+mod math;
 mod measure;
 mod persist;
 mod phosphor;
@@ -70,6 +71,10 @@ fn probe(capture: bool) -> Result<()> {
     if let Some(level) = arg_value("--level").and_then(|v| v.parse().ok()) {
         settings.trigger.level_v = level;
     }
+    if let Some(op) = arg_value("--math") {
+        settings.math.on = true;
+        settings.math.op = if op == "sub" { math::MathOp::Sub } else { math::MathOp::Add };
+    }
     let mut scope = Scope::new(dev, cal);
     scope.apply(&settings)?;
     if std::env::args().any(|a| a == "--autoset") {
@@ -79,6 +84,7 @@ fn probe(capture: bool) -> Result<()> {
         settings = s;
         scope.apply(&settings)?;
     }
+    settings.math.vdiv_idx = math::default_vdiv(&settings.ch);
     if let Some(path) = dump_path() {
         // Raw GETDATA blocks, for protocol debugging.
         let deadline = Instant::now() + Duration::from_secs(3);
@@ -117,16 +123,25 @@ fn probe(capture: bool) -> Result<()> {
         frame.triggered
     );
     let dt = 1.0 / tables::sample_rate_hz(settings.tdiv_idx);
+    let print_table = |m: &measure::Measurements| {
+        for row in measure::table(m).chunks(4) {
+            let cells: Vec<String> = row.iter().map(|(_, label, value)| format!("{label:>9} {value:<11}")).collect();
+            println!("  {}", cells.join(""));
+        }
+    };
     for (i, samples) in frame.samples.iter().enumerate() {
         let Some(samples) = samples else { continue };
         let ch = &settings.ch[i];
         let mut m = measure::measure(samples, ch, dt);
         m.counter = frame.counter_hz[i];
         println!("CH{} @ {}/div ({} samples):", i + 1, ch.vdiv_label(), samples.len());
-        for row in measure::table(&m).chunks(4) {
-            let cells: Vec<String> = row.iter().map(|(_, label, value)| format!("{label:>9} {value:<11}")).collect();
-            println!("  {}", cells.join(""));
-        }
+        print_table(&m);
+    }
+    if let Some(t) = math::compute(frame.samples.each_ref().map(|s| s.as_deref()), &settings) {
+        let mut m = measure::measure(&t.samples, &settings.math, dt);
+        m.clipped |= t.sources_clipped;
+        println!("Math {} @ {}/div ({} samples):", settings.math.op.label(), settings.math.vdiv_label(), t.samples.len());
+        print_table(&m);
     }
     Ok(())
 }

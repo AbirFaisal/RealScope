@@ -2,7 +2,8 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::tables::{ADC_MAX, COUNTS_PER_DIV, POS0_MAX, TDIV_MAX_IDX, TDIV_MIN_IDX, VDIV_MV, format_si};
+use crate::math::MathSettings;
+use crate::tables::{ADC_MAX, COUNTS_PER_DIV, MATH_VDIV_V, POS0_MAX, TDIV_MAX_IDX, TDIV_MIN_IDX, VDIV_MV, format_si};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Coupling {
@@ -89,6 +90,7 @@ pub struct Settings {
     pub ch: [ChannelSettings; 2],
     pub tdiv_idx: usize,
     pub trigger: TriggerSettings,
+    pub math: MathSettings,
     /// Not saved: the app always starts acquiring.
     #[serde(skip)]
     pub run: RunMode,
@@ -127,6 +129,7 @@ impl Default for Settings {
             ],
             tdiv_idx: 15, // 500 µs/div
             trigger: TriggerSettings::default(),
+            math: MathSettings::default(),
             run: RunMode::Running,
         }
     }
@@ -172,7 +175,26 @@ impl Settings {
         if !self.trigger.level_v.is_finite() {
             self.trigger.level_v = TriggerSettings::default().level_v;
         }
+        self.math.vdiv_idx = self.math.vdiv_idx.min(MATH_VDIV_V.len() - 1);
+        self.math.pos0 = ChannelSettings::clamp_pos0(self.math.pos0);
         self
+    }
+
+    /// Whether the scope captures channel `i`: when it is shown, or when the
+    /// math trace needs it (a hidden source is still captured).
+    pub fn captures(&self, i: usize) -> bool {
+        self.ch[i].on || self.math.on
+    }
+
+    /// The settings as the scope hardware sees them: channels on when captured,
+    /// math (PC-side only) left out so changing it writes nothing.
+    pub fn hardware(&self) -> Settings {
+        let mut hw = *self;
+        for ch in &mut hw.ch {
+            ch.on |= self.math.on;
+        }
+        hw.math = MathSettings::default();
+        hw
     }
 
     /// Changes a channel's probe attenuation. If it is the trigger source, the
@@ -267,7 +289,11 @@ mod tests {
         s.tdiv_idx = 2;
         s.trigger.source = 5;
         s.trigger.level_v = f64::NAN;
+        s.math.vdiv_idx = 99;
+        s.math.pos0 = -9999;
         let s = s.sanitize();
+        assert_eq!(s.math.vdiv_idx, MATH_VDIV_V.len() - 1);
+        assert_eq!(s.math.pos0, -POS0_MAX);
         assert_eq!(s.ch[0].vdiv_idx, VDIV_MV.len() - 1);
         assert_eq!(s.ch[0].pos0, POS0_MAX);
         assert_eq!(s.ch[1].probe, 1);
@@ -275,6 +301,22 @@ mod tests {
         assert_eq!(s.trigger.source, 0);
         assert_eq!(s.trigger.level_v, 1.0);
         assert_eq!(Settings::default().sanitize(), Settings::default());
+    }
+
+    #[test]
+    fn math_captures_hidden_channels() {
+        let mut s = Settings::default();
+        s.ch[1].on = false;
+        assert!(!s.hardware().ch[1].on);
+        s.math.on = true;
+        assert!(s.captures(1));
+        let hw = s.hardware();
+        assert!(hw.ch[0].on && hw.ch[1].on);
+        // Math-only changes don't change what the hardware sees.
+        let mut t = s;
+        t.math.vdiv_idx = 3;
+        t.math.pos0 = 40;
+        assert_eq!(t.hardware(), hw);
     }
 
     #[test]

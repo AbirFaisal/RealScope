@@ -10,15 +10,20 @@ use gpui::{
 };
 
 use crate::acquire::{self, Command, Event, Frame};
+use crate::math::{self, MathOp, MathTrace};
 use crate::measure::{self, Group, Measurements};
 use crate::persist::{self, Saved};
-use crate::phosphor::{self, Persistence, Phosphor, Run};
+use crate::phosphor::{self, Persistence, Phosphor, Run, TRACES};
 use crate::settings::{ChannelSettings, EXT, RunMode, Settings, Slope, Sweep};
 use crate::tables::{
-    self, ADC_MAX, COUNTS_PER_DIV, H_DIVS, POS0_MAX, TDIV_MAX_IDX, TDIV_MIN_IDX, V_DIVS, VDIV_MV,
+    self, ADC_MAX, COUNTS_PER_DIV, H_DIVS, MATH_VDIV_V, POS0_MAX, TDIV_MAX_IDX, TDIV_MIN_IDX, V_DIVS, VDIV_MV,
 };
 
-const CH_COLORS: [u32; 2] = [0x42d4f5, 0x42f578];
+/// CH1, CH2 and the math trace.
+const TRACE_COLORS: [u32; TRACES] = [0x42d4f5, 0x42f578, 0xd27dff];
+const TRACE_NAMES: [&str; TRACES] = ["CH1", "CH2", "Math"];
+/// Index of the math trace in per-trace arrays.
+const MATH: usize = 2;
 /// Trigger marker colour when triggering from the external input.
 const EXT_TRIGGER_COLOR: u32 = 0xbbbbbb;
 
@@ -65,17 +70,23 @@ struct ScopeApp {
     last_frame_at: Option<Instant>,
     /// Measurements panel, refreshed at a readable rate rather than every frame.
     measurements_on: bool,
-    measurements: [Option<Measurements>; 2],
+    /// CH1, CH2, Math.
+    measurements: [Option<Measurements>; TRACES],
     measured_at: Option<Instant>,
     /// Auto-set is running on the acquisition thread.
     autosetting: bool,
     _poll: Task<()>,
 }
 
-/// What the canvas draws for the waveforms.
+/// What the canvas draws for the waveforms: CH1, CH2, Math, `None`/empty when hidden.
 enum Trace {
-    Line(Option<Frame>),
-    Phosphor([Vec<Run>; 2]),
+    Line([Option<Vec<i8>>; TRACES]),
+    Phosphor([Vec<Run>; TRACES]),
+}
+
+/// The math trace of a capture under the given settings (`None` when math is off).
+fn math_of(frame: &Frame, s: &Settings) -> Option<MathTrace> {
+    math::compute(frame.samples.each_ref().map(|s| s.as_deref()), s)
 }
 
 impl ScopeApp {
@@ -116,7 +127,7 @@ impl ScopeApp {
             phosphor: Phosphor::default(),
             last_frame_at: None,
             measurements_on: saved.measurements_on,
-            measurements: [None, None],
+            measurements: [None, None, None],
             measured_at: None,
             autosetting: false,
             _poll: poll,
@@ -141,6 +152,9 @@ impl ScopeApp {
                             self.phosphor.accumulate(ch, samples);
                         }
                     }
+                    if let Some(t) = math_of(&f, &self.settings) {
+                        self.phosphor.accumulate(MATH, &t.samples);
+                    }
                 }
                 self.last_frame_at = Some(now);
                 if self.measured_at.is_none_or(|t| now - t >= MEASURE_INTERVAL) {
@@ -157,8 +171,12 @@ impl ScopeApp {
                     let _ = self.settings_tx.send(Command::Apply(self.settings));
                 }
             }
-            Event::AutosetDone { settings, summary } => {
+            Event::AutosetDone { mut settings, summary } => {
                 self.autosetting = false;
+                // The channel scales changed, so re-pick the math scale too.
+                if settings.math.on {
+                    settings.math.vdiv_idx = math::default_vdiv(&settings.ch);
+                }
                 self.settings = settings;
                 // Echo back, so a control clicked while auto-set ran can't leave
                 // the worker on different settings from the UI.
@@ -174,7 +192,7 @@ impl ScopeApp {
                 self.device = None;
                 self.frame = None;
                 self.phosphor.clear();
-                self.measurements = [None, None];
+                self.measurements = [None, None, None];
             }
         }
     }
@@ -188,23 +206,29 @@ impl ScopeApp {
                 m
             });
         }
+        self.measurements[MATH] = math_of(frame, &self.settings).map(|t| {
+            let mut m = measure::measure(&t.samples, &self.settings.math, dt);
+            m.clipped |= t.sources_clipped;
+            m
+        });
     }
 
     fn measurements_panel(&self) -> impl IntoElement {
-        let tables = self.measurements.each_ref().map(|m| measure::table(m.as_ref().unwrap_or(&Measurements::default())));
+        let cols: Vec<usize> = if self.settings.math.on { vec![0, 1, MATH] } else { vec![0, 1] };
+        let empty = Measurements::default();
+        let tables: Vec<_> = cols.iter().map(|&i| measure::table(self.measurements[i].as_ref().unwrap_or(&empty))).collect();
         let dim = rgb(0x888888);
-        let row = |label: SharedString, values: [SharedString; 2], colors: [gpui::Rgba; 2], label_color: gpui::Rgba| {
+        let row = |label: SharedString, cells: Vec<(SharedString, gpui::Rgba)>| {
             div()
                 .flex()
                 .gap_1()
-                .child(div().w(px(58.)).text_color(label_color).child(label))
-                .child(div().flex_1().text_right().text_color(colors[0]).child(values[0].clone()))
-                .child(div().flex_1().text_right().text_color(colors[1]).child(values[1].clone()))
+                .child(div().w(px(58.)).text_color(dim).child(label))
+                .children(cells.into_iter().map(|(value, color)| div().flex_1().text_right().text_color(color).child(value)))
         };
-        let ch_colors = [rgb(CH_COLORS[0]), rgb(CH_COLORS[1])];
         let value_color = rgb(0xdddddd);
+        let headers = cols.iter().map(|&i| (TRACE_NAMES[i].into(), rgb(TRACE_COLORS[i]))).collect();
         let mut panel = div()
-            .w(px(240.))
+            .w(px(if cols.len() > 2 { 310. } else { 240. }))
             .flex()
             .flex_col()
             .gap(px(2.))
@@ -212,20 +236,20 @@ impl ScopeApp {
             .bg(rgb(0x181818))
             .text_xs()
             .child(div().text_sm().pb_1().child("Measurements"))
-            .child(row("".into(), ["CH1".into(), "CH2".into()], ch_colors, dim));
+            .child(row("".into(), headers));
         let mut group = None;
-        for (a, b) in tables[0].iter().zip(&tables[1]) {
-            if group != Some(a.0) {
-                group = Some(a.0);
-                let title = match a.0 {
+        for (r, &(g, label, _)) in tables[0].iter().enumerate() {
+            if group != Some(g) {
+                group = Some(g);
+                let title = match g {
                     Group::Time => "Time",
                     Group::Voltage => "Voltage",
                 };
                 panel = panel.child(div().pt_2().text_color(dim).border_b_1().border_color(rgb(0x2a2a2a)).child(title));
             }
-            panel = panel.child(row(a.1.into(), [a.2.clone().into(), b.2.clone().into()], [value_color; 2], dim));
+            panel = panel.child(row(label.into(), tables.iter().map(|t| (t[r].2.clone().into(), value_color)).collect()));
         }
-        if self.measurements.iter().flatten().any(|m| m.clipped) {
+        if cols.iter().filter_map(|&i| self.measurements[i].as_ref()).any(|m| m.clipped) {
             panel = panel.child(div().pt_2().text_color(dim).child("? = signal off screen; value is a bound"));
         }
         panel
@@ -366,7 +390,7 @@ impl ScopeApp {
 
     fn channel_panel(&self, i: usize, cx: &mut Context<Self>) -> impl IntoElement {
         let ch = self.settings.ch[i];
-        let color = rgb(CH_COLORS[i]);
+        let color = rgb(TRACE_COLORS[i]);
         div()
             .flex()
             .flex_col()
@@ -424,6 +448,63 @@ impl ScopeApp {
             )
     }
 
+    fn math_panel(&self, cx: &mut Context<Self>) -> impl IntoElement {
+        let m = self.settings.math;
+        let color = rgb(TRACE_COLORS[MATH]);
+        let switch_on = |s: &mut Settings| {
+            s.math.on = true;
+            s.math.vdiv_idx = math::default_vdiv(&s.ch);
+        };
+        let mut panel = div()
+            .flex()
+            .flex_col()
+            .gap_1()
+            .p_2()
+            .rounded_md()
+            .border_1()
+            .border_color(if m.on { color } else { rgb(0x333333) })
+            .child(
+                div()
+                    .flex()
+                    .justify_between()
+                    .items_center()
+                    .child(div().text_color(color).child("Math"))
+                    .child(self.button("math-on".into(), if m.on { "ON" } else { "OFF" }, m.on, cx, move |s| {
+                        if s.math.on { s.math.on = false } else { switch_on(s) }
+                    })),
+            )
+            .child(div().flex().gap_1().children(MathOp::ALL.map(|op| {
+                // Picking an operation also switches the trace on.
+                self.button(format!("math-{op:?}"), op.label(), m.on && m.op == op, cx, move |s| {
+                    if !s.math.on {
+                        switch_on(s);
+                    }
+                    s.math.op = op;
+                })
+                .into_any_element()
+            })));
+        if m.on {
+            panel = panel
+                .child(self.stepper(
+                    "math-vdiv",
+                    "Volts/div",
+                    m.vdiv_label(),
+                    cx,
+                    |s| s.math.vdiv_idx = s.math.vdiv_idx.saturating_sub(1),
+                    |s| s.math.vdiv_idx = (s.math.vdiv_idx + 1).min(MATH_VDIV_V.len() - 1),
+                ))
+                .child(self.stepper(
+                    "math-pos",
+                    "Position",
+                    format!("{:+.1} div", m.pos0 as f64 / COUNTS_PER_DIV as f64),
+                    cx,
+                    |s| s.math.pos0 = ChannelSettings::clamp_pos0(s.math.pos0 - COUNTS_PER_DIV / 5),
+                    |s| s.math.pos0 = ChannelSettings::clamp_pos0(s.math.pos0 + COUNTS_PER_DIV / 5),
+                ));
+        }
+        panel
+    }
+
     fn controls(&self, cx: &mut Context<Self>) -> impl IntoElement {
         let s = self.settings;
         let src = s.trigger.source;
@@ -450,6 +531,8 @@ impl ScopeApp {
                 .into_any_element()
         };
         div()
+            .id("controls")
+            .overflow_y_scroll()
             .w(px(280.))
             .flex()
             .flex_col()
@@ -482,6 +565,7 @@ impl ScopeApp {
             )
             .child(self.channel_panel(0, cx))
             .child(self.channel_panel(1, cx))
+            .child(self.math_panel(cx))
             .child(
                 div()
                     .flex()
@@ -580,11 +664,13 @@ impl ScopeApp {
 impl Render for ScopeApp {
     fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let settings = self.settings;
+        let shown = [settings.ch[0].on, settings.ch[1].on, settings.math.on];
         let trace = if self.phosphor_on {
-            let runs = |ch: usize| if settings.ch[ch].on { self.phosphor.runs(ch) } else { Vec::new() };
-            Trace::Phosphor([runs(0), runs(1)])
+            Trace::Phosphor(std::array::from_fn(|i| if shown[i] { self.phosphor.runs(i) } else { Vec::new() }))
         } else {
-            Trace::Line(self.frame.clone())
+            let f = self.frame.as_ref();
+            let channel = |i: usize| f.and_then(|f| f.samples[i].clone()).filter(|_| shown[i]);
+            Trace::Line([channel(0), channel(1), f.and_then(|f| math_of(f, &settings)).map(|t| t.samples)])
         };
         div()
             .flex()
@@ -660,12 +746,20 @@ fn paint_label(
 fn paint_scope(bounds: Bounds<Pixels>, trace: &Trace, settings: &Settings, window: &mut Window, cx: &mut App) {
     window.paint_quad(fill(bounds, rgb(0x000000)));
 
+    // Voltage label columns: CH1 left, CH2 right. Math takes the column of a
+    // hidden channel, or an extra one on the outer left when both are shown.
+    let shown = [settings.ch[0].on, settings.ch[1].on, settings.math.on];
+    // (right side?, columns out from the graticule)
+    let math_column = if !shown[0] { (false, 0) } else if !shown[1] { (true, 0) } else { (false, 1) };
+    let columns = [(false, 0), (true, 0), math_column];
+    let left_margin = if shown[MATH] && math_column == (false, 1) { 2. * MARGIN_SIDE } else { MARGIN_SIDE };
+
     // Graticule rectangle, inset to leave room for the axis labels.
     let bx = f32::from(bounds.origin.x);
     let bw = f32::from(bounds.size.width);
-    let x0 = bx + MARGIN_SIDE;
+    let x0 = bx + left_margin;
     let y0 = f32::from(bounds.origin.y) + MARGIN_TOP;
-    let w = (bw - 2. * MARGIN_SIDE).max(1.);
+    let w = (bw - left_margin - MARGIN_SIDE).max(1.);
     let h = (f32::from(bounds.size.height) - MARGIN_TOP - MARGIN_BOTTOM).max(1.);
     let full = 2.0 * ADC_MAX as f32;
     // ADC code -> screen y: +125 at the top, -125 at the bottom.
@@ -682,19 +776,21 @@ fn paint_scope(bounds: Bounds<Pixels>, trace: &Trace, settings: &Settings, windo
         paint_label(text, time_color, (x, y0 + h + MARGIN_BOTTOM / 2.), Align::Center, clip, window, cx);
     }
 
-    // Voltage axes: each channel has its own V/div and position, so each gets
-    // its own scale in its colour, CH1 on the left and CH2 on the right.
-    for (i, ch) in settings.ch.iter().enumerate() {
-        if !ch.on {
-            continue;
-        }
-        let color: Hsla = rgb(CH_COLORS[i]).into();
+    // Voltage axes: each trace has its own V/div and position, so each gets
+    // its own scale in its colour.
+    let volts_at = |i: usize, code: i32| if i == MATH { settings.math.code_to_volts(code) } else { settings.ch[i].code_to_volts(code) };
+    for i in (0..TRACES).filter(|&i| shown[i]) {
+        let color: Hsla = rgb(TRACE_COLORS[i]).into();
+        let (right, k) = columns[i];
+        let (x, align) = if right {
+            (x0 + w + LABEL_GAP, Align::Left)
+        } else {
+            (x0 - LABEL_GAP - k as f32 * MARGIN_SIDE, Align::Right)
+        };
         for j in 0..=V_DIVS {
             let code = ADC_MAX - COUNTS_PER_DIV * j as i32;
-            let text = tables::format_si(ch.code_to_volts(code), "V");
-            let y = y_of(code as f32);
-            let (x, align) = if i == 0 { (x0 - LABEL_GAP, Align::Right) } else { (x0 + w + LABEL_GAP, Align::Left) };
-            paint_label(text, color, (x, y), align, clip, window, cx);
+            let text = tables::format_si(volts_at(i, code), "V");
+            paint_label(text, color, (x, y_of(code as f32)), align, clip, window, cx);
         }
     }
 
@@ -712,27 +808,31 @@ fn paint_scope(bounds: Bounds<Pixels>, trace: &Trace, settings: &Settings, windo
     }
 
     // Channel zero markers on the left edge, trigger level on the right.
-    for (i, ch) in settings.ch.iter().enumerate() {
-        if ch.on {
-            let y = y_of(ch.pos0.clamp(-POS0_MAX.min(ADC_MAX), ADC_MAX) as f32);
-            window.paint_quad(fill(Bounds::new(point(px(x0), px(y - 4.)), size(px(8.), px(8.))), rgb(CH_COLORS[i])));
-        }
+    let pos0 = [settings.ch[0].pos0, settings.ch[1].pos0, settings.math.pos0];
+    for i in (0..TRACES).filter(|&i| shown[i]) {
+        let y = y_of(pos0[i].clamp(-POS0_MAX.min(ADC_MAX), ADC_MAX) as f32);
+        window.paint_quad(fill(Bounds::new(point(px(x0), px(y - 4.)), size(px(8.), px(8.))), rgb(TRACE_COLORS[i])));
     }
-    let tc = settings.trigger_channel().map_or(rgb(EXT_TRIGGER_COLOR), |c| rgb(CH_COLORS[c]));
+    let tc = settings.trigger_channel().map_or(rgb(EXT_TRIGGER_COLOR), |c| rgb(TRACE_COLORS[c]));
     if let Some(code) = settings.trigger_level_code() {
         let ty = y_of(code as f32);
         window.paint_quad(fill(Bounds::new(point(px(x0 + w - 8.), px(ty - 4.)), size(px(8.), px(8.))), tc));
     }
     window.paint_quad(fill(Bounds::new(point(px(x0 + w / 2. - 4.), px(y0)), size(px(8.), px(6.))), tc));
 
-    let frame = match trace {
-        Trace::Line(Some(frame)) => frame,
-        Trace::Line(None) => return,
+    match trace {
+        Trace::Line(traces) => {
+            for (i, samples) in traces.iter().enumerate() {
+                if let Some(samples) = samples {
+                    paint_trace(samples, rgb(TRACE_COLORS[i]).into(), x0, w, &y_of, window);
+                }
+            }
+        }
         Trace::Phosphor(runs) => {
-            // Each run is one quad; brightness is the channel colour's alpha.
+            // Each run is one quad; brightness is the trace colour's alpha.
             let col_w = w / phosphor::COLS as f32;
             for (i, runs) in runs.iter().enumerate() {
-                let mut color: Hsla = rgb(CH_COLORS[i]).into();
+                let mut color: Hsla = rgb(TRACE_COLORS[i]).into();
                 for run in runs {
                     color.a = run.level as f32 / phosphor::LEVELS as f32;
                     let top = y_of(run.code_hi() as f32 + 0.5);
@@ -743,36 +843,36 @@ fn paint_scope(bounds: Bounds<Pixels>, trace: &Trace, settings: &Settings, windo
                     window.paint_quad(fill(quad, color));
                 }
             }
-            return;
         }
-    };
-    for (i, samples) in frame.samples.iter().enumerate() {
-        let Some(samples) = samples else { continue };
-        if !settings.ch[i].on || samples.is_empty() {
-            continue;
+    }
+}
+
+/// Draws one record across the graticule (`x0`, width `w`) as a line.
+fn paint_trace(samples: &[i8], color: Hsla, x0: f32, w: f32, y_of: &dyn Fn(f32) -> f32, window: &mut Window) {
+    if samples.is_empty() {
+        return;
+    }
+    let mut path = PathBuilder::stroke(px(1.2));
+    let n = samples.len();
+    let columns = (w.floor() as usize).max(1);
+    if n <= columns {
+        for (k, &s) in samples.iter().enumerate() {
+            let p = point(px(x0 + w * k as f32 / (n - 1).max(1) as f32), px(y_of(s as f32)));
+            if k == 0 { path.move_to(p) } else { path.line_to(p) }
         }
-        let mut path = PathBuilder::stroke(px(1.2));
-        let n = samples.len();
-        let columns = (w.floor() as usize).max(1);
-        if n <= columns {
-            for (k, &s) in samples.iter().enumerate() {
-                let p = point(px(x0 + w * k as f32 / (n - 1).max(1) as f32), px(y_of(s as f32)));
-                if k == 0 { path.move_to(p) } else { path.line_to(p) }
-            }
-        } else {
-            // Min/max decimation: two vertices per pixel column keeps edges and glitches visible.
-            for c in 0..columns {
-                let chunk = &samples[c * n / columns..((c + 1) * n / columns).max(c * n / columns + 1)];
-                let (lo, hi) = chunk.iter().fold((i8::MAX, i8::MIN), |(lo, hi), &s| (lo.min(s), hi.max(s)));
-                let x = x0 + c as f32 + 0.5;
-                let a = point(px(x), px(y_of(hi as f32)));
-                let b = point(px(x), px(y_of(lo as f32)));
-                if c == 0 { path.move_to(a) } else { path.line_to(a) }
-                path.line_to(b);
-            }
+    } else {
+        // Min/max decimation: two vertices per pixel column keeps edges and glitches visible.
+        for c in 0..columns {
+            let chunk = &samples[c * n / columns..((c + 1) * n / columns).max(c * n / columns + 1)];
+            let (lo, hi) = chunk.iter().fold((i8::MAX, i8::MIN), |(lo, hi), &s| (lo.min(s), hi.max(s)));
+            let x = x0 + c as f32 + 0.5;
+            let a = point(px(x), px(y_of(hi as f32)));
+            let b = point(px(x), px(y_of(lo as f32)));
+            if c == 0 { path.move_to(a) } else { path.line_to(a) }
+            path.line_to(b);
         }
-        if let Ok(path) = path.build() {
-            window.paint_path(path, rgb(CH_COLORS[i]));
-        }
+    }
+    if let Ok(path) = path.build() {
+        window.paint_path(path, color);
     }
 }

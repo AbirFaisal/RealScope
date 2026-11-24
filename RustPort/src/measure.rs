@@ -5,6 +5,7 @@
 //! and `uppersoft/dso/function/measure/MeasureManager.java` (period, widths,
 //! duty, 10–90 % rise/fall).
 
+use crate::math::MathSettings;
 use crate::settings::ChannelSettings;
 use crate::tables::{ADC_MAX, COUNTS_PER_DIV, format_si};
 
@@ -93,15 +94,35 @@ fn mean_of(values: &[f64]) -> Option<f64> {
     (!values.is_empty()).then(|| values.iter().sum::<f64>() / values.len() as f64)
 }
 
-/// `samples` are raw ADC codes (screen position, 0 = centre); `dt` is the
-/// sample interval in seconds.
-pub fn measure(samples: &[i8], ch: &ChannelSettings, dt: f64) -> Measurements {
+/// How a trace's screen codes map to volts: 25 counts per division, zero at `pos0`.
+#[derive(Clone, Copy, Debug)]
+pub struct Scale {
+    pub volts_per_div: f64,
+    pub pos0: i32,
+}
+
+impl From<&ChannelSettings> for Scale {
+    fn from(ch: &ChannelSettings) -> Self {
+        Scale { volts_per_div: ch.volts_per_div(), pos0: ch.pos0 }
+    }
+}
+
+impl From<&MathSettings> for Scale {
+    fn from(m: &MathSettings) -> Self {
+        Scale { volts_per_div: m.volts_per_div(), pos0: m.pos0 }
+    }
+}
+
+/// `samples` are screen codes (0 = centre, ±125 = edges) of a channel or the
+/// math trace; `dt` is the sample interval in seconds.
+pub fn measure(samples: &[i8], scale: impl Into<Scale>, dt: f64) -> Measurements {
+    let ch = scale.into();
     let n = samples.len();
     if n == 0 {
         return Measurements::default();
     }
     let codes: Vec<i32> = samples.iter().map(|&s| s as i32).collect();
-    let k = ch.volts_per_div() / COUNTS_PER_DIV as f64;
+    let k = ch.volts_per_div / COUNTS_PER_DIV as f64;
     let volts = |code: f64| (code - ch.pos0 as f64) * k;
 
     let max = *codes.iter().max().unwrap();

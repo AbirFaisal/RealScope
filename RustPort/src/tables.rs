@@ -6,6 +6,11 @@
 /// `[Voltbase]`, in millivolts per division.
 pub const VDIV_MV: [u32; 10] = [5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000];
 
+/// Math-trace V/div at the probe tips, 1-2-5 from 1 mV to 100 V: covers the
+/// sum of two x10 channels at 50 V/div. Every channel range (x1 or x10) is in it.
+pub const MATH_VDIV_V: [f64; 16] =
+    [1e-3, 2e-3, 5e-3, 10e-3, 20e-3, 50e-3, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0];
+
 /// From this vdiv index on the input attenuator relay is switched in
 /// (`VDS1022.java`: `DelayAttenuationVBIndex = 5`, relay engaged for `vb > 5`).
 pub const ATTENUATION_VDIV_IDX: usize = 6;

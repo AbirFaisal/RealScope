@@ -85,6 +85,7 @@ fn save_to(path: &Path, saved: &Saved) -> io::Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::math::{MathOp, MathSettings};
     use crate::settings::{Coupling, EXT, RunMode, Slope, Sweep};
 
     fn temp_path(name: &str) -> PathBuf {
@@ -102,6 +103,7 @@ mod tests {
         saved.scope.trigger.source = EXT;
         saved.scope.trigger.sweep = Sweep::Normal;
         saved.scope.trigger.slope = Slope::Falling;
+        saved.scope.math = MathSettings { on: true, op: MathOp::Sub, vdiv_idx: 4, pos0: -30 };
         saved.phosphor_on = true;
         saved.persistence = Persistence::Infinite;
         save_to(&path, &saved).unwrap();
@@ -130,6 +132,7 @@ mod tests {
         assert_eq!(loaded.scope.ch[0].vdiv_idx, 3);
         assert_eq!(loaded.scope.ch[0].probe, 1);
         assert_eq!(loaded.scope.trigger, Settings::default().trigger);
+        assert!(!loaded.scope.math.on, "a file from before the math trace loads with it off");
         assert_eq!(loaded.scope.run, RunMode::Running);
         assert!(loaded.phosphor_on);
         assert!(loaded.measurements_on);

@@ -159,7 +159,7 @@ impl Scope {
 
     /// One trigger poll + fetch (`TrgStatusInvestigator.checkStatusForGetDataT`).
     pub fn acquire(&mut self, settings: &Settings) -> Result<Option<Frame>> {
-        let ch_on = [settings.ch[0].on, settings.ch[1].on];
+        let ch_on = [settings.captures(0), settings.captures(1)];
         if !ch_on[0] && !ch_on[1] {
             return Ok(None);
         }
@@ -218,6 +218,8 @@ impl Scope {
 
     /// Writes whatever registers differ from the last applied settings.
     pub fn apply(&mut self, new: &Settings) -> Result<()> {
+        // Compare and store the hardware view, so math-only changes write nothing.
+        let new = &new.hardware();
         let old = self.applied;
         if old.as_ref() == Some(new) {
             return Ok(());
