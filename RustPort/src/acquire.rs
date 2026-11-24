@@ -8,7 +8,7 @@ use anyhow::Result;
 
 use crate::device::Device;
 use crate::protocol::{self, Block, Calibration, reg};
-use crate::settings::{Coupling, EXT, Settings, Sweep};
+use crate::settings::{Coupling, EXT, RunMode, Settings};
 use crate::tables::{ATTENUATION_VDIV_IDX, TDIV_MAX_IDX, TDIV_MIN_IDX, TIMEBASE_DIV};
 
 /// One acquisition.
@@ -27,6 +27,8 @@ pub enum Event {
     Status(String),
     Connected { serial: String, version: String },
     Frame(Frame),
+    /// A single-shot capture completed (sent after its `Frame`); the worker has stopped.
+    SingleDone,
     Disconnected(String),
 }
 
@@ -95,7 +97,7 @@ impl Scope {
             }
             self.apply(settings)?;
 
-            if !settings.running {
+            if !settings.acquiring() {
                 match settings_rx.recv_timeout(Duration::from_millis(50)) {
                     Ok(s) => *settings = s,
                     Err(RecvTimeoutError::Timeout) => {}
@@ -108,6 +110,12 @@ impl Scope {
                 Some(frame) => {
                     if events.send(Event::Frame(frame)).is_err() {
                         return Ok(());
+                    }
+                    if settings.run == RunMode::Single {
+                        // One shot taken: the next apply() stops the scope and
+                        // restores the user's sweep.
+                        settings.run = RunMode::Stopped;
+                        let _ = events.send(Event::SingleDone);
                     }
                 }
                 None => sleep(Duration::from_millis(5)),
@@ -123,11 +131,11 @@ impl Scope {
         }
         let trg_status = self.dev.write_reg(reg::TRG_D, 1, 0)? & protocol::chl_on_mask(ch_on) as i32;
         let finished = self.dev.write_reg(reg::DATAFINISHED, 1, 0)?;
-        if settings.trigger.sweep == Sweep::Normal && trg_status == 0 && finished == 0 {
+        if settings.waits_for_trigger() && trg_status == 0 && finished == 0 {
             return Ok(None);
         }
 
-        let Some(blocks) = self.dev.fetch(ch_on)? else {
+        let Some(blocks) = self.fetch(ch_on, settings.run == RunMode::Single)? else {
             return Ok(None);
         };
         let mut samples: [Option<Vec<i8>>; 2] = [None, None];
@@ -156,8 +164,22 @@ impl Scope {
         }
         // TRG_D doesn't report the external input; in Normal sweep data only
         // arrives on a trigger, so a frame means it fired.
-        let ext_fired = settings.trigger.source == EXT && settings.trigger.sweep == Sweep::Normal;
+        let ext_fired = settings.trigger.source == EXT && settings.waits_for_trigger();
         Ok(Some(Frame { samples, counter_hz, triggered: trg_status != 0 || ext_fired }))
+    }
+
+    /// Fetches the data blocks. A single shot has already triggered and the
+    /// next poll may no longer say so, so keep retrying through EBUSY rather
+    /// than lose the capture (`ChannelsTransportInfo_Tiny.fetchUntilData`).
+    fn fetch(&mut self, ch_on: [bool; 2], until_data: bool) -> Result<Option<Vec<Vec<u8>>>> {
+        let deadline = Instant::now() + Duration::from_secs(1);
+        loop {
+            let blocks = self.dev.fetch(ch_on)?;
+            if blocks.is_some() || !until_data || Instant::now() > deadline {
+                return Ok(blocks);
+            }
+            sleep(Duration::from_millis(2));
+        }
     }
 
     /// Writes whatever registers differ from the last applied settings.
@@ -167,7 +189,8 @@ impl Scope {
             return Ok(());
         }
         let first = old.is_none();
-        let was_running = old.map(|o| o.running).unwrap_or(false);
+        let was_acquiring = old.is_some_and(|o| o.acquiring());
+        let single = new.run == RunMode::Single;
 
         let on = [new.ch[0].on, new.ch[1].on];
         if first || old.map(|o| [o.ch[0].on, o.ch[1].on]) != Some(on) {
@@ -216,14 +239,15 @@ impl Scope {
 
         let trg = new.trigger;
         let src = trg.source;
-        if first || old.map(|o| (o.trigger.source, o.trigger.slope, o.trigger.sweep)) != Some((src, trg.slope, trg.sweep)) {
+        let trg_key = |s: &Settings| (s.trigger.source, s.trigger.slope, s.trigger.sweep, s.run == RunMode::Single);
+        if first || old.as_ref().map(trg_key) != Some(trg_key(new)) {
             if src == EXT && (first || old.map(|o| o.trigger.source) != Some(EXT)) {
                 // Make the shared I/O connector an input. Like the vendor app, it is
                 // not switched back to an output afterwards, so it never drives a
                 // signal into a source that is still attached.
                 self.dev.write_reg(reg::MULTI_IO, 1, protocol::MULTI_IO_TRIGGER_IN)?;
             }
-            self.dev.write_reg(reg::TRG, 2, protocol::trigger(src, trg.slope, trg.sweep) as u32)?;
+            self.dev.write_reg(reg::TRG, 2, protocol::trigger(src, trg.slope, trg.sweep, single) as u32)?;
             // Holdoff goes high byte first (ClockTimeAdjuster.send), unlike cmd_bytewise.
             let h = protocol::HOLDOFF_DEFAULT;
             self.dev.write_reg(reg::HOLDOFF[src], 1, h >> 8)?;
@@ -239,8 +263,9 @@ impl Scope {
             self.dev.write_reg_bytewise(reg::EDGE_LEVEL[src], 2, protocol::edge_level(code, trg.slope))?;
         }
 
-        if first || was_running != new.running {
-            self.dev.command(&protocol::run_stop(new.running))?;
+        // Stopped -> Single sends Run, which re-arms the trigger (TRG was written above).
+        if first || was_acquiring != new.acquiring() {
+            self.dev.command(&protocol::run_stop(new.acquiring()))?;
         }
 
         self.applied = Some(*new);

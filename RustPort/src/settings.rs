@@ -35,6 +35,16 @@ pub enum Sweep {
     Normal,
 }
 
+/// Acquisition state, driven by the Run/Stop and Single buttons.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
+pub enum RunMode {
+    #[default]
+    Running,
+    Stopped,
+    /// Armed for one triggered capture, after which the scope stops.
+    Single,
+}
+
 /// Which signal edge fires the trigger.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub enum Slope {
@@ -81,7 +91,7 @@ pub struct Settings {
     pub trigger: TriggerSettings,
     /// Not saved: the app always starts acquiring.
     #[serde(skip)]
-    pub running: bool,
+    pub run: RunMode,
 }
 
 impl Default for ChannelSettings {
@@ -117,7 +127,7 @@ impl Default for Settings {
             ],
             tdiv_idx: 15, // 500 µs/div
             trigger: TriggerSettings::default(),
-            running: true,
+            run: RunMode::Running,
         }
     }
 }
@@ -176,6 +186,16 @@ impl Settings {
         if self.trigger.source == ch {
             self.trigger.level_v *= probe as f64 / old as f64;
         }
+    }
+
+    /// Whether the scope should be capturing (running, or armed for a single shot).
+    pub fn acquiring(&self) -> bool {
+        matches!(self.run, RunMode::Running | RunMode::Single)
+    }
+
+    /// Whether captures only happen on a real trigger (no auto-trigger).
+    pub fn waits_for_trigger(&self) -> bool {
+        self.run == RunMode::Single || self.trigger.sweep == Sweep::Normal
     }
 
     /// The channel the trigger follows, or `None` for the external input.
@@ -255,6 +275,19 @@ mod tests {
         assert_eq!(s.trigger.source, 0);
         assert_eq!(s.trigger.level_v, 1.0);
         assert_eq!(Settings::default().sanitize(), Settings::default());
+    }
+
+    #[test]
+    fn run_modes() {
+        let mut s = Settings::default();
+        assert!(s.acquiring() && !s.waits_for_trigger());
+        s.trigger.sweep = Sweep::Normal;
+        assert!(s.waits_for_trigger());
+        s.trigger.sweep = Sweep::Auto;
+        s.run = RunMode::Single;
+        assert!(s.acquiring() && s.waits_for_trigger());
+        s.run = RunMode::Stopped;
+        assert!(!s.acquiring());
     }
 
     #[test]

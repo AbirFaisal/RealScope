@@ -85,7 +85,7 @@ fn save_to(path: &Path, saved: &Saved) -> io::Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::settings::{Coupling, EXT, Slope, Sweep};
+    use crate::settings::{Coupling, EXT, RunMode, Slope, Sweep};
 
     fn temp_path(name: &str) -> PathBuf {
         std::env::temp_dir().join(format!("realscope-test-{}-{name}", std::process::id())).join("settings.json")
@@ -110,13 +110,13 @@ mod tests {
     }
 
     #[test]
-    fn running_is_not_saved_and_loads_as_running() {
+    fn run_mode_is_not_saved_and_loads_as_running() {
         let path = temp_path("running");
         let mut saved = Saved::default();
-        saved.scope.running = false;
+        saved.scope.run = RunMode::Single;
         save_to(&path, &saved).unwrap();
-        assert!(!fs::read_to_string(&path).unwrap().contains("running"));
-        assert!(load_from(&path).scope.running);
+        assert!(!fs::read_to_string(&path).unwrap().contains("run\""));
+        assert_eq!(load_from(&path).scope.run, RunMode::Running);
         fs::remove_dir_all(path.parent().unwrap()).unwrap();
     }
 
@@ -130,7 +130,7 @@ mod tests {
         assert_eq!(loaded.scope.ch[0].vdiv_idx, 3);
         assert_eq!(loaded.scope.ch[0].probe, 1);
         assert_eq!(loaded.scope.trigger, Settings::default().trigger);
-        assert!(loaded.scope.running);
+        assert_eq!(loaded.scope.run, RunMode::Running);
         assert!(loaded.phosphor_on);
         assert!(loaded.measurements_on);
         fs::remove_dir_all(path.parent().unwrap()).unwrap();

@@ -60,6 +60,9 @@ fn probe(capture: bool) -> Result<()> {
     if std::env::args().any(|a| a == "--ext") {
         settings.trigger.source = settings::EXT;
     }
+    if std::env::args().any(|a| a == "--single") {
+        settings.run = settings::RunMode::Single;
+    }
     if std::env::args().any(|a| a == "--fall") {
         settings.trigger.slope = settings::Slope::Falling;
     }

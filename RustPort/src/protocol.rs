@@ -108,9 +108,12 @@ pub const MULTI_IO_TRIGGER_IN: u32 = 2;
 
 /// TRG register for a single-source edge trigger
 /// (`TinyTrgSubmitHandler.java:61-111`): bit13 channel (0 = CH1, 1 = CH2),
-/// bit0 external input, bit12 slope (0 = rise, 1 = fall), bits 11:10 sweep.
-pub fn trigger(source: usize, slope: Slope, sweep: Sweep) -> u16 {
+/// bit0 external input, bit12 slope (0 = rise, 1 = fall), bits 11:10 sweep
+/// (0 auto, 1 normal, 2 single). `single` overrides the user's sweep while a
+/// single shot is armed.
+pub fn trigger(source: usize, slope: Slope, sweep: Sweep, single: bool) -> u16 {
     let sweep = match sweep {
+        _ if single => 2,
         Sweep::Auto => 0,
         Sweep::Normal => 1,
     };
@@ -338,14 +341,17 @@ mod tests {
     #[test]
     fn trigger_bits() {
         use Slope::*;
-        assert_eq!(trigger(0, Rising, Sweep::Auto), 0x0000);
-        assert_eq!(trigger(1, Rising, Sweep::Auto), 0x2000);
-        assert_eq!(trigger(0, Rising, Sweep::Normal), 0x0400);
-        assert_eq!(trigger(EXT, Rising, Sweep::Auto), 0x0001);
-        assert_eq!(trigger(EXT, Rising, Sweep::Normal), 0x0401);
-        assert_eq!(trigger(0, Falling, Sweep::Auto), 0x1000);
-        assert_eq!(trigger(1, Falling, Sweep::Normal), 0x3400);
-        assert_eq!(trigger(EXT, Falling, Sweep::Auto), 0x1001);
+        assert_eq!(trigger(0, Rising, Sweep::Auto, false), 0x0000);
+        assert_eq!(trigger(1, Rising, Sweep::Auto, false), 0x2000);
+        assert_eq!(trigger(0, Rising, Sweep::Normal, false), 0x0400);
+        assert_eq!(trigger(EXT, Rising, Sweep::Auto, false), 0x0001);
+        assert_eq!(trigger(EXT, Rising, Sweep::Normal, false), 0x0401);
+        assert_eq!(trigger(0, Falling, Sweep::Auto, false), 0x1000);
+        assert_eq!(trigger(1, Falling, Sweep::Normal, false), 0x3400);
+        assert_eq!(trigger(EXT, Falling, Sweep::Auto, false), 0x1001);
+        // Single shot: sweep value 2, whatever the user's sweep.
+        assert_eq!(trigger(0, Rising, Sweep::Auto, true), 0x0800);
+        assert_eq!(trigger(EXT, Falling, Sweep::Normal, true), 0x1801);
     }
 
     #[test]

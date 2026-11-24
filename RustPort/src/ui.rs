@@ -13,7 +13,7 @@ use crate::acquire::{self, Event, Frame};
 use crate::measure::{self, Group, Measurements};
 use crate::persist::{self, Saved};
 use crate::phosphor::{self, Persistence, Phosphor, Run};
-use crate::settings::{ChannelSettings, EXT, Settings, Slope, Sweep};
+use crate::settings::{ChannelSettings, EXT, RunMode, Settings, Slope, Sweep};
 use crate::tables::{
     self, ADC_MAX, COUNTS_PER_DIV, H_DIVS, POS0_MAX, TDIV_MAX_IDX, TDIV_MIN_IDX, V_DIVS, VDIV_MV,
 };
@@ -145,6 +145,14 @@ impl ScopeApp {
                     self.measured_at = Some(now);
                 }
                 self.frame = Some(f);
+            }
+            Event::SingleDone => {
+                // Hold the captured trace. A Single pressed again since the capture
+                // has re-armed the worker already, but is rare enough to ignore.
+                if self.settings.run == RunMode::Single {
+                    self.settings.run = RunMode::Stopped;
+                    let _ = self.settings_tx.send(self.settings);
+                }
             }
             Event::Disconnected(e) => {
                 self.status = e;
@@ -433,13 +441,19 @@ impl ScopeApp {
             .gap_2()
             .p_2()
             .bg(rgb(0x181818))
-            .child(self.button(
-                "run".into(),
-                if s.running { "■ Stop" } else { "▶ Run" },
-                s.running,
-                cx,
-                |s| s.running = !s.running,
-            ))
+            .child(
+                div()
+                    .flex()
+                    .gap_1()
+                    .child(self.button(
+                        "run".into(),
+                        if s.run == RunMode::Running { "■ Stop" } else { "▶ Run" },
+                        s.run == RunMode::Running,
+                        cx,
+                        |s| s.run = if s.run == RunMode::Running { RunMode::Stopped } else { RunMode::Running },
+                    ))
+                    .child(self.button("single".into(), "Single", s.run == RunMode::Single, cx, |s| s.run = RunMode::Single)),
+            )
             .child(self.channel_panel(0, cx))
             .child(self.channel_panel(1, cx))
             .child(
@@ -516,10 +530,12 @@ impl ScopeApp {
 
     fn status_line(&self) -> impl IntoElement {
         let s = &self.settings;
-        let trig = match &self.frame {
-            Some(f) if f.triggered => "Trig'd",
-            Some(_) => "Auto",
-            None => "—",
+        let trig = match (s.run, &self.frame) {
+            (RunMode::Single, _) => "Armed",
+            (RunMode::Stopped, _) => "Stopped",
+            (RunMode::Running, Some(f)) if f.triggered => "Trig'd",
+            (RunMode::Running, Some(_)) => "Auto",
+            (RunMode::Running, None) => "—",
         };
         div()
             .flex()
