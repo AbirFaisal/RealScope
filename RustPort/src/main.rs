@@ -1,6 +1,7 @@
 mod acquire;
 mod autoset;
 mod device;
+mod fft;
 mod math;
 mod measure;
 mod persist;
@@ -136,6 +137,24 @@ fn probe(capture: bool) -> Result<()> {
         m.counter = frame.counter_hz[i];
         println!("CH{} @ {}/div ({} samples):", i + 1, ch.vdiv_label(), samples.len());
         print_table(&m);
+        if std::env::args().any(|a| a == "--fft") {
+            let sp = fft::spectrum(samples, ch.into(), tables::sample_rate_hz(settings.tdiv_idx), fft::FftWindow::Hann);
+            println!("  FFT ({} of {} pt, Hann, Δf {}):", sp.samples, sp.points, tables::format_si(sp.bin_hz, "Hz"));
+            match sp.peak() {
+                Some((f, v)) => {
+                    let near = |h: f64| sp.level_near(h).map_or("—".into(), |l| format!("{:.1} dBV", fft::to_dbv(l)));
+                    println!(
+                        "    peak {} {:.1} dBV ({}) | 3f {} | 5f {}",
+                        tables::format_si(f, "Hz"),
+                        fft::to_dbv(v),
+                        tables::format_si(v, "Vrms"),
+                        near(3.0 * f),
+                        near(5.0 * f)
+                    );
+                }
+                None => println!("    no peak"),
+            }
+        }
     }
     if let Some(t) = math::compute(frame.samples.each_ref().map(|s| s.as_deref()), &settings) {
         let mut m = measure::measure(&t.samples, &settings.math, dt);

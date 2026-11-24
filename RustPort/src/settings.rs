@@ -2,7 +2,9 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::fft::FftSettings;
 use crate::math::MathSettings;
+use crate::measure::Scale;
 use crate::tables::{ADC_MAX, COUNTS_PER_DIV, MATH_VDIV_V, POS0_MAX, TDIV_MAX_IDX, TDIV_MIN_IDX, VDIV_MV, format_si};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -91,6 +93,7 @@ pub struct Settings {
     pub tdiv_idx: usize,
     pub trigger: TriggerSettings,
     pub math: MathSettings,
+    pub fft: FftSettings,
     /// Not saved: the app always starts acquiring.
     #[serde(skip)]
     pub run: RunMode,
@@ -130,6 +133,7 @@ impl Default for Settings {
             tdiv_idx: 15, // 500 µs/div
             trigger: TriggerSettings::default(),
             math: MathSettings::default(),
+            fft: FftSettings::default(),
             run: RunMode::Running,
         }
     }
@@ -177,23 +181,30 @@ impl Settings {
         }
         self.math.vdiv_idx = self.math.vdiv_idx.min(MATH_VDIV_V.len() - 1);
         self.math.pos0 = ChannelSettings::clamp_pos0(self.math.pos0);
+        self.fft.sanitize();
         self
     }
 
     /// Whether the scope captures channel `i`: when it is shown, or when the
-    /// math trace needs it (a hidden source is still captured).
+    /// math trace or the spectrum needs it (a hidden source is still captured).
     pub fn captures(&self, i: usize) -> bool {
-        self.ch[i].on || self.math.on
+        self.ch[i].on || self.math.on || (self.fft.on && self.fft.source == i)
+    }
+
+    /// Screen scale of trace `i`: CH1, CH2, or 2 = Math.
+    pub fn trace_scale(&self, i: usize) -> Scale {
+        if i < self.ch.len() { (&self.ch[i]).into() } else { (&self.math).into() }
     }
 
     /// The settings as the scope hardware sees them: channels on when captured,
     /// math (PC-side only) left out so changing it writes nothing.
     pub fn hardware(&self) -> Settings {
         let mut hw = *self;
-        for ch in &mut hw.ch {
-            ch.on |= self.math.on;
+        for (i, ch) in hw.ch.iter_mut().enumerate() {
+            ch.on = self.captures(i);
         }
         hw.math = MathSettings::default();
+        hw.fft = FftSettings::default();
         hw
     }
 
@@ -317,6 +328,22 @@ mod tests {
         t.math.vdiv_idx = 3;
         t.math.pos0 = 40;
         assert_eq!(t.hardware(), hw);
+    }
+
+    #[test]
+    fn fft_captures_its_hidden_source() {
+        let mut s = Settings::default();
+        s.ch[1].on = false;
+        s.fft.on = true;
+        s.fft.source = 1;
+        assert!(s.hardware().ch[1].on);
+        // Spectrum-only changes don't change what the hardware sees.
+        let mut t = s;
+        t.fft.zoom = 3;
+        t.fft.ref_dbv = -10;
+        assert_eq!(t.hardware(), s.hardware());
+        s.fft.source = 0;
+        assert!(!s.hardware().ch[1].on);
     }
 
     #[test]

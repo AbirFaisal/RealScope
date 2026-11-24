@@ -10,6 +10,7 @@ use gpui::{
 };
 
 use crate::acquire::{self, Command, Event, Frame};
+use crate::fft::{self, DB_PER_DIV, FFT_H_DIVS, FftSettings, FftUnit, FftWindow, Spectrum};
 use crate::math::{self, MathOp, MathTrace};
 use crate::measure::{self, Group, Measurements};
 use crate::persist::{self, Saved};
@@ -82,6 +83,19 @@ struct ScopeApp {
 enum Trace {
     Line([Option<Vec<i8>>; TRACES]),
     Phosphor([Vec<Run>; TRACES]),
+}
+
+/// Everything the spectrum pane draws.
+struct SpectrumView {
+    spectrum: Option<Spectrum>,
+    /// The source sat at the screen edge, so the levels are a bound.
+    clipped: bool,
+    /// Shown instead of a curve.
+    message: Option<&'static str>,
+    settings: FftSettings,
+    /// Source V/div, which is the Vrms/div of the linear scale.
+    source_vpd: f64,
+    hz_per_div: f64,
 }
 
 /// The math trace of a capture under the given settings (`None` when math is off).
@@ -176,6 +190,9 @@ impl ScopeApp {
                 // The channel scales changed, so re-pick the math scale too.
                 if settings.math.on {
                     settings.math.vdiv_idx = math::default_vdiv(&settings.ch);
+                }
+                if settings.fft.on {
+                    settings.fft.ref_dbv = fft::default_ref_dbv(settings.trace_scale(settings.fft.source).volts_per_div);
                 }
                 self.settings = settings;
                 // Echo back, so a control clicked while auto-set ran can't leave
@@ -505,6 +522,114 @@ impl ScopeApp {
         panel
     }
 
+    fn fft_panel(&self, cx: &mut Context<Self>) -> impl IntoElement {
+        let f = self.settings.fft;
+        let fs = tables::sample_rate_hz(self.settings.tdiv_idx);
+        let color = rgb(0xdddddd);
+        // Start the display with a full-screen signal near the top line.
+        let pick_ref = |s: &mut Settings| s.fft.ref_dbv = fft::default_ref_dbv(s.trace_scale(s.fft.source).volts_per_div);
+        let mut panel = div()
+            .flex()
+            .flex_col()
+            .gap_1()
+            .p_2()
+            .rounded_md()
+            .border_1()
+            .border_color(if f.on { color } else { rgb(0x333333) })
+            .child(
+                div()
+                    .flex()
+                    .justify_between()
+                    .items_center()
+                    .child("FFT")
+                    .child(self.button("fft-on".into(), if f.on { "ON" } else { "OFF" }, f.on, cx, move |s| {
+                        s.fft.on = !s.fft.on;
+                        if s.fft.on {
+                            pick_ref(s);
+                        }
+                    })),
+            );
+        if !f.on {
+            return panel;
+        }
+        let row = || div().flex().gap_1();
+        panel = panel
+            .child(row().children((0..TRACES).map(|src| {
+                self.button(format!("fft-src{src}"), TRACE_NAMES[src], f.source == src, cx, move |s| {
+                    s.fft.source = src;
+                    pick_ref(s);
+                })
+                .into_any_element()
+            })))
+            .child(row().children(FftWindow::ALL.map(|w| {
+                self.button(format!("fft-{w:?}"), w.label(), f.window == w, cx, move |s| s.fft.window = w).into_any_element()
+            })))
+            .child(
+                row()
+                    .child(self.button("fft-dbv".into(), "dBV", f.unit == FftUnit::Dbv, cx, |s| s.fft.unit = FftUnit::Dbv))
+                    .child(self.button("fft-vrms".into(), "Vrms", f.unit == FftUnit::Vrms, cx, |s| s.fft.unit = FftUnit::Vrms)),
+            );
+        if f.unit == FftUnit::Dbv {
+            panel = panel
+                .child(self.stepper(
+                    "fft-dbdiv",
+                    "dB/div",
+                    format!("{} dB", f.db_per_div()),
+                    cx,
+                    |s| s.fft.db_div_idx = s.fft.db_div_idx.saturating_sub(1),
+                    |s| s.fft.db_div_idx = (s.fft.db_div_idx + 1).min(DB_PER_DIV.len() - 1),
+                ))
+                .child(self.stepper(
+                    "fft-ref",
+                    "Ref level",
+                    format!("{} dBV", f.ref_dbv),
+                    cx,
+                    |s| s.fft.ref_dbv -= s.fft.db_per_div() as i32,
+                    |s| s.fft.ref_dbv += s.fft.db_per_div() as i32,
+                ));
+        }
+        panel.child(self.stepper(
+            "fft-hzdiv",
+            "Hz/div",
+            tables::format_si(fft::hz_per_div(fs, f.zoom), "Hz"),
+            cx,
+            move |s| s.fft.zoom = (s.fft.zoom + 1).min(fft::max_zoom(fs)),
+            move |s| s.fft.zoom = s.fft.zoom.min(fft::max_zoom(fs)).saturating_sub(1),
+        ))
+    }
+
+    /// What the spectrum pane shows, computed from the held capture.
+    fn spectrum_view(&self) -> SpectrumView {
+        let s = &self.settings;
+        let src = s.fft.source;
+        let fs = tables::sample_rate_hz(s.tdiv_idx);
+        let data = self.frame.as_ref().and_then(|frame| {
+            if src == MATH {
+                math_of(frame, s).map(|t| (t.samples, t.sources_clipped))
+            } else {
+                frame.samples[src].clone().map(|v| {
+                    let clipped = v.iter().any(|&c| (c as i32).abs() >= ADC_MAX);
+                    (v, clipped)
+                })
+            }
+        });
+        let message = if src == MATH && !s.math.on {
+            Some("Turn Math on to see its spectrum")
+        } else if data.is_none() {
+            Some("No data")
+        } else {
+            None
+        };
+        SpectrumView {
+            spectrum: data.as_ref().map(|(v, _)| fft::spectrum(v, s.trace_scale(src), fs, s.fft.window)),
+            clipped: data.is_some_and(|(_, c)| c),
+            message,
+            settings: s.fft,
+            source_vpd: s.trace_scale(src).volts_per_div,
+            hz_per_div: fft::hz_per_div(fs, s.fft.zoom),
+        }
+    }
+
     fn controls(&self, cx: &mut Context<Self>) -> impl IntoElement {
         let s = self.settings;
         let src = s.trigger.source;
@@ -566,6 +691,7 @@ impl ScopeApp {
             .child(self.channel_panel(0, cx))
             .child(self.channel_panel(1, cx))
             .child(self.math_panel(cx))
+            .child(self.fft_panel(cx))
             .child(
                 div()
                     .flex()
@@ -665,6 +791,7 @@ impl Render for ScopeApp {
     fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let settings = self.settings;
         let shown = [settings.ch[0].on, settings.ch[1].on, settings.math.on];
+        let spectrum = settings.fft.on.then(|| self.spectrum_view());
         let trace = if self.phosphor_on {
             Trace::Phosphor(std::array::from_fn(|i| if shown[i] { self.phosphor.runs(i) } else { Vec::new() }))
         } else {
@@ -697,6 +824,13 @@ impl Render for ScopeApp {
                                     .flex_1()
                                     .child(canvas(|_, _, _| (), move |b, _, window, cx| paint_scope(b, &trace, &settings, window, cx)).size_full()),
                             )
+                            .when_some(spectrum, |col, view| {
+                                col.child(
+                                    div()
+                                        .flex_1()
+                                        .child(canvas(|_, _, _| (), move |b, _, window, cx| paint_spectrum(b, &view, window, cx)).size_full()),
+                                )
+                            })
                             .child(self.status_line()),
                     )
                     .child(self.controls(cx)),
@@ -874,5 +1008,118 @@ fn paint_trace(samples: &[i8], color: Hsla, x0: f32, w: f32, y_of: &dyn Fn(f32) 
     }
     if let Ok(path) = path.build() {
         window.paint_path(path, color);
+    }
+}
+
+fn paint_spectrum(bounds: Bounds<Pixels>, view: &SpectrumView, window: &mut Window, cx: &mut App) {
+    window.paint_quad(fill(bounds, rgb(0x000000)));
+    let f = &view.settings;
+    let color: Hsla = rgb(TRACE_COLORS[f.source]).into();
+    let dim: Hsla = rgb(0x8a8a8a).into();
+
+    let bx = f32::from(bounds.origin.x);
+    let bw = f32::from(bounds.size.width);
+    let x0 = bx + MARGIN_SIDE;
+    let y0 = f32::from(bounds.origin.y) + MARGIN_TOP;
+    let w = (bw - 2. * MARGIN_SIDE).max(1.);
+    let h = (f32::from(bounds.size.height) - MARGIN_TOP - MARGIN_BOTTOM).max(1.);
+    let clip = (bx, bx + bw);
+    let div_w = w / FFT_H_DIVS as f32;
+    let div_h = h / V_DIVS as f32;
+
+    // Vrms -> screen y, clamped to the graticule.
+    let y_of = |vrms: f64| -> f32 {
+        let divs = match f.unit {
+            FftUnit::Dbv => (f.ref_dbv as f64 - fft::to_dbv(vrms)) / f.db_per_div(),
+            FftUnit::Vrms => V_DIVS as f64 - vrms / view.source_vpd,
+        };
+        y0 + (divs as f32 * div_h).clamp(0., h)
+    };
+
+    // Frequency labels below, level labels on the left in the source colour.
+    let every = if div_w >= 56. { 1 } else { 2 };
+    for i in (0..=FFT_H_DIVS).step_by(every) {
+        let text = tables::format_si(i as f64 * view.hz_per_div, "Hz");
+        paint_label(text, dim, (x0 + div_w * i as f32, y0 + h + MARGIN_BOTTOM / 2.), Align::Center, clip, window, cx);
+    }
+    for j in 0..=V_DIVS {
+        let text = match f.unit {
+            FftUnit::Dbv => format!("{}", f.ref_dbv as f64 - j as f64 * f.db_per_div()),
+            FftUnit::Vrms => tables::format_si((V_DIVS - j) as f64 * view.source_vpd, "V"),
+        };
+        paint_label(text, color, (x0 - LABEL_GAP, y0 + div_h * j as f32), Align::Right, clip, window, cx);
+    }
+
+    let grid: Hsla = rgb(0x2a2a2a).into();
+    for i in 0..=FFT_H_DIVS {
+        window.paint_quad(fill(Bounds::new(point(px(x0 + div_w * i as f32), px(y0)), size(px(1.), px(h))), grid));
+    }
+    for j in 0..=V_DIVS {
+        window.paint_quad(fill(Bounds::new(point(px(x0), px(y0 + div_h * j as f32)), size(px(w), px(1.))), grid));
+    }
+
+    let header_y = y0 + 10.;
+    let Some(sp) = view.spectrum.as_ref().filter(|_| view.message.is_none()) else {
+        let text = view.message.unwrap_or("No data").to_owned();
+        paint_label(text, dim, (x0 + w / 2., y0 + h / 2.), Align::Center, clip, window, cx);
+        return;
+    };
+    let unit = if f.unit == FftUnit::Dbv { "dBV" } else { "Vrms" };
+    let header = format!(
+        "FFT {} · {} · {} pt · Δf {} · {}",
+        TRACE_NAMES[f.source],
+        f.window.label(),
+        sp.points,
+        tables::format_si(sp.bin_hz, "Hz"),
+        unit
+    );
+    paint_label(header, dim, (x0 + 6., header_y), Align::Left, clip, window, cx);
+
+    // The curve. Zoomed out, each pixel column shows the largest bin it covers,
+    // so narrow peaks survive; zoomed in, a line joins the bins.
+    let hz_per_px = view.hz_per_div * FFT_H_DIVS as f64 / w as f64;
+    let bins_per_px = hz_per_px / sp.bin_hz;
+    let mut path = PathBuilder::stroke(px(1.2));
+    let mut started = false;
+    let mut point_to = |x: f32, y: f32, path: &mut PathBuilder| {
+        if started { path.line_to(point(px(x), px(y))) } else { path.move_to(point(px(x), px(y))) }
+        started = true;
+    };
+    if bins_per_px >= 1.0 {
+        for c in 0..w.floor() as usize {
+            let lo = (c as f64 * bins_per_px).ceil() as usize;
+            let hi = (((c + 1) as f64 * bins_per_px).ceil() as usize).max(lo + 1).min(sp.vrms.len());
+            if lo >= hi {
+                break;
+            }
+            let v = sp.vrms[lo..hi].iter().copied().fold(0.0, f64::max);
+            point_to(x0 + c as f32 + 0.5, y_of(v), &mut path);
+        }
+    } else {
+        for (b, &v) in sp.vrms.iter().enumerate() {
+            let x = x0 + (b as f64 / bins_per_px) as f32;
+            if x > x0 + w {
+                break;
+            }
+            point_to(x, y_of(v), &mut path);
+        }
+    }
+    if let Ok(path) = path.build() {
+        window.paint_path(path, color);
+    }
+
+    if let Some((hz, vrms)) = sp.peak() {
+        let level = match f.unit {
+            FftUnit::Dbv => format!("{:.1} dBV", fft::to_dbv(vrms)),
+            FftUnit::Vrms => tables::format_si(vrms, "Vrms"),
+        };
+        let mark = if view.clipped { "?" } else { "" };
+        let text = format!("Peak {} {level}{mark}", tables::format_si(hz, "Hz"));
+        paint_label(text, color, (x0 + w - 6., header_y), Align::Right, clip, window, cx);
+        let px_x = x0 + (hz / hz_per_px) as f32;
+        if px_x <= x0 + w {
+            let y = y_of(vrms);
+            window.paint_quad(fill(Bounds::new(point(px(px_x - 3.), px(y - 9.)), size(px(6.), px(6.))), color));
+        }
     }
 }

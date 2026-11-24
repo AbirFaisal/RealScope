@@ -85,6 +85,7 @@ fn save_to(path: &Path, saved: &Saved) -> io::Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::fft::{FftSettings, FftUnit, FftWindow};
     use crate::math::{MathOp, MathSettings};
     use crate::settings::{Coupling, EXT, RunMode, Slope, Sweep};
 
@@ -104,6 +105,15 @@ mod tests {
         saved.scope.trigger.sweep = Sweep::Normal;
         saved.scope.trigger.slope = Slope::Falling;
         saved.scope.math = MathSettings { on: true, op: MathOp::Sub, vdiv_idx: 4, pos0: -30 };
+        saved.scope.fft = FftSettings {
+            on: true,
+            source: 2,
+            window: FftWindow::Blackman,
+            unit: FftUnit::Vrms,
+            db_div_idx: 1,
+            ref_dbv: -10,
+            zoom: 2,
+        };
         saved.phosphor_on = true;
         saved.persistence = Persistence::Infinite;
         save_to(&path, &saved).unwrap();
@@ -133,6 +143,7 @@ mod tests {
         assert_eq!(loaded.scope.ch[0].probe, 1);
         assert_eq!(loaded.scope.trigger, Settings::default().trigger);
         assert!(!loaded.scope.math.on, "a file from before the math trace loads with it off");
+        assert!(!loaded.scope.fft.on);
         assert_eq!(loaded.scope.run, RunMode::Running);
         assert!(loaded.phosphor_on);
         assert!(loaded.measurements_on);
