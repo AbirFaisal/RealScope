@@ -9,7 +9,7 @@ use gpui::{
     point, prelude::*, px, rgb, size,
 };
 
-use crate::acquire::{self, Event, Frame};
+use crate::acquire::{self, Command, Event, Frame};
 use crate::measure::{self, Group, Measurements};
 use crate::persist::{self, Saved};
 use crate::phosphor::{self, Persistence, Phosphor, Run};
@@ -54,7 +54,7 @@ pub fn run() {
 
 struct ScopeApp {
     settings: Settings,
-    settings_tx: mpsc::Sender<Settings>,
+    settings_tx: mpsc::Sender<Command>,
     frame: Option<Frame>,
     status: String,
     device: Option<String>,
@@ -67,6 +67,8 @@ struct ScopeApp {
     measurements_on: bool,
     measurements: [Option<Measurements>; 2],
     measured_at: Option<Instant>,
+    /// Auto-set is running on the acquisition thread.
+    autosetting: bool,
     _poll: Task<()>,
 }
 
@@ -116,6 +118,7 @@ impl ScopeApp {
             measurements_on: saved.measurements_on,
             measurements: [None, None],
             measured_at: None,
+            autosetting: false,
             _poll: poll,
         }
     }
@@ -151,10 +154,22 @@ impl ScopeApp {
                 // has re-armed the worker already, but is rare enough to ignore.
                 if self.settings.run == RunMode::Single {
                     self.settings.run = RunMode::Stopped;
-                    let _ = self.settings_tx.send(self.settings);
+                    let _ = self.settings_tx.send(Command::Apply(self.settings));
                 }
             }
+            Event::AutosetDone { settings, summary } => {
+                self.autosetting = false;
+                self.settings = settings;
+                // Echo back, so a control clicked while auto-set ran can't leave
+                // the worker on different settings from the UI.
+                let _ = self.settings_tx.send(Command::Apply(settings));
+                self.phosphor.clear();
+                self.measured_at = None;
+                self.status = summary;
+                self.save();
+            }
             Event::Disconnected(e) => {
+                self.autosetting = false;
                 self.status = e;
                 self.device = None;
                 self.frame = None;
@@ -218,7 +233,7 @@ impl ScopeApp {
 
     fn update_settings(&mut self, cx: &mut Context<Self>, f: &dyn Fn(&mut Settings)) {
         f(&mut self.settings);
-        let _ = self.settings_tx.send(self.settings);
+        let _ = self.settings_tx.send(Command::Apply(self.settings));
         // Accumulated captures were drawn under the old scales.
         self.phosphor.clear();
         // Show readings for the new settings as soon as a frame arrives.
@@ -452,7 +467,18 @@ impl ScopeApp {
                         cx,
                         |s| s.run = if s.run == RunMode::Running { RunMode::Stopped } else { RunMode::Running },
                     ))
-                    .child(self.button("single".into(), "Single", s.run == RunMode::Single, cx, |s| s.run = RunMode::Single)),
+                    .child(self.button("single".into(), "Single", s.run == RunMode::Single, cx, |s| s.run = RunMode::Single))
+                    .child(self.view_button("autoset".into(), "Auto-set", self.autosetting, cx, |this| {
+                        if this.autosetting {
+                            return;
+                        }
+                        if this.device.is_none() {
+                            this.status = "Auto-set needs a connected scope".into();
+                            return;
+                        }
+                        this.autosetting = true;
+                        let _ = this.settings_tx.send(Command::Autoset);
+                    })),
             )
             .child(self.channel_panel(0, cx))
             .child(self.channel_panel(1, cx))

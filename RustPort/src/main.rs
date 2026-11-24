@@ -1,4 +1,5 @@
 mod acquire;
+mod autoset;
 mod device;
 mod measure;
 mod persist;
@@ -71,6 +72,13 @@ fn probe(capture: bool) -> Result<()> {
     }
     let mut scope = Scope::new(dev, cal);
     scope.apply(&settings)?;
+    if std::env::args().any(|a| a == "--autoset") {
+        let started = Instant::now();
+        let (s, summary) = autoset::run(&mut scope, &settings, &mut |msg| println!("{msg}"))?;
+        println!("{summary} ({:.1} s)", started.elapsed().as_secs_f64());
+        settings = s;
+        scope.apply(&settings)?;
+    }
     if let Some(path) = dump_path() {
         // Raw GETDATA blocks, for protocol debugging.
         let deadline = Instant::now() + Duration::from_secs(3);

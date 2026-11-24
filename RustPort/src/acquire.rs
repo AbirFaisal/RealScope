@@ -6,6 +6,7 @@ use std::time::{Duration, Instant};
 
 use anyhow::Result;
 
+use crate::autoset;
 use crate::device::Device;
 use crate::protocol::{self, Block, Calibration, reg};
 use crate::settings::{Coupling, EXT, RunMode, Settings};
@@ -23,25 +24,35 @@ pub struct Frame {
     pub triggered: bool,
 }
 
+/// Requests from the UI to the acquisition thread.
+pub enum Command {
+    /// Use these settings from now on.
+    Apply(Settings),
+    /// Run auto-set; the result comes back as [`Event::AutosetDone`].
+    Autoset,
+}
+
 pub enum Event {
     Status(String),
     Connected { serial: String, version: String },
     Frame(Frame),
     /// A single-shot capture completed (sent after its `Frame`); the worker has stopped.
     SingleDone,
+    /// Auto-set finished; the worker is now running with `settings`.
+    AutosetDone { settings: Settings, summary: String },
     Disconnected(String),
 }
 
 /// Spawns the worker, starting from `initial` settings. It keeps reconnecting
 /// until `settings_rx` is closed.
-pub fn spawn(initial: Settings, settings_rx: Receiver<Settings>, events: Sender<Event>) {
+pub fn spawn(initial: Settings, settings_rx: Receiver<Command>, events: Sender<Event>) {
     thread::Builder::new()
         .name("acquire".into())
         .spawn(move || worker(initial, settings_rx, events))
         .expect("spawning acquisition thread");
 }
 
-fn worker(mut settings: Settings, settings_rx: Receiver<Settings>, events: Sender<Event>) {
+fn worker(mut settings: Settings, settings_rx: Receiver<Command>, events: Sender<Event>) {
     loop {
         let mut log = |msg: String| {
             let _ = events.send(Event::Status(msg));
@@ -63,11 +74,25 @@ fn worker(mut settings: Settings, settings_rx: Receiver<Settings>, events: Sende
             }
         }
         // Wait before retrying, but keep tracking settings and notice shutdown.
+        // Auto-set needs a scope, so a request made now is dropped.
         match settings_rx.recv_timeout(Duration::from_secs(1)) {
-            Ok(s) => settings = s,
+            Ok(Command::Apply(s)) => settings = s,
+            Ok(Command::Autoset) => {}
             Err(RecvTimeoutError::Timeout) => {}
             Err(RecvTimeoutError::Disconnected) => return,
         }
+    }
+}
+
+/// Takes a UI command: new settings replace the current ones. Returns whether
+/// auto-set was requested.
+fn receive(cmd: Command, settings: &mut Settings) -> bool {
+    match cmd {
+        Command::Apply(s) => {
+            *settings = s;
+            false
+        }
+        Command::Autoset => true,
     }
 }
 
@@ -85,21 +110,30 @@ impl Scope {
     }
 
     /// Main loop. Returns `Ok` when the UI closed the settings channel.
-    fn run(&mut self, settings_rx: &Receiver<Settings>, events: &Sender<Event>, settings: &mut Settings) -> Result<()> {
+    fn run(&mut self, settings_rx: &Receiver<Command>, events: &Sender<Event>, settings: &mut Settings) -> Result<()> {
         self.apply(settings)?;
+        let mut autoset_requested = false;
         loop {
             loop {
                 match settings_rx.try_recv() {
-                    Ok(s) => *settings = s,
+                    Ok(cmd) => autoset_requested |= receive(cmd, settings),
                     Err(TryRecvError::Empty) => break,
                     Err(TryRecvError::Disconnected) => return Ok(()),
                 }
+            }
+            if std::mem::take(&mut autoset_requested) {
+                let mut log = |msg: String| {
+                    let _ = events.send(Event::Status(msg));
+                };
+                let (new, summary) = autoset::run(self, settings, &mut log)?;
+                *settings = new;
+                let _ = events.send(Event::AutosetDone { settings: new, summary });
             }
             self.apply(settings)?;
 
             if !settings.acquiring() {
                 match settings_rx.recv_timeout(Duration::from_millis(50)) {
-                    Ok(s) => *settings = s,
+                    Ok(cmd) => autoset_requested |= receive(cmd, settings),
                     Err(RecvTimeoutError::Timeout) => {}
                     Err(RecvTimeoutError::Disconnected) => return Ok(()),
                 }
