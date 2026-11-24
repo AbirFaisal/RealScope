@@ -15,7 +15,7 @@ use crate::math::{self, MathOp, MathTrace};
 use crate::measure::{self, Group, Measurements};
 use crate::persist::{self, Saved};
 use crate::phosphor::{self, Persistence, Phosphor, Run, TRACES};
-use crate::settings::{ChannelSettings, EXT, RunMode, Settings, Slope, Sweep};
+use crate::settings::{ChannelSettings, EXT, RunMode, Settings, Slope, Sweep, TriggerMode};
 use crate::tables::{
     self, ADC_MAX, COUNTS_PER_DIV, H_DIVS, MATH_VDIV_V, POS0_MAX, TDIV_MAX_IDX, TDIV_MIN_IDX, V_DIVS, VDIV_MV,
 };
@@ -632,29 +632,6 @@ impl ScopeApp {
 
     fn controls(&self, cx: &mut Context<Self>) -> impl IntoElement {
         let s = self.settings;
-        let src = s.trigger.source;
-        // Trigger level steps by 1/5 division of the source channel, within the screen.
-        let nudge_level = |up: bool| {
-            move |s: &mut Settings| {
-                let Some(c) = s.trigger_channel() else { return };
-                let ch = &s.ch[c];
-                let step = ch.volts_per_div() / 5.0;
-                let lim = (ADC_MAX - ch.pos0.min(ADC_MAX)) as f64 * ch.volts_per_div() / COUNTS_PER_DIV as f64;
-                s.trigger.level_v = if up { (s.trigger.level_v + step).min(lim) } else { (s.trigger.level_v - step).max(-lim) };
-            }
-        };
-        let level_row = if s.trigger_channel().is_some() {
-            self.stepper("trg-level", "Level", tables::format_si(s.trigger.level_v, "V"), cx, nudge_level(false), nudge_level(true))
-                .into_any_element()
-        } else {
-            div()
-                .flex()
-                .items_center()
-                .gap_1()
-                .child(div().w(px(STEPPER_LABEL_W)).text_color(rgb(0x999999)).child("Level"))
-                .child(div().text_color(rgb(0x999999)).child("set by external signal"))
-                .into_any_element()
-        };
         div()
             .id("controls")
             .overflow_y_scroll()
@@ -675,7 +652,16 @@ impl ScopeApp {
                         cx,
                         |s| s.run = if s.run == RunMode::Running { RunMode::Stopped } else { RunMode::Running },
                     ))
-                    .child(self.button("single".into(), "Single", s.run == RunMode::Single, cx, |s| s.run = RunMode::Single))
+                    .child(if s.per_channel_trigger() {
+                        // The per-channel trigger word has no sweep bits, so no single shot.
+                        self.view_button("single".into(), "Single", false, cx, |this| {
+                            this.status = "Single needs a shared trigger".into()
+                        })
+                        .into_any_element()
+                    } else {
+                        self.button("single".into(), "Single", s.run == RunMode::Single, cx, |s| s.run = RunMode::Single)
+                            .into_any_element()
+                    })
                     .child(self.view_button("autoset".into(), "Auto-set", self.autosetting, cx, |this| {
                         if this.autosetting {
                             return;
@@ -716,52 +702,117 @@ impl ScopeApp {
                             .child(format!("Sample rate {}", tables::format_si(tables::sample_rate_hz(s.tdiv_idx), "Sa/s"))),
                     ),
             )
+            .child(self.trigger_panel(cx))
+    }
+
+    fn trigger_panel(&self, cx: &mut Context<Self>) -> impl IntoElement {
+        let s = self.settings;
+        let src = s.trigger.source;
+        let per_channel = s.per_channel_trigger();
+        let row = || div().flex().gap_1();
+        let dim = rgb(0x999999);
+        // Level steps by 1/5 division of the channel, within the screen.
+        let nudge = |ch: usize, up: bool| {
+            move |s: &mut Settings| {
+                let step = s.ch[ch].volts_per_div() / 5.0;
+                let (above, below) = s.level_limit(ch);
+                let level =
+                    if s.per_channel_trigger() { &mut s.trigger.per_channel[ch].level_v } else { &mut s.trigger.level_v };
+                *level = if up { (*level + step).min(above) } else { (*level - step).max(-below) };
+            }
+        };
+        let panel = div()
+            .flex()
+            .flex_col()
+            .gap_1()
+            .p_2()
+            .rounded_md()
+            .border_1()
+            .border_color(rgb(0x333333))
+            .child("Trigger")
             .child(
-                div()
-                    .flex()
-                    .flex_col()
-                    .gap_1()
-                    .p_2()
-                    .rounded_md()
-                    .border_1()
-                    .border_color(rgb(0x333333))
-                    .child("Trigger")
-                    .child(
-                        div()
-                            .flex()
-                            .gap_1()
-                            .child(self.button("trg-auto".into(), "Auto", s.trigger.sweep == Sweep::Auto, cx, |s| {
-                                s.trigger.sweep = Sweep::Auto
-                            }))
-                            .child(self.button(
-                                "trg-normal".into(),
-                                "Normal",
-                                s.trigger.sweep == Sweep::Normal,
-                                cx,
-                                |s| s.trigger.sweep = Sweep::Normal,
-                            )),
-                    )
-                    .child(
-                        div()
-                            .flex()
-                            .gap_1()
-                            .child(self.button("trg-ch1".into(), "CH1", src == 0, cx, |s| s.trigger.source = 0))
-                            .child(self.button("trg-ch2".into(), "CH2", src == 1, cx, |s| s.trigger.source = 1))
-                            .child(self.button("trg-ext".into(), "EXT", src == EXT, cx, |s| s.trigger.source = EXT)),
-                    )
-                    .child(
-                        div()
-                            .flex()
-                            .gap_1()
-                            .child(self.button("trg-rise".into(), "↑ Rise", s.trigger.slope == Slope::Rising, cx, |s| {
-                                s.trigger.slope = Slope::Rising
-                            }))
-                            .child(self.button("trg-fall".into(), "↓ Fall", s.trigger.slope == Slope::Falling, cx, |s| {
-                                s.trigger.slope = Slope::Falling
-                            })),
-                    )
-                    .child(level_row),
+                row()
+                    .child(self.button("trg-shared".into(), "Shared", !per_channel, cx, |s| {
+                        s.set_trigger_mode(TriggerMode::Shared)
+                    }))
+                    .child(self.button("trg-per-channel".into(), "Per channel", per_channel, cx, |s| {
+                        s.set_trigger_mode(TriggerMode::PerChannel)
+                    })),
+            );
+        if per_channel {
+            let mut panel = panel.child(div().text_color(dim).child("Auto sweep, each channel on its own edge"));
+            for ch in 0..2 {
+                let e = s.trigger.per_channel[ch];
+                let color = rgb(TRACE_COLORS[ch]);
+                panel = panel.child(
+                    div()
+                        .flex()
+                        .flex_col()
+                        .gap_1()
+                        .pl_2()
+                        .border_l_2()
+                        .border_color(color)
+                        .child(
+                            row()
+                                .items_center()
+                                .child(div().w(px(40.)).text_color(color).child(TRACE_NAMES[ch]))
+                                .child(self.button(format!("trg{ch}-rise"), "↑ Rise", e.slope == Slope::Rising, cx, move |s| {
+                                    s.trigger.per_channel[ch].slope = Slope::Rising
+                                }))
+                                .child(self.button(format!("trg{ch}-fall"), "↓ Fall", e.slope == Slope::Falling, cx, move |s| {
+                                    s.trigger.per_channel[ch].slope = Slope::Falling
+                                })),
+                        )
+                        .child(self.stepper(
+                            &format!("trg{ch}-level"),
+                            "Level",
+                            tables::format_si(e.level_v, "V"),
+                            cx,
+                            nudge(ch, false),
+                            nudge(ch, true),
+                        )),
+                );
+            }
+            return panel;
+        }
+        let level_row = if let Some(c) = s.trigger_channel() {
+            self.stepper("trg-level", "Level", tables::format_si(s.trigger.level_v, "V"), cx, nudge(c, false), nudge(c, true))
+                .into_any_element()
+        } else {
+            div()
+                .flex()
+                .items_center()
+                .gap_1()
+                .child(div().w(px(STEPPER_LABEL_W)).text_color(dim).child("Level"))
+                .child(div().text_color(dim).child("set by external signal"))
+                .into_any_element()
+        };
+        panel
+            .child(
+                row()
+                    .child(self.button("trg-auto".into(), "Auto", s.trigger.sweep == Sweep::Auto, cx, |s| {
+                        s.trigger.sweep = Sweep::Auto
+                    }))
+                    .child(self.button("trg-normal".into(), "Normal", s.trigger.sweep == Sweep::Normal, cx, |s| {
+                        s.trigger.sweep = Sweep::Normal
+                    })),
             )
+            .child(
+                row()
+                    .child(self.button("trg-ch1".into(), "CH1", src == 0, cx, |s| s.trigger.source = 0))
+                    .child(self.button("trg-ch2".into(), "CH2", src == 1, cx, |s| s.trigger.source = 1))
+                    .child(self.button("trg-ext".into(), "EXT", src == EXT, cx, |s| s.trigger.source = EXT)),
+            )
+            .child(
+                row()
+                    .child(self.button("trg-rise".into(), "↑ Rise", s.trigger.slope == Slope::Rising, cx, |s| {
+                        s.trigger.slope = Slope::Rising
+                    }))
+                    .child(self.button("trg-fall".into(), "↓ Fall", s.trigger.slope == Slope::Falling, cx, |s| {
+                        s.trigger.slope = Slope::Falling
+                    })),
+            )
+            .child(level_row)
     }
 
     fn status_line(&self) -> impl IntoElement {
@@ -769,6 +820,13 @@ impl ScopeApp {
         let trig = match (s.run, &self.frame) {
             (RunMode::Single, _) => "Armed",
             (RunMode::Stopped, _) => "Stopped",
+            // Each channel reports its own trigger; in shared mode the scope sets both bits.
+            (RunMode::Running, Some(f)) if s.per_channel_trigger() => match f.channel_triggered {
+                [true, true] => "Trig'd CH1+CH2",
+                [true, false] => "Trig'd CH1",
+                [false, true] => "Trig'd CH2",
+                [false, false] => "Auto",
+            },
             (RunMode::Running, Some(f)) if f.triggered => "Trig'd",
             (RunMode::Running, Some(_)) => "Auto",
             (RunMode::Running, None) => "—",
@@ -947,11 +1005,19 @@ fn paint_scope(bounds: Bounds<Pixels>, trace: &Trace, settings: &Settings, windo
         let y = y_of(pos0[i].clamp(-POS0_MAX.min(ADC_MAX), ADC_MAX) as f32);
         window.paint_quad(fill(Bounds::new(point(px(x0), px(y - 4.)), size(px(8.), px(8.))), rgb(TRACE_COLORS[i])));
     }
-    let tc = settings.trigger_channel().map_or(rgb(EXT_TRIGGER_COLOR), |c| rgb(TRACE_COLORS[c]));
-    if let Some(code) = settings.trigger_level_code() {
-        let ty = y_of(code as f32);
-        window.paint_quad(fill(Bounds::new(point(px(x0 + w - 8.), px(ty - 4.)), size(px(8.), px(8.))), tc));
+    // In per-channel mode each shown channel has its own level; the shared
+    // trigger point marker at the top is then neutral.
+    let per_channel = settings.per_channel_trigger();
+    for ch in (0..2).filter(|&c| !per_channel || settings.ch[c].on) {
+        if let Some(code) = settings.level_code(ch) {
+            let ty = y_of(code as f32);
+            window.paint_quad(fill(Bounds::new(point(px(x0 + w - 8.), px(ty - 4.)), size(px(8.), px(8.))), rgb(TRACE_COLORS[ch])));
+        }
     }
+    let tc = match settings.trigger_channel() {
+        Some(c) if !per_channel => rgb(TRACE_COLORS[c]),
+        _ => rgb(EXT_TRIGGER_COLOR),
+    };
     window.paint_quad(fill(Bounds::new(point(px(x0 + w / 2. - 4.), px(y0)), size(px(8.), px(6.))), tc));
 
     match trace {

@@ -72,6 +72,11 @@ fn probe(capture: bool) -> Result<()> {
     if let Some(level) = arg_value("--level").and_then(|v| v.parse().ok()) {
         settings.trigger.level_v = level;
     }
+    if std::env::args().any(|a| a == "--alt") {
+        let shared = settings.trigger;
+        settings.trigger.per_channel = [settings::EdgeSettings { level_v: shared.level_v, slope: shared.slope }; 2];
+        settings.trigger.mode = settings::TriggerMode::PerChannel;
+    }
     if let Some(op) = arg_value("--math") {
         settings.math.on = true;
         settings.math.op = if op == "sub" { math::MathOp::Sub } else { math::MathOp::Add };
@@ -118,10 +123,12 @@ fn probe(capture: bool) -> Result<()> {
     }
     let Some(frame) = frame else { bail!("no data within 3 s") };
     println!(
-        "Captured at {}/div, {} (triggered: {})",
+        "Captured at {}/div, {} (triggered: {}, per channel {:?}, {:?} trigger)",
         tables::tdiv_label(settings.tdiv_idx),
         tables::format_si(tables::sample_rate_hz(settings.tdiv_idx), "Sa/s"),
-        frame.triggered
+        frame.triggered,
+        frame.channel_triggered,
+        settings.trigger.mode
     );
     let dt = 1.0 / tables::sample_rate_hz(settings.tdiv_idx);
     let print_table = |m: &measure::Measurements| {

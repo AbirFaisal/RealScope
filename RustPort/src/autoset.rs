@@ -9,7 +9,7 @@ use anyhow::{Result, bail};
 
 use crate::acquire::{Frame, Scope};
 use crate::measure;
-use crate::settings::{ChannelSettings, Coupling, RunMode, Settings, Slope, Sweep, TriggerSettings};
+use crate::settings::{ChannelSettings, Coupling, RunMode, Settings, Slope, Sweep, TriggerMode, TriggerSettings};
 use crate::tables::{self, ADC_MAX, COUNTS_PER_DIV, H_DIVS, TDIV_MAX_IDX, TDIV_MIN_IDX, TDIV_S, VDIV_MV};
 
 /// The search runs at 10 ms/div (`AutosetRunner2.TIMEBASE_10MS`).
@@ -100,7 +100,9 @@ pub fn run(scope: &mut Scope, start: &Settings, log: &mut dyn FnMut(String)) -> 
     let mut s = *start;
     s.run = RunMode::Running;
     s.tdiv_idx = START_TDIV_IDX;
-    s.trigger = TriggerSettings { source: 0, level_v: 0.0, slope: Slope::Rising, sweep: Sweep::Auto };
+    // Back to one shared trigger (stored per-channel edges are kept).
+    s.trigger =
+        TriggerSettings { source: 0, level_v: 0.0, slope: Slope::Rising, sweep: Sweep::Auto, mode: TriggerMode::Shared, ..s.trigger };
     for ch in &mut s.ch {
         // The probe setting is kept: it describes the probe actually attached.
         *ch = ChannelSettings { on: true, coupling: Coupling::Dc, pos0: 0, vdiv_idx: last_vdiv, ..*ch };

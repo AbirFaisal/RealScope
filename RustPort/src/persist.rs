@@ -87,7 +87,7 @@ mod tests {
     use super::*;
     use crate::fft::{FftSettings, FftUnit, FftWindow};
     use crate::math::{MathOp, MathSettings};
-    use crate::settings::{Coupling, EXT, RunMode, Slope, Sweep};
+    use crate::settings::{Coupling, EXT, EdgeSettings, RunMode, Slope, Sweep, TriggerMode};
 
     fn temp_path(name: &str) -> PathBuf {
         std::env::temp_dir().join(format!("realscope-test-{}-{name}", std::process::id())).join("settings.json")
@@ -104,6 +104,8 @@ mod tests {
         saved.scope.trigger.source = EXT;
         saved.scope.trigger.sweep = Sweep::Normal;
         saved.scope.trigger.slope = Slope::Falling;
+        saved.scope.trigger.mode = TriggerMode::PerChannel;
+        saved.scope.trigger.per_channel[1] = EdgeSettings { level_v: -0.3, slope: Slope::Falling };
         saved.scope.math = MathSettings { on: true, op: MathOp::Sub, vdiv_idx: 4, pos0: -30 };
         saved.scope.fft = FftSettings {
             on: true,

@@ -122,6 +122,14 @@ pub fn trigger(source: usize, slope: Slope, sweep: Sweep, single: bool) -> u16 {
     source_bits | (slope_bit << 12) | (sweep << 10)
 }
 
+/// TRG register for one channel's edge in per-channel ("Alternate") mode
+/// (`TinyTrgSubmitHandler.handleSubmit_trg_type`, `alt` branch): bit15 alt,
+/// bit14 channel, bit12 slope, edge type 0, and no sweep bits (always auto).
+/// Written once per channel.
+pub fn trigger_alt(ch: usize, slope: Slope) -> u16 {
+    0x8000 | ((ch as u16 & 1) << 14) | (((slope == Slope::Falling) as u16) << 12)
+}
+
 /// Edge level register (`AbsTranslator.getLevelArg`): low byte = upper
 /// threshold, high byte = lower threshold, 10 codes apart. The level is the
 /// upper threshold on a rising edge and the lower one on a falling edge.
@@ -341,6 +349,10 @@ mod tests {
     #[test]
     fn trigger_bits() {
         use Slope::*;
+        assert_eq!(trigger_alt(0, Rising), 0x8000);
+        assert_eq!(trigger_alt(1, Rising), 0xc000);
+        assert_eq!(trigger_alt(0, Slope::Falling), 0x9000);
+        assert_eq!(trigger_alt(1, Slope::Falling), 0xd000);
         assert_eq!(trigger(0, Rising, Sweep::Auto, false), 0x0000);
         assert_eq!(trigger(1, Rising, Sweep::Auto, false), 0x2000);
         assert_eq!(trigger(0, Rising, Sweep::Normal, false), 0x0400);

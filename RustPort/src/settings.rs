@@ -74,6 +74,24 @@ pub struct ChannelSettings {
 /// channels (the vendor's `TriggerControl.EXTTRG_CHANNEL`).
 pub const EXT: usize = 2;
 
+/// One trigger source for the whole capture, or each channel triggering on
+/// its own edge (the vendor's "Alternate" mode, `TriggerDefine.SINGLE_ALT`).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum TriggerMode {
+    #[default]
+    Shared,
+    PerChannel,
+}
+
+/// An edge trigger on one channel.
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize, Default)]
+#[serde(default)]
+pub struct EdgeSettings {
+    /// Volts at the probe tip; the default 0 V sits on the channel's zero line.
+    pub level_v: f64,
+    pub slope: Slope,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct TriggerSettings {
@@ -83,7 +101,11 @@ pub struct TriggerSettings {
     /// whose threshold is fixed in hardware).
     pub level_v: f64,
     pub slope: Slope,
+    /// Shared mode only: per-channel triggering is always Auto.
     pub sweep: Sweep,
+    pub mode: TriggerMode,
+    /// Each channel's own edge, used in [`TriggerMode::PerChannel`].
+    pub per_channel: [EdgeSettings; 2],
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
@@ -118,6 +140,8 @@ impl Default for TriggerSettings {
             level_v: 1.0,
             slope: Slope::Rising,
             sweep: Sweep::Auto,
+            mode: TriggerMode::Shared,
+            per_channel: [EdgeSettings::default(); 2],
         }
     }
 }
@@ -179,6 +203,11 @@ impl Settings {
         if !self.trigger.level_v.is_finite() {
             self.trigger.level_v = TriggerSettings::default().level_v;
         }
+        for e in &mut self.trigger.per_channel {
+            if !e.level_v.is_finite() {
+                e.level_v = 0.0;
+            }
+        }
         self.math.vdiv_idx = self.math.vdiv_idx.min(MATH_VDIV_V.len() - 1);
         self.math.pos0 = ChannelSettings::clamp_pos0(self.math.pos0);
         self.fft.sanitize();
@@ -216,9 +245,66 @@ impl Settings {
             return;
         }
         self.ch[ch].probe = probe;
+        let ratio = probe as f64 / old as f64;
         if self.trigger.source == ch {
-            self.trigger.level_v *= probe as f64 / old as f64;
+            self.trigger.level_v *= ratio;
         }
+        self.trigger.per_channel[ch].level_v *= ratio;
+    }
+
+    pub fn per_channel_trigger(&self) -> bool {
+        self.trigger.mode == TriggerMode::PerChannel
+    }
+
+    /// Switches between one shared trigger and per-channel triggers. Going
+    /// per-channel, the shared source channel takes over the shared edge and
+    /// the other channel's stored level is pulled onto the screen.
+    pub fn set_trigger_mode(&mut self, mode: TriggerMode) {
+        if self.trigger.mode == mode {
+            return;
+        }
+        self.trigger.mode = mode;
+        if mode == TriggerMode::PerChannel {
+            // Per-channel triggering is always Auto, so a pending single shot can't wait for it.
+            if self.run == RunMode::Single {
+                self.run = RunMode::Running;
+            }
+            if let Some(src) = self.trigger_channel() {
+                self.trigger.per_channel[src] = EdgeSettings { level_v: self.trigger.level_v, slope: self.trigger.slope };
+            }
+            for ch in 0..2 {
+                let lim = self.level_limit(ch);
+                let e = &mut self.trigger.per_channel[ch];
+                e.level_v = e.level_v.clamp(-lim.1, lim.0);
+            }
+        }
+    }
+
+    /// The trigger level range that stays on screen for channel `ch`, in volts
+    /// (above, below) its zero line.
+    pub fn level_limit(&self, ch: usize) -> (f64, f64) {
+        let c = &self.ch[ch];
+        let v = c.volts_per_div() / COUNTS_PER_DIV as f64;
+        ((ADC_MAX - c.pos0.min(ADC_MAX)) as f64 * v, (ADC_MAX + c.pos0.max(-ADC_MAX)) as f64 * v)
+    }
+
+    /// The edge channel `ch` triggers on: its own in per-channel mode, the
+    /// shared one if it is the shared source, otherwise none.
+    pub fn edge(&self, ch: usize) -> Option<EdgeSettings> {
+        match self.trigger.mode {
+            TriggerMode::PerChannel => Some(self.trigger.per_channel[ch]),
+            TriggerMode::Shared => {
+                (self.trigger_channel() == Some(ch)).then_some(EdgeSettings { level_v: self.trigger.level_v, slope: self.trigger.slope })
+            }
+        }
+    }
+
+    /// The active trigger level of channel `ch` as an absolute ADC code.
+    pub fn level_code(&self, ch: usize) -> Option<i32> {
+        let e = self.edge(ch)?;
+        let c = &self.ch[ch];
+        let counts = (e.level_v / c.volts_per_div() * COUNTS_PER_DIV as f64).round();
+        Some((c.pos0 + counts as i32).clamp(-ADC_MAX, ADC_MAX))
     }
 
     /// Whether the scope should be capturing (running, or armed for a single shot).
@@ -228,7 +314,7 @@ impl Settings {
 
     /// Whether captures only happen on a real trigger (no auto-trigger).
     pub fn waits_for_trigger(&self) -> bool {
-        self.run == RunMode::Single || self.trigger.sweep == Sweep::Normal
+        !self.per_channel_trigger() && (self.run == RunMode::Single || self.trigger.sweep == Sweep::Normal)
     }
 
     /// The channel the trigger follows, or `None` for the external input.
@@ -240,9 +326,9 @@ impl Settings {
     /// position (`EdgeTrigger.java`, `VoltsensableTrigger.java:69-70`).
     /// `None` for the external trigger, which has no adjustable level.
     pub fn trigger_level_code(&self) -> Option<i32> {
-        let ch = &self.ch[self.trigger_channel()?];
-        let counts = (self.trigger.level_v / ch.volts_per_div() * COUNTS_PER_DIV as f64).round();
-        Some((ch.pos0 + counts as i32).clamp(-ADC_MAX, ADC_MAX))
+        let ch = self.trigger_channel()?;
+        let shared = Settings { trigger: TriggerSettings { mode: TriggerMode::Shared, ..self.trigger }, ..*self };
+        shared.level_code(ch)
     }
 }
 
@@ -344,6 +430,34 @@ mod tests {
         assert_eq!(t.hardware(), s.hardware());
         s.fft.source = 0;
         assert!(!s.hardware().ch[1].on);
+    }
+
+    #[test]
+    fn per_channel_trigger() {
+        let mut s = Settings::default();
+        s.trigger.level_v = 0.5;
+        s.trigger.slope = Slope::Falling;
+        // Shared: only the source has an edge.
+        assert_eq!(s.edge(0), Some(EdgeSettings { level_v: 0.5, slope: Slope::Falling }));
+        assert_eq!(s.edge(1), None);
+        // CH2 has a stored level far off its screen (1 V/div, zero at -3 div).
+        s.trigger.per_channel[1] = EdgeSettings { level_v: 50.0, slope: Slope::Rising };
+        s.set_trigger_mode(TriggerMode::PerChannel);
+        assert_eq!(s.edge(0), Some(EdgeSettings { level_v: 0.5, slope: Slope::Falling }), "inherits the shared edge");
+        assert_eq!(s.edge(1).unwrap().level_v, 8.0, "clamped to the top of the screen: 5 + 3 div");
+        assert_eq!(s.level_code(1), Some(ADC_MAX));
+        assert_eq!(s.level_code(0), Some(50 + 13));
+        // Per-channel triggering is Auto only.
+        s.trigger.sweep = Sweep::Normal;
+        s.run = RunMode::Single;
+        assert!(!s.waits_for_trigger());
+        // Probe changes keep each channel's level on screen.
+        s.set_probe(1, 10);
+        assert_eq!(s.trigger.per_channel[1].level_v, 80.0);
+        // Back to shared: the shared edge is unchanged.
+        s.set_trigger_mode(TriggerMode::Shared);
+        assert_eq!(s.trigger_level_code(), Some(50 + 13));
+        assert!(s.waits_for_trigger());
     }
 
     #[test]
