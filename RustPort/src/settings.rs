@@ -1,8 +1,10 @@
 //! User-facing scope configuration, shared between the UI and the acquisition thread.
 
-use crate::tables::{ADC_MAX, COUNTS_PER_DIV, POS0_MAX, VDIV_MV, format_si};
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+use crate::tables::{ADC_MAX, COUNTS_PER_DIV, POS0_MAX, TDIV_MAX_IDX, TDIV_MIN_IDX, VDIV_MV, format_si};
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Coupling {
     Dc,
     Ac,
@@ -27,13 +29,15 @@ impl Coupling {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Sweep {
     Auto,
     Normal,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+// `serde(default)`: fields missing from an older settings file keep their defaults.
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
 pub struct ChannelSettings {
     pub on: bool,
     pub vdiv_idx: usize,
@@ -49,7 +53,8 @@ pub struct ChannelSettings {
 /// channels (the vendor's `TriggerControl.EXTTRG_CHANNEL`).
 pub const EXT: usize = 2;
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
 pub struct TriggerSettings {
     /// 0 = CH1, 1 = CH2, [`EXT`] = external input.
     pub source: usize,
@@ -59,34 +64,49 @@ pub struct TriggerSettings {
     pub sweep: Sweep,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
 pub struct Settings {
     pub ch: [ChannelSettings; 2],
     pub tdiv_idx: usize,
     pub trigger: TriggerSettings,
+    /// Not saved: the app always starts acquiring.
+    #[serde(skip)]
     pub running: bool,
 }
 
-impl Default for Settings {
+impl Default for ChannelSettings {
     fn default() -> Self {
-        let ch = ChannelSettings {
+        ChannelSettings {
             on: true,
             vdiv_idx: 7, // 1 V/div
             coupling: Coupling::Dc,
             pos0: 0,
             probe: 1,
-        };
+        }
+    }
+}
+
+impl Default for TriggerSettings {
+    fn default() -> Self {
+        TriggerSettings {
+            source: 0,
+            level_v: 1.0,
+            sweep: Sweep::Auto,
+        }
+    }
+}
+
+impl Default for Settings {
+    fn default() -> Self {
+        let ch = ChannelSettings::default();
         Settings {
             ch: [
                 ChannelSettings { pos0: 50, ..ch },
                 ChannelSettings { pos0: -75, ..ch },
             ],
             tdiv_idx: 15, // 500 µs/div
-            trigger: TriggerSettings {
-                source: 0,
-                level_v: 1.0,
-                sweep: Sweep::Auto,
-            },
+            trigger: TriggerSettings::default(),
             running: true,
         }
     }
@@ -115,6 +135,26 @@ impl ChannelSettings {
 }
 
 impl Settings {
+    /// Brings values read from a settings file back into range, so a
+    /// hand-edited or stale file can't index out of the tables.
+    pub fn sanitize(mut self) -> Self {
+        for ch in &mut self.ch {
+            ch.vdiv_idx = ch.vdiv_idx.min(VDIV_MV.len() - 1);
+            ch.pos0 = ChannelSettings::clamp_pos0(ch.pos0);
+            if ch.probe != 1 && ch.probe != 10 {
+                ch.probe = 1;
+            }
+        }
+        self.tdiv_idx = self.tdiv_idx.clamp(TDIV_MIN_IDX, TDIV_MAX_IDX);
+        if self.trigger.source > EXT {
+            self.trigger.source = 0;
+        }
+        if !self.trigger.level_v.is_finite() {
+            self.trigger.level_v = TriggerSettings::default().level_v;
+        }
+        self
+    }
+
     /// Changes a channel's probe attenuation. If it is the trigger source, the
     /// level is rescaled so the trigger stays at the same screen position.
     pub fn set_probe(&mut self, ch: usize, probe: u32) {
@@ -186,6 +226,25 @@ mod tests {
         s.set_probe(0, 1);
         assert_eq!(s.trigger.level_v, 1.0);
         assert_eq!(s.trigger_level_code(), code);
+    }
+
+    #[test]
+    fn sanitize_clamps_out_of_range_values() {
+        let mut s = Settings::default();
+        s.ch[0].vdiv_idx = 99;
+        s.ch[0].pos0 = 9999;
+        s.ch[1].probe = 7;
+        s.tdiv_idx = 2;
+        s.trigger.source = 5;
+        s.trigger.level_v = f64::NAN;
+        let s = s.sanitize();
+        assert_eq!(s.ch[0].vdiv_idx, VDIV_MV.len() - 1);
+        assert_eq!(s.ch[0].pos0, POS0_MAX);
+        assert_eq!(s.ch[1].probe, 1);
+        assert_eq!(s.tdiv_idx, TDIV_MIN_IDX);
+        assert_eq!(s.trigger.source, 0);
+        assert_eq!(s.trigger.level_v, 1.0);
+        assert_eq!(Settings::default().sanitize(), Settings::default());
     }
 
     #[test]

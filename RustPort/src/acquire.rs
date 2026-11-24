@@ -30,16 +30,16 @@ pub enum Event {
     Disconnected(String),
 }
 
-/// Spawns the worker. It keeps reconnecting until `settings_rx` is closed.
-pub fn spawn(settings_rx: Receiver<Settings>, events: Sender<Event>) {
+/// Spawns the worker, starting from `initial` settings. It keeps reconnecting
+/// until `settings_rx` is closed.
+pub fn spawn(initial: Settings, settings_rx: Receiver<Settings>, events: Sender<Event>) {
     thread::Builder::new()
         .name("acquire".into())
-        .spawn(move || worker(settings_rx, events))
+        .spawn(move || worker(initial, settings_rx, events))
         .expect("spawning acquisition thread");
 }
 
-fn worker(settings_rx: Receiver<Settings>, events: Sender<Event>) {
-    let mut settings = Settings::default();
+fn worker(mut settings: Settings, settings_rx: Receiver<Settings>, events: Sender<Event>) {
     loop {
         let mut log = |msg: String| {
             let _ = events.send(Event::Status(msg));

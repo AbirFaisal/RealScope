@@ -11,6 +11,7 @@ use gpui::{
 
 use crate::acquire::{self, Event, Frame};
 use crate::measure::{self, Group, Measurements};
+use crate::persist::{self, Saved};
 use crate::phosphor::{self, Persistence, Phosphor, Run};
 use crate::settings::{ChannelSettings, EXT, Settings, Sweep};
 use crate::tables::{
@@ -79,7 +80,8 @@ impl ScopeApp {
     fn new(cx: &mut Context<Self>) -> Self {
         let (settings_tx, settings_rx) = mpsc::channel();
         let (event_tx, event_rx) = mpsc::channel();
-        acquire::spawn(settings_rx, event_tx);
+        let saved = persist::load();
+        acquire::spawn(saved.scope, settings_rx, event_tx);
 
         // Drain worker events once per display frame; only the newest waveform is kept.
         let poll = cx.spawn(async move |this, cx| {
@@ -102,16 +104,16 @@ impl ScopeApp {
         });
 
         ScopeApp {
-            settings: Settings::default(),
+            settings: saved.scope,
             settings_tx,
             frame: None,
             status: "Searching for scope…".into(),
             device: None,
-            phosphor_on: false,
-            persistence: Persistence::Medium,
+            phosphor_on: saved.phosphor_on,
+            persistence: saved.persistence,
             phosphor: Phosphor::default(),
             last_frame_at: None,
-            measurements_on: true,
+            measurements_on: saved.measurements_on,
             measurements: [None, None],
             measured_at: None,
             _poll: poll,
@@ -213,7 +215,18 @@ impl ScopeApp {
         self.phosphor.clear();
         // Show readings for the new settings as soon as a frame arrives.
         self.measured_at = None;
+        self.save();
         cx.notify();
+    }
+
+    /// Writes the current settings and display state so the next launch starts the same way.
+    fn save(&self) {
+        persist::save(&Saved {
+            scope: self.settings,
+            measurements_on: self.measurements_on,
+            phosphor_on: self.phosphor_on,
+            persistence: self.persistence,
+        });
     }
 
     fn button_base(id: String, label: impl Into<SharedString>, active: bool) -> Stateful<Div> {
@@ -253,6 +266,7 @@ impl ScopeApp {
     ) -> impl IntoElement {
         Self::button_base(id, label, active).on_click(cx.listener(move |this, _: &ClickEvent, _, cx| {
             f(this);
+            this.save();
             cx.notify();
         }))
     }

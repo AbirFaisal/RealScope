@@ -4275,8 +4275,11 @@ name = "realscope"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "dirs 5.0.1",
  "gpui",
  "nusb",
+ "serde",
+ "serde_json",
  "smol",
 ]
 

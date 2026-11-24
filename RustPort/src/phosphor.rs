@@ -6,6 +6,8 @@
 
 use std::time::Duration;
 
+use serde::{Deserialize, Serialize};
+
 use crate::tables::ADC_MAX;
 
 /// Horizontal resolution, matching the vendor screen width (`GDefine.AREA_WIDTH`),
@@ -18,7 +20,7 @@ pub const LEVELS: u8 = 16;
 /// Hits at which a cell reaches ~63% of full intensity before the gamma lift.
 const SATURATION_HITS: f32 = 1.0;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Persistence {
     Short,
     Medium,
